@@ -1,0 +1,222 @@
+[
+    {
+        "id": "signup",
+        "method": "POST",
+        "path": "/identity/api/auth/signup"
+    },
+    {
+        "id": "login",
+        "method": "POST",
+        "path": "/identity/api/auth/login"
+    },
+    {
+        "id": "forgot_password",
+        "method": "POST",
+        "path": "/identity/api/auth/forget-password"
+    },
+    {
+        "id": "check_otp_v3",
+        "method": "POST",
+        "path": "/identity/api/auth/v3/check-otp"
+    },
+    {
+        "id": "check_otp_v2",
+        "method": "POST",
+        "path": "/identity/api/auth/v2/check-otp"
+    },
+    {
+        "id": "login_with_token",
+        "method": "POST",
+        "path": "/identity/api/auth/v4.0/user/login-with-token"
+    },
+    {
+        "id": "login_with_token_v2_7",
+        "method": "POST",
+        "path": "/identity/api/auth/v2.7/user/login-with-token"
+    },
+    {
+        "id": "reset_password",
+        "method": "POST",
+        "path": "/identity/api/v2/user/reset-password"
+    },
+    {
+        "id": "change_email",
+        "method": "POST",
+        "path": "/identity/api/v2/user/change-email"
+    },
+    {
+        "id": "verify_email_token",
+        "method": "POST",
+        "path": "/identity/api/v2/user/verify-email-token"
+    },
+    {
+        "id": "get_dashboard",
+        "method": "GET",
+        "path": "/identity/api/v2/user/dashboard"
+    },
+    {
+        "id": "update_profile_pic",
+        "method": "POST",
+        "path": "/identity/api/v2/user/pictures"
+    },
+    {
+        "id": "upload_profile_video",
+        "method": "POST",
+        "path": "/identity/api/v2/user/videos"
+    },
+    {
+        "id": "get_profile_video",
+        "method": "GET",
+        "path": "/identity/api/v2/user/videos/{video_id}"
+    },
+    {
+        "id": "update_profile_video",
+        "method": "PUT",
+        "path": "/identity/api/v2/user/videos/{video_id}"
+    },
+    {
+        "id": "delete_profile_video",
+        "method": "DELETE",
+        "path": "/identity/api/v2/user/videos/{video_id}"
+    },
+    {
+        "id": "convert_profile_video",
+        "method": "GET",
+        "path": "/identity/api/v2/user/videos/convert_video"
+    },
+    {
+        "id": "admin_delete_profile_video",
+        "method": "DELETE",
+        "path": "/identity/api/v2/admin/videos/{video_id}"
+    },
+    {
+        "id": "get_vehicles",
+        "method": "GET",
+        "path": "/identity/api/v2/vehicle/vehicles"
+    },
+    {
+        "id": "add_vehicle",
+        "method": "POST",
+        "path": "/identity/api/v2/vehicle/add_vehicle"
+    },
+    {
+        "id": "get_location",
+        "method": "GET",
+        "path": "/identity/api/v2/vehicle/{vehicleId}/location"
+    },
+    {
+        "id": "vehicle_resend_email",
+        "method": "POST",
+        "path": "/identity/api/v2/vehicle/resend_email"
+    },
+    {
+        "id": "get_post",
+        "method": "GET",
+        "path": "/community/api/v2/community/posts/{postId}"
+    },
+    {
+        "id": "create_post",
+        "method": "POST",
+        "path": "/community/api/v2/community/posts"
+    },
+    {
+        "id": "post_comment",
+        "method": "POST",
+        "path": "/community/api/v2/community/posts/{postId}/comment"
+    },
+    {
+        "id": "get_recent_posts",
+        "method": "GET",
+        "path": "/community/api/v2/community/posts/recent"
+    },
+    {
+        "id": "add_new_coupon",
+        "method": "POST",
+        "path": "/community/api/v2/coupon/new-coupon"
+    },
+    {
+        "id": "validate_coupon",
+        "method": "POST",
+        "path": "/community/api/v2/coupon/validate-coupon"
+    },
+    {
+        "id": "get_products",
+        "method": "GET",
+        "path": "/workshop/api/shop/products"
+    },
+    {
+        "id": "add_new_product",
+        "method": "POST",
+        "path": "/workshop/api/shop/products"
+    },
+    {
+        "id": "create_order",
+        "method": "POST",
+        "path": "/workshop/api/shop/orders"
+    },
+    {
+        "id": "update_order",
+        "method": "PUT",
+        "path": "/workshop/api/shop/orders/{order_id}"
+    },
+    {
+        "id": "get_order_byID",
+        "method": "GET",
+        "path": "/workshop/api/shop/orders/{order_id}"
+    },
+    {
+        "id": "get_orders",
+        "method": "GET",
+        "path": "/workshop/api/shop/orders/all"
+    },
+    {
+        "id": "return_order",
+        "method": "POST",
+        "path": "/workshop/api/shop/orders/return_order"
+    },
+    {
+        "id": "apply_coupon",
+        "method": "POST",
+        "path": "/workshop/api/shop/apply_coupon"
+    },
+    {
+        "id": "get_workshop_qr_code",
+        "method": "GET",
+        "path": "/workshop/api/shop/return_qr_code"
+    },
+    {
+        "id": "get_workshop_users_all",
+        "method": "GET",
+        "path": "/workshop/api/management/users/all"
+    },
+    {
+        "id": "get_mechanics",
+        "method": "GET",
+        "path": "/workshop/api/mechanic/"
+    },
+    {
+        "id": "contact_mechanic",
+        "method": "POST",
+        "path": "/workshop/api/merchant/contact_mechanic"
+    },
+    {
+        "id": "create_service_report",
+        "method": "GET",
+        "path": "/workshop/api/mechanic/receive_report"
+    },
+    {
+        "id": "get_report_byID",
+        "method": "GET",
+        "path": "/workshop/api/mechanic/mechanic_report"
+    },
+    {
+        "id": "get_service_requests_for_mechanic",
+        "method": "GET",
+        "path": "/workshop/api/mechanic/service_requests"
+    },
+    {
+        "id": "mechanic_signup",
+        "method": "POST",
+        "path": "/workshop/api/mechanic/signup"
+    }
+]

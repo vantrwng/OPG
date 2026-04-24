@@ -1,0 +1,705 @@
+[
+    {
+        "id": "signup",
+        "method": "POST",
+        "path": "/identity/api/auth/signup",
+        "inputs": [
+            "password",
+            "number",
+            "name",
+            "email"
+        ],
+        "outputs": [
+            "message",
+            "status"
+        ]
+    },
+    {
+        "id": "login",
+        "method": "POST",
+        "path": "/identity/api/auth/login",
+        "inputs": [
+            "password",
+            "email"
+        ],
+        "outputs": [
+            "token",
+            "type",
+            "message",
+            "role"
+        ]
+    },
+    {
+        "id": "forgot_password",
+        "method": "POST",
+        "path": "/identity/api/auth/forget-password",
+        "inputs": [
+            "email"
+        ],
+        "outputs": [
+            "message",
+            "status"
+        ]
+    },
+    {
+        "id": "check_otp_v3",
+        "method": "POST",
+        "path": "/identity/api/auth/v3/check-otp",
+        "inputs": [
+            "otp",
+            "password",
+            "email"
+        ],
+        "outputs": [
+            "message",
+            "status"
+        ]
+    },
+    {
+        "id": "check_otp_v2",
+        "method": "POST",
+        "path": "/identity/api/auth/v2/check-otp",
+        "inputs": [
+            "otp",
+            "password",
+            "email"
+        ],
+        "outputs": []
+    },
+    {
+        "id": "login_with_token",
+        "method": "POST",
+        "path": "/identity/api/auth/v4.0/user/login-with-token",
+        "inputs": [
+            "token",
+            "email"
+        ],
+        "outputs": []
+    },
+    {
+        "id": "login_with_token_v2_7",
+        "method": "POST",
+        "path": "/identity/api/auth/v2.7/user/login-with-token",
+        "inputs": [
+            "token",
+            "email"
+        ],
+        "outputs": []
+    },
+    {
+        "id": "reset_password",
+        "method": "POST",
+        "path": "/identity/api/v2/user/reset-password",
+        "inputs": [
+            "password",
+            "email"
+        ],
+        "outputs": [
+            "message",
+            "status"
+        ]
+    },
+    {
+        "id": "change_email",
+        "method": "POST",
+        "path": "/identity/api/v2/user/change-email",
+        "inputs": [
+            "old_email",
+            "new_email"
+        ],
+        "outputs": [
+            "message",
+            "status"
+        ]
+    },
+    {
+        "id": "verify_email_token",
+        "method": "POST",
+        "path": "/identity/api/v2/user/verify-email-token",
+        "inputs": [
+            "token",
+            "old_email",
+            "new_email"
+        ],
+        "outputs": [
+            "message",
+            "status"
+        ]
+    },
+    {
+        "id": "get_dashboard",
+        "method": "GET",
+        "path": "/identity/api/v2/user/dashboard",
+        "inputs": [],
+        "outputs": [
+            "picture_url",
+            "name",
+            "video_name",
+            "available_credit",
+            "video_url",
+            "number",
+            "video_id",
+            "role",
+            "id",
+            "email"
+        ]
+    },
+    {
+        "id": "update_profile_pic",
+        "method": "POST",
+        "path": "/identity/api/v2/user/pictures",
+        "inputs": [],
+        "outputs": [
+            "status",
+            "picture",
+            "name",
+            "available_credit",
+            "id",
+            "user"
+        ]
+    },
+    {
+        "id": "upload_profile_video",
+        "method": "POST",
+        "path": "/identity/api/v2/user/videos",
+        "inputs": [],
+        "outputs": [
+            "conversion_params",
+            "profileVideo",
+            "video_name",
+            "user",
+            "video",
+            "number",
+            "id",
+            "email"
+        ]
+    },
+    {
+        "id": "get_profile_video",
+        "method": "GET",
+        "path": "/identity/api/v2/user/videos/{video_id}",
+        "inputs": [
+            "video_id"
+        ],
+        "outputs": [
+            "conversion_params",
+            "profileVideo",
+            "video_name",
+            "user",
+            "video",
+            "number",
+            "id",
+            "email"
+        ]
+    },
+    {
+        "id": "update_profile_video",
+        "method": "PUT",
+        "path": "/identity/api/v2/user/videos/{video_id}",
+        "inputs": [
+            "conversion_params",
+            "video_id",
+            "id",
+            "videoName",
+            "video_url"
+        ],
+        "outputs": [
+            "conversion_params",
+            "profileVideo",
+            "video_name",
+            "user",
+            "video",
+            "number",
+            "id",
+            "email"
+        ]
+    },
+    {
+        "id": "delete_profile_video",
+        "method": "DELETE",
+        "path": "/identity/api/v2/user/videos/{video_id}",
+        "inputs": [
+            "video_id"
+        ],
+        "outputs": []
+    },
+    {
+        "id": "convert_profile_video",
+        "method": "GET",
+        "path": "/identity/api/v2/user/videos/convert_video",
+        "inputs": [
+            "video_id"
+        ],
+        "outputs": []
+    },
+    {
+        "id": "admin_delete_profile_video",
+        "method": "DELETE",
+        "path": "/identity/api/v2/admin/videos/{video_id}",
+        "inputs": [
+            "video_id"
+        ],
+        "outputs": [
+            "message",
+            "status"
+        ]
+    },
+    {
+        "id": "get_vehicles",
+        "method": "GET",
+        "path": "/identity/api/v2/vehicle/vehicles",
+        "inputs": [],
+        "outputs": [
+            "vehicleLocation",
+            "vehicle_img",
+            "latitude",
+            "owner",
+            "email",
+            "name",
+            "fuel_type",
+            "uuid",
+            "status",
+            "year",
+            "number",
+            "vin",
+            "id",
+            "vehiclecompany",
+            "longitude",
+            "pincode",
+            "model"
+        ]
+    },
+    {
+        "id": "add_vehicle",
+        "method": "POST",
+        "path": "/identity/api/v2/vehicle/add_vehicle",
+        "inputs": [
+            "vin",
+            "pincode"
+        ],
+        "outputs": [
+            "message",
+            "status"
+        ]
+    },
+    {
+        "id": "get_location",
+        "method": "GET",
+        "path": "/identity/api/v2/vehicle/{vehicleId}/location",
+        "inputs": [],
+        "outputs": [
+            "carId",
+            "vehicleLocation",
+            "fullName",
+            "latitude",
+            "id",
+            "longitude"
+        ]
+    },
+    {
+        "id": "vehicle_resend_email",
+        "method": "POST",
+        "path": "/identity/api/v2/vehicle/resend_email",
+        "inputs": [],
+        "outputs": [
+            "message",
+            "status"
+        ]
+    },
+    {
+        "id": "get_post",
+        "method": "GET",
+        "path": "/community/api/v2/community/posts/{postId}",
+        "inputs": [],
+        "outputs": [
+            "content",
+            "email",
+            "authorid",
+            "created_at",
+            "CreatedAt",
+            "author",
+            "title",
+            "comments",
+            "nickname",
+            "id",
+            "vehicleid",
+            "profile_pic_url"
+        ]
+    },
+    {
+        "id": "create_post",
+        "method": "POST",
+        "path": "/community/api/v2/community/posts",
+        "inputs": [
+            "title",
+            "content"
+        ],
+        "outputs": [
+            "content",
+            "profile_pic_url",
+            "authorid",
+            "created_at",
+            "CreatedAt",
+            "author",
+            "title",
+            "comments",
+            "nickname",
+            "id",
+            "vehicleid",
+            "email"
+        ]
+    },
+    {
+        "id": "post_comment",
+        "method": "POST",
+        "path": "/community/api/v2/community/posts/{postId}/comment",
+        "inputs": [
+            "content"
+        ],
+        "outputs": [
+            "content",
+            "email",
+            "created_at",
+            "authorid",
+            "CreatedAt",
+            "comments",
+            "author",
+            "nickname",
+            "title",
+            "id",
+            "vehicleid",
+            "profile_pic_url"
+        ]
+    },
+    {
+        "id": "get_recent_posts",
+        "method": "GET",
+        "path": "/community/api/v2/community/posts/recent",
+        "inputs": [
+            "limit",
+            "offset"
+        ],
+        "outputs": [
+            "content",
+            "email",
+            "authorid",
+            "created_at",
+            "CreatedAt",
+            "author",
+            "title",
+            "comments",
+            "nickname",
+            "id",
+            "vehicleid",
+            "profile_pic_url"
+        ]
+    },
+    {
+        "id": "add_new_coupon",
+        "method": "POST",
+        "path": "/community/api/v2/coupon/new-coupon",
+        "inputs": [
+            "amount",
+            "coupon_code"
+        ],
+        "outputs": []
+    },
+    {
+        "id": "validate_coupon",
+        "method": "POST",
+        "path": "/community/api/v2/coupon/validate-coupon",
+        "inputs": [
+            "coupon_code"
+        ],
+        "outputs": [
+            "amount",
+            "coupon_code",
+            "CreatedAt"
+        ]
+    },
+    {
+        "id": "get_products",
+        "method": "GET",
+        "path": "/workshop/api/shop/products",
+        "inputs": [],
+        "outputs": [
+            "products",
+            "price",
+            "credit",
+            "name",
+            "image_url",
+            "id"
+        ]
+    },
+    {
+        "id": "add_new_product",
+        "method": "POST",
+        "path": "/workshop/api/shop/products",
+        "inputs": [
+            "price",
+            "image_url",
+            "name"
+        ],
+        "outputs": [
+            "id",
+            "price",
+            "name",
+            "image_url"
+        ]
+    },
+    {
+        "id": "create_order",
+        "method": "POST",
+        "path": "/workshop/api/shop/orders",
+        "inputs": [
+            "product_id",
+            "quantity"
+        ],
+        "outputs": [
+            "message",
+            "id",
+            "credit"
+        ]
+    },
+    {
+        "id": "update_order",
+        "method": "PUT",
+        "path": "/workshop/api/shop/orders/{order_id}",
+        "inputs": [
+            "quantity",
+            "product_id",
+            "order_id"
+        ],
+        "outputs": [
+            "quantity",
+            "image_url",
+            "name",
+            "created_on",
+            "user",
+            "price",
+            "status",
+            "number",
+            "product",
+            "id",
+            "orders",
+            "email"
+        ]
+    },
+    {
+        "id": "get_order_byID",
+        "method": "GET",
+        "path": "/workshop/api/shop/orders/{order_id}",
+        "inputs": [
+            "order_id"
+        ],
+        "outputs": [
+            "quantity",
+            "image_url",
+            "name",
+            "created_on",
+            "user",
+            "price",
+            "status",
+            "number",
+            "product",
+            "id",
+            "orders",
+            "email"
+        ]
+    },
+    {
+        "id": "get_orders",
+        "method": "GET",
+        "path": "/workshop/api/shop/orders/all",
+        "inputs": [
+            "limit",
+            "offset"
+        ],
+        "outputs": [
+            "quantity",
+            "image_url",
+            "name",
+            "created_on",
+            "user",
+            "price",
+            "status",
+            "number",
+            "product",
+            "id",
+            "orders",
+            "email"
+        ]
+    },
+    {
+        "id": "return_order",
+        "method": "POST",
+        "path": "/workshop/api/shop/orders/return_order",
+        "inputs": [
+            "order_id"
+        ],
+        "outputs": [
+            "quantity",
+            "image_url",
+            "name",
+            "created_on",
+            "user",
+            "price",
+            "status",
+            "number",
+            "product",
+            "message",
+            "id",
+            "qr_code_url",
+            "order",
+            "email"
+        ]
+    },
+    {
+        "id": "apply_coupon",
+        "method": "POST",
+        "path": "/workshop/api/shop/apply_coupon",
+        "inputs": [
+            "amount",
+            "coupon_code"
+        ],
+        "outputs": [
+            "message",
+            "credit"
+        ]
+    },
+    {
+        "id": "get_workshop_qr_code",
+        "method": "GET",
+        "path": "/workshop/api/shop/return_qr_code",
+        "inputs": [
+            "Accept"
+        ],
+        "outputs": []
+    },
+    {
+        "id": "get_workshop_users_all",
+        "method": "GET",
+        "path": "/workshop/api/management/users/all",
+        "inputs": [
+            "limit",
+            "offset"
+        ],
+        "outputs": [
+            "number",
+            "email",
+            "available_credit",
+            "user",
+            "users"
+        ]
+    },
+    {
+        "id": "get_mechanics",
+        "method": "GET",
+        "path": "/workshop/api/mechanic/",
+        "inputs": [],
+        "outputs": [
+            "number",
+            "user",
+            "mechanics",
+            "mechanic_code",
+            "id",
+            "email"
+        ]
+    },
+    {
+        "id": "contact_mechanic",
+        "method": "POST",
+        "path": "/workshop/api/merchant/contact_mechanic",
+        "inputs": [
+            "repeat_request_if_failed",
+            "mechanic_api",
+            "problem_details",
+            "vin",
+            "mechanic_code",
+            "number_of_repeats"
+        ],
+        "outputs": [
+            "status",
+            "response_from_mechanic_api",
+            "id",
+            "sent",
+            "report_link"
+        ]
+    },
+    {
+        "id": "create_service_report",
+        "method": "GET",
+        "path": "/workshop/api/mechanic/receive_report",
+        "inputs": [
+            "vin",
+            "mechanic_code",
+            "problem_details"
+        ],
+        "outputs": [
+            "id",
+            "sent",
+            "report_link"
+        ]
+    },
+    {
+        "id": "get_report_byID",
+        "method": "GET",
+        "path": "/workshop/api/mechanic/mechanic_report",
+        "inputs": [
+            "report_id"
+        ],
+        "outputs": [
+            "created_on",
+            "user",
+            "mechanic",
+            "status",
+            "vehicle",
+            "number",
+            "problem_details",
+            "vin",
+            "id",
+            "mechanic_code",
+            "owner",
+            "email"
+        ]
+    },
+    {
+        "id": "get_service_requests_for_mechanic",
+        "method": "GET",
+        "path": "/workshop/api/mechanic/service_requests",
+        "inputs": [
+            "limit",
+            "offset"
+        ],
+        "outputs": [
+            "created_on",
+            "user",
+            "mechanic",
+            "status",
+            "vehicle",
+            "number",
+            "problem_details",
+            "vin",
+            "service_requests",
+            "id",
+            "mechanic_code",
+            "owner",
+            "email"
+        ]
+    },
+    {
+        "id": "mechanic_signup",
+        "method": "POST",
+        "path": "/workshop/api/mechanic/signup",
+        "inputs": [
+            "password",
+            "number",
+            "name",
+            "mechanic_code",
+            "email"
+        ],
+        "outputs": [
+            "message"
+        ]
+    }
+]

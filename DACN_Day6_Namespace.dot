@@ -1,0 +1,20 @@
+digraph G {
+    rankdir=LR;
+    node [shape=box, style=filled, color="#E1F5FE", fontname="Segoe UI", fontsize=10];
+    edge [color="#01579B", penwidth=1.2, arrowsize=0.8];
+
+    "get_dashboard" -> "get_profile_video" [label="video_id", color="#D32F2F", fontcolor="#D32F2F", penwidth=2.0];
+    "get_dashboard" -> "update_profile_video" [label="video_id", color="#D32F2F", fontcolor="#D32F2F", penwidth=2.0];
+    "get_dashboard" -> "delete_profile_video" [label="video_id", color="#D32F2F", fontcolor="#D32F2F", penwidth=2.0];
+    "get_dashboard" -> "convert_profile_video" [label="video_id", color="#D32F2F", fontcolor="#D32F2F", penwidth=2.0];
+    "get_dashboard" -> "admin_delete_profile_video" [label="video_id", color="#D32F2F", fontcolor="#D32F2F", penwidth=2.0];
+    "get_vehicles" -> "add_vehicle" [label="pincode, vin", color="#D32F2F", fontcolor="#D32F2F", penwidth=2.0];
+    "get_vehicles" -> "contact_mechanic" [label="vin", color="#D32F2F", fontcolor="#D32F2F", penwidth=2.0];
+    "get_vehicles" -> "create_service_report" [label="vin", color="#D32F2F", fontcolor="#D32F2F", penwidth=2.0];
+    "create_post" -> "post_comment" [label="content"];
+    "post_comment" -> "create_post" [label="content, title"];
+    "get_report_byID" -> "add_vehicle" [label="vin", color="#D32F2F", fontcolor="#D32F2F", penwidth=2.0];
+    "get_report_byID" -> "contact_mechanic" [label="problem_details, vin, mechanic_code", color="#D32F2F", fontcolor="#D32F2F", penwidth=2.0];
+    "get_report_byID" -> "create_service_report" [label="problem_details, vin, mechanic_code", color="#D32F2F", fontcolor="#D32F2F", penwidth=2.0];
+    "get_report_byID" -> "mechanic_signup" [label="mechanic_code", color="#D32F2F", fontcolor="#D32F2F", penwidth=2.0];
+}
