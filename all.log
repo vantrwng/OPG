@@ -1,0 +1,94 @@
+2026-04-23 10:22:11.580 [main] INFO  com.bpr.resttestgen.cli.App - cli-param1: swagger-file: crapi-openapi-spec.json
+2026-04-23 10:22:11.580 [main] INFO  com.bpr.resttestgen.cli.App - cli-param2: swagger-codegen jar: tools/swagger-codegen/swagger-codegen-cli.jar
+2026-04-23 10:22:11.580 [main] INFO  com.bpr.resttestgen.cli.App - Reading swagger file
+2026-04-23 10:22:11.939 [main] INFO  com.bpr.resttestgen.cli.App - Reading generated operations from swagger-codegen
+2026-04-23 10:22:12.335 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: signup
+2026-04-23 10:22:12.335 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: login
+2026-04-23 10:22:12.335 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: forgotPassword
+2026-04-23 10:22:12.335 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: checkOtpV3
+2026-04-23 10:22:12.335 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: checkOtpV2
+2026-04-23 10:22:12.337 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: loginWithToken
+2026-04-23 10:22:12.337 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: loginWithTokenV27
+2026-04-23 10:22:12.337 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: resetPassword
+2026-04-23 10:22:12.337 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: changeEmail
+2026-04-23 10:22:12.339 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: verifyEmailToken
+2026-04-23 10:22:12.339 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: getDashboard
+2026-04-23 10:22:12.339 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: updateProfilePic
+2026-04-23 10:22:12.339 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: uploadProfileVideo
+2026-04-23 10:22:12.339 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: updateProfileVideo
+2026-04-23 10:22:12.339 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: getProfileVideo
+2026-04-23 10:22:12.339 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: deleteProfileVideo
+2026-04-23 10:22:12.341 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: convertProfileVideo
+2026-04-23 10:22:12.341 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: adminDeleteProfileVideo
+2026-04-23 10:22:12.341 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: getVehicles
+2026-04-23 10:22:12.341 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: addVehicle
+2026-04-23 10:22:12.343 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: getLocation
+2026-04-23 10:22:12.346 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: vehicleResendEmail
+2026-04-23 10:22:12.346 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: getPost
+2026-04-23 10:22:12.346 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: createPost
+2026-04-23 10:22:12.347 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: postComment
+2026-04-23 10:22:12.347 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: getRecentPosts
+2026-04-23 10:22:12.347 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: addNewCoupon
+2026-04-23 10:22:12.347 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: validateCoupon
+2026-04-23 10:22:12.349 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: addNewProduct
+2026-04-23 10:22:12.350 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: getProducts
+2026-04-23 10:22:12.350 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: createOrder
+2026-04-23 10:22:12.350 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: updateOrder
+2026-04-23 10:22:12.350 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: getOrderByID
+2026-04-23 10:22:12.350 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: getOrders
+2026-04-23 10:22:12.351 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: returnOrder
+2026-04-23 10:22:12.352 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: applyCoupon
+2026-04-23 10:22:12.352 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: getWorkshopQrCode
+2026-04-23 10:22:12.352 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: getWorkshopUsersAll
+2026-04-23 10:22:12.352 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: getMechanics
+2026-04-23 10:22:12.354 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: contactMechanic
+2026-04-23 10:22:12.354 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: createServiceReport
+2026-04-23 10:22:12.354 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: getReportByID
+2026-04-23 10:22:12.354 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: getServiceRequestsForMechanic
+2026-04-23 10:22:12.354 [main] WARN  com.bpr.resttestgen.helper.SwaggerCodegenHelper - No swagger code-gen method found for operation: mechanicSignup
+2026-04-23 10:22:12.357 [main] INFO  com.bpr.resttestgen.cli.App - Number of operations found: 44
+2026-04-23 10:22:12.365 [main] ERROR com.bpr.resttestgen.testgenerator.Tester - Cannot set user-agent on default ApiClient
+java.lang.ClassNotFoundException: io.swagger.client.Configuration
+	at java.net.URLClassLoader.findClass(URLClassLoader.java:445) ~[?:?]
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:595) ~[?:?]
+	at java.net.FactoryURLClassLoader.loadClass(URLClassLoader.java:870) ~[?:?]
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:528) ~[?:?]
+	at com.bpr.resttestgen.helper.SessionClassLoader.loadClass(SessionClassLoader.java:39) ~[resttestgen-1.0-SNAPSHOT.jar:?]
+	at com.bpr.resttestgen.testgenerator.Tester.setUserAgent(Tester.java:54) ~[resttestgen-1.0-SNAPSHOT.jar:?]
+	at com.bpr.resttestgen.testgenerator.Tester.<init>(Tester.java:43) ~[resttestgen-1.0-SNAPSHOT.jar:?]
+	at com.bpr.resttestgen.testgenerator.OperationTester.<init>(OperationTester.java:39) ~[resttestgen-1.0-SNAPSHOT.jar:?]
+	at com.bpr.resttestgen.testgenerator.operationtestingstrategies.DependencyGraphBasedOperationTester.<init>(DependencyGraphBasedOperationTester.java:39) ~[resttestgen-1.0-SNAPSHOT.jar:?]
+	at jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62) ~[?:?]
+	at java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:501) ~[?:?]
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:485) ~[?:?]
+	at com.bpr.resttestgen.cli.App.main(App.java:99) ~[resttestgen-1.0-SNAPSHOT.jar:?]
+2026-04-23 10:22:12.399 [main] INFO  com.bpr.resttestgen.fieldgenerator.RandomGenerator - Random generator seed: 1776914532399
+2026-04-23 10:22:12.401 [main] INFO  com.bpr.swagger2depgraph.InputDependencyGraph - Creating the Input Dependency Graph
+2026-04-23 10:22:12.418 [main] INFO  com.bpr.swagger2depgraph.InputDependencyGraph - Extracting nodes input and output from swagger schemas
+2026-04-23 10:22:12.435 [main] INFO  com.bpr.swagger2depgraph.InputDependencyGraph - Added 44 nodes
+2026-04-23 10:22:12.493 [main] INFO  com.bpr.swagger2depgraph.InputDependencyGraph - Added 68 edges
+2026-04-23 10:22:12.503 [main] ERROR com.bpr.resttestgen.testgenerator.Tester - Cannot set user-agent on default ApiClient
+java.lang.ClassNotFoundException: io.swagger.client.Configuration
+	at java.net.URLClassLoader.findClass(URLClassLoader.java:445) ~[?:?]
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:595) ~[?:?]
+	at java.net.FactoryURLClassLoader.loadClass(URLClassLoader.java:870) ~[?:?]
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:528) ~[?:?]
+	at com.bpr.resttestgen.helper.SessionClassLoader.loadClass(SessionClassLoader.java:39) ~[resttestgen-1.0-SNAPSHOT.jar:?]
+	at com.bpr.resttestgen.testgenerator.Tester.setUserAgent(Tester.java:54) ~[resttestgen-1.0-SNAPSHOT.jar:?]
+	at com.bpr.resttestgen.testgenerator.Tester.<init>(Tester.java:43) ~[resttestgen-1.0-SNAPSHOT.jar:?]
+	at com.bpr.resttestgen.testgenerator.OperationTester.<init>(OperationTester.java:39) ~[resttestgen-1.0-SNAPSHOT.jar:?]
+	at com.bpr.resttestgen.testgenerator.operationtestingstrategies.NaiveFuzzingOperationTester.<init>(NaiveFuzzingOperationTester.java:40) ~[resttestgen-1.0-SNAPSHOT.jar:?]
+	at com.bpr.resttestgen.testgenerator.operationtestingstrategies.FuzzingWithDictionaryOperationTester.<init>(FuzzingWithDictionaryOperationTester.java:33) ~[resttestgen-1.0-SNAPSHOT.jar:?]
+	at com.bpr.resttestgen.testgenerator.operationtestingstrategies.DependencyGraphBasedOperationTester.<init>(DependencyGraphBasedOperationTester.java:41) ~[resttestgen-1.0-SNAPSHOT.jar:?]
+	at jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62) ~[?:?]
+	at java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:501) ~[?:?]
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:485) ~[?:?]
+	at com.bpr.resttestgen.cli.App.main(App.java:99) ~[resttestgen-1.0-SNAPSHOT.jar:?]
+2026-04-23 10:22:12.516 [main] INFO  com.bpr.resttestgen.fieldgenerator.RandomGenerator - Random generator seed: 1776914532516
+2026-04-23 10:22:12.517 [main] INFO  com.bpr.resttestgen.fieldgenerator.RandomGenerator - Random generator seed: 1776914532517
+2026-04-23 10:22:12.519 [main] INFO  com.bpr.resttestgen.fieldgenerator.RandomGenerator - Random generator seed: 1776914532519
+2026-04-23 10:22:12.544 [main] INFO  com.bpr.swagger2depgraph.InputDependencyGraph - Write graph in crapi-reports/input-dependency-graph.dot
+2026-04-23 10:22:12.547 [main] INFO  com.bpr.resttestgen.cli.App - New tester of class: DependencyGraphBasedOperationTester
+2026-04-23 10:22:12.550 [main] INFO  com.bpr.resttestgen.fieldgenerator.RandomGenerator - Random generator seed: 1776914532550
+2026-04-23 10:22:12.554 [main] DEBUG com.bpr.resttestgen.testgenerator.operationtestingstrategies.FuzzingWithDictionaryOperationTester - Reset method result: false
+2026-04-23 10:22:12.554 [main] DEBUG com.bpr.resttestgen.testgenerator.operationtestingstrategies.FuzzingWithDictionaryOperationTester - Auth method result: false
