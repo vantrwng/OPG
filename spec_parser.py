@@ -91,6 +91,6 @@ class SpecParser:
                         outputs.update(self.extract_props(schema, op_name=op_id))
                     except: pass
                 
-                self.operations.append({'id': op_id, 'inputs': inputs, 'outputs': outputs})
+                self.operations.append({'id': op_id, 'method': method.upper(), 'path': path, 'inputs': inputs, 'outputs': outputs})
         
         return self.operations
