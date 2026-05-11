@@ -3,11 +3,11 @@
     "top_strategies": [
         {
             "chain": [
-                "get_vehicles",
-                "create_service_report"
+                "get_dashboard",
+                "update_profile_video"
             ],
-            "score": 89.35533905932738,
-            "final_state": "{'service_id': 11}"
+            "score": 159.35533905932738,
+            "final_state": "{}"
         },
         {
             "chain": [
@@ -15,8 +15,8 @@
                 "update_order",
                 "create_order"
             ],
-            "score": 77.71601883432527,
-            "final_state": "{}"
+            "score": 107.71601883432527,
+            "final_state": "{'order_id': 38}"
         },
         {
             "chain": [
@@ -24,16 +24,32 @@
                 "update_order",
                 "create_order"
             ],
-            "score": 69.27992798267444,
-            "final_state": "{}"
+            "score": 99.27992798267444,
+            "final_state": "{'order_id': 7}"
         },
         {
             "chain": [
-                "return_order",
+                "login",
+                "login_with_token"
+            ],
+            "score": 79.35533905932738,
+            "final_state": "{'auth_token': 'mock_token_7052'}"
+        },
+        {
+            "chain": [
+                "update_order",
                 "create_order"
             ],
-            "score": 69.0,
-            "final_state": "{'order_id': 39}"
+            "score": 79.35533905932738,
+            "final_state": "{'order_id': 46}"
+        },
+        {
+            "chain": [
+                "get_order_byID",
+                "create_order"
+            ],
+            "score": 72.86751345948129,
+            "final_state": "{'order_id': 69}"
         },
         {
             "chain": [
@@ -64,42 +80,18 @@
         },
         {
             "chain": [
-                "login",
-                "verify_email_token"
-            ],
-            "score": 49.35533905932737,
-            "final_state": "{}"
-        },
-        {
-            "chain": [
-                "get_dashboard",
-                "convert_profile_video"
-            ],
-            "score": 49.35533905932737,
-            "final_state": "{}"
-        },
-        {
-            "chain": [
-                "get_vehicles",
-                "contact_mechanic"
-            ],
-            "score": 49.35533905932737,
-            "final_state": "{}"
-        },
-        {
-            "chain": [
                 "validate_coupon",
-                "create_service_report"
+                "contact_mechanic"
             ],
             "score": 42.86751345948129,
             "final_state": "{}"
         },
         {
             "chain": [
-                "login",
-                "login_with_token"
+                "get_report_byID",
+                "mechanic_signup"
             ],
-            "score": 39.35533905932737,
+            "score": 42.86751345948129,
             "final_state": "{}"
         },
         {
@@ -112,8 +104,8 @@
         },
         {
             "chain": [
-                "get_dashboard",
-                "update_profile_video"
+                "login",
+                "verify_email_token"
             ],
             "score": 39.35533905932737,
             "final_state": "{}"
@@ -122,6 +114,14 @@
             "chain": [
                 "get_dashboard",
                 "delete_profile_video"
+            ],
+            "score": 39.35533905932737,
+            "final_state": "{}"
+        },
+        {
+            "chain": [
+                "get_dashboard",
+                "convert_profile_video"
             ],
             "score": 39.35533905932737,
             "final_state": "{}"
@@ -138,6 +138,22 @@
             "chain": [
                 "get_vehicles",
                 "add_vehicle"
+            ],
+            "score": 39.35533905932737,
+            "final_state": "{}"
+        },
+        {
+            "chain": [
+                "get_vehicles",
+                "contact_mechanic"
+            ],
+            "score": 39.35533905932737,
+            "final_state": "{}"
+        },
+        {
+            "chain": [
+                "get_vehicles",
+                "create_service_report"
             ],
             "score": 39.35533905932737,
             "final_state": "{}"
@@ -176,22 +192,6 @@
         },
         {
             "chain": [
-                "update_order",
-                "create_order"
-            ],
-            "score": 39.35533905932737,
-            "final_state": "{}"
-        },
-        {
-            "chain": [
-                "get_report_byID",
-                "contact_mechanic"
-            ],
-            "score": 39.0,
-            "final_state": "{}"
-        },
-        {
-            "chain": [
                 "upload_profile_video",
                 "update_profile_video"
             ],
@@ -201,7 +201,7 @@
         {
             "chain": [
                 "validate_coupon",
-                "contact_mechanic"
+                "create_service_report"
             ],
             "score": 32.86751345948129,
             "final_state": "{}"
@@ -210,22 +210,6 @@
             "chain": [
                 "update_order",
                 "add_new_product"
-            ],
-            "score": 32.86751345948129,
-            "final_state": "{}"
-        },
-        {
-            "chain": [
-                "get_order_byID",
-                "create_order"
-            ],
-            "score": 32.86751345948129,
-            "final_state": "{}"
-        },
-        {
-            "chain": [
-                "get_report_byID",
-                "mechanic_signup"
             ],
             "score": 32.86751345948129,
             "final_state": "{}"
@@ -250,6 +234,22 @@
             "chain": [
                 "get_order_byID",
                 "add_new_product"
+            ],
+            "score": 29.0,
+            "final_state": "{}"
+        },
+        {
+            "chain": [
+                "return_order",
+                "create_order"
+            ],
+            "score": 29.0,
+            "final_state": "{}"
+        },
+        {
+            "chain": [
+                "get_report_byID",
+                "contact_mechanic"
             ],
             "score": 29.0,
             "final_state": "{}"

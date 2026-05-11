@@ -1,9 +1,13 @@
 import re
+import os
 import json
 from collections import defaultdict
 from openai import OpenAI
+from dotenv import load_dotenv
 
-GITHUB_TOKEN = "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"
+load_dotenv()
+
+GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
 GITHUB_MODELS_ENDPOINT = "https://models.inference.ai.azure.com"
 
 
