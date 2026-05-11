@@ -26,8 +26,13 @@ class SpecParser:
         """Mô phỏng Stemming & Case Insensitive theo tài liệu"""
         if not word: return ""
         word = word.lower().strip()
-        # Loại bỏ các ký tự đặc biệt và hậu tố 's' (stemming đơn giản)
-        word = re.sub(r's$', '', word)
+        # Whitelist: các từ kết thúc bằng 's' nhưng KHÔNG phải số nhiều
+        STEMMING_EXCEPTIONS = {
+            'status', 'access', 'address', 'process', 'progress',
+            'success', 'class', 'stress', 'express', 'basis'
+        }
+        if word not in STEMMING_EXCEPTIONS:
+            word = re.sub(r's$', '', word)
         return word
 
     def apply_id_completion(self, field_name, schema_name, op_name):
@@ -56,10 +61,19 @@ class SpecParser:
                 completed_name = self.apply_id_completion(k, parent_schema, op_name)
                 final_name = self.normalize_word(completed_name)
                 
-                if v.get('type') == 'object' or '$ref' in v:
+                if '$ref' in v:
+                    # $ref: để resolve_ref tự lấy tên schema đúng
                     props.update(self.extract_props(v, parent_schema, op_name))
+                elif v.get('type') == 'object':
+                    # Inline object: dùng tên field hiện tại (k) làm parent mới
+                    props.update(self.extract_props(v, k, op_name))
                 else:
-                    props[final_name] = k # Lưu lại tên gốc để làm nhãn (label)
+                    # Lưu metadata đầy đủ: tên gốc + type + format
+                    props[final_name] = {
+                        'original': k,
+                        'type': v.get('type', 'unknown'),
+                        'format': v.get('format', 'unknown')
+                    }
         elif schema.get('type') == 'array' and 'items' in schema:
             props.update(self.extract_props(schema['items'], parent_schema, op_name))
         return props
@@ -77,19 +91,28 @@ class SpecParser:
                     for p in details['parameters']:
                         name = p.get('name', '')
                         norm_name = self.normalize_word(self.apply_id_completion(name, "", op_id))
-                        inputs[norm_name] = name
+                        # Lấy type/format từ schema của parameter (OpenAPI 3.x) hoặc trực tiếp (2.x)
+                        param_schema = p.get('schema', p)
+                        inputs[norm_name] = {
+                            'original': name,
+                            'type': param_schema.get('type', 'unknown'),
+                            'format': param_schema.get('format', 'unknown')
+                        }
                 if 'requestBody' in details:
                     try:
                         schema = details['requestBody']['content']['application/json']['schema']
                         inputs.update(self.extract_props(schema, op_name=op_id))
                     except: pass
 
-                # Trích xuất Outputs (n1 trong tài liệu)
-                if 'responses' in details and '200' in details['responses']:
-                    try:
-                        schema = details['responses']['200']['content']['application/json']['schema']
-                        outputs.update(self.extract_props(schema, op_name=op_id))
-                    except: pass
+                # Trích xuất Outputs: hợp nhất tất cả 2xx response schemas
+                # (200=GET, 201=POST create, 202=accepted) để không bỏ sót API tạo mới
+                if 'responses' in details:
+                    for code in ['200', '201', '202']:
+                        if code in details['responses']:
+                            try:
+                                schema = details['responses'][code]['content']['application/json']['schema']
+                                outputs.update(self.extract_props(schema, op_name=op_id))
+                            except: pass
                 
                 self.operations.append({'id': op_id, 'method': method.upper(), 'path': path, 'inputs': inputs, 'outputs': outputs})
         

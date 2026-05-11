@@ -15,8 +15,9 @@ class DependencyGraphBuilder:
     def __init__(self, operations):
         self.operations = operations
         self.adjacency_list = {op['id']: [] for op in self.operations}
-        self._idf_cache = {}        # Cache tần suất xuất hiện của field
-        self._llm_cache = {}        # Cache kết quả phân loại của Gemini
+        self._idf_cache = {}           # Cache tần suất xuất hiện của field
+        self._llm_cache = {}           # Cache kết quả phân loại của LLM
+        self._identity_cluster_map = {} # field_norm -> cluster_id (int)
         
     def normalize_field(self, field_name):
         """Chuyển đổi CamelCase, snake_case, kebab-case về dạng space-separated lowercase."""
@@ -41,23 +42,6 @@ class DependencyGraphBuilder:
             return 0.4 # Phạt giảm điểm mạnh
         return 1.0
 
-    def classify_semantic(self, norm_field):
-        """Phân loại ngữ nghĩa bằng Tokenized Matching và Aliasing."""
-        tokens = norm_field.split()
-        
-        # Identity (bao gồm Aliases)
-        if any(kw in tokens for kw in ['id', 'uuid', 'email', 'phone', 'no', 'ref', 'vin', 'member', 'customer', 'subscriber', 'account', 'user']):
-            return 'identity'
-            
-        # Auth / Workflow
-        if any(kw in tokens for kw in ['token', 'session', 'role', 'cookie', 'hash', 'key', 'code', 'status', 'state']):
-            return 'auth/workflow'
-            
-        # Finance
-        if any(kw in tokens for kw in ['balance', 'credit', 'amount', 'price', 'fee']):
-            return 'finance'
-            
-        return 'unknown'
 
     def llm_classify_unknown_fields(self, unknown_fields):
         """
@@ -103,6 +87,56 @@ Fields to classify:
                 print("  [LLM] Rate limit — bỏ qua LLM layer, tiếp tục với rule-based.")
             else:
                 print(f"  [LLM] Warning: {e}")
+
+    def llm_cluster_identities(self, identity_fields):
+        """
+        Gom nhóm các Identity field đồng nghĩa bằng LLM (1 request duy nhất).
+        Kết quả lưu vào _identity_cluster_map: norm_field -> cluster_id (int).
+        """
+        if not identity_fields or not GITHUB_TOKEN:
+            print("  [LLM Cluster] Không có token hoặc không có field nào để cluster.")
+            return
+        try:
+            client = OpenAI(base_url=GITHUB_MODELS_ENDPOINT, api_key=GITHUB_TOKEN)
+            fields_repr = ", ".join([f'"{f}"' for f in sorted(identity_fields)])
+            prompt = f"""You are an API security expert.
+
+Group the following API field names that are synonyms or refer to the same real-world entity into sub-arrays.
+Field names: [{fields_repr}]
+
+Rules:
+- Group fields that clearly identify the SAME entity (e.g. \"user id\", \"userid\", \"account id\" → same group).
+- Domain-specific IDs from different entities must stay separate (e.g. \"vehicle id\" ≠ \"order id\").
+- Each field must appear in exactly one group.
+- Respond ONLY with a valid JSON object: {{\"clusters\": [[\"field1\", \"field2\"], [\"field3\"]]}}"""
+
+            response = client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[{"role": "user", "content": prompt}],
+                response_format={"type": "json_object"},
+                temperature=0.0
+            )
+            raw = json.loads(response.choices[0].message.content)
+            clusters = raw.get('clusters', [])
+            if not isinstance(clusters, list):
+                # Fallback: tìm list đầu tiên trong response
+                clusters = next((v for v in raw.values() if isinstance(v, list)), [])
+
+            # Xây dựng lookup map: norm_field -> cluster_id
+            for cluster_id, group in enumerate(clusters):
+                if isinstance(group, list):
+                    for field in group:
+                        self._identity_cluster_map[str(field)] = cluster_id
+
+            print(f"  [LLM Cluster] OK: {len(identity_fields)} fields → {len(clusters)} clusters.")
+            for cid, group in enumerate(clusters):
+                print(f"    Cluster #{cid}: {group}")
+        except Exception as e:
+            if '429' in str(e) or 'rate' in str(e).lower():
+                print("  [LLM Cluster] Rate limit — bỏ qua Identity Clustering.")
+            else:
+                print(f"  [LLM Cluster] Warning: {e}")
+
 
 
     def classify_semantic(self, norm_field):
@@ -200,46 +234,55 @@ Fields to classify:
             return False
         return True
 
-    def calculate_confidence(self, f_out, norm_out, sem_out, f_in, norm_in, sem_in):
-        """Tính Confidence Score cho 1 cặp trường."""
+    def calculate_confidence(self, f_out, norm_out, sem_out, fmt_out,
+                             f_in,  norm_in,  sem_in,  fmt_in):
+        """Tính Confidence Score cho 1 cặp trường (Hybrid: Rule + Format + LLM Cluster)."""
         if self.is_noisy(norm_out) or self.is_noisy(norm_in):
+            return 0.0, None
+
+        # ――― FORMAT GUARD (Hard Filter) ―――
+        # Nếu cả 2 đều có format xác định nhưng khác nhau → đây là 2 loại dữ liệu khác nhau → 0 điểm ngay.
+        # Ví dụ: 'date-time' với 'int64' không bao giờ tương thích.
+        if (fmt_out != 'unknown' and fmt_in != 'unknown' and fmt_out != fmt_in):
             return 0.0, None
 
         # Stopword Penalty
         weight = self.get_stopword_weight(norm_out) * self.get_stopword_weight(norm_in)
-
         # IDF Penalty: Phạt field xuất hiện ở quá nhiều APIs
         weight *= self.get_idf_weight(norm_out)
 
-        # Layer 1: Exact Normalized Match
+        # ――― LAYER 1: Exact Normalized Match ―――
         if norm_out == norm_in:
-            # Kiểm tra Resource Type trước khi chấp nhận exact match
-            if not self.resource_type_compatible(norm_out, norm_in):
-                return 0.0, None
-            if not self.value_type_compatible(norm_out, norm_in):
-                return 0.0, None
+            if not self.resource_type_compatible(norm_out, norm_in): return 0.0, None
+            if not self.value_type_compatible(norm_out, norm_in):    return 0.0, None
             return 0.95 * weight, "normalized_exact"
-            
-        # Layer 2: Semantic Inference (Cùng nhóm ngữ nghĩa)
+
+        # ――― LAYER 2: Semantic Inference ―――
         if sem_out != 'unknown' and sem_out == sem_in:
-            # Phải cùng Resource Type và Value Type mới được nối
-            if not self.resource_type_compatible(norm_out, norm_in):
-                return 0.0, None
-            if not self.value_type_compatible(norm_out, norm_in):
-                return 0.0, None
+            if not self.resource_type_compatible(norm_out, norm_in): return 0.0, None
+            if not self.value_type_compatible(norm_out, norm_in):    return 0.0, None
+
+            # ―― Layer 2a: LLM Identity Clustering (chỉ áp dụng cho Identity fields khác tên) ――
+            if sem_out == 'identity' and self._identity_cluster_map:
+                cid_out = self._identity_cluster_map.get(norm_out)
+                cid_in  = self._identity_cluster_map.get(norm_in)
+                if cid_out is not None and cid_in is not None and cid_out == cid_in:
+                    return 0.85 * weight, "llm_identity_cluster"
+
+            # ―― Layer 2b: Jaccard Semantic Match ――
             sim_score = self.calculate_jaccard(norm_out, norm_in)
             if sim_score > 0.0:
-                bonus = 0.0
-                if 'email' in norm_out.split() and 'email' in norm_in.split(): bonus += 0.1
+                bonus = 0.1 if ('email' in norm_out.split() and 'email' in norm_in.split()) else 0.0
                 final_score = min(0.9, 0.75 + (sim_score * 0.15) + bonus)
                 return final_score * weight, "semantic"
-                
-        # Layer 3: Random String Similarity
+
+        # ――― LAYER 3: Random String Similarity ―――
         sim_score = self.calculate_jaccard(norm_out, norm_in)
         if sim_score >= 0.5:
             return 0.3 * weight, "random_similarity"
-            
+
         return 0.0, None
+
 
     def get_directionality_score(self, method_out, method_in):
         """API Role Awareness: Phạt nếu Consumer tạo data dựa trên Read data."""
@@ -279,7 +322,7 @@ Fields to classify:
             print(f"[*] LLM đang phân loại {len(all_unknown)} field 'unknown': {sorted(all_unknown)}")
             self.llm_classify_unknown_fields(list(all_unknown))
 
-        # 1. Xây dựng Inverted Semantic Index
+        # 1. Xây dựng Inverted Semantic Index (kèm format từ metadata)
         outputs_index = defaultdict(list)
         inputs_index = defaultdict(list)
         
@@ -289,38 +332,49 @@ Fields to classify:
             
             # Index Outputs
             if method != 'DELETE': # Xóa bẫy Nghịch lý DELETE
-                for f_out in op['outputs'].keys():
+                for f_out, meta_out in op['outputs'].items():
                     norm_out = self.normalize_field(f_out)
-                    sem_out = self.classify_semantic(norm_out)
+                    sem_out  = self.classify_semantic(norm_out)
+                    # Lấy format từ metadata; fallback 'unknown' nếu vản là cưỡi (legacy str)
+                    fmt_out  = meta_out.get('format', 'unknown') if isinstance(meta_out, dict) else 'unknown'
                     outputs_index[sem_out].append({
                         'api_id': op_id, 'method': method,
-                        'field': f_out, 'norm_field': norm_out, 'sem': sem_out
+                        'field': f_out, 'norm_field': norm_out, 'sem': sem_out, 'format': fmt_out
                     })
                     
             # Index Inputs
-            for f_in in op['inputs'].keys():
+            for f_in, meta_in in op['inputs'].items():
                 norm_in = self.normalize_field(f_in)
-                sem_in = self.classify_semantic(norm_in)
+                sem_in  = self.classify_semantic(norm_in)
+                fmt_in  = meta_in.get('format', 'unknown') if isinstance(meta_in, dict) else 'unknown'
                 inputs_index[sem_in].append({
                     'api_id': op_id, 'method': method,
-                    'field': f_in, 'norm_field': norm_in, 'sem': sem_in
+                    'field': f_in, 'norm_field': norm_in, 'sem': sem_in, 'format': fmt_in
                 })
+
+        # 1b. LLM Identity Clustering (1 request duy nhất cho toàn bộ identity fields)
+        all_identity_fields = list(set(
+            item['norm_field']
+            for bucket in [outputs_index.get('identity', []), inputs_index.get('identity', [])]
+            for item in bucket
+        ))
+        if all_identity_fields:
+            print(f"[*] LLM Identity Clustering: {len(all_identity_fields)} fields...")
+            self.llm_cluster_identities(all_identity_fields)
+
+        raw_edges = defaultdict(list)
         
-        # 2. Xây dựng Graph bằng cách so sánh trong cùng Semantic Bucket
-        raw_edges = defaultdict(list) # Lưu tạm edge: (api_out, api_in) -> list(dependencies)
-        
-        # Xét tất cả các Bucket
         for sem_type in outputs_index.keys():
             out_list = outputs_index[sem_type]
-            in_list = inputs_index.get(sem_type, [])
+            in_list  = inputs_index.get(sem_type, [])
             
             for out_item in out_list:
                 for in_item in in_list:
                     if out_item['api_id'] == in_item['api_id']: continue
                     
                     base_score, match_type = self.calculate_confidence(
-                        out_item['field'], out_item['norm_field'], out_item['sem'],
-                        in_item['field'], in_item['norm_field'], in_item['sem']
+                        out_item['field'], out_item['norm_field'], out_item['sem'], out_item['format'],
+                        in_item['field'],  in_item['norm_field'],  in_item['sem'],  in_item['format']
                     )
                     
                     if base_score >= 0.5:

@@ -1,505 +1,560 @@
 {
-    "total_strategies_found": 66,
+    "total_strategies_found": 53,
     "top_strategies": [
         {
+            "rank": 1,
             "chain": [
                 "get_dashboard",
                 "update_profile_video"
             ],
-            "score": 159.35533905932738,
-            "final_state": "{}"
+            "depth": 1,
+            "bucket": "crud",
+            "score": 174.0,
+            "captured_state": {}
         },
         {
-            "chain": [
-                "get_order_byID",
-                "update_order",
-                "create_order"
-            ],
-            "score": 107.71601883432527,
-            "final_state": "{'order_id': 38}"
-        },
-        {
-            "chain": [
-                "return_order",
-                "update_order",
-                "create_order"
-            ],
-            "score": 99.27992798267444,
-            "final_state": "{'order_id': 7}"
-        },
-        {
-            "chain": [
-                "login",
-                "login_with_token"
-            ],
-            "score": 79.35533905932738,
-            "final_state": "{'auth_token': 'mock_token_7052'}"
-        },
-        {
-            "chain": [
-                "update_order",
-                "create_order"
-            ],
-            "score": 79.35533905932738,
-            "final_state": "{'order_id': 46}"
-        },
-        {
-            "chain": [
-                "get_order_byID",
-                "create_order"
-            ],
-            "score": 72.86751345948129,
-            "final_state": "{'order_id': 69}"
-        },
-        {
+            "rank": 2,
             "chain": [
                 "get_dashboard",
                 "get_profile_video",
                 "update_profile_video"
             ],
-            "score": 67.71601883432527,
-            "final_state": "{}"
+            "depth": 2,
+            "bucket": "crud",
+            "score": 95.0,
+            "captured_state": {}
         },
         {
-            "chain": [
-                "get_order_byID",
-                "update_order",
-                "add_new_product"
-            ],
-            "score": 65.76775358252053,
-            "final_state": "{}"
-        },
-        {
-            "chain": [
-                "return_order",
-                "update_order",
-                "add_new_product"
-            ],
-            "score": 57.76573710994265,
-            "final_state": "{}"
-        },
-        {
-            "chain": [
-                "validate_coupon",
-                "contact_mechanic"
-            ],
-            "score": 42.86751345948129,
-            "final_state": "{}"
-        },
-        {
-            "chain": [
-                "get_report_byID",
-                "mechanic_signup"
-            ],
-            "score": 42.86751345948129,
-            "final_state": "{}"
-        },
-        {
+            "rank": 3,
             "chain": [
                 "login",
-                "login_with_token_v2_7"
+                "login_with_token"
             ],
-            "score": 39.35533905932737,
-            "final_state": "{}"
+            "depth": 1,
+            "bucket": "auth",
+            "score": 94.0,
+            "captured_state": {
+                "auth_token": "mock_token_8127"
+            }
         },
         {
-            "chain": [
-                "login",
-                "verify_email_token"
-            ],
-            "score": 39.35533905932737,
-            "final_state": "{}"
-        },
-        {
+            "rank": 4,
             "chain": [
                 "get_dashboard",
                 "delete_profile_video"
             ],
-            "score": 39.35533905932737,
-            "final_state": "{}"
+            "depth": 1,
+            "bucket": "crud",
+            "score": 64.0,
+            "captured_state": {}
         },
         {
+            "rank": 5,
+            "chain": [
+                "validate_coupon",
+                "create_service_report"
+            ],
+            "depth": 1,
+            "bucket": "crud",
+            "score": 64.0,
+            "captured_state": {}
+        },
+        {
+            "rank": 6,
+            "chain": [
+                "get_report_byID",
+                "mechanic_signup"
+            ],
+            "depth": 1,
+            "bucket": "auth",
+            "score": 64.0,
+            "captured_state": {}
+        },
+        {
+            "rank": 7,
+            "chain": [
+                "login",
+                "login_with_token_v2_7"
+            ],
+            "depth": 1,
+            "bucket": "auth",
+            "score": 54.0,
+            "captured_state": {}
+        },
+        {
+            "rank": 8,
+            "chain": [
+                "login",
+                "verify_email_token"
+            ],
+            "depth": 1,
+            "bucket": "auth",
+            "score": 54.0,
+            "captured_state": {}
+        },
+        {
+            "rank": 9,
             "chain": [
                 "get_dashboard",
                 "convert_profile_video"
             ],
-            "score": 39.35533905932737,
-            "final_state": "{}"
+            "depth": 1,
+            "bucket": "other",
+            "score": 54.0,
+            "captured_state": {}
         },
         {
+            "rank": 10,
             "chain": [
                 "get_dashboard",
                 "admin_delete_profile_video"
             ],
-            "score": 39.35533905932737,
-            "final_state": "{}"
+            "depth": 1,
+            "bucket": "admin",
+            "score": 54.0,
+            "captured_state": {}
         },
         {
-            "chain": [
-                "get_vehicles",
-                "add_vehicle"
-            ],
-            "score": 39.35533905932737,
-            "final_state": "{}"
-        },
-        {
-            "chain": [
-                "get_vehicles",
-                "contact_mechanic"
-            ],
-            "score": 39.35533905932737,
-            "final_state": "{}"
-        },
-        {
-            "chain": [
-                "get_vehicles",
-                "create_service_report"
-            ],
-            "score": 39.35533905932737,
-            "final_state": "{}"
-        },
-        {
-            "chain": [
-                "validate_coupon",
-                "add_new_coupon"
-            ],
-            "score": 39.35533905932737,
-            "final_state": "{}"
-        },
-        {
-            "chain": [
-                "validate_coupon",
-                "apply_coupon"
-            ],
-            "score": 39.35533905932737,
-            "final_state": "{}"
-        },
-        {
-            "chain": [
-                "validate_coupon",
-                "mechanic_signup"
-            ],
-            "score": 39.35533905932737,
-            "final_state": "{}"
-        },
-        {
-            "chain": [
-                "get_products",
-                "add_new_product"
-            ],
-            "score": 39.35533905932737,
-            "final_state": "{}"
-        },
-        {
+            "rank": 11,
             "chain": [
                 "upload_profile_video",
                 "update_profile_video"
             ],
-            "score": 32.86751345948129,
-            "final_state": "{}"
+            "depth": 1,
+            "bucket": "crud",
+            "score": 54.0,
+            "captured_state": {}
         },
         {
-            "chain": [
-                "validate_coupon",
-                "create_service_report"
-            ],
-            "score": 32.86751345948129,
-            "final_state": "{}"
-        },
-        {
-            "chain": [
-                "update_order",
-                "add_new_product"
-            ],
-            "score": 32.86751345948129,
-            "final_state": "{}"
-        },
-        {
-            "chain": [
-                "get_report_byID",
-                "add_vehicle"
-            ],
-            "score": 32.86751345948129,
-            "final_state": "{}"
-        },
-        {
+            "rank": 12,
             "chain": [
                 "get_profile_video",
                 "update_profile_video"
             ],
-            "score": 29.0,
-            "final_state": "{}"
+            "depth": 1,
+            "bucket": "crud",
+            "score": 54.0,
+            "captured_state": {}
         },
         {
+            "rank": 13,
             "chain": [
-                "get_order_byID",
-                "add_new_product"
+                "get_vehicles",
+                "add_vehicle"
             ],
-            "score": 29.0,
-            "final_state": "{}"
+            "depth": 1,
+            "bucket": "crud",
+            "score": 54.0,
+            "captured_state": {}
         },
         {
+            "rank": 14,
             "chain": [
-                "return_order",
-                "create_order"
+                "get_vehicles",
+                "contact_mechanic"
             ],
-            "score": 29.0,
-            "final_state": "{}"
+            "depth": 1,
+            "bucket": "other",
+            "score": 54.0,
+            "captured_state": {}
         },
         {
+            "rank": 15,
+            "chain": [
+                "get_vehicles",
+                "create_service_report"
+            ],
+            "depth": 1,
+            "bucket": "crud",
+            "score": 54.0,
+            "captured_state": {}
+        },
+        {
+            "rank": 16,
+            "chain": [
+                "validate_coupon",
+                "add_new_coupon"
+            ],
+            "depth": 1,
+            "bucket": "crud",
+            "score": 54.0,
+            "captured_state": {}
+        },
+        {
+            "rank": 17,
+            "chain": [
+                "validate_coupon",
+                "apply_coupon"
+            ],
+            "depth": 1,
+            "bucket": "other",
+            "score": 54.0,
+            "captured_state": {}
+        },
+        {
+            "rank": 18,
+            "chain": [
+                "validate_coupon",
+                "contact_mechanic"
+            ],
+            "depth": 1,
+            "bucket": "other",
+            "score": 54.0,
+            "captured_state": {}
+        },
+        {
+            "rank": 19,
+            "chain": [
+                "validate_coupon",
+                "mechanic_signup"
+            ],
+            "depth": 1,
+            "bucket": "auth",
+            "score": 54.0,
+            "captured_state": {}
+        },
+        {
+            "rank": 20,
             "chain": [
                 "get_report_byID",
                 "contact_mechanic"
             ],
-            "score": 29.0,
-            "final_state": "{}"
+            "depth": 1,
+            "bucket": "other",
+            "score": 54.0,
+            "captured_state": {}
         },
         {
+            "rank": 21,
             "chain": [
                 "get_report_byID",
                 "create_service_report"
             ],
-            "score": 29.0,
-            "final_state": "{}"
+            "depth": 1,
+            "bucket": "crud",
+            "score": 54.0,
+            "captured_state": {}
         },
         {
+            "rank": 22,
             "chain": [
-                "return_order",
-                "add_new_product"
+                "get_report_byID",
+                "add_vehicle"
             ],
-            "score": 26.360679774997894,
-            "final_state": "{}"
+            "depth": 1,
+            "bucket": "crud",
+            "score": 54.0,
+            "captured_state": {}
         },
         {
+            "rank": 23,
             "chain": [
                 "signup"
             ],
+            "depth": 0,
+            "bucket": "auth",
             "score": 0,
-            "final_state": "{}"
+            "captured_state": {}
         },
         {
+            "rank": 24,
             "chain": [
                 "forgot_password"
             ],
+            "depth": 0,
+            "bucket": "auth",
             "score": 0,
-            "final_state": "{}"
+            "captured_state": {}
         },
         {
+            "rank": 25,
             "chain": [
                 "check_otp_v3"
             ],
+            "depth": 0,
+            "bucket": "other",
             "score": 0,
-            "final_state": "{}"
+            "captured_state": {}
         },
         {
+            "rank": 26,
             "chain": [
                 "check_otp_v2"
             ],
+            "depth": 0,
+            "bucket": "other",
             "score": 0,
-            "final_state": "{}"
+            "captured_state": {}
         },
         {
+            "rank": 27,
             "chain": [
                 "login_with_token"
             ],
+            "depth": 0,
+            "bucket": "auth",
             "score": 0,
-            "final_state": "{}"
+            "captured_state": {}
         },
         {
+            "rank": 28,
             "chain": [
                 "login_with_token_v2_7"
             ],
+            "depth": 0,
+            "bucket": "auth",
             "score": 0,
-            "final_state": "{}"
+            "captured_state": {}
         },
         {
+            "rank": 29,
             "chain": [
                 "reset_password"
             ],
+            "depth": 0,
+            "bucket": "auth",
             "score": 0,
-            "final_state": "{}"
+            "captured_state": {}
         },
         {
+            "rank": 30,
             "chain": [
                 "change_email"
             ],
+            "depth": 0,
+            "bucket": "other",
             "score": 0,
-            "final_state": "{}"
+            "captured_state": {}
         },
         {
+            "rank": 31,
             "chain": [
                 "verify_email_token"
             ],
+            "depth": 0,
+            "bucket": "auth",
             "score": 0,
-            "final_state": "{}"
+            "captured_state": {}
         },
         {
+            "rank": 32,
             "chain": [
                 "update_profile_pic"
             ],
+            "depth": 0,
+            "bucket": "crud",
             "score": 0,
-            "final_state": "{}"
+            "captured_state": {}
         },
         {
+            "rank": 33,
             "chain": [
                 "update_profile_video"
             ],
+            "depth": 0,
+            "bucket": "crud",
             "score": 0,
-            "final_state": "{}"
+            "captured_state": {}
         },
         {
+            "rank": 34,
             "chain": [
                 "delete_profile_video"
             ],
+            "depth": 0,
+            "bucket": "crud",
             "score": 0,
-            "final_state": "{}"
+            "captured_state": {}
         },
         {
+            "rank": 35,
             "chain": [
                 "convert_profile_video"
             ],
+            "depth": 0,
+            "bucket": "other",
             "score": 0,
-            "final_state": "{}"
+            "captured_state": {}
         },
         {
+            "rank": 36,
             "chain": [
                 "admin_delete_profile_video"
             ],
+            "depth": 0,
+            "bucket": "admin",
             "score": 0,
-            "final_state": "{}"
+            "captured_state": {}
         },
         {
+            "rank": 37,
             "chain": [
                 "add_vehicle"
             ],
+            "depth": 0,
+            "bucket": "crud",
             "score": 0,
-            "final_state": "{}"
+            "captured_state": {}
         },
         {
+            "rank": 38,
             "chain": [
                 "get_location"
             ],
+            "depth": 0,
+            "bucket": "other",
             "score": 0,
-            "final_state": "{}"
+            "captured_state": {}
         },
         {
+            "rank": 39,
             "chain": [
                 "vehicle_resend_email"
             ],
+            "depth": 0,
+            "bucket": "other",
             "score": 0,
-            "final_state": "{}"
+            "captured_state": {}
         },
         {
+            "rank": 40,
             "chain": [
                 "get_post"
             ],
+            "depth": 0,
+            "bucket": "crud",
             "score": 0,
-            "final_state": "{}"
+            "captured_state": {}
         },
         {
+            "rank": 41,
             "chain": [
                 "create_post"
             ],
+            "depth": 0,
+            "bucket": "crud",
             "score": 0,
-            "final_state": "{}"
+            "captured_state": {}
         },
         {
+            "rank": 42,
             "chain": [
                 "post_comment"
             ],
+            "depth": 0,
+            "bucket": "crud",
             "score": 0,
-            "final_state": "{}"
+            "captured_state": {}
         },
         {
+            "rank": 43,
             "chain": [
                 "get_recent_posts"
             ],
+            "depth": 0,
+            "bucket": "other",
             "score": 0,
-            "final_state": "{}"
+            "captured_state": {}
         },
         {
+            "rank": 44,
             "chain": [
                 "add_new_coupon"
             ],
+            "depth": 0,
+            "bucket": "crud",
             "score": 0,
-            "final_state": "{}"
+            "captured_state": {}
         },
         {
-            "chain": [
-                "add_new_product"
-            ],
-            "score": 0,
-            "final_state": "{}"
-        },
-        {
-            "chain": [
-                "create_order"
-            ],
-            "score": 0,
-            "final_state": "{}"
-        },
-        {
+            "rank": 45,
             "chain": [
                 "get_orders"
             ],
+            "depth": 0,
+            "bucket": "other",
             "score": 0,
-            "final_state": "{}"
+            "captured_state": {}
         },
         {
+            "rank": 46,
             "chain": [
                 "apply_coupon"
             ],
+            "depth": 0,
+            "bucket": "other",
             "score": 0,
-            "final_state": "{}"
+            "captured_state": {}
         },
         {
+            "rank": 47,
             "chain": [
                 "get_workshop_qr_code"
             ],
+            "depth": 0,
+            "bucket": "other",
             "score": 0,
-            "final_state": "{}"
+            "captured_state": {}
         },
         {
+            "rank": 48,
             "chain": [
                 "get_workshop_users_all"
             ],
+            "depth": 0,
+            "bucket": "other",
             "score": 0,
-            "final_state": "{}"
+            "captured_state": {}
         },
         {
+            "rank": 49,
             "chain": [
                 "get_mechanics"
             ],
+            "depth": 0,
+            "bucket": "other",
             "score": 0,
-            "final_state": "{}"
+            "captured_state": {}
         },
         {
+            "rank": 50,
             "chain": [
                 "contact_mechanic"
             ],
+            "depth": 0,
+            "bucket": "other",
             "score": 0,
-            "final_state": "{}"
+            "captured_state": {}
         },
         {
+            "rank": 51,
             "chain": [
                 "create_service_report"
             ],
+            "depth": 0,
+            "bucket": "crud",
             "score": 0,
-            "final_state": "{}"
+            "captured_state": {}
         },
         {
+            "rank": 52,
             "chain": [
                 "get_service_requests_for_mechanic"
             ],
+            "depth": 0,
+            "bucket": "other",
             "score": 0,
-            "final_state": "{}"
+            "captured_state": {}
         },
         {
+            "rank": 53,
             "chain": [
                 "mechanic_signup"
             ],
+            "depth": 0,
+            "bucket": "auth",
             "score": 0,
-            "final_state": "{}"
+            "captured_state": {}
         }
     ]
 }

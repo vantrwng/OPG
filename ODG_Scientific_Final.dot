@@ -51,8 +51,13 @@ digraph G {
     "get_profile_video" -> "update_profile_video" [label="conversion_param → conversion_param [unknown]\nConf: 0.57", color="#555555", fontcolor="#555555"];
     "get_products" -> "add_new_product" [label="image_url → image_url [unknown]\nprice → price [finance]\nConf: 0.57", color="#555555", fontcolor="#555555"];
     "update_order" -> "add_new_product" [label="image_url → image_url [unknown]\nprice → price [finance]\nConf: 0.95", color="#555555", fontcolor="#555555"];
+    "update_order" -> "create_order" [label="quantity → quantity [unknown]\nproductid → product_id [identity]\nConf: 0.95", color="#555555", fontcolor="#555555"];
     "get_order_byID" -> "add_new_product" [label="image_url → image_url [unknown]\nprice → price [finance]\nConf: 0.57", color="#555555", fontcolor="#555555"];
+    "get_order_byID" -> "create_order" [label="quantity → quantity [unknown]\nproductid → product_id [identity]\nConf: 0.57", color="#555555", fontcolor="#555555"];
+    "get_order_byID" -> "update_order" [label="quantity → quantity [unknown]\norderid → order_id [identity]\nConf: 0.57", color="#555555", fontcolor="#555555"];
     "return_order" -> "add_new_product" [label="image_url → image_url [unknown]\nprice → price [finance]\nConf: 0.95", color="#555555", fontcolor="#555555"];
+    "return_order" -> "create_order" [label="quantity → quantity [unknown]\nproductid → product_id [identity]\nConf: 0.95", color="#555555", fontcolor="#555555"];
+    "return_order" -> "update_order" [label="quantity → quantity [unknown]\norderid → order_id [identity]\nConf: 0.95", color="#555555", fontcolor="#555555"];
     "get_report_byID" -> "contact_mechanic" [label="problem_detail → problem_detail [unknown]\nmechanic_code → mechanic_code [auth/workflow]\nConf: 0.57", color="#555555", fontcolor="#555555"];
     "get_report_byID" -> "create_service_report" [label="problem_detail → problem_detail [unknown]\nmechanic_code → mechanic_code [auth/workflow]\nConf: 0.95", color="#555555", fontcolor="#555555"];
     "login" -> "login_with_token" [label="token → token [auth/workflow]\nConf: 0.95", color="#E53935", fontcolor="#E53935"];
@@ -72,10 +77,16 @@ digraph G {
     "get_vehicles" -> "add_vehicle" [label="vin → vin [identity]\npincode → pincode [identity]\nConf: 0.57", color="#1E88E5", fontcolor="#1E88E5"];
     "get_vehicles" -> "contact_mechanic" [label="vin → vin [identity]\nConf: 0.57", color="#1E88E5", fontcolor="#1E88E5"];
     "get_vehicles" -> "create_service_report" [label="vin → vin [identity]\nConf: 0.95", color="#1E88E5", fontcolor="#1E88E5"];
+    "get_products" -> "create_order" [label="productid → product_id [identity]\nConf: 0.51", color="#1E88E5", fontcolor="#1E88E5"];
+    "get_products" -> "update_order" [label="productid → product_id [identity]\nConf: 0.51", color="#1E88E5", fontcolor="#1E88E5"];
+    "add_new_product" -> "create_order" [label="productid → product_id [identity]\nConf: 0.85", color="#1E88E5", fontcolor="#1E88E5"];
+    "add_new_product" -> "update_order" [label="productid → product_id [identity]\nConf: 0.85", color="#1E88E5", fontcolor="#1E88E5"];
+    "create_order" -> "update_order" [label="_orderid → order_id [identity]\nConf: 0.85", color="#1E88E5", fontcolor="#1E88E5"];
+    "create_order" -> "get_order_byID" [label="_orderid → order_id [identity]\nConf: 0.85", color="#1E88E5", fontcolor="#1E88E5"];
+    "create_order" -> "return_order" [label="_orderid → order_id [identity]\nConf: 0.85", color="#1E88E5", fontcolor="#1E88E5"];
+    "update_order" -> "get_order_byID" [label="orderid → order_id [identity]\nConf: 0.85", color="#1E88E5", fontcolor="#1E88E5"];
+    "update_order" -> "return_order" [label="orderid → order_id [identity]\nConf: 0.85", color="#1E88E5", fontcolor="#1E88E5"];
+    "get_order_byID" -> "return_order" [label="orderid → order_id [identity]\nConf: 0.51", color="#1E88E5", fontcolor="#1E88E5"];
+    "return_order" -> "get_order_byID" [label="orderid → order_id [identity]\nConf: 0.85", color="#1E88E5", fontcolor="#1E88E5"];
     "get_report_byID" -> "add_vehicle" [label="vin → vin [identity]\nConf: 0.57", color="#1E88E5", fontcolor="#1E88E5"];
-    "update_order" -> "create_order" [label="quantity → quantity [finance]\nConf: 0.95", color="#43A047", fontcolor="#43A047"];
-    "get_order_byID" -> "create_order" [label="quantity → quantity [finance]\nConf: 0.57", color="#43A047", fontcolor="#43A047"];
-    "get_order_byID" -> "update_order" [label="quantity → quantity [finance]\nConf: 0.57", color="#43A047", fontcolor="#43A047"];
-    "return_order" -> "create_order" [label="quantity → quantity [finance]\nConf: 0.95", color="#43A047", fontcolor="#43A047"];
-    "return_order" -> "update_order" [label="quantity → quantity [finance]\nConf: 0.95", color="#43A047", fontcolor="#43A047"];
 }

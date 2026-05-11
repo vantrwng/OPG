@@ -1,7 +1,12 @@
 import json
+import re
 import random
 import math
 from runtime_executor import StateStore, RequestExecutor
+
+# Giới hạn an toàn: số lượng beams tối đa trong giai đoạn BFS
+# Ngăn bùng nổ bộ nhớ O(BF^depth) trên đồ thị dày đặc
+MAX_BFS_BEAMS = 500
 
 def jaccard_similarity(list1, list2):
     """Tính độ tương đồng Jaccard giữa 2 tập hợp"""
@@ -75,12 +80,15 @@ class CoverageBucketManager:
         }
 
     def categorize(self, api_id):
-        api_id_lower = api_id.lower()
-        if any(word in api_id_lower for word in ['login', 'signup', 'auth', 'token', 'password']):
+        # Fix: tách CamelCase rồi split theo delimiter — tránh substring false positive
+        # Ví dụ: 'getpost_comments' không bị nhận nhầm là 'crud' do chứa 'post'
+        expanded = re.sub(r'([a-z])([A-Z])', r'\1 \2', api_id)
+        tokens = set(re.split(r'[_\-\s/]', expanded.lower()))
+        if tokens & {'login', 'signup', 'auth', 'token', 'password'}:
             return 'auth'
-        elif any(word in api_id_lower for word in ['admin']):
+        elif 'admin' in tokens:
             return 'admin'
-        elif any(word in api_id_lower for word in ['create', 'update', 'delete', 'post', 'put']):
+        elif tokens & {'create', 'update', 'delete', 'post', 'put', 'add'}:
             return 'crud'
         else:
             return 'other'
@@ -130,11 +138,10 @@ class HybridBeamFuzzer:
     def run_fuzzer(self, max_depth=10):
         bfs_threshold = self.calculate_adaptive_bfs_threshold()
         print(f"[*] Adaptive BFS Threshold tính toán được: {bfs_threshold}")
-        print(f"[*] Max Depth: {max_depth}, Beam Width per bucket: {self.beam_width}")
+        print(f"[*] Max Depth: {max_depth}, Beam Width per bucket: {self.beam_width}, BFS Cap: {MAX_BFS_BEAMS}")
         
         current_beams = []
         for op in self.operations:
-            # Beam giờ đây mang theo một StateStore độc lập
             current_beams.append({
                 'chain': [op['id']], 
                 'score': 0,
@@ -144,11 +151,15 @@ class HybridBeamFuzzer:
             
         final_completed_chains = []
 
-        # Bắt đầu vòng lặp duyệt theo từng độ sâu
         for current_depth in range(2, max_depth + 1):
             print(f"\n[+] Đang khám phá ở độ sâu: {current_depth}")
             bucket_manager = CoverageBucketManager(top_k=self.beam_width)
             next_beams = []
+
+            # Fix UCT: snapshot visit_count tại đầu mỗi depth level
+            # Tránh việc cùng 1 node bị nhiều beam cộng dồn visit trong vòng lặp hiện tại
+            # làm Exploration Bonus bị deflate sai
+            visit_snapshot = dict(self.node_visit_count)
 
             for beam in current_beams:
                 last_api_id = beam['chain'][-1]
@@ -166,19 +177,20 @@ class HybridBeamFuzzer:
                         
                     new_chain = list(beam['chain'])
                     new_chain.append(next_api)
-                    self.node_visit_count[next_api] += 1
+
+                    # Dùng snapshot để tính UCT bonus — phản ánh đúng mức độ đã khám phá
+                    # trước khi vòng lặp depth hiện tại bắt đầu
+                    visit_for_score = visit_snapshot.get(next_api, 0)
+                    self.node_visit_count[next_api] += 1  # cập nhật actual count sau
                     
-                    # Rẽ nhánh StateStore (Clone)
                     new_state = beam['state'].clone()
-                    
-                    # Thực thi động qua RequestExecutor
                     response_mock = self.executor.execute_request(next_api, new_state)
                     
-                    # Chấm điểm kết hợp Exploration Bonus
-                    base_score = self.scorer.calculate_score(response_mock, current_depth, self.node_visit_count[next_api])
+                    base_score = self.scorer.calculate_score(
+                        response_mock, current_depth, max(1, visit_for_score)
+                    )
                     total_score = beam['score'] + base_score
                     
-                    # Quyết định chạy BFS hay Beam Search dựa vào Adaptive Threshold
                     new_beam_dict = {
                         'chain': new_chain, 
                         'score': total_score,
@@ -186,21 +198,24 @@ class HybridBeamFuzzer:
                     }
                     
                     if current_depth > bfs_threshold:
-                        # Beam Search: Áp dụng Jaccard Diversity Penalty
-                        diversity_penalty = self.scorer.calculate_diversity_penalty(new_chain, bucket_manager.get_all_beams())
+                        # Beam Search: Jaccard Diversity Penalty (greedy MMR)
+                        diversity_penalty = self.scorer.calculate_diversity_penalty(
+                            new_chain, bucket_manager.get_all_beams()
+                        )
                         new_beam_dict['score'] -= diversity_penalty
-                        # Lưu ý: Cần thêm state vào bucket_manager nếu muốn truyền tiếp, 
-                        # nhưng bucket_manager.add_to_bucket hiện tại chỉ lưu chain và score. 
-                        # Sẽ cập nhật bucket manager sau, tạm thời ta hack vào bằng cách truyền dict.
                         bucket_manager.add_to_bucket(new_chain, new_beam_dict['score'], new_state)
                     else:
-                        # BFS bình thường, giữ lại tất cả
                         next_beams.append(new_beam_dict)
             
-            # Cập nhật danh sách Beam
+            # Cập nhật danh sách Beam cho depth tiếp theo
             if current_depth > bfs_threshold:
                 current_beams = bucket_manager.get_all_beams()
             else:
+                # Fix BFS Memory Risk: giới hạn số beams để tránh bùng nổ O(BF^depth)
+                if len(next_beams) > MAX_BFS_BEAMS:
+                    next_beams.sort(key=lambda x: x['score'], reverse=True)
+                    next_beams = next_beams[:MAX_BFS_BEAMS]
+                    print(f"  [!] BFS Cap kích hoạt — cắt xuống còn {MAX_BFS_BEAMS} beams.")
                 current_beams = next_beams
                 
             print(f"  -> Giữ lại {len(current_beams)} chains tiềm năng nhất.")
@@ -213,15 +228,23 @@ class HybridBeamFuzzer:
         return final_completed_chains
 
     def export_results(self, chains, output_file="beam_strategies.json"):
+        """Xuất kết quả kèm metadata đầy đủ phục vụ phân tích nghiên cứu."""
+        categorizer = CoverageBucketManager()
         output_data = {
             "total_strategies_found": len(chains),
             "top_strategies": []
         }
-        for chain in chains:
+        for rank, chain in enumerate(chains):
+            chain_list = chain["chain"]
+            # Lấy state memory thay vì repr chuỗi để dễ parse sau
+            state_memory = chain["state"].memory if hasattr(chain["state"], 'memory') else {}
             output_data["top_strategies"].append({
-                "chain": chain["chain"],
-                "score": chain["score"],
-                "final_state": str(chain["state"]) # Log lại State lưu được
+                "rank": rank + 1,
+                "chain": chain_list,
+                "depth": len(chain_list) - 1,          # Độ sâu = số API calls - 1
+                "bucket": categorizer.categorize(chain_list[-1]),  # Phân loại theo API cuối
+                "score": round(chain["score"], 4),
+                "captured_state": state_memory         # Token/ID thực tế thu được
             })
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(output_data, f, indent=4, ensure_ascii=False)
