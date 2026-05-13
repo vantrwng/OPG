@@ -11,7 +11,9 @@ class SpecParser:
         try:
             with open(self.file_path, 'r', encoding='utf-8') as f:
                 return json.load(f)
-        except: return {}
+        except Exception as e:
+            print(f"[SpecParser] Warning: cannot load spec file: {e}")
+            return {}
 
     def resolve_ref(self, ref_str):
         try:
@@ -20,7 +22,9 @@ class SpecParser:
             schema_name = parts[-1]
             for p in parts: curr = curr[p]
             return curr, schema_name
-        except: return {}, ""
+        except Exception as e:
+            print(f"[SpecParser] Warning: cannot resolve ref {ref_str}: {e}")
+            return {}, ""
 
     def normalize_word(self, word):
         """Mô phỏng Stemming & Case Insensitive theo tài liệu"""
@@ -102,7 +106,8 @@ class SpecParser:
                     try:
                         schema = details['requestBody']['content']['application/json']['schema']
                         inputs.update(self.extract_props(schema, op_name=op_id))
-                    except: pass
+                    except Exception as e:
+                        print(f"[SpecParser] Warning: cannot parse requestBody for {op_id}: {e}")
 
                 # Trích xuất Outputs: hợp nhất tất cả 2xx response schemas
                 # (200=GET, 201=POST create, 202=accepted) để không bỏ sót API tạo mới
@@ -112,7 +117,8 @@ class SpecParser:
                             try:
                                 schema = details['responses'][code]['content']['application/json']['schema']
                                 outputs.update(self.extract_props(schema, op_name=op_id))
-                            except: pass
+                            except Exception as e:
+                                print(f"[SpecParser] Warning: cannot parse response {code} for {op_id}: {e}")
                 
                 self.operations.append({'id': op_id, 'method': method.upper(), 'path': path, 'inputs': inputs, 'outputs': outputs})
         

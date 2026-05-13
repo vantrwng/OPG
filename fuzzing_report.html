@@ -1,0 +1,2591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hybrid Stateful API Fuzzer Report</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --surface-color: rgba(30, 41, 59, 0.7);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-primary: #3b82f6;
+            --accent-secondary: #8b5cf6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.15) 0px, transparent 50%);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            letter-spacing: -1px;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: var(--surface-color);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 1.5rem 3rem;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--success);
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .strategies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .strategy-card {
+            background: var(--surface-color);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            animation: fadeIn 0.8s ease-out 0.4s both;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .strategy-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--accent-primary);
+            transition: height 0.3s ease;
+        }
+
+        .strategy-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .strategy-card:hover::before {
+            background: var(--accent-secondary);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .rank-badge {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .score-badge {
+            color: var(--warning);
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .bucket-badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+        }
+
+        .chain-container {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .api-node {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .api-node:last-child {
+            margin-bottom: 0;
+        }
+
+        .api-node:not(:last-child)::after {
+            content: '↓';
+            color: var(--accent-secondary);
+            margin-left: 0.5rem;
+            font-weight: bold;
+        }
+
+        .state-container {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            background: rgba(0, 0, 0, 0.2);
+            padding: 0.75rem;
+            border-radius: 6px;
+            border-left: 2px solid var(--success);
+            word-break: break-all;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Staggered animation delays for grid items */
+        .strategy-card:nth-child(1) { animation-delay: 0.1s; }
+        .strategy-card:nth-child(2) { animation-delay: 0.2s; }
+        .strategy-card:nth-child(3) { animation-delay: 0.3s; }
+        .strategy-card:nth-child(4) { animation-delay: 0.4s; }
+        .strategy-card:nth-child(5) { animation-delay: 0.5s; }
+        .strategy-card:nth-child(6) { animation-delay: 0.6s; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>API Security Fuzzer Results</h1>
+            <p style="color: var(--text-muted); font-size: 1.1rem;">Hybrid Stateful Exploration Graph Analysis</p>
+        </header>
+
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-number">75</div>
+                <div class="stat-label">Total Attack Chains Discovered</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">75</div>
+                <div class="stat-label">Unique Viable Strategies</div>
+            </div>
+        </div>
+
+        <div class="strategies-grid">
+
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #1</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        132.0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: auth | Depth: 1</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> login</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> login_with_token_v2_7</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                <div style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;"><div style="color: var(--danger); font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem;">⚠️ Detected Vulnerabilities:</div>
+                <div style="background: rgba(239, 68, 68, 0.1); border-left: 3px solid var(--danger); padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 4px; font-size: 0.85rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="font-family: 'Fira Code', monospace; color: #f8fafc; font-weight: bold;">login_with_token_v2_7</span>
+                        <span style="color: var(--danger); font-weight: bold; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px;">HTTP 500</span>
+                    </div>
+                    <ul style="padding-left: 1.2rem; color: #cbd5e1; margin-top: 4px;">
+                        <li style='margin-bottom: 2px;'>HTTP 500 — possible crash/unhandled exception</li>
+                    </ul>
+                </div>
+                </div>
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #2</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        132.0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: auth | Depth: 1</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> login</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> verify_email_token</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                <div style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;"><div style="color: var(--danger); font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem;">⚠️ Detected Vulnerabilities:</div>
+                <div style="background: rgba(239, 68, 68, 0.1); border-left: 3px solid var(--danger); padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 4px; font-size: 0.85rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="font-family: 'Fira Code', monospace; color: #f8fafc; font-weight: bold;">verify_email_token</span>
+                        <span style="color: var(--danger); font-weight: bold; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px;">HTTP 500</span>
+                    </div>
+                    <ul style="padding-left: 1.2rem; color: #cbd5e1; margin-top: 4px;">
+                        <li style='margin-bottom: 2px;'>HTTP 500 — possible crash/unhandled exception</li>
+                    </ul>
+                </div>
+                </div>
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #3</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        102.9558 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: auth | Depth: 3</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> create_service_report</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> get_report_byID</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> validate_coupon</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">4.</span> mechanic_signup</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                <div style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;"><div style="color: var(--danger); font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem;">⚠️ Detected Vulnerabilities:</div>
+                <div style="background: rgba(239, 68, 68, 0.1); border-left: 3px solid var(--danger); padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 4px; font-size: 0.85rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="font-family: 'Fira Code', monospace; color: #f8fafc; font-weight: bold;">get_report_byID</span>
+                        <span style="color: var(--danger); font-weight: bold; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px;">HTTP 500</span>
+                    </div>
+                    <ul style="padding-left: 1.2rem; color: #cbd5e1; margin-top: 4px;">
+                        <li style='margin-bottom: 2px;'>HTTP 500 — possible crash/unhandled exception</li>
+                    </ul>
+                </div>
+                </div>
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #4</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        95.5556 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: other | Depth: 4</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> create_service_report</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> get_report_byID</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> get_vehicles</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">4.</span> validate_coupon</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">5.</span> contact_mechanic</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                <div style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;"><div style="color: var(--danger); font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem;">⚠️ Detected Vulnerabilities:</div>
+                <div style="background: rgba(239, 68, 68, 0.1); border-left: 3px solid var(--danger); padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 4px; font-size: 0.85rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="font-family: 'Fira Code', monospace; color: #f8fafc; font-weight: bold;">get_report_byID</span>
+                        <span style="color: var(--danger); font-weight: bold; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px;">HTTP 500</span>
+                    </div>
+                    <ul style="padding-left: 1.2rem; color: #cbd5e1; margin-top: 4px;">
+                        <li style='margin-bottom: 2px;'>HTTP 500 — possible crash/unhandled exception</li>
+                    </ul>
+                </div>
+                </div>
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #5</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        87.5592 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: crud | Depth: 4</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> create_service_report</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> get_report_byID</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> get_vehicles</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">4.</span> get_location</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">5.</span> add_vehicle</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                <div style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;"><div style="color: var(--danger); font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem;">⚠️ Detected Vulnerabilities:</div>
+                <div style="background: rgba(239, 68, 68, 0.1); border-left: 3px solid var(--danger); padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 4px; font-size: 0.85rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="font-family: 'Fira Code', monospace; color: #f8fafc; font-weight: bold;">get_report_byID</span>
+                        <span style="color: var(--danger); font-weight: bold; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px;">HTTP 500</span>
+                    </div>
+                    <ul style="padding-left: 1.2rem; color: #cbd5e1; margin-top: 4px;">
+                        <li style='margin-bottom: 2px;'>HTTP 500 — possible crash/unhandled exception</li>
+                    </ul>
+                </div>
+                </div>
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #6</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        40.862 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: other | Depth: 6</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> get_location</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> validate_coupon</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> get_vehicles</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">4.</span> create_service_report</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">5.</span> get_report_byID</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">6.</span> get_post</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">7.</span> contact_mechanic</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                <div style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;"><div style="color: var(--danger); font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem;">⚠️ Detected Vulnerabilities:</div>
+                <div style="background: rgba(239, 68, 68, 0.1); border-left: 3px solid var(--danger); padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 4px; font-size: 0.85rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="font-family: 'Fira Code', monospace; color: #f8fafc; font-weight: bold;">get_report_byID</span>
+                        <span style="color: var(--danger); font-weight: bold; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px;">HTTP 500</span>
+                    </div>
+                    <ul style="padding-left: 1.2rem; color: #cbd5e1; margin-top: 4px;">
+                        <li style='margin-bottom: 2px;'>HTTP 500 — possible crash/unhandled exception</li>
+                    </ul>
+                </div>
+                </div>
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #7</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        40.862 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: other | Depth: 6</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> create_post</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> validate_coupon</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> get_vehicles</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">4.</span> create_service_report</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">5.</span> get_report_byID</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">6.</span> get_location</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">7.</span> contact_mechanic</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                <div style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;"><div style="color: var(--danger); font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem;">⚠️ Detected Vulnerabilities:</div>
+                <div style="background: rgba(239, 68, 68, 0.1); border-left: 3px solid var(--danger); padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 4px; font-size: 0.85rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="font-family: 'Fira Code', monospace; color: #f8fafc; font-weight: bold;">get_report_byID</span>
+                        <span style="color: var(--danger); font-weight: bold; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px;">HTTP 500</span>
+                    </div>
+                    <ul style="padding-left: 1.2rem; color: #cbd5e1; margin-top: 4px;">
+                        <li style='margin-bottom: 2px;'>HTTP 500 — possible crash/unhandled exception</li>
+                    </ul>
+                </div>
+                </div>
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #8</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        40.7268 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: auth | Depth: 5</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> get_vehicles</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> validate_coupon</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> get_location</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">4.</span> create_service_report</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">5.</span> get_report_byID</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">6.</span> mechanic_signup</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                <div style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;"><div style="color: var(--danger); font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem;">⚠️ Detected Vulnerabilities:</div>
+                <div style="background: rgba(239, 68, 68, 0.1); border-left: 3px solid var(--danger); padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 4px; font-size: 0.85rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="font-family: 'Fira Code', monospace; color: #f8fafc; font-weight: bold;">get_report_byID</span>
+                        <span style="color: var(--danger); font-weight: bold; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px;">HTTP 500</span>
+                    </div>
+                    <ul style="padding-left: 1.2rem; color: #cbd5e1; margin-top: 4px;">
+                        <li style='margin-bottom: 2px;'>HTTP 500 — possible crash/unhandled exception</li>
+                    </ul>
+                </div>
+                </div>
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #9</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        40.7268 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: auth | Depth: 5</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> get_location</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> validate_coupon</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> get_vehicles</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">4.</span> create_service_report</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">5.</span> get_report_byID</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">6.</span> mechanic_signup</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                <div style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;"><div style="color: var(--danger); font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem;">⚠️ Detected Vulnerabilities:</div>
+                <div style="background: rgba(239, 68, 68, 0.1); border-left: 3px solid var(--danger); padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 4px; font-size: 0.85rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="font-family: 'Fira Code', monospace; color: #f8fafc; font-weight: bold;">get_report_byID</span>
+                        <span style="color: var(--danger); font-weight: bold; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px;">HTTP 500</span>
+                    </div>
+                    <ul style="padding-left: 1.2rem; color: #cbd5e1; margin-top: 4px;">
+                        <li style='margin-bottom: 2px;'>HTTP 500 — possible crash/unhandled exception</li>
+                    </ul>
+                </div>
+                </div>
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #10</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        40.7268 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: auth | Depth: 5</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> get_post</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> validate_coupon</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> get_vehicles</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">4.</span> create_service_report</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">5.</span> get_report_byID</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">6.</span> mechanic_signup</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                <div style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;"><div style="color: var(--danger); font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem;">⚠️ Detected Vulnerabilities:</div>
+                <div style="background: rgba(239, 68, 68, 0.1); border-left: 3px solid var(--danger); padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 4px; font-size: 0.85rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="font-family: 'Fira Code', monospace; color: #f8fafc; font-weight: bold;">get_report_byID</span>
+                        <span style="color: var(--danger); font-weight: bold; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px;">HTTP 500</span>
+                    </div>
+                    <ul style="padding-left: 1.2rem; color: #cbd5e1; margin-top: 4px;">
+                        <li style='margin-bottom: 2px;'>HTTP 500 — possible crash/unhandled exception</li>
+                    </ul>
+                </div>
+                </div>
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #11</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        40.7268 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: auth | Depth: 5</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> create_post</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> validate_coupon</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> get_vehicles</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">4.</span> create_service_report</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">5.</span> get_report_byID</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">6.</span> mechanic_signup</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                <div style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;"><div style="color: var(--danger); font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem;">⚠️ Detected Vulnerabilities:</div>
+                <div style="background: rgba(239, 68, 68, 0.1); border-left: 3px solid var(--danger); padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 4px; font-size: 0.85rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="font-family: 'Fira Code', monospace; color: #f8fafc; font-weight: bold;">get_report_byID</span>
+                        <span style="color: var(--danger); font-weight: bold; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px;">HTTP 500</span>
+                    </div>
+                    <ul style="padding-left: 1.2rem; color: #cbd5e1; margin-top: 4px;">
+                        <li style='margin-bottom: 2px;'>HTTP 500 — possible crash/unhandled exception</li>
+                    </ul>
+                </div>
+                </div>
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #12</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        40.7268 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: auth | Depth: 5</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> post_comment</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> validate_coupon</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> get_vehicles</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">4.</span> create_service_report</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">5.</span> get_report_byID</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">6.</span> mechanic_signup</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                <div style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;"><div style="color: var(--danger); font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem;">⚠️ Detected Vulnerabilities:</div>
+                <div style="background: rgba(239, 68, 68, 0.1); border-left: 3px solid var(--danger); padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 4px; font-size: 0.85rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="font-family: 'Fira Code', monospace; color: #f8fafc; font-weight: bold;">get_report_byID</span>
+                        <span style="color: var(--danger); font-weight: bold; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px;">HTTP 500</span>
+                    </div>
+                    <ul style="padding-left: 1.2rem; color: #cbd5e1; margin-top: 4px;">
+                        <li style='margin-bottom: 2px;'>HTTP 500 — possible crash/unhandled exception</li>
+                    </ul>
+                </div>
+                </div>
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #13</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        40.7268 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: auth | Depth: 5</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> get_recent_posts</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> validate_coupon</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> get_vehicles</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">4.</span> create_service_report</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">5.</span> get_report_byID</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">6.</span> mechanic_signup</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                <div style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;"><div style="color: var(--danger); font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem;">⚠️ Detected Vulnerabilities:</div>
+                <div style="background: rgba(239, 68, 68, 0.1); border-left: 3px solid var(--danger); padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 4px; font-size: 0.85rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="font-family: 'Fira Code', monospace; color: #f8fafc; font-weight: bold;">get_report_byID</span>
+                        <span style="color: var(--danger); font-weight: bold; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px;">HTTP 500</span>
+                    </div>
+                    <ul style="padding-left: 1.2rem; color: #cbd5e1; margin-top: 4px;">
+                        <li style='margin-bottom: 2px;'>HTTP 500 — possible crash/unhandled exception</li>
+                    </ul>
+                </div>
+                </div>
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #14</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        39.1953 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: other | Depth: 6</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> get_vehicles</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> validate_coupon</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> get_location</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">4.</span> create_service_report</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">5.</span> get_report_byID</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">6.</span> get_post</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">7.</span> contact_mechanic</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                <div style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;"><div style="color: var(--danger); font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem;">⚠️ Detected Vulnerabilities:</div>
+                <div style="background: rgba(239, 68, 68, 0.1); border-left: 3px solid var(--danger); padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 4px; font-size: 0.85rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="font-family: 'Fira Code', monospace; color: #f8fafc; font-weight: bold;">get_report_byID</span>
+                        <span style="color: var(--danger); font-weight: bold; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px;">HTTP 500</span>
+                    </div>
+                    <ul style="padding-left: 1.2rem; color: #cbd5e1; margin-top: 4px;">
+                        <li style='margin-bottom: 2px;'>HTTP 500 — possible crash/unhandled exception</li>
+                    </ul>
+                </div>
+                </div>
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #15</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        39.1953 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: other | Depth: 6</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> get_recent_posts</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> validate_coupon</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> get_vehicles</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">4.</span> create_service_report</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">5.</span> get_report_byID</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">6.</span> get_location</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">7.</span> contact_mechanic</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                <div style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;"><div style="color: var(--danger); font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem;">⚠️ Detected Vulnerabilities:</div>
+                <div style="background: rgba(239, 68, 68, 0.1); border-left: 3px solid var(--danger); padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 4px; font-size: 0.85rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="font-family: 'Fira Code', monospace; color: #f8fafc; font-weight: bold;">get_report_byID</span>
+                        <span style="color: var(--danger); font-weight: bold; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px;">HTTP 500</span>
+                    </div>
+                    <ul style="padding-left: 1.2rem; color: #cbd5e1; margin-top: 4px;">
+                        <li style='margin-bottom: 2px;'>HTTP 500 — possible crash/unhandled exception</li>
+                    </ul>
+                </div>
+                </div>
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #16</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        37.5287 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: other | Depth: 6</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> get_post</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> validate_coupon</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> get_vehicles</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">4.</span> create_service_report</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">5.</span> get_report_byID</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">6.</span> get_location</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">7.</span> contact_mechanic</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                <div style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;"><div style="color: var(--danger); font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem;">⚠️ Detected Vulnerabilities:</div>
+                <div style="background: rgba(239, 68, 68, 0.1); border-left: 3px solid var(--danger); padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 4px; font-size: 0.85rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="font-family: 'Fira Code', monospace; color: #f8fafc; font-weight: bold;">get_report_byID</span>
+                        <span style="color: var(--danger); font-weight: bold; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px;">HTTP 500</span>
+                    </div>
+                    <ul style="padding-left: 1.2rem; color: #cbd5e1; margin-top: 4px;">
+                        <li style='margin-bottom: 2px;'>HTTP 500 — possible crash/unhandled exception</li>
+                    </ul>
+                </div>
+                </div>
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #17</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        37.5287 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: other | Depth: 6</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> post_comment</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> validate_coupon</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> get_vehicles</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">4.</span> create_service_report</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">5.</span> get_report_byID</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">6.</span> get_location</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">7.</span> contact_mechanic</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                <div style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;"><div style="color: var(--danger); font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem;">⚠️ Detected Vulnerabilities:</div>
+                <div style="background: rgba(239, 68, 68, 0.1); border-left: 3px solid var(--danger); padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 4px; font-size: 0.85rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="font-family: 'Fira Code', monospace; color: #f8fafc; font-weight: bold;">get_report_byID</span>
+                        <span style="color: var(--danger); font-weight: bold; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px;">HTTP 500</span>
+                    </div>
+                    <ul style="padding-left: 1.2rem; color: #cbd5e1; margin-top: 4px;">
+                        <li style='margin-bottom: 2px;'>HTTP 500 — possible crash/unhandled exception</li>
+                    </ul>
+                </div>
+                </div>
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #18</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        33.5046 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: crud | Depth: 6</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> get_vehicles</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> validate_coupon</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> get_location</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">4.</span> create_service_report</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">5.</span> get_report_byID</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">6.</span> get_post</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">7.</span> add_vehicle</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                <div style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;"><div style="color: var(--danger); font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem;">⚠️ Detected Vulnerabilities:</div>
+                <div style="background: rgba(239, 68, 68, 0.1); border-left: 3px solid var(--danger); padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 4px; font-size: 0.85rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="font-family: 'Fira Code', monospace; color: #f8fafc; font-weight: bold;">get_report_byID</span>
+                        <span style="color: var(--danger); font-weight: bold; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px;">HTTP 500</span>
+                    </div>
+                    <ul style="padding-left: 1.2rem; color: #cbd5e1; margin-top: 4px;">
+                        <li style='margin-bottom: 2px;'>HTTP 500 — possible crash/unhandled exception</li>
+                    </ul>
+                </div>
+                </div>
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #19</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        33.5046 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: crud | Depth: 6</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> get_location</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> validate_coupon</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> get_vehicles</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">4.</span> create_service_report</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">5.</span> get_report_byID</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">6.</span> get_post</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">7.</span> add_vehicle</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                <div style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;"><div style="color: var(--danger); font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem;">⚠️ Detected Vulnerabilities:</div>
+                <div style="background: rgba(239, 68, 68, 0.1); border-left: 3px solid var(--danger); padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 4px; font-size: 0.85rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="font-family: 'Fira Code', monospace; color: #f8fafc; font-weight: bold;">get_report_byID</span>
+                        <span style="color: var(--danger); font-weight: bold; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px;">HTTP 500</span>
+                    </div>
+                    <ul style="padding-left: 1.2rem; color: #cbd5e1; margin-top: 4px;">
+                        <li style='margin-bottom: 2px;'>HTTP 500 — possible crash/unhandled exception</li>
+                    </ul>
+                </div>
+                </div>
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #20</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        33.5046 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: crud | Depth: 6</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> get_post</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> validate_coupon</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> get_vehicles</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">4.</span> create_service_report</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">5.</span> get_report_byID</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">6.</span> get_location</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">7.</span> add_vehicle</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                <div style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;"><div style="color: var(--danger); font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem;">⚠️ Detected Vulnerabilities:</div>
+                <div style="background: rgba(239, 68, 68, 0.1); border-left: 3px solid var(--danger); padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 4px; font-size: 0.85rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="font-family: 'Fira Code', monospace; color: #f8fafc; font-weight: bold;">get_report_byID</span>
+                        <span style="color: var(--danger); font-weight: bold; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px;">HTTP 500</span>
+                    </div>
+                    <ul style="padding-left: 1.2rem; color: #cbd5e1; margin-top: 4px;">
+                        <li style='margin-bottom: 2px;'>HTTP 500 — possible crash/unhandled exception</li>
+                    </ul>
+                </div>
+                </div>
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #21</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        33.5046 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: crud | Depth: 6</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> create_post</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> validate_coupon</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> get_vehicles</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">4.</span> create_service_report</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">5.</span> get_report_byID</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">6.</span> get_location</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">7.</span> add_vehicle</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                <div style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;"><div style="color: var(--danger); font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem;">⚠️ Detected Vulnerabilities:</div>
+                <div style="background: rgba(239, 68, 68, 0.1); border-left: 3px solid var(--danger); padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 4px; font-size: 0.85rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="font-family: 'Fira Code', monospace; color: #f8fafc; font-weight: bold;">get_report_byID</span>
+                        <span style="color: var(--danger); font-weight: bold; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px;">HTTP 500</span>
+                    </div>
+                    <ul style="padding-left: 1.2rem; color: #cbd5e1; margin-top: 4px;">
+                        <li style='margin-bottom: 2px;'>HTTP 500 — possible crash/unhandled exception</li>
+                    </ul>
+                </div>
+                </div>
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #22</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        33.5046 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: crud | Depth: 6</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> post_comment</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> validate_coupon</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> get_vehicles</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">4.</span> create_service_report</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">5.</span> get_report_byID</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">6.</span> get_location</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">7.</span> add_vehicle</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                <div style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;"><div style="color: var(--danger); font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem;">⚠️ Detected Vulnerabilities:</div>
+                <div style="background: rgba(239, 68, 68, 0.1); border-left: 3px solid var(--danger); padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 4px; font-size: 0.85rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="font-family: 'Fira Code', monospace; color: #f8fafc; font-weight: bold;">get_report_byID</span>
+                        <span style="color: var(--danger); font-weight: bold; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px;">HTTP 500</span>
+                    </div>
+                    <ul style="padding-left: 1.2rem; color: #cbd5e1; margin-top: 4px;">
+                        <li style='margin-bottom: 2px;'>HTTP 500 — possible crash/unhandled exception</li>
+                    </ul>
+                </div>
+                </div>
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #23</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        33.5046 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: crud | Depth: 6</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> get_recent_posts</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> validate_coupon</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> get_vehicles</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">4.</span> create_service_report</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">5.</span> get_report_byID</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">6.</span> get_location</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">7.</span> add_vehicle</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                <div style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;"><div style="color: var(--danger); font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem;">⚠️ Detected Vulnerabilities:</div>
+                <div style="background: rgba(239, 68, 68, 0.1); border-left: 3px solid var(--danger); padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 4px; font-size: 0.85rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="font-family: 'Fira Code', monospace; color: #f8fafc; font-weight: bold;">get_report_byID</span>
+                        <span style="color: var(--danger); font-weight: bold; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px;">HTTP 500</span>
+                    </div>
+                    <ul style="padding-left: 1.2rem; color: #cbd5e1; margin-top: 4px;">
+                        <li style='margin-bottom: 2px;'>HTTP 500 — possible crash/unhandled exception</li>
+                    </ul>
+                </div>
+                </div>
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #24</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        32.0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: other | Depth: 3</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> get_vehicles</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> get_location</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> validate_coupon</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">4.</span> contact_mechanic</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #25</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        32.0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: other | Depth: 3</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> get_location</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> get_vehicles</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> validate_coupon</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">4.</span> contact_mechanic</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #26</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        32.0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: other | Depth: 3</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> get_post</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> get_vehicles</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> validate_coupon</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">4.</span> contact_mechanic</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #27</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        32.0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: other | Depth: 3</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> post_comment</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> get_vehicles</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> validate_coupon</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">4.</span> contact_mechanic</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #28</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        32.0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: other | Depth: 1</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> validate_coupon</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> apply_coupon</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #29</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        32.0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: other | Depth: 4</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> validate_coupon</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> get_vehicles</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> create_service_report</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">4.</span> get_report_byID</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">5.</span> contact_mechanic</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #30</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        32.0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: auth | Depth: 3</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> validate_coupon</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> create_service_report</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> get_report_byID</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">4.</span> mechanic_signup</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #31</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        32.0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: auth | Depth: 2</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> get_report_byID</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> validate_coupon</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> mechanic_signup</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #32</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        28.3333 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: crud | Depth: 2</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> get_dashboard</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> get_profile_video</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> update_profile_video</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #33</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        27.0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: crud | Depth: 1</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> get_dashboard</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> update_profile_video</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #34</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        27.0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: crud | Depth: 1</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> get_dashboard</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> delete_profile_video</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #35</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        27.0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: admin | Depth: 1</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> get_dashboard</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> admin_delete_profile_video</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #36</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        27.0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: crud | Depth: 2</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> upload_profile_video</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> get_dashboard</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> update_profile_video</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #37</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        27.0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: crud | Depth: 2</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> get_profile_video</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> get_dashboard</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> update_profile_video</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #38</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        27.0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: other | Depth: 3</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> create_post</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> get_vehicles</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> validate_coupon</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">4.</span> contact_mechanic</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #39</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        27.0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: other | Depth: 3</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> get_recent_posts</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> get_vehicles</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> validate_coupon</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">4.</span> contact_mechanic</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #40</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        27.0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: crud | Depth: 1</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> validate_coupon</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> add_new_coupon</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #41</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        27.0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: other | Depth: 3</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> get_report_byID</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> get_vehicles</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> validate_coupon</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">4.</span> contact_mechanic</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #42</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        14.5 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: auth | Depth: 1</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> login</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> login_with_token</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #43</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        14.5 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: other | Depth: 1</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> get_dashboard</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> convert_profile_video</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #44</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        14.5 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: crud | Depth: 2</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> get_vehicles</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> get_location</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> add_vehicle</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #45</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        14.5 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: crud | Depth: 3</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> get_location</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> get_vehicles</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> get_post</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">4.</span> add_vehicle</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #46</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        14.5 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: crud | Depth: 3</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> get_post</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> get_vehicles</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> get_location</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">4.</span> add_vehicle</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #47</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        14.5 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: crud | Depth: 3</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> create_post</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> get_vehicles</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> get_location</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">4.</span> add_vehicle</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #48</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        14.5 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: crud | Depth: 3</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> post_comment</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> get_vehicles</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> get_location</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">4.</span> add_vehicle</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #49</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        14.5 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: crud | Depth: 3</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> get_recent_posts</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> get_vehicles</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> get_location</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">4.</span> add_vehicle</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #50</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        14.5 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: crud | Depth: 3</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> get_report_byID</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">2.</span> get_vehicles</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">3.</span> get_location</div><div class="api-node"><span style="color: #64748b; margin-right: 8px;">4.</span> add_vehicle</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #51</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: auth | Depth: 0</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> signup</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #52</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: auth | Depth: 0</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> forgot_password</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #53</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: other | Depth: 0</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> check_otp_v3</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #54</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: other | Depth: 0</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> check_otp_v2</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #55</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: auth | Depth: 0</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> login_with_token</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #56</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: auth | Depth: 0</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> login_with_token_v2_7</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #57</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: auth | Depth: 0</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> reset_password</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #58</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: other | Depth: 0</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> change_email</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #59</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: auth | Depth: 0</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> verify_email_token</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #60</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: crud | Depth: 0</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> update_profile_pic</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #61</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: crud | Depth: 0</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> update_profile_video</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #62</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: crud | Depth: 0</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> delete_profile_video</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #63</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: other | Depth: 0</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> convert_profile_video</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #64</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: admin | Depth: 0</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> admin_delete_profile_video</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #65</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: crud | Depth: 0</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> add_vehicle</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #66</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: other | Depth: 0</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> vehicle_resend_email</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #67</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: crud | Depth: 0</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> add_new_coupon</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #68</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: other | Depth: 0</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> get_orders</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #69</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: other | Depth: 0</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> apply_coupon</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #70</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: other | Depth: 0</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> get_workshop_qr_code</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #71</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: other | Depth: 0</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> get_workshop_users_all</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #72</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: other | Depth: 0</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> get_mechanics</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #73</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: other | Depth: 0</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> contact_mechanic</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #74</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: other | Depth: 0</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> get_service_requests_for_mechanic</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+            <div class="strategy-card">
+                <div class="card-header">
+                    <span class="rank-badge">Rank #75</span>
+                    <span class="score-badge">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        0 pts
+                    </span>
+                </div>
+                <div class="bucket-badge">Bucket: auth | Depth: 0</div>
+                
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Attack Chain Workflow:</div>
+                <div class="chain-container">
+                    <div class="api-node"><span style="color: #64748b; margin-right: 8px;">1.</span> mechanic_signup</div>
+                </div>
+                
+                <div class="state-container"><strong>State Seeding:</strong><br><pre>{
+  "email": "example+57638@example.com",
+  "password": "securePassword123",
+  "name": "John Doe",
+  "number": "8755050728",
+  "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+  "token_type": "Bearer",
+  "user_role": "",
+  "user_id": 10
+}</pre></div>
+                
+            </div>
+        
+        </div>
+    </div>
+</body>
+</html>

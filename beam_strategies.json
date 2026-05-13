@@ -1,19 +1,949 @@
 {
-    "total_strategies_found": 53,
+    "total_strategies_found": 75,
     "top_strategies": [
         {
             "rank": 1,
             "chain": [
-                "get_dashboard",
-                "update_profile_video"
+                "login",
+                "login_with_token_v2_7"
             ],
             "depth": 1,
-            "bucket": "crud",
-            "score": 174.0,
-            "captured_state": {}
+            "bucket": "auth",
+            "score": 132.0,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": [
+                {
+                    "api_id": "login_with_token_v2_7",
+                    "status": 500,
+                    "details": [
+                        "HTTP 500 — possible crash/unhandled exception"
+                    ]
+                }
+            ]
         },
         {
             "rank": 2,
+            "chain": [
+                "login",
+                "verify_email_token"
+            ],
+            "depth": 1,
+            "bucket": "auth",
+            "score": 132.0,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": [
+                {
+                    "api_id": "verify_email_token",
+                    "status": 500,
+                    "details": [
+                        "HTTP 500 — possible crash/unhandled exception"
+                    ]
+                }
+            ]
+        },
+        {
+            "rank": 3,
+            "chain": [
+                "create_service_report",
+                "get_report_byID",
+                "validate_coupon",
+                "mechanic_signup"
+            ],
+            "depth": 3,
+            "bucket": "auth",
+            "score": 102.9558,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": [
+                {
+                    "api_id": "get_report_byID",
+                    "status": 500,
+                    "details": [
+                        "HTTP 500 — possible crash/unhandled exception"
+                    ]
+                }
+            ]
+        },
+        {
+            "rank": 4,
+            "chain": [
+                "create_service_report",
+                "get_report_byID",
+                "get_vehicles",
+                "validate_coupon",
+                "contact_mechanic"
+            ],
+            "depth": 4,
+            "bucket": "other",
+            "score": 95.5556,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": [
+                {
+                    "api_id": "get_report_byID",
+                    "status": 500,
+                    "details": [
+                        "HTTP 500 — possible crash/unhandled exception"
+                    ]
+                }
+            ]
+        },
+        {
+            "rank": 5,
+            "chain": [
+                "create_service_report",
+                "get_report_byID",
+                "get_vehicles",
+                "get_location",
+                "add_vehicle"
+            ],
+            "depth": 4,
+            "bucket": "crud",
+            "score": 87.5592,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": [
+                {
+                    "api_id": "get_report_byID",
+                    "status": 500,
+                    "details": [
+                        "HTTP 500 — possible crash/unhandled exception"
+                    ]
+                }
+            ]
+        },
+        {
+            "rank": 6,
+            "chain": [
+                "get_location",
+                "validate_coupon",
+                "get_vehicles",
+                "create_service_report",
+                "get_report_byID",
+                "get_post",
+                "contact_mechanic"
+            ],
+            "depth": 6,
+            "bucket": "other",
+            "score": 40.862,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": [
+                {
+                    "api_id": "get_report_byID",
+                    "status": 500,
+                    "details": [
+                        "HTTP 500 — possible crash/unhandled exception"
+                    ]
+                }
+            ]
+        },
+        {
+            "rank": 7,
+            "chain": [
+                "create_post",
+                "validate_coupon",
+                "get_vehicles",
+                "create_service_report",
+                "get_report_byID",
+                "get_location",
+                "contact_mechanic"
+            ],
+            "depth": 6,
+            "bucket": "other",
+            "score": 40.862,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": [
+                {
+                    "api_id": "get_report_byID",
+                    "status": 500,
+                    "details": [
+                        "HTTP 500 — possible crash/unhandled exception"
+                    ]
+                }
+            ]
+        },
+        {
+            "rank": 8,
+            "chain": [
+                "get_vehicles",
+                "validate_coupon",
+                "get_location",
+                "create_service_report",
+                "get_report_byID",
+                "mechanic_signup"
+            ],
+            "depth": 5,
+            "bucket": "auth",
+            "score": 40.7268,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": [
+                {
+                    "api_id": "get_report_byID",
+                    "status": 500,
+                    "details": [
+                        "HTTP 500 — possible crash/unhandled exception"
+                    ]
+                }
+            ]
+        },
+        {
+            "rank": 9,
+            "chain": [
+                "get_location",
+                "validate_coupon",
+                "get_vehicles",
+                "create_service_report",
+                "get_report_byID",
+                "mechanic_signup"
+            ],
+            "depth": 5,
+            "bucket": "auth",
+            "score": 40.7268,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": [
+                {
+                    "api_id": "get_report_byID",
+                    "status": 500,
+                    "details": [
+                        "HTTP 500 — possible crash/unhandled exception"
+                    ]
+                }
+            ]
+        },
+        {
+            "rank": 10,
+            "chain": [
+                "get_post",
+                "validate_coupon",
+                "get_vehicles",
+                "create_service_report",
+                "get_report_byID",
+                "mechanic_signup"
+            ],
+            "depth": 5,
+            "bucket": "auth",
+            "score": 40.7268,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": [
+                {
+                    "api_id": "get_report_byID",
+                    "status": 500,
+                    "details": [
+                        "HTTP 500 — possible crash/unhandled exception"
+                    ]
+                }
+            ]
+        },
+        {
+            "rank": 11,
+            "chain": [
+                "create_post",
+                "validate_coupon",
+                "get_vehicles",
+                "create_service_report",
+                "get_report_byID",
+                "mechanic_signup"
+            ],
+            "depth": 5,
+            "bucket": "auth",
+            "score": 40.7268,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": [
+                {
+                    "api_id": "get_report_byID",
+                    "status": 500,
+                    "details": [
+                        "HTTP 500 — possible crash/unhandled exception"
+                    ]
+                }
+            ]
+        },
+        {
+            "rank": 12,
+            "chain": [
+                "post_comment",
+                "validate_coupon",
+                "get_vehicles",
+                "create_service_report",
+                "get_report_byID",
+                "mechanic_signup"
+            ],
+            "depth": 5,
+            "bucket": "auth",
+            "score": 40.7268,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": [
+                {
+                    "api_id": "get_report_byID",
+                    "status": 500,
+                    "details": [
+                        "HTTP 500 — possible crash/unhandled exception"
+                    ]
+                }
+            ]
+        },
+        {
+            "rank": 13,
+            "chain": [
+                "get_recent_posts",
+                "validate_coupon",
+                "get_vehicles",
+                "create_service_report",
+                "get_report_byID",
+                "mechanic_signup"
+            ],
+            "depth": 5,
+            "bucket": "auth",
+            "score": 40.7268,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": [
+                {
+                    "api_id": "get_report_byID",
+                    "status": 500,
+                    "details": [
+                        "HTTP 500 — possible crash/unhandled exception"
+                    ]
+                }
+            ]
+        },
+        {
+            "rank": 14,
+            "chain": [
+                "get_vehicles",
+                "validate_coupon",
+                "get_location",
+                "create_service_report",
+                "get_report_byID",
+                "get_post",
+                "contact_mechanic"
+            ],
+            "depth": 6,
+            "bucket": "other",
+            "score": 39.1953,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": [
+                {
+                    "api_id": "get_report_byID",
+                    "status": 500,
+                    "details": [
+                        "HTTP 500 — possible crash/unhandled exception"
+                    ]
+                }
+            ]
+        },
+        {
+            "rank": 15,
+            "chain": [
+                "get_recent_posts",
+                "validate_coupon",
+                "get_vehicles",
+                "create_service_report",
+                "get_report_byID",
+                "get_location",
+                "contact_mechanic"
+            ],
+            "depth": 6,
+            "bucket": "other",
+            "score": 39.1953,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": [
+                {
+                    "api_id": "get_report_byID",
+                    "status": 500,
+                    "details": [
+                        "HTTP 500 — possible crash/unhandled exception"
+                    ]
+                }
+            ]
+        },
+        {
+            "rank": 16,
+            "chain": [
+                "get_post",
+                "validate_coupon",
+                "get_vehicles",
+                "create_service_report",
+                "get_report_byID",
+                "get_location",
+                "contact_mechanic"
+            ],
+            "depth": 6,
+            "bucket": "other",
+            "score": 37.5287,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": [
+                {
+                    "api_id": "get_report_byID",
+                    "status": 500,
+                    "details": [
+                        "HTTP 500 — possible crash/unhandled exception"
+                    ]
+                }
+            ]
+        },
+        {
+            "rank": 17,
+            "chain": [
+                "post_comment",
+                "validate_coupon",
+                "get_vehicles",
+                "create_service_report",
+                "get_report_byID",
+                "get_location",
+                "contact_mechanic"
+            ],
+            "depth": 6,
+            "bucket": "other",
+            "score": 37.5287,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": [
+                {
+                    "api_id": "get_report_byID",
+                    "status": 500,
+                    "details": [
+                        "HTTP 500 — possible crash/unhandled exception"
+                    ]
+                }
+            ]
+        },
+        {
+            "rank": 18,
+            "chain": [
+                "get_vehicles",
+                "validate_coupon",
+                "get_location",
+                "create_service_report",
+                "get_report_byID",
+                "get_post",
+                "add_vehicle"
+            ],
+            "depth": 6,
+            "bucket": "crud",
+            "score": 33.5046,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": [
+                {
+                    "api_id": "get_report_byID",
+                    "status": 500,
+                    "details": [
+                        "HTTP 500 — possible crash/unhandled exception"
+                    ]
+                }
+            ]
+        },
+        {
+            "rank": 19,
+            "chain": [
+                "get_location",
+                "validate_coupon",
+                "get_vehicles",
+                "create_service_report",
+                "get_report_byID",
+                "get_post",
+                "add_vehicle"
+            ],
+            "depth": 6,
+            "bucket": "crud",
+            "score": 33.5046,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": [
+                {
+                    "api_id": "get_report_byID",
+                    "status": 500,
+                    "details": [
+                        "HTTP 500 — possible crash/unhandled exception"
+                    ]
+                }
+            ]
+        },
+        {
+            "rank": 20,
+            "chain": [
+                "get_post",
+                "validate_coupon",
+                "get_vehicles",
+                "create_service_report",
+                "get_report_byID",
+                "get_location",
+                "add_vehicle"
+            ],
+            "depth": 6,
+            "bucket": "crud",
+            "score": 33.5046,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": [
+                {
+                    "api_id": "get_report_byID",
+                    "status": 500,
+                    "details": [
+                        "HTTP 500 — possible crash/unhandled exception"
+                    ]
+                }
+            ]
+        },
+        {
+            "rank": 21,
+            "chain": [
+                "create_post",
+                "validate_coupon",
+                "get_vehicles",
+                "create_service_report",
+                "get_report_byID",
+                "get_location",
+                "add_vehicle"
+            ],
+            "depth": 6,
+            "bucket": "crud",
+            "score": 33.5046,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": [
+                {
+                    "api_id": "get_report_byID",
+                    "status": 500,
+                    "details": [
+                        "HTTP 500 — possible crash/unhandled exception"
+                    ]
+                }
+            ]
+        },
+        {
+            "rank": 22,
+            "chain": [
+                "post_comment",
+                "validate_coupon",
+                "get_vehicles",
+                "create_service_report",
+                "get_report_byID",
+                "get_location",
+                "add_vehicle"
+            ],
+            "depth": 6,
+            "bucket": "crud",
+            "score": 33.5046,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": [
+                {
+                    "api_id": "get_report_byID",
+                    "status": 500,
+                    "details": [
+                        "HTTP 500 — possible crash/unhandled exception"
+                    ]
+                }
+            ]
+        },
+        {
+            "rank": 23,
+            "chain": [
+                "get_recent_posts",
+                "validate_coupon",
+                "get_vehicles",
+                "create_service_report",
+                "get_report_byID",
+                "get_location",
+                "add_vehicle"
+            ],
+            "depth": 6,
+            "bucket": "crud",
+            "score": 33.5046,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": [
+                {
+                    "api_id": "get_report_byID",
+                    "status": 500,
+                    "details": [
+                        "HTTP 500 — possible crash/unhandled exception"
+                    ]
+                }
+            ]
+        },
+        {
+            "rank": 24,
+            "chain": [
+                "get_vehicles",
+                "get_location",
+                "validate_coupon",
+                "contact_mechanic"
+            ],
+            "depth": 3,
+            "bucket": "other",
+            "score": 32.0,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
+        },
+        {
+            "rank": 25,
+            "chain": [
+                "get_location",
+                "get_vehicles",
+                "validate_coupon",
+                "contact_mechanic"
+            ],
+            "depth": 3,
+            "bucket": "other",
+            "score": 32.0,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
+        },
+        {
+            "rank": 26,
+            "chain": [
+                "get_post",
+                "get_vehicles",
+                "validate_coupon",
+                "contact_mechanic"
+            ],
+            "depth": 3,
+            "bucket": "other",
+            "score": 32.0,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
+        },
+        {
+            "rank": 27,
+            "chain": [
+                "post_comment",
+                "get_vehicles",
+                "validate_coupon",
+                "contact_mechanic"
+            ],
+            "depth": 3,
+            "bucket": "other",
+            "score": 32.0,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
+        },
+        {
+            "rank": 28,
+            "chain": [
+                "validate_coupon",
+                "apply_coupon"
+            ],
+            "depth": 1,
+            "bucket": "other",
+            "score": 32.0,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
+        },
+        {
+            "rank": 29,
+            "chain": [
+                "validate_coupon",
+                "get_vehicles",
+                "create_service_report",
+                "get_report_byID",
+                "contact_mechanic"
+            ],
+            "depth": 4,
+            "bucket": "other",
+            "score": 32.0,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
+        },
+        {
+            "rank": 30,
+            "chain": [
+                "validate_coupon",
+                "create_service_report",
+                "get_report_byID",
+                "mechanic_signup"
+            ],
+            "depth": 3,
+            "bucket": "auth",
+            "score": 32.0,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
+        },
+        {
+            "rank": 31,
+            "chain": [
+                "get_report_byID",
+                "validate_coupon",
+                "mechanic_signup"
+            ],
+            "depth": 2,
+            "bucket": "auth",
+            "score": 32.0,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
+        },
+        {
+            "rank": 32,
             "chain": [
                 "get_dashboard",
                 "get_profile_video",
@@ -21,540 +951,917 @@
             ],
             "depth": 2,
             "bucket": "crud",
-            "score": 95.0,
-            "captured_state": {}
+            "score": 28.3333,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
         },
         {
-            "rank": 3,
+            "rank": 33,
             "chain": [
-                "login",
-                "login_with_token"
+                "get_dashboard",
+                "update_profile_video"
             ],
             "depth": 1,
-            "bucket": "auth",
-            "score": 94.0,
+            "bucket": "crud",
+            "score": 27.0,
             "captured_state": {
-                "auth_token": "mock_token_8127"
-            }
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
         },
         {
-            "rank": 4,
+            "rank": 34,
             "chain": [
                 "get_dashboard",
                 "delete_profile_video"
             ],
             "depth": 1,
             "bucket": "crud",
-            "score": 64.0,
-            "captured_state": {}
+            "score": 27.0,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
         },
         {
-            "rank": 5,
-            "chain": [
-                "validate_coupon",
-                "create_service_report"
-            ],
-            "depth": 1,
-            "bucket": "crud",
-            "score": 64.0,
-            "captured_state": {}
-        },
-        {
-            "rank": 6,
-            "chain": [
-                "get_report_byID",
-                "mechanic_signup"
-            ],
-            "depth": 1,
-            "bucket": "auth",
-            "score": 64.0,
-            "captured_state": {}
-        },
-        {
-            "rank": 7,
-            "chain": [
-                "login",
-                "login_with_token_v2_7"
-            ],
-            "depth": 1,
-            "bucket": "auth",
-            "score": 54.0,
-            "captured_state": {}
-        },
-        {
-            "rank": 8,
-            "chain": [
-                "login",
-                "verify_email_token"
-            ],
-            "depth": 1,
-            "bucket": "auth",
-            "score": 54.0,
-            "captured_state": {}
-        },
-        {
-            "rank": 9,
-            "chain": [
-                "get_dashboard",
-                "convert_profile_video"
-            ],
-            "depth": 1,
-            "bucket": "other",
-            "score": 54.0,
-            "captured_state": {}
-        },
-        {
-            "rank": 10,
+            "rank": 35,
             "chain": [
                 "get_dashboard",
                 "admin_delete_profile_video"
             ],
             "depth": 1,
             "bucket": "admin",
-            "score": 54.0,
-            "captured_state": {}
+            "score": 27.0,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
         },
         {
-            "rank": 11,
+            "rank": 36,
             "chain": [
                 "upload_profile_video",
+                "get_dashboard",
                 "update_profile_video"
             ],
-            "depth": 1,
+            "depth": 2,
             "bucket": "crud",
-            "score": 54.0,
-            "captured_state": {}
+            "score": 27.0,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
         },
         {
-            "rank": 12,
+            "rank": 37,
             "chain": [
                 "get_profile_video",
+                "get_dashboard",
                 "update_profile_video"
             ],
-            "depth": 1,
+            "depth": 2,
             "bucket": "crud",
-            "score": 54.0,
-            "captured_state": {}
+            "score": 27.0,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
         },
         {
-            "rank": 13,
+            "rank": 38,
             "chain": [
+                "create_post",
                 "get_vehicles",
-                "add_vehicle"
-            ],
-            "depth": 1,
-            "bucket": "crud",
-            "score": 54.0,
-            "captured_state": {}
-        },
-        {
-            "rank": 14,
-            "chain": [
-                "get_vehicles",
+                "validate_coupon",
                 "contact_mechanic"
             ],
-            "depth": 1,
+            "depth": 3,
             "bucket": "other",
-            "score": 54.0,
-            "captured_state": {}
+            "score": 27.0,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
         },
         {
-            "rank": 15,
+            "rank": 39,
             "chain": [
+                "get_recent_posts",
                 "get_vehicles",
-                "create_service_report"
+                "validate_coupon",
+                "contact_mechanic"
             ],
-            "depth": 1,
-            "bucket": "crud",
-            "score": 54.0,
-            "captured_state": {}
+            "depth": 3,
+            "bucket": "other",
+            "score": 27.0,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
         },
         {
-            "rank": 16,
+            "rank": 40,
             "chain": [
                 "validate_coupon",
                 "add_new_coupon"
             ],
             "depth": 1,
             "bucket": "crud",
-            "score": 54.0,
-            "captured_state": {}
+            "score": 27.0,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
         },
         {
-            "rank": 17,
+            "rank": 41,
             "chain": [
-                "validate_coupon",
-                "apply_coupon"
-            ],
-            "depth": 1,
-            "bucket": "other",
-            "score": 54.0,
-            "captured_state": {}
-        },
-        {
-            "rank": 18,
-            "chain": [
+                "get_report_byID",
+                "get_vehicles",
                 "validate_coupon",
                 "contact_mechanic"
             ],
-            "depth": 1,
+            "depth": 3,
             "bucket": "other",
-            "score": 54.0,
-            "captured_state": {}
+            "score": 27.0,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
         },
         {
-            "rank": 19,
+            "rank": 42,
             "chain": [
-                "validate_coupon",
-                "mechanic_signup"
+                "login",
+                "login_with_token"
             ],
             "depth": 1,
             "bucket": "auth",
-            "score": 54.0,
-            "captured_state": {}
+            "score": 14.5,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
         },
         {
-            "rank": 20,
+            "rank": 43,
             "chain": [
-                "get_report_byID",
-                "contact_mechanic"
+                "get_dashboard",
+                "convert_profile_video"
             ],
             "depth": 1,
             "bucket": "other",
-            "score": 54.0,
-            "captured_state": {}
+            "score": 14.5,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
         },
         {
-            "rank": 21,
+            "rank": 44,
             "chain": [
-                "get_report_byID",
-                "create_service_report"
-            ],
-            "depth": 1,
-            "bucket": "crud",
-            "score": 54.0,
-            "captured_state": {}
-        },
-        {
-            "rank": 22,
-            "chain": [
-                "get_report_byID",
+                "get_vehicles",
+                "get_location",
                 "add_vehicle"
             ],
-            "depth": 1,
+            "depth": 2,
             "bucket": "crud",
-            "score": 54.0,
-            "captured_state": {}
+            "score": 14.5,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
         },
         {
-            "rank": 23,
+            "rank": 45,
+            "chain": [
+                "get_location",
+                "get_vehicles",
+                "get_post",
+                "add_vehicle"
+            ],
+            "depth": 3,
+            "bucket": "crud",
+            "score": 14.5,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
+        },
+        {
+            "rank": 46,
+            "chain": [
+                "get_post",
+                "get_vehicles",
+                "get_location",
+                "add_vehicle"
+            ],
+            "depth": 3,
+            "bucket": "crud",
+            "score": 14.5,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
+        },
+        {
+            "rank": 47,
+            "chain": [
+                "create_post",
+                "get_vehicles",
+                "get_location",
+                "add_vehicle"
+            ],
+            "depth": 3,
+            "bucket": "crud",
+            "score": 14.5,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
+        },
+        {
+            "rank": 48,
+            "chain": [
+                "post_comment",
+                "get_vehicles",
+                "get_location",
+                "add_vehicle"
+            ],
+            "depth": 3,
+            "bucket": "crud",
+            "score": 14.5,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
+        },
+        {
+            "rank": 49,
+            "chain": [
+                "get_recent_posts",
+                "get_vehicles",
+                "get_location",
+                "add_vehicle"
+            ],
+            "depth": 3,
+            "bucket": "crud",
+            "score": 14.5,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
+        },
+        {
+            "rank": 50,
+            "chain": [
+                "get_report_byID",
+                "get_vehicles",
+                "get_location",
+                "add_vehicle"
+            ],
+            "depth": 3,
+            "bucket": "crud",
+            "score": 14.5,
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
+        },
+        {
+            "rank": 51,
             "chain": [
                 "signup"
             ],
             "depth": 0,
             "bucket": "auth",
             "score": 0,
-            "captured_state": {}
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
         },
         {
-            "rank": 24,
+            "rank": 52,
             "chain": [
                 "forgot_password"
             ],
             "depth": 0,
             "bucket": "auth",
             "score": 0,
-            "captured_state": {}
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
         },
         {
-            "rank": 25,
+            "rank": 53,
             "chain": [
                 "check_otp_v3"
             ],
             "depth": 0,
             "bucket": "other",
             "score": 0,
-            "captured_state": {}
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
         },
         {
-            "rank": 26,
+            "rank": 54,
             "chain": [
                 "check_otp_v2"
             ],
             "depth": 0,
             "bucket": "other",
             "score": 0,
-            "captured_state": {}
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
         },
         {
-            "rank": 27,
+            "rank": 55,
             "chain": [
                 "login_with_token"
             ],
             "depth": 0,
             "bucket": "auth",
             "score": 0,
-            "captured_state": {}
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
         },
         {
-            "rank": 28,
+            "rank": 56,
             "chain": [
                 "login_with_token_v2_7"
             ],
             "depth": 0,
             "bucket": "auth",
             "score": 0,
-            "captured_state": {}
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
         },
         {
-            "rank": 29,
+            "rank": 57,
             "chain": [
                 "reset_password"
             ],
             "depth": 0,
             "bucket": "auth",
             "score": 0,
-            "captured_state": {}
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
         },
         {
-            "rank": 30,
+            "rank": 58,
             "chain": [
                 "change_email"
             ],
             "depth": 0,
             "bucket": "other",
             "score": 0,
-            "captured_state": {}
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
         },
         {
-            "rank": 31,
+            "rank": 59,
             "chain": [
                 "verify_email_token"
             ],
             "depth": 0,
             "bucket": "auth",
             "score": 0,
-            "captured_state": {}
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
         },
         {
-            "rank": 32,
+            "rank": 60,
             "chain": [
                 "update_profile_pic"
             ],
             "depth": 0,
             "bucket": "crud",
             "score": 0,
-            "captured_state": {}
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
         },
         {
-            "rank": 33,
+            "rank": 61,
             "chain": [
                 "update_profile_video"
             ],
             "depth": 0,
             "bucket": "crud",
             "score": 0,
-            "captured_state": {}
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
         },
         {
-            "rank": 34,
+            "rank": 62,
             "chain": [
                 "delete_profile_video"
             ],
             "depth": 0,
             "bucket": "crud",
             "score": 0,
-            "captured_state": {}
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
         },
         {
-            "rank": 35,
+            "rank": 63,
             "chain": [
                 "convert_profile_video"
             ],
             "depth": 0,
             "bucket": "other",
             "score": 0,
-            "captured_state": {}
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
         },
         {
-            "rank": 36,
+            "rank": 64,
             "chain": [
                 "admin_delete_profile_video"
             ],
             "depth": 0,
             "bucket": "admin",
             "score": 0,
-            "captured_state": {}
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
         },
         {
-            "rank": 37,
+            "rank": 65,
             "chain": [
                 "add_vehicle"
             ],
             "depth": 0,
             "bucket": "crud",
             "score": 0,
-            "captured_state": {}
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
         },
         {
-            "rank": 38,
-            "chain": [
-                "get_location"
-            ],
-            "depth": 0,
-            "bucket": "other",
-            "score": 0,
-            "captured_state": {}
-        },
-        {
-            "rank": 39,
+            "rank": 66,
             "chain": [
                 "vehicle_resend_email"
             ],
             "depth": 0,
             "bucket": "other",
             "score": 0,
-            "captured_state": {}
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
         },
         {
-            "rank": 40,
-            "chain": [
-                "get_post"
-            ],
-            "depth": 0,
-            "bucket": "crud",
-            "score": 0,
-            "captured_state": {}
-        },
-        {
-            "rank": 41,
-            "chain": [
-                "create_post"
-            ],
-            "depth": 0,
-            "bucket": "crud",
-            "score": 0,
-            "captured_state": {}
-        },
-        {
-            "rank": 42,
-            "chain": [
-                "post_comment"
-            ],
-            "depth": 0,
-            "bucket": "crud",
-            "score": 0,
-            "captured_state": {}
-        },
-        {
-            "rank": 43,
-            "chain": [
-                "get_recent_posts"
-            ],
-            "depth": 0,
-            "bucket": "other",
-            "score": 0,
-            "captured_state": {}
-        },
-        {
-            "rank": 44,
+            "rank": 67,
             "chain": [
                 "add_new_coupon"
             ],
             "depth": 0,
             "bucket": "crud",
             "score": 0,
-            "captured_state": {}
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
         },
         {
-            "rank": 45,
+            "rank": 68,
             "chain": [
                 "get_orders"
             ],
             "depth": 0,
             "bucket": "other",
             "score": 0,
-            "captured_state": {}
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
         },
         {
-            "rank": 46,
+            "rank": 69,
             "chain": [
                 "apply_coupon"
             ],
             "depth": 0,
             "bucket": "other",
             "score": 0,
-            "captured_state": {}
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
         },
         {
-            "rank": 47,
+            "rank": 70,
             "chain": [
                 "get_workshop_qr_code"
             ],
             "depth": 0,
             "bucket": "other",
             "score": 0,
-            "captured_state": {}
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
         },
         {
-            "rank": 48,
+            "rank": 71,
             "chain": [
                 "get_workshop_users_all"
             ],
             "depth": 0,
             "bucket": "other",
             "score": 0,
-            "captured_state": {}
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
         },
         {
-            "rank": 49,
+            "rank": 72,
             "chain": [
                 "get_mechanics"
             ],
             "depth": 0,
             "bucket": "other",
             "score": 0,
-            "captured_state": {}
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
         },
         {
-            "rank": 50,
+            "rank": 73,
             "chain": [
                 "contact_mechanic"
             ],
             "depth": 0,
             "bucket": "other",
             "score": 0,
-            "captured_state": {}
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
         },
         {
-            "rank": 51,
-            "chain": [
-                "create_service_report"
-            ],
-            "depth": 0,
-            "bucket": "crud",
-            "score": 0,
-            "captured_state": {}
-        },
-        {
-            "rank": 52,
+            "rank": 74,
             "chain": [
                 "get_service_requests_for_mechanic"
             ],
             "depth": 0,
             "bucket": "other",
             "score": 0,
-            "captured_state": {}
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
         },
         {
-            "rank": 53,
+            "rank": 75,
             "chain": [
                 "mechanic_signup"
             ],
             "depth": 0,
             "bucket": "auth",
             "score": 0,
-            "captured_state": {}
+            "captured_state": {
+                "email": "example+57638@example.com",
+                "password": "securePassword123",
+                "name": "John Doe",
+                "number": "8755050728",
+                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": 10
+            },
+            "vulnerabilities": []
         }
     ]
 }

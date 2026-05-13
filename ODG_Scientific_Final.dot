@@ -70,13 +70,28 @@ digraph G {
     "validate_coupon" -> "mechanic_signup" [label="coupon_code → mechanic_code [auth/workflow]\nConf: 0.8", color="#E53935", fontcolor="#E53935"];
     "get_report_byID" -> "mechanic_signup" [label="mechanic_code → mechanic_code [auth/workflow]\nConf: 0.57", color="#E53935", fontcolor="#E53935"];
     "get_dashboard" -> "get_profile_video" [label="video_id → video_id [identity]\nConf: 0.95", color="#1E88E5", fontcolor="#1E88E5"];
-    "get_dashboard" -> "update_profile_video" [label="video_id → video_id [identity]\nConf: 0.57", color="#1E88E5", fontcolor="#1E88E5"];
+    "get_dashboard" -> "update_profile_video" [label="video_id → video_id [identity]\nvideo_id → videoformid [identity]\nConf: 0.57", color="#1E88E5", fontcolor="#1E88E5"];
     "get_dashboard" -> "delete_profile_video" [label="video_id → video_id [identity]\nConf: 0.95", color="#1E88E5", fontcolor="#1E88E5"];
     "get_dashboard" -> "convert_profile_video" [label="video_id → video_id [identity]\nConf: 0.95", color="#1E88E5", fontcolor="#1E88E5"];
     "get_dashboard" -> "admin_delete_profile_video" [label="video_id → video_id [identity]\nConf: 0.95", color="#1E88E5", fontcolor="#1E88E5"];
     "get_vehicles" -> "add_vehicle" [label="vin → vin [identity]\npincode → pincode [identity]\nConf: 0.57", color="#1E88E5", fontcolor="#1E88E5"];
-    "get_vehicles" -> "contact_mechanic" [label="vin → vin [identity]\nConf: 0.57", color="#1E88E5", fontcolor="#1E88E5"];
-    "get_vehicles" -> "create_service_report" [label="vin → vin [identity]\nConf: 0.95", color="#1E88E5", fontcolor="#1E88E5"];
+    "get_vehicles" -> "contact_mechanic" [label="vin → vin [identity]\n_vehiclesid → vin [identity]\nConf: 0.57", color="#1E88E5", fontcolor="#1E88E5"];
+    "get_vehicles" -> "create_service_report" [label="vin → vin [identity]\n_vehiclesid → vin [identity]\nConf: 0.95", color="#1E88E5", fontcolor="#1E88E5"];
+    "get_location" -> "add_vehicle" [label="carid → vin [identity]\nvehiclelocationid → vin [identity]\nConf: 0.51", color="#1E88E5", fontcolor="#1E88E5"];
+    "get_location" -> "contact_mechanic" [label="carid → vin [identity]\nvehiclelocationid → vin [identity]\nConf: 0.51", color="#1E88E5", fontcolor="#1E88E5"];
+    "get_location" -> "create_service_report" [label="carid → vin [identity]\nvehiclelocationid → vin [identity]\nConf: 0.85", color="#1E88E5", fontcolor="#1E88E5"];
+    "get_post" -> "add_vehicle" [label="vehicleid → vin [identity]\nConf: 0.51", color="#1E88E5", fontcolor="#1E88E5"];
+    "get_post" -> "contact_mechanic" [label="vehicleid → vin [identity]\nConf: 0.51", color="#1E88E5", fontcolor="#1E88E5"];
+    "get_post" -> "create_service_report" [label="vehicleid → vin [identity]\nConf: 0.85", color="#1E88E5", fontcolor="#1E88E5"];
+    "create_post" -> "add_vehicle" [label="vehicleid → vin [identity]\nConf: 0.85", color="#1E88E5", fontcolor="#1E88E5"];
+    "create_post" -> "contact_mechanic" [label="vehicleid → vin [identity]\nConf: 0.85", color="#1E88E5", fontcolor="#1E88E5"];
+    "create_post" -> "create_service_report" [label="vehicleid → vin [identity]\nConf: 0.85", color="#1E88E5", fontcolor="#1E88E5"];
+    "post_comment" -> "add_vehicle" [label="vehicleid → vin [identity]\nConf: 0.85", color="#1E88E5", fontcolor="#1E88E5"];
+    "post_comment" -> "contact_mechanic" [label="vehicleid → vin [identity]\nConf: 0.85", color="#1E88E5", fontcolor="#1E88E5"];
+    "post_comment" -> "create_service_report" [label="vehicleid → vin [identity]\nConf: 0.85", color="#1E88E5", fontcolor="#1E88E5"];
+    "get_recent_posts" -> "add_vehicle" [label="vehicleid → vin [identity]\nConf: 0.51", color="#1E88E5", fontcolor="#1E88E5"];
+    "get_recent_posts" -> "contact_mechanic" [label="vehicleid → vin [identity]\nConf: 0.51", color="#1E88E5", fontcolor="#1E88E5"];
+    "get_recent_posts" -> "create_service_report" [label="vehicleid → vin [identity]\nConf: 0.85", color="#1E88E5", fontcolor="#1E88E5"];
     "get_products" -> "create_order" [label="productid → product_id [identity]\nConf: 0.51", color="#1E88E5", fontcolor="#1E88E5"];
     "get_products" -> "update_order" [label="productid → product_id [identity]\nConf: 0.51", color="#1E88E5", fontcolor="#1E88E5"];
     "add_new_product" -> "create_order" [label="productid → product_id [identity]\nConf: 0.85", color="#1E88E5", fontcolor="#1E88E5"];
@@ -88,5 +103,5 @@ digraph G {
     "update_order" -> "return_order" [label="orderid → order_id [identity]\nConf: 0.85", color="#1E88E5", fontcolor="#1E88E5"];
     "get_order_byID" -> "return_order" [label="orderid → order_id [identity]\nConf: 0.51", color="#1E88E5", fontcolor="#1E88E5"];
     "return_order" -> "get_order_byID" [label="orderid → order_id [identity]\nConf: 0.85", color="#1E88E5", fontcolor="#1E88E5"];
-    "get_report_byID" -> "add_vehicle" [label="vin → vin [identity]\nConf: 0.57", color="#1E88E5", fontcolor="#1E88E5"];
+    "get_report_byID" -> "add_vehicle" [label="vin → vin [identity]\nvehicleid → vin [identity]\nConf: 0.57", color="#1E88E5", fontcolor="#1E88E5"];
 }
