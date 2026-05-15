@@ -94,7 +94,7 @@ def main():
     
     # ── Tạo báo cáo HTML Dashboard ───────────────────────────────────────────
     print("\n[*] Đang tạo báo cáo HTML Dashboard...")
-    generate_html_report("beam_strategies.json", "fuzzing_report.html")
+    generate_html_report("beam_strategies.json", "fuzzing_report")
     
     print("\n=== Hoàn thành toàn bộ hệ thống! ===")
 

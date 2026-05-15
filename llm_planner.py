@@ -138,11 +138,17 @@ Rules:
         if method in ("GET", "DELETE"):
             return {}
 
+        source = "LLM"
         payload = self._llm_generate(api_node, state, edge_deps=edge_deps)
         if payload is None:
+            source = "HEURISTIC"
             payload = self._heuristic_generate(api_node, state, edge_deps=edge_deps)
 
-        log.info(f"\033[95m[LLM Payload]\033[0m {api_node['id']} → {json.dumps(payload, ensure_ascii=False)[:200]}")
+        if source == "LLM":
+            log.info(f"\033[95m[LLM Payload]\033[0m {api_node['id']} → {json.dumps(payload, ensure_ascii=False)[:200]}")
+        else:
+            log.info(f"\033[93m[HEURISTIC Payload]\033[0m {api_node['id']} → {json.dumps(payload, ensure_ascii=False)[:200]}")
+            
         return payload
 
     def _build_prompt(self, api_node: Dict, state: StateStore, edge_deps: Optional[list] = None) -> str:
@@ -161,7 +167,7 @@ Rules:
                 field_lines.append(f"  - {field_name}")
         fields_block = "\n".join(field_lines) if field_lines else "  (no explicit schema)"
 
-        AUTH_KEYS = {"auth_token", "token_type", "user_role", "password"}
+        AUTH_KEYS = {"auth_token", "token_type", "user_role"}
         context_lines = []
         for k, v in state.memory.items():
             if k in AUTH_KEYS:
@@ -274,6 +280,6 @@ RULES:
         if ftype == "number": return 0.01
         if ftype == "boolean": return True
         if re.search(r"email", field_name, re.I): return "fuzz@test.com"
-        if re.search(r"phone|mobile", field_name, re.I): return "+84900000000"
+        if re.search(r"phone|mobile|number", field_name, re.I): return "+84900000000"
         if re.search(r"password|pass", field_name, re.I): return "Fuzz@12345!"
         return "fuzz_test_value"

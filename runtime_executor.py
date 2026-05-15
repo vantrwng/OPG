@@ -122,6 +122,8 @@ class RequestExecutor:
             "edge_failure":    edge_failure,
             "anomaly_details": anomaly["anomaly_details"],
             "raw_response":    response_json,
+            "response_text":   response.text if hasattr(response, 'text') else "",
+            "sent_payload":    sent_payload,
         }
 
     def _build_url(self, path: str, api_node: Dict, state: StateStore, payload: Dict) -> str:
@@ -183,6 +185,8 @@ class RequestExecutor:
             "edge_failure":     edge_failure,
             "anomaly_details":  [f"Request to {api_id} failed (network error)"],
             "raw_response":     None,
+            "response_text":    "",
+            "sent_payload":     {},
         }
 
     @staticmethod

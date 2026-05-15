@@ -67,11 +67,18 @@ class RuleInferenceLayer:
         if any(kw in tokens for kw in ['balance', 'credit', 'amount', 'price', 'fee']):
             return 'finance'
 
+        # Structural ID rule: single token kết thúc bằng 'id' và đủ dài
+        # (VD: 'orderid', 'vehicleid', 'petid', 'reportid'...)
+        # Không hardcode domain — hoạt động với bất kỳ Swagger nào.
+        if len(tokens) == 1 and tokens[0].endswith('id') and len(tokens[0]) > 3:
+            return 'identity'
+
         # LLM Fallback: Lấy từ cache
         cached = self.planner.get_semantic_cache(norm_field)
         if cached:
             return cached
         return 'unknown'
+
 
     def calculate_jaccard(self, norm_out, norm_in):
         """Tính Jaccard Similarity cơ bản."""

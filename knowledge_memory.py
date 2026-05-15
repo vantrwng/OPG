@@ -27,13 +27,20 @@ class KnowledgeMemory:
     def get_visit_count(self, api_id: str) -> int:
         return self.node_visit_count.get(api_id, 0)
 
-    def record_request(self, api_id: str, method: str, path: str, status: int, chain: list = None):
+    def record_request(self, api_id: str, method: str, path: str, status: int, chain: list = None, response_text: str = None, request_payload: dict = None):
         if api_id not in self.endpoint_stats:
-            self.endpoint_stats[api_id] = {"visits": 0, "status_counts": {}}
+            self.endpoint_stats[api_id] = {"visits": 0, "status_counts": {}, "all_requests": []}
         
         stats = self.endpoint_stats[api_id]["status_counts"]
+        all_requests = self.endpoint_stats[api_id].setdefault("all_requests", [])
         status_str = str(status)
         stats[status_str] = stats.get(status_str, 0) + 1
+        
+        all_requests.append({
+            "status": status_str,
+            "request_payload": request_payload if request_payload is not None else {},
+            "response_text": response_text if response_text is not None else ""
+        })
         
         self.request_history.append({
             "api_id": api_id,

@@ -113,12 +113,24 @@ class TestStrategyEngine:
                     'dependencies': edge.get('dependencies', [])
                 })
 
-    def resolve_missing_dependencies(self, api_node, state, current_chain, recursion_depth=0):
-        MAX_RECURSION = 2
-        if recursion_depth >= MAX_RECURSION:
+    def resolve_missing_dependencies(self, api_node, state, current_chain,
+                                       recursion_depth=0, visited=None, budget=None):
+        MAX_RECURSION = 4        # Hướng 5: tăng từ 2 lên 4 thay vì cố định
+        MAX_PROVIDER_CALLS = 6   # Hướng 5: giới hạn tổng số request phụ
+
+        if visited is None:
+            visited = set()
+        if budget is None:
+            budget = [MAX_PROVIDER_CALLS]  # dùng list để pass by reference
+
+        if recursion_depth >= MAX_RECURSION or budget[0] <= 0:
             return
 
         api_id = api_node.get('id')
+        if api_id in visited:
+            return
+        visited.add(api_id)
+
         inputs_schema = api_node.get("inputs", {})
         if not inputs_schema:
             return
@@ -126,14 +138,25 @@ class TestStrategyEngine:
         def _norm(name):
             return re.sub(r'[_\-\.\s]', '', str(name)).lower()
 
+        # ── Hướng 1: Chỉ xét field required hoặc path parameter ──────────────
         missing_fields = []
         state_keys_norm = set(_norm(k) for k in state.memory.keys())
-        
+
         for field_name, meta in inputs_schema.items():
-            original = meta.get("original", field_name) if isinstance(meta, dict) else field_name
+            if not isinstance(meta, dict):
+                continue
+
+            is_required = meta.get("required", False)
+            location    = meta.get("in", "body")
+
+            # Bỏ qua nếu optional và không phải path param
+            if not is_required and location != "path":
+                continue
+
+            original = meta.get("original", field_name)
             orig_norm = _norm(original)
-            fld_norm = _norm(field_name)
-            
+            fld_norm  = _norm(field_name)
+
             if orig_norm not in state_keys_norm and fld_norm not in state_keys_norm:
                 missing_fields.append(orig_norm)
 
@@ -141,42 +164,95 @@ class TestStrategyEngine:
             return
 
         providers = self.incoming_edges.get(api_id, [])
+
         for missing_field in missing_fields:
-            resolved = False
+            if budget[0] <= 0:
+                break
+
+            # ── Hướng 2: Xây danh sách candidate + sort theo confidence + runtime score ──
+            candidates = []
             for provider in providers:
-                deps = provider.get('dependencies', [])
-                for dep in deps:
-                    cons_norm = _norm(dep.get('consumer_field', ''))
-                    if cons_norm == missing_field:
-                        provider_id = provider['from']
-                        if provider_id in current_chain:
-                            continue
-                        
-                        provider_node = self.operations_map.get(provider_id)
-                        if not provider_node:
-                            continue
-                            
-                        print(f"{'  ' * (recursion_depth + 1)}[Sub-task] {api_id} thiếu '{missing_field}'. Tracing ngược về gọi {provider_id}...")
-                        
-                        edge_deps = [{'producer_field': dep['producer_field'], 'consumer_field': dep['consumer_field']}]
-                        
-                        exec_result = self.executor.execute_request(
-                            api_node=provider_node,
-                            current_state=state,
-                            edge_deps=edge_deps
-                        )
-                        
-                        current_chain.append(provider_id)
-                        
-                        if exec_result["status"] in (200, 201, 202):
-                            resolved = True
-                            print(f"{'  ' * (recursion_depth + 1)}[+] Resolve '{missing_field}' thành công!")
-                            break
-                        else:
-                            print(f"{'  ' * (recursion_depth + 1)}[-] Resolve '{missing_field}' thất bại (HTTP {exec_result['status']}).")
-                            
-                if resolved:
+                if provider['from'] in visited or provider['from'] in current_chain:
+                    continue
+                for dep in provider.get('dependencies', []):
+                    if _norm(dep.get('consumer_field', '')) != missing_field:
+                        continue
+
+                    provider_id = provider['from']
+                    static_conf = dep.get('confidence', 0.0)
+
+                    # Runtime score từ edge_feedback
+                    edge_key = f"{provider_id}->{api_id}"
+                    fb = self.memory.edge_feedback.get(edge_key, {})
+                    s  = fb.get('success', 0)
+                    f  = fb.get('failure', 0)
+                    runtime_score = (s + 1) / (s + f + 2)  # Laplace smoothing
+                    combined = 0.7 * static_conf + 0.3 * runtime_score
+
+                    candidates.append({
+                        'provider_id': provider_id,
+                        'dep':         dep,
+                        'score':       combined
+                    })
+
+            # Sắp xếp: provider tốt nhất lên trước
+            candidates.sort(key=lambda x: x['score'], reverse=True)
+
+            resolved = False
+            for cand in candidates:
+                if budget[0] <= 0:
                     break
+
+                provider_id   = cand['provider_id']
+                dep           = cand['dep']
+                provider_node = self.operations_map.get(provider_id)
+                if not provider_node:
+                    continue
+
+                indent = '  ' * (recursion_depth + 1)
+                print(f"{indent}[Sub-task] {api_id} thiếu '{missing_field}'. "
+                      f"Thử provider '{provider_id}' (score={cand['score']:.2f})...")
+
+                edge_deps = [{'producer_field': dep['producer_field'],
+                              'consumer_field': dep['consumer_field']}]
+
+                # ── Đệ quy resolve dependencies của chính provider ────────────
+                self.resolve_missing_dependencies(
+                    provider_node, state, current_chain,
+                    recursion_depth + 1, visited, budget
+                )
+
+                exec_result = self.executor.execute_request(
+                    api_node=provider_node,
+                    current_state=state,
+                    edge_deps=edge_deps
+                )
+                budget[0] -= 1
+
+                # ── Hướng 3: Ghi nhận request của provider vào KnowledgeMemory ──
+                self.memory.record_request(
+                    api_id=provider_id,
+                    method=provider_node.get("method", "GET").upper(),
+                    path=provider_node.get("path", "/"),
+                    status=exec_result["status"],
+                    chain=list(current_chain),
+                    response_text=exec_result.get("response_text", ""),
+                    request_payload=exec_result.get("sent_payload", {})
+                )
+
+                current_chain.append(provider_id)
+
+                if exec_result["status"] in (200, 201, 202):
+                    resolved = True
+                    print(f"{indent}[+] Resolve '{missing_field}' thành công via '{provider_id}'!")
+                    break
+                else:
+                    print(f"{indent}[-] Provider '{provider_id}' thất bại "
+                          f"(HTTP {exec_result['status']}). Thử provider tiếp theo...")
+
+            if not resolved:
+                print(f"{'  ' * (recursion_depth + 1)}[!] Không resolve được '{missing_field}' "
+                      f"cho '{api_id}' sau khi thử {len(candidates)} provider(s).")
 
     def get_highest_confidence_edge(self, current_api, next_api):
         edges = self.adjacency_list.get(current_api, [])
@@ -234,7 +310,10 @@ class TestStrategyEngine:
                     prev_api = beam['chain'][-2]
                     best_edge = self.get_highest_confidence_edge(prev_api, current_api)
                     if best_edge:
-                        edge_deps = best_edge.get('dependencies', [])
+                        # Chỉ dùng dep primary/secondary để sinh payload; không dùng dep fallback
+                        all_deps = best_edge.get('dependencies', [])
+                        strong_deps = [d for d in all_deps if d.get('importance', 'primary') != 'fallback']
+                        edge_deps = strong_deps if strong_deps else all_deps
 
                 self.resolve_missing_dependencies(api_node, current_state, beam['chain'])
 
@@ -251,7 +330,9 @@ class TestStrategyEngine:
                     method=api_node.get("method", "GET").upper(),
                     path=api_node.get("path", "/"),
                     status=status,
-                    chain=beam['chain']
+                    chain=beam['chain'],
+                    response_text=exec_result.get("response_text", ""),
+                    request_payload=exec_result.get("sent_payload", {})
                 )
                 
                 already_found = self.memory.is_vulnerability_found(current_api, status)
@@ -288,33 +369,42 @@ class TestStrategyEngine:
                 current_score = beam['score'] + base_score
 
                 # TÌM CÁC NHÁNH (NEIGHBORS) ĐỂ RẼ NHÁNH CHO DEPTH TIẾP THEO
-                neighbors = [edge['to'] for edge in self.adjacency_list.get(current_api, []) if edge.get('max_confidence', 0) > 0]
-                
+                # Lấy toàn bộ neighbor kèm edge_type để có thể penalize fallback
+                outgoing_edges = self.adjacency_list.get(current_api, [])
+                neighbor_edges = [
+                    edge for edge in outgoing_edges
+                    if edge.get('max_confidence', 0) > 0 and edge['to'] not in beam['chain']
+                ]
+
                 has_valid_branch = False
-                if depth < max_depth and neighbors:
-                    for n in neighbors:
-                        if n not in beam['chain']:  # Tránh loop vòng tròn
-                            has_valid_branch = True
-                            new_chain = list(beam['chain'])
-                            new_chain.append(n)
-                            
-                            new_beam = {
-                                'chain': new_chain,
-                                'score': current_score,
-                                'state': current_state.clone(),
-                                'vulnerabilities': list(vulnerabilities)
-                            }
-                            
-                            if depth <= bfs_threshold:
-                                if len(next_beams) < 500:
-                                    next_beams.append(new_beam)
-                            else:
-                                bucket_manager.add_to_bucket(
-                                    chain=new_beam['chain'],
-                                    score=new_beam['score'],
-                                    state=new_beam['state'],
-                                    vulnerabilities=new_beam['vulnerabilities']
-                                )
+                if depth < max_depth and neighbor_edges:
+                    for edge in neighbor_edges:
+                        n         = edge['to']
+                        edge_type = edge.get('edge_type', 'strong')
+                        has_valid_branch = True
+                        new_chain = list(beam['chain'])
+                        new_chain.append(n)
+
+                        # Penalty cho fallback edge: giảm ưu tiên trong beam
+                        fallback_penalty = -10 if edge_type == 'fallback' else 0
+
+                        new_beam = {
+                            'chain': new_chain,
+                            'score': current_score + fallback_penalty,
+                            'state': current_state.clone(),
+                            'vulnerabilities': list(vulnerabilities)
+                        }
+
+                        if depth <= bfs_threshold:
+                            if len(next_beams) < 500:
+                                next_beams.append(new_beam)
+                        else:
+                            bucket_manager.add_to_bucket(
+                                chain=new_beam['chain'],
+                                score=new_beam['score'],
+                                state=new_beam['state'],
+                                vulnerabilities=new_beam['vulnerabilities']
+                            )
 
                 # Nếu là depth cuối, hoặc API này không có ngõ ra nào (đường cụt), ta lưu lại làm chiến thuật hoàn chỉnh.
                 if depth == max_depth or not has_valid_branch:

@@ -1,1867 +1,2072 @@
 {
-    "total_strategies_found": 75,
+    "summary": {
+        "total_requests": 93,
+        "server_errors_500": 9,
+        "auth_anomalies": 0,
+        "total_strategies_found": 71,
+        "total_findings": 9
+    },
+    "endpoint_stats": {
+        "signup": {
+            "visits": 1,
+            "status_counts": {
+                "403": 1
+            },
+            "responses": {
+                "403": "{\"message\":\"Email already registered! Email: fuzzer_297b50be@test.com\",\"status\":403}"
+            }
+        },
+        "login": {
+            "visits": 1,
+            "status_counts": {
+                "200": 1
+            },
+            "responses": {
+                "200": "{\"token\":\"eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg4MjkwODEsImV4cCI6MTc3OTQzMzg4MSwicm9sZSI6InVzZXIifQ.Z436zpgs-laSZ7tPubRIS7dZo6rR0jn0q30Zld0rjsCYBuMMaaptnsxGvhpfLX9yqqFX08UD_pSEUxA7RLYk1piNP-FyeqAULak2ZtoYZmz2Xg8sHH39vacv7esXFXkC1hH2Awb8kUGQlSLGQegqY7RV5O5DcizRdtH0o4uPeRvbv0BmJRP5GGKqRcTyiGp61-d54aoBJ1j4IEo1y6jC-NrUmV6nbIIYSsc47KYaGFi0YMvi8yHUJFmWwGp9zaOHmcG6cPMXtmNpxLToTEEw93Ob_HlKRZhT0iihdDJQm61Yg1IC17v3vsH0dTIXHo5Dz0iljThZ1QWHUiCZTzfGaw\",\"type\":\"Bearer\",\"message\":\"Login successful\",\"mfaRequired\":false}"
+            }
+        },
+        "forgot_password": {
+            "visits": 1,
+            "status_counts": {
+                "200": 1
+            },
+            "responses": {
+                "200": "{\"message\":\"OTP Sent on the provided email, fuzzer_297b50be@test.com\",\"status\":200}"
+            }
+        },
+        "check_otp_v3": {
+            "visits": 1,
+            "status_counts": {
+                "500": 1
+            },
+            "responses": {
+                "500": "{\"message\":\"Invalid OTP! Please try again..\",\"status\":500}"
+            }
+        },
+        "check_otp_v2": {
+            "visits": 1,
+            "status_counts": {
+                "500": 1
+            },
+            "responses": {
+                "500": "{\"message\":\"Invalid OTP! Please try again..\",\"status\":500}"
+            }
+        },
+        "login_with_token": {
+            "visits": 2,
+            "status_counts": {
+                "403": 2
+            },
+            "responses": {
+                "403": "{\"message\":\"Our security team made us remove the \\\"Login with token\\\" feature because it's not secure enough. It's not available after API version 2.7\",\"status\":403}"
+            }
+        },
+        "login_with_token_v2_7": {
+            "visits": 2,
+            "status_counts": {
+                "400": 2
+            },
+            "responses": {
+                "400": "{\"message\":\"Validation failed\",\"details\":\"org.springframework.validation.BeanPropertyBindingResult: 1 errors\\nField error in object 'loginWithEmailToken' on field 'token': rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]\"}"
+            }
+        },
+        "reset_password": {
+            "visits": 1,
+            "status_counts": {
+                "200": 1
+            },
+            "responses": {
+                "200": "{\"message\":\"Password reset successful.\",\"status\":0}"
+            }
+        },
+        "change_email": {
+            "visits": 1,
+            "status_counts": {
+                "200": 1
+            },
+            "responses": {
+                "200": "{\"message\":\"The token has been sent to your email. If you have used example.com email, check your email using the MailHog web portal.   john.doe@example.com\",\"status\":200}"
+            }
+        },
+        "verify_email_token": {
+            "visits": 2,
+            "status_counts": {
+                "500": 2
+            },
+            "responses": {
+                "500": "{\"message\":\"Sorry, Token did't match\",\"status\":500}"
+            }
+        },
+        "get_dashboard": {
+            "visits": 1,
+            "status_counts": {
+                "200": 1
+            },
+            "responses": {
+                "200": "{\"id\":9,\"name\":\"John Doe\",\"email\":\"fuzzer_297b50be@test.com\",\"number\":\"+1234567890\",\"picture_url\":null,\"video_url\":null,\"video_name\":null,\"available_credit\":180.0,\"video_id\":0,\"role\":\"ROLE_USER\"}"
+            }
+        },
+        "update_profile_pic": {
+            "visits": 1,
+            "status_counts": {
+                "500": 1
+            },
+            "responses": {
+                "500": "Current request is not a multipart request"
+            }
+        },
+        "upload_profile_video": {
+            "visits": 1,
+            "status_counts": {
+                "500": 1
+            },
+            "responses": {
+                "500": "Current request is not a multipart request"
+            }
+        },
+        "get_profile_video": {
+            "visits": 2,
+            "status_counts": {
+                "404": 2
+            },
+            "responses": {
+                "404": "{\"message\":\"Video not found.\",\"status\":404}"
+            }
+        },
+        "update_profile_video": {
+            "visits": 5,
+            "status_counts": {
+                "404": 5
+            },
+            "responses": {
+                "404": "{\"message\":\"Sorry, Didn't get any profile video name for the user.fuzzer_297b50be@test.com\",\"status\":404}"
+            }
+        },
+        "delete_profile_video": {
+            "visits": 2,
+            "status_counts": {
+                "404": 2
+            },
+            "responses": {
+                "404": "{\"message\":\"Sorry, Didn't get any profile video name for the user.\",\"status\":404}"
+            }
+        },
+        "convert_profile_video": {
+            "visits": 2,
+            "status_counts": {
+                "403": 2
+            },
+            "responses": {
+                "403": "{\"message\":\"Thi-S endpoint S-hould be accessed only inte-Rnally. -Fine? , endpoint_url http://crapi-identity:8080/identity/api/v2/user/videos/convert_video\",\"status\":403}"
+            }
+        },
+        "admin_delete_profile_video": {
+            "visits": 2,
+            "status_counts": {
+                "404": 2
+            },
+            "responses": {
+                "404": "{\"message\":\"Sorry, Didn't get any profile video name for the user.\",\"status\":404}"
+            }
+        },
+        "get_vehicles": {
+            "visits": 1,
+            "status_counts": {
+                "200": 1
+            },
+            "responses": {
+                "200": "[]"
+            }
+        },
+        "add_vehicle": {
+            "visits": 8,
+            "status_counts": {
+                "403": 8
+            },
+            "responses": {
+                "403": "{\"message\":\"Sorry, This Vehicle is already added.\",\"status\":403}"
+            }
+        },
+        "get_location": {
+            "visits": 1,
+            "status_counts": {
+                "400": 1
+            },
+            "responses": {
+                "400": "{\"type\":\"about:blank\",\"title\":\"Bad Request\",\"status\":400,\"detail\":\"Failed to convert 'carId' with value: '1'\",\"instance\":\"/identity/api/v2/vehicle/1/location\"}"
+            }
+        },
+        "vehicle_resend_email": {
+            "visits": 1,
+            "status_counts": {
+                "200": 1
+            },
+            "responses": {
+                "200": "{\"message\":\"Your newly purchased Vehicle Details have been sent to you email address. If you have used example.com email, check your email using the MailHog web portal. \",\"status\":200}"
+            }
+        },
+        "get_post": {
+            "visits": 1,
+            "status_counts": {
+                "400": 1
+            },
+            "responses": {
+                "400": "{\"error\":\"mongo: no documents in result\"}\n{\"id\":\"\",\"title\":\"\",\"content\":\"\",\"author\":{\"nickname\":\"\",\"email\":\"\",\"vehicleid\":\"\",\"profile_pic_url\":\"\",\"created_at\":\"0001-01-01T00:00:00Z\"},\"comments\":null,\"authorid\":0,\"CreatedAt\":\"0001-01-01T00:00:00Z\"}\n"
+            }
+        },
+        "create_post": {
+            "visits": 1,
+            "status_counts": {
+                "200": 1
+            },
+            "responses": {
+                "200": "{\"id\":\"zRasqwbXDVADwGgoLTtwuC\",\"title\":\"Test Post Title\",\"content\":\"This is a sample post content created for testing purposes.\",\"author\":{\"nickname\":\"John Doe\",\"email\":\"fuzzer_297b50be@test.com\",\"vehicleid\":\"\",\"profile_pic_url\":\"\",\"created_at\":\"2026-05-15T07:12:20.07349762Z\"},\"comments\":[],\"authorid\":9,\"CreatedAt\":\"2026-05-15T07:12:20.07349773Z\"}\n"
+            }
+        },
+        "post_comment": {
+            "visits": 1,
+            "status_counts": {
+                "500": 1
+            },
+            "responses": {
+                "500": "{\"error\":\"mongo: no documents in result\"}\n"
+            }
+        },
+        "get_recent_posts": {
+            "visits": 1,
+            "status_counts": {
+                "200": 1
+            },
+            "responses": {
+                "200": "{\"posts\":[{\"id\":\"zRasqwbXDVADwGgoLTtwuC\",\"title\":\"Test Post Title\",\"content\":\"This is a sample post content created for testing purposes.\",\"author\":{\"nickname\":\"John Doe\",\"email\":\"fuzzer_297b50be@test.com\",\"vehicleid\":\"\",\"profile_pic_url\":\"\",\"created_at\":\"2026-05-15T07:12:20.073Z\"},\"comments\":[],\"authorid\":9,\"CreatedAt\":\"2026-05-15T07:12:20.073Z\"},{\"id\":\"bFhdYNXuC3fLCJiyWsy8VS\",\"title\":\"Community Engagement Post\",\"content\":\"This is a sample post content to engage the community.\",\"author\":{\"nickname\":\"John Doe\",\"email\":\"fuzzer_297b50be@test.com\",\"vehicleid\":\"\",\"profile_pic_url\":\"\",\"created_at\":\"2026-05-15T07:12:14.541Z\"},\"comments\":[],\"authorid\":9,\"CreatedAt\":\"2026-05-15T07:12:14.541Z\"},{\"id\":\"REpoAERDYzyMp2Lh5oppZk\",\"title\":\"Community Engagement Activities\",\"content\":\"This is a sample post content for testing purposes. It can include various details about the community\\u0026#39;s activities and events.\",\"author\":{\"nickname\":\"John Doe\",\"email\":\"fuzzer_297b50be@test.com\",\"vehicleid\":\"\",\"profile_pic_url\":\"\",\"created_at\":\"2026-05-15T07:08:10.663Z\"},\"comments\":[],\"authorid\":9,\"CreatedAt\":\"2026-05-15T07:08:10.663Z\"},{\"id\":\"kebitttXmX6rRgrLvhL52k\",\"title\":\"Sample Post Title\",\"content\":\"This is a sample post content created for testing purposes.\",\"author\":{\"nickname\":\"John Doe\",\"email\":\"fuzzer_297b50be@test.com\",\"vehicleid\":\"\",\"profile_pic_url\":\"\",\"created_at\":\"2026-05-15T06:08:14.125Z\"},\"comments\":[],\"authorid\":9,\"CreatedAt\":\"2026-05-15T06:08:14.125Z\"},{\"id\":\"C5pawcLktpcQtHBZKVNhCW\",\"title\":\"Sample Post Title\",\"content\":\"This is a sample post content for testing the API fuzzer functionality.\",\"author\":{\"nickname\":\"John Doe\",\"email\":\"fuzzer_297b50be@test.com\",\"vehicleid\":\"\",\"profile_pic_url\":\"\",\"created_at\":\"2026-05-13T09:54:36.398Z\"},\"comments\":[],\"authorid\":9,\"CreatedAt\":\"2026-05-13T09:54:36.398Z\"},{\"id\":\"teZoXmAzV6poF4EVeaibqP\",\"title\":\"Fuzzing API Post Example\",\"content\":\"This is a sample post content created for the API testing purposes.\",\"author\":{\"nickname\":\"John Doe\",\"email\":\"fuzzer_297b50be@test.com\",\"vehicleid\":\"\",\"profile_pic_url\":\"\",\"created_at\":\"2026-05-13T09:54:04.744Z\"},\"comments\":[],\"authorid\":9,\"CreatedAt\":\"2026-05-13T09:54:04.744Z\"},{\"id\":\"U8wkpAQd3CZJyAZVp2MMJP\",\"title\":\"Fuzzing API Post Example\",\"content\":\"This is a test post generated for API fuzzing purposes.\",\"author\":{\"nickname\":\"John Doe\",\"email\":\"fuzzer_297b50be@test.com\",\"vehicleid\":\"\",\"profile_pic_url\":\"\",\"created_at\":\"2026-05-13T09:53:42.695Z\"},\"comments\":[],\"authorid\":9,\"CreatedAt\":\"2026-05-13T09:53:42.695Z\"},{\"id\":\"kSaoejgyLuHXZVqJLrDKVU\",\"title\":\"Engaging the Community: Share Your Thoughts!\",\"content\":\"This is a sample post content about community engagement and sharing ideas.\",\"author\":{\"nickname\":\"John Doe\",\"email\":\"fuzzer_297b50be@test.com\",\"vehicleid\":\"\",\"profile_pic_url\":\"\",\"created_at\":\"2026-05-13T09:52:56.131Z\"},\"comments\":[],\"authorid\":9,\"CreatedAt\":\"2026-05-13T09:52:56.131Z\"},{\"id\":\"acxg9pA7pMmYbsLpB62E57\",\"title\":\"Latest Trends in Technology\",\"content\":\"This is a sample post content discussing the latest trends in technology.\",\"author\":{\"nickname\":\"John Doe\",\"email\":\"fuzzer_297b50be@test.com\",\"vehicleid\":\"\",\"profile_pic_url\":\"\",\"created_at\":\"2026-05-13T09:52:54.562Z\"},\"comments\":[],\"authorid\":9,\"CreatedAt\":\"2026-05-13T09:52:54.562Z\"},{\"id\":\"PdJA7y4XHwpZG8s3SfZwiD\",\"title\":\"Latest Trends in Technology\",\"content\":\"This is a sample post content discussing the latest trends in technology.\",\"author\":{\"nickname\":\"John Doe\",\"email\":\"fuzzer_297b50be@test.com\",\"vehicleid\":\"\",\"profile_pic_url\":\"\",\"created_at\":\"2026-05-13T09:52:46.769Z\"},\"comments\":[],\"authorid\":9,\"CreatedAt\":\"2026-05-13T09:52:46.769Z\"},{\"id\":\"QoE4in3rgviyrJfwMtFa8k\",\"title\":\"Thoughts on Community Engagement\",\"content\":\"This is a sample post content created by John Doe to share insights and engage with the community.\",\"author\":{\"nickname\":\"John Doe\",\"email\":\"fuzzer_297b50be@test.com\",\"vehicleid\":\"\",\"profile_pic_url\":\"\",\"created_at\":\"2026-05-13T09:52:43.405Z\"},\"comments\":[],\"authorid\":9,\"CreatedAt\":\"2026-05-13T09:52:43.405Z\"},{\"id\":\"qk8FwPq78HhFSCdYGGDSmd\",\"title\":\"Exploring the Future of Tech\",\"content\":\"This is a sample post content discussing the latest trends in technology.\",\"author\":{\"nickname\":\"John Doe\",\"email\":\"fuzzer_297b50be@test.com\",\"vehicleid\":\"\",\"profile_pic_url\":\"\",\"created_at\":\"2026-05-13T09:50:39.624Z\"},\"comments\":[],\"authorid\":9,\"CreatedAt\":\"2026-05-13T09:50:39.624Z\"},{\"id\":\"VTShdxMcgGDTACZik2pWhA\",\"title\":\"Exploring Community Engagement Strategies\",\"content\":\"This is a sample post content discussing various aspects of community engagement.\",\"author\":{\"nickname\":\"John Doe\",\"email\":\"fuzzer_297b50be@test.com\",\"vehicleid\":\"\",\"profile_pic_url\":\"\",\"created_at\":\"2026-05-13T09:50:33.123Z\"},\"comments\":[],\"authorid\":9,\"CreatedAt\":\"2026-05-13T09:50:33.123Z\"},{\"id\":\"fpmtJ5daA2BELt2mpFGYRD\",\"title\":\"Title 3\",\"content\":\"Hello world 3\",\"author\":{\"nickname\":\"Robot\",\"email\":\"robot001@example.com\",\"vehicleid\":\"4bae9968-ec7f-4de3-a3a0-ba1b2ab5e5e5\",\"profile_pic_url\":\"\",\"created_at\":\"2026-05-13T09:36:00.429Z\"},\"comments\":[],\"authorid\":3,\"CreatedAt\":\"2026-05-13T09:36:00.429Z\"},{\"id\":\"3eNc5iYCds7wL4Rf275Q2C\",\"title\":\"Title 2\",\"content\":\"Hello world 2\",\"author\":{\"nickname\":\"Pogba\",\"email\":\"pogba006@example.com\",\"vehicleid\":\"cd515c12-0fc1-48ae-8b61-9230b70a845b\",\"profile_pic_url\":\"\",\"created_at\":\"2026-05-13T09:36:00.427Z\"},\"comments\":[],\"authorid\":2,\"CreatedAt\":\"2026-05-13T09:36:00.427Z\"},{\"id\":\"5r5egLnwc5Q4WG7MZHpgbn\",\"title\":\"Title 1\",\"content\":\"Hello world 1\",\"author\":{\"nickname\":\"Adam\",\"email\":\"adam007@example.com\",\"vehicleid\":\"f89b5f21-7829-45cb-a650-299a61090378\",\"profile_pic_url\":\"\",\"created_at\":\"2026-05-13T09:36:00.405Z\"},\"comments\":[],\"authorid\":1,\"CreatedAt\":\"2026-05-13T09:36:00.405Z\"}],\"next_offset\":null,\"previous_offset\":null,\"total\":16}\n"
+            }
+        },
+        "add_new_coupon": {
+            "visits": 2,
+            "status_counts": {
+                "200": 2
+            },
+            "responses": {
+                "200": "\"Coupon Added in database\"\n"
+            }
+        },
+        "validate_coupon": {
+            "visits": 1,
+            "status_counts": {
+                "200": 1
+            },
+            "responses": {
+                "200": "{\"coupon_code\":\"SAVE20\",\"amount\":\"15.00\",\"CreatedAt\":\"2026-05-13T09:50:45.022Z\"}\n"
+            }
+        },
+        "get_products": {
+            "visits": 1,
+            "status_counts": {
+                "200": 1
+            },
+            "responses": {
+                "200": "{\"products\":[{\"id\":16,\"name\":\"Sample Product\",\"price\":\"19.99\",\"image_url\":\"https://example.com/images/sample-product.jpg\"},{\"id\":15,\"name\":\"Sample Product\",\"price\":\"19.99\",\"image_url\":\"https://example.com/images/sample-product.jpg\"},{\"id\":14,\"name\":\"Sample Product\",\"price\":\"19.99\",\"image_url\":\"https://example.com/images/sample-product.jpg\"},{\"id\":13,\"name\":\"Sample Product\",\"price\":\"19.99\",\"image_url\":\"https://example.com/images/sample-product.jpg\"},{\"id\":12,\"name\":\"Sample Product\",\"price\":\"19.99\",\"image_url\":\"https://example.com/images/sample-product.jpg\"},{\"id\":11,\"name\":\"Sample Product\",\"price\":\"19.99\",\"image_url\":\"https://example.com/images/sample-product.jpg\"},{\"id\":10,\"name\":\"Example Product\",\"price\":\"19.99\",\"image_url\":\"https://example.com/image.jpg\"},{\"id\":9,\"name\":\"Sample Product\",\"price\":\"19.99\",\"image_url\":\"https://example.com/images/sample-product.jpg\"},{\"id\":8,\"name\":\"Sample Product\",\"price\":\"19.99\",\"image_url\":\"https://example.com/images/sample-product.jpg\"},{\"id\":7,\"name\":\"Sample Product\",\"price\":\"19.99\",\"image_url\":\"https://example.com/images/sample-product.jpg\"},{\"id\":6,\"name\":\"Sample Product\",\"price\":\"19.99\",\"image_url\":\"https://example.com/image.jpg\"},{\"id\":5,\"name\":\"Sample Product\",\"price\":\"19.99\",\"image_url\":\"https://example.com/images/sample-product.jpg\"},{\"id\":4,\"name\":\"Sample Product\",\"price\":\"19.99\",\"image_url\":\"https://example.com/images/sample-product.jpg\"},{\"id\":3,\"name\":\"Sample Product\",\"price\":\"29.99\",\"image_url\":\"https://example.com/images/sample-product.jpg\"},{\"id\":2,\"name\":\"Wheel\",\"price\":\"10.00\",\"image_url\":\"images/wheel.svg\"},{\"id\":1,\"name\":\"Seat\",\"price\":\"10.00\",\"image_url\":\"images/seat.svg\"}],\"credit\":180.0,\"next_offset\":null,\"previous_offset\":null,\"count\":16}"
+            }
+        },
+        "add_new_product": {
+            "visits": 6,
+            "status_counts": {
+                "200": 6
+            },
+            "responses": {
+                "200": "{\"id\":17,\"name\":\"Sample Product\",\"price\":\"29.99\",\"image_url\":\"https://example.com/images/sample-product.jpg\"}"
+            }
+        },
+        "create_order": {
+            "visits": 4,
+            "status_counts": {
+                "500": 4
+            },
+            "responses": {
+                "500": "\n<!doctype html>\n<html lang=\"en\">\n<head>\n  <title>Server Error (500)</title>\n</head>\n<body>\n  <h1>Server Error (500)</h1><p></p>\n</body>\n</html>\n"
+            }
+        },
+        "update_order": {
+            "visits": 2,
+            "status_counts": {
+                "403": 2
+            },
+            "responses": {
+                "403": "{\"message\":\"You are not allowed to access this resource!\"}"
+            }
+        },
+        "get_order_byID": {
+            "visits": 1,
+            "status_counts": {
+                "200": 1
+            },
+            "responses": {
+                "200": "{\"order\":{\"id\":1,\"user\":{\"email\":\"adam007@example.com\",\"number\":\"9876895423\"},\"product\":{\"id\":1,\"name\":\"Seat\",\"price\":\"10.00\",\"image_url\":\"images/seat.svg\"},\"quantity\":2,\"status\":\"delivered\",\"transaction_id\":\"1acaf45b-a5dc-464c-b3ed-be3c4ac6611d\",\"created_on\":\"2026-05-13T09:36:21.476071\"},\"payment\":{\"transaction_id\":\"1acaf45b-a5dc-464c-b3ed-be3c4ac6611d\",\"order_id\":1,\"amount\":20,\"paid_on\":\"2026-05-13T09:36:21.476071\",\"card_number\":\"XXXXXXXXXXXX9541\",\"card_owner_name\":\"Adam\",\"card_type\":\"Visa\",\"card_expiry\":\"12/2027\",\"currency\":\"USD\"}}"
+            }
+        },
+        "get_orders": {
+            "visits": 1,
+            "status_counts": {
+                "200": 1
+            },
+            "responses": {
+                "200": "{\"orders\":[{\"id\":6,\"user\":{\"email\":\"fuzzer_297b50be@test.com\",\"number\":\"+1234567890\"},\"product\":{\"id\":1,\"name\":\"Seat\",\"price\":\"10.00\",\"image_url\":\"images/seat.svg\"},\"quantity\":2,\"status\":\"delivered\",\"transaction_id\":\"867aac2d-e87a-42d5-a758-f40a2c348318\",\"created_on\":\"2026-05-13T09:50:55.717090\"}],\"next_offset\":null,\"previous_offset\":null,\"count\":1}"
+            }
+        },
+        "return_order": {
+            "visits": 3,
+            "status_counts": {
+                "500": 3
+            },
+            "responses": {
+                "500": "\n<!doctype html>\n<html lang=\"en\">\n<head>\n  <title>Server Error (500)</title>\n</head>\n<body>\n  <h1>Server Error (500)</h1><p></p>\n</body>\n</html>\n"
+            }
+        },
+        "apply_coupon": {
+            "visits": 2,
+            "status_counts": {
+                "400": 2
+            },
+            "responses": {
+                "400": "{\"message\":\"SAVE20 Coupon code is already claimed by you!! Please try with another coupon code\"}"
+            }
+        },
+        "get_workshop_qr_code": {
+            "visits": 1,
+            "status_counts": {
+                "200": 1
+            },
+            "responses": {
+                "200": "�PNG\r\n\u001a\n\u0000\u0000\u0000\rIHDR\u0000\u0000\u0004�\u0000\u0000\u0004�\b\u0002\u0000\u0000\u0000�Nc�\u0000\u0000\u0000\u0006bKGD\u0000�\u0000�\u0000�����\u0000\u0000\u001b�IDATx��ف��8\u0012\u0000����w�΁�b�͜\u0016#\u001cPI\"5�����\u0000\u0000\u0000��o=\u0000\u0000\u0000��\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ğz��f�\u001e\u0001���&׭�ou������v���{\u0003��}���\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ğz\u0000\u0000����#\u001c���\bG�v��z��9\u0003�ˉ\u0019\u0000\u0000@̉�Q�o��r�Y\n\u0000?��\u0006��\u001b'91\u0003\u0000\u0000�\t3\u0000\u0000��0\u0003\u0000\u0000�\t3\u0000\u0000��0\u0003\u0000\u0000�\t3\u0000\u0000��0\u0003\u0000\u0000�\t3\u0000\u0000��0\u0003\u0000\u0000�\t3\u0000\u0000��0\u0003\u0000\u0000�\t3\u0000\u0000��0\u0003\u0000\u0000�\t3\u0000\u0000��0\u0003\u0000\u0000�\t3\u0000\u0000��0\u0003\u0000\u0000�\t3\u0000\u0000��0\u0003\u0000\u0000�\t3\u0000\u0000��0\u0003\u0000\u0000�\t3\u0000\u0000��0\u0003\u0000\u0000�\t3\u0000\u0000��0\u0003\u0000\u0000�\t3\u0000\u0000��0\u0003\u0000\u0000�\t3\u0000\u0000��0\u0003\u0000\u0000�\t3\u0000\u0000��0\u0003\u0000\u0000�\t3\u0000\u0000��0\u0003\u0000\u0000�\t3\u0000\u0000��0\u0003\u0000\u0000�\t3\u0000\u0000��0\u0003\u0000\u0000�=�\u0000|���#\\aw�\u0011x�j]��ݸ�~�\u0013�3��x7'f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u0000��\u001e\u0000�v7���$ׅO��\u0000~''f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u0000��\u001e\u0000�f&���&׽�~+��o��\u0000�3'f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u0000��\u001e����z\u0004�k��<3�u+���m�I��O�m\u001f�'81\u0003\u0000\u0000�\t3\u0000\u0000��0\u0003\u0000\u0000�\t3\u0000\u0000��0\u0003\u0000\u0000�\t3\u0000\u0000��0\u0003\u0000\u0000�\t3\u0000\u0000��0\u0003\u0000\u0000�\t3\u0000\u0000��0\u0003\u0000\u0000�\t3\u0000\u0000��0\u0003\u0000\u0000�\t3\u0000\u0000��0\u0003\u0000\u0000�\t3\u0000\u0000��0\u0003\u0000\u0000�\t3\u0000\u0000��0\u0003\u0000\u0000�\t3\u0000\u0000��0\u0003\u0000\u0000�\t3\u0000\u0000��0\u0003\u0000\u0000�\t3\u0000\u0000��0\u0003\u0000\u0000�\t3\u0000\u0000��0\u0003\u0000\u0000�\t3\u0000\u0000��0\u0003\u0000\u0000�\t3\u0000\u0000��0\u0003\u0000\u0000�\t3\u0000\u0000��0\u0003\u0000\u0000�\t3\u0000\u0000��0\u0003\u0000\u0000�\t3\u0000\u0000��0\u0003\u0000\u0000�=�\u0000w��z\u0004\u0000���ހo��\f\u0000\u0000 ��\f�\u001a���w7���}���/\u0000��\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 6�[�\u0000��L=\u0002|=�7\u0000�̉\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@�\u00078mf���nr�J���M���m�������?��|�>�ܶ���\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000�fw�\u0019�03�\bW��s�~��3��3��3n[Ϸ����/gܶ�*N�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b���\fW��z����3�+���̻�^�Q}7n{���\u0019N�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000bO=\u0000�43�\bW��z���uU=���r��ZWgx���w\u000e���\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 6�[��\u000b�L=\u0002\u001ft�w��|���j\u001fU��w�7�m�V��\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ğz��f&���&��ݪuu�>�ϸm]U�[��9�������͉\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@lv��ᨙ�G����|ۺ��x7���۾W��o�s�Mn�{��\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 ��\u0003�bw�\u0011x!�7����>r�g�v���y����\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 6�[�p��$׭�su�\u0015���۾\u001b��m=Wn�G�\u0015����\u0019�}�*N�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b���\f\u0000?23�\b|P��Ⱥz7�sΨ����\u0019��\u0019N�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000bO=�i3S�\u0000_ow�\u0011����^�v���~ϸm����l=���\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 ��\u0003\u0000��Lr��M��~�����'X�g81\u0003\u0000\u0000�91;��\u001b�[��\u001b\u0000�M��\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ğz\u0000>kf�\u0011����\b|�}\u0004����Mn[Ϸ��rb\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010{�\u0001\u0000~�ݭG����#\u001cU�o����\u0019�W𽜘\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ą\u0019\u0000\u0000@L�\u0001\u0000\u0000Ğz\u0000����z��f�\u001e���V����\\�~ϸ�{\u0005���\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 ��\u0003�Y�[�\u0000����;3W]�3�=:�}t�w�wsb\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010{�\u0001�23�\b\u0000\u0000����\f\u0000\u0000 ��\f�\u001aΜ�{ݶw���V�u�9�\tN�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b�\f\u0000\u0000 &�\u0000\u0000\u0000b���\f\u0000\u0000\u0000Wsb\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006\u0000\u0000\u0010\u0013f\u0000\u0000\u00001a\u0006��~\u001d\u000b\u0000\u0000\u0000\u0000\f�\u001eƞ�\b\u0000���\u0001\u0000\u0000��\f\u0000\u0000`&f\u0000\u0000\u000031\u0003\u0000\u0000��\u0019\u0000\u0000�L�\u0000\u0000\u0000fb\u0006\u0000\u00000\u00133\u0000\u0000���\u0001\u0000\u0000��\f\u0000\u0000`\u0016�\u0006�.�\n3C\u0000\u0000\u0000\u0000IEND�B`�"
+            }
+        },
+        "get_workshop_users_all": {
+            "visits": 1,
+            "status_counts": {
+                "200": 1
+            },
+            "responses": {
+                "200": "{\"users\":[{\"user\":{\"email\":\"adam007@example.com\",\"number\":\"9876895423\"},\"available_credit\":100.0},{\"user\":{\"email\":\"pogba006@example.com\",\"number\":\"9876570006\"},\"available_credit\":100.0},{\"user\":{\"email\":\"robot001@example.com\",\"number\":\"9876570001\"},\"available_credit\":100.0},{\"user\":{\"email\":\"test@example.com\",\"number\":\"9876540001\"},\"available_credit\":100.0},{\"user\":{\"email\":\"admin@example.com\",\"number\":\"9010203040\"},\"available_credit\":100.0},{\"user\":{\"email\":\"jhon@example.com\",\"number\":\"\"},\"available_credit\":0.0},{\"user\":{\"email\":\"james@example.com\",\"number\":\"\"},\"available_credit\":0.0},{\"user\":{\"email\":\"fuzzer_da15377e@test.com\",\"number\":\"9876543210\"},\"available_credit\":100.0},{\"user\":{\"email\":\"fuzzer_297b50be@test.com\",\"number\":\"+1234567890\"},\"available_credit\":180.0}],\"next_offset\":null,\"previous_offset\":null,\"count\":9}"
+            }
+        },
+        "get_mechanics": {
+            "visits": 1,
+            "status_counts": {
+                "200": 1
+            },
+            "responses": {
+                "200": "{\"mechanics\":[{\"id\":1,\"mechanic_code\":\"TRAC_JHN\",\"user\":{\"email\":\"jhon@example.com\",\"number\":\"\"}},{\"id\":2,\"mechanic_code\":\"TRAC_JME\",\"user\":{\"email\":\"james@example.com\",\"number\":\"\"}}],\"previous_offset\":null,\"next_offset\":null}"
+            }
+        },
+        "contact_mechanic": {
+            "visits": 9,
+            "status_counts": {
+                "400": 9
+            },
+            "responses": {
+                "400": "{\"message\":\"Could not connect to mechanic api.\"}"
+            }
+        },
+        "create_service_report": {
+            "visits": 9,
+            "status_counts": {
+                "400": 9
+            },
+            "responses": {
+                "400": "{\"mechanic_code\":[\"This field is required.\"],\"problem_details\":[\"This field is required.\"],\"vin\":[\"This field is required.\"]}"
+            }
+        },
+        "get_report_byID": {
+            "visits": 1,
+            "status_counts": {
+                "500": 1
+            },
+            "responses": {
+                "500": "\n<!doctype html>\n<html lang=\"en\">\n<head>\n  <title>Server Error (500)</title>\n</head>\n<body>\n  <h1>Server Error (500)</h1><p></p>\n</body>\n</html>\n"
+            }
+        },
+        "get_service_requests_for_mechanic": {
+            "visits": 1,
+            "status_counts": {
+                "200": 1
+            },
+            "responses": {
+                "200": "{\"service_requests\":[],\"next_offset\":null,\"previous_offset\":null,\"count\":0}"
+            }
+        },
+        "mechanic_signup": {
+            "visits": 3,
+            "status_counts": {
+                "400": 3
+            },
+            "responses": {
+                "400": "{\"message\":\"Email already Registered!\"}"
+            }
+        }
+    },
+    "edge_feedback": {
+        "login_with_token->login_with_token": {
+            "success": 1,
+            "failure": 0
+        },
+        "login_with_token_v2_7->login_with_token_v2_7": {
+            "success": 0,
+            "failure": 1
+        },
+        "verify_email_token->verify_email_token": {
+            "success": 1,
+            "failure": 0
+        },
+        "get_profile_video->get_profile_video": {
+            "success": 1,
+            "failure": 0
+        },
+        "update_profile_video->update_profile_video": {
+            "success": 2,
+            "failure": 0
+        },
+        "delete_profile_video->delete_profile_video": {
+            "success": 1,
+            "failure": 0
+        },
+        "convert_profile_video->convert_profile_video": {
+            "success": 1,
+            "failure": 0
+        },
+        "admin_delete_profile_video->admin_delete_profile_video": {
+            "success": 1,
+            "failure": 0
+        },
+        "get_post->add_vehicle": {
+            "success": 6,
+            "failure": 0
+        },
+        "add_new_coupon->add_new_coupon": {
+            "success": 1,
+            "failure": 0
+        },
+        "update_order->add_new_product": {
+            "success": 1,
+            "failure": 0
+        },
+        "update_order->create_order": {
+            "success": 2,
+            "failure": 0
+        },
+        "get_products->update_order": {
+            "success": 1,
+            "failure": 0
+        },
+        "update_order->get_order_byID": {
+            "success": 1,
+            "failure": 0
+        },
+        "update_order->return_order": {
+            "success": 1,
+            "failure": 0
+        },
+        "apply_coupon->apply_coupon": {
+            "success": 0,
+            "failure": 1
+        },
+        "get_vehicles->contact_mechanic": {
+            "success": 0,
+            "failure": 7
+        },
+        "validate_coupon->create_service_report": {
+            "success": 0,
+            "failure": 6
+        },
+        "mechanic_signup->mechanic_signup": {
+            "success": 0,
+            "failure": 3
+        },
+        "login->login_with_token": {
+            "success": 1,
+            "failure": 0
+        },
+        "login->login_with_token_v2_7": {
+            "success": 0,
+            "failure": 1
+        },
+        "login->verify_email_token": {
+            "success": 1,
+            "failure": 0
+        },
+        "get_dashboard->get_profile_video": {
+            "success": 1,
+            "failure": 0
+        },
+        "get_dashboard->update_profile_video": {
+            "success": 2,
+            "failure": 0
+        },
+        "get_dashboard->delete_profile_video": {
+            "success": 1,
+            "failure": 0
+        },
+        "get_dashboard->convert_profile_video": {
+            "success": 1,
+            "failure": 0
+        },
+        "get_dashboard->admin_delete_profile_video": {
+            "success": 1,
+            "failure": 0
+        },
+        "create_post->contact_mechanic": {
+            "success": 0,
+            "failure": 1
+        },
+        "get_post->create_service_report": {
+            "success": 0,
+            "failure": 1
+        },
+        "get_location->add_vehicle": {
+            "success": 1,
+            "failure": 0
+        },
+        "post_comment->add_vehicle": {
+            "success": 1,
+            "failure": 0
+        },
+        "validate_coupon->contact_mechanic": {
+            "success": 0,
+            "failure": 1
+        },
+        "get_report_byID->create_service_report": {
+            "success": 0,
+            "failure": 2
+        },
+        "validate_coupon->add_new_coupon": {
+            "success": 1,
+            "failure": 0
+        },
+        "validate_coupon->apply_coupon": {
+            "success": 0,
+            "failure": 1
+        },
+        "get_order_byID->add_new_product": {
+            "success": 1,
+            "failure": 0
+        },
+        "add_new_product->update_order": {
+            "success": 1,
+            "failure": 0
+        },
+        "create_order->create_order": {
+            "success": 1,
+            "failure": 0
+        },
+        "get_order_byID->return_order": {
+            "success": 2,
+            "failure": 0
+        },
+        "return_order->add_new_product": {
+            "success": 2,
+            "failure": 0
+        },
+        "add_new_product->add_new_product": {
+            "success": 2,
+            "failure": 0
+        },
+        "get_profile_video->update_profile_video": {
+            "success": 1,
+            "failure": 0
+        },
+        "return_order->create_order": {
+            "success": 1,
+            "failure": 0
+        }
+    },
+    "findings": [
+        {
+            "api": "check_otp_v3",
+            "method": "POST",
+            "path": "/identity/api/auth/v3/check-otp",
+            "status": 500,
+            "details": [
+                "HTTP 500 — possible crash/unhandled exception"
+            ],
+            "type": "Crash/500",
+            "chain": [
+                "check_otp_v3"
+            ]
+        },
+        {
+            "api": "check_otp_v2",
+            "method": "POST",
+            "path": "/identity/api/auth/v2/check-otp",
+            "status": 500,
+            "details": [
+                "HTTP 500 — possible crash/unhandled exception"
+            ],
+            "type": "Crash/500",
+            "chain": [
+                "check_otp_v2"
+            ]
+        },
+        {
+            "api": "verify_email_token",
+            "method": "POST",
+            "path": "/identity/api/v2/user/verify-email-token",
+            "status": 500,
+            "details": [
+                "HTTP 500 — possible crash/unhandled exception"
+            ],
+            "type": "Crash/500",
+            "chain": [
+                "verify_email_token",
+                "login"
+            ]
+        },
+        {
+            "api": "update_profile_pic",
+            "method": "POST",
+            "path": "/identity/api/v2/user/pictures",
+            "status": 500,
+            "details": [
+                "HTTP 500 — possible crash/unhandled exception"
+            ],
+            "type": "Crash/500",
+            "chain": [
+                "update_profile_pic"
+            ]
+        },
+        {
+            "api": "upload_profile_video",
+            "method": "POST",
+            "path": "/identity/api/v2/user/videos",
+            "status": 500,
+            "details": [
+                "HTTP 500 — possible crash/unhandled exception"
+            ],
+            "type": "Crash/500",
+            "chain": [
+                "upload_profile_video"
+            ]
+        },
+        {
+            "api": "post_comment",
+            "method": "POST",
+            "path": "/community/api/v2/community/posts/{postId}/comment",
+            "status": 500,
+            "details": [
+                "HTTP 500 — possible crash/unhandled exception"
+            ],
+            "type": "Crash/500",
+            "chain": [
+                "post_comment"
+            ]
+        },
+        {
+            "api": "create_order",
+            "method": "POST",
+            "path": "/workshop/api/shop/orders",
+            "status": 500,
+            "details": [
+                "HTTP 500 — possible crash/unhandled exception"
+            ],
+            "type": "Crash/500",
+            "chain": [
+                "create_order",
+                "get_products",
+                "update_order",
+                "get_order_byID"
+            ]
+        },
+        {
+            "api": "return_order",
+            "method": "POST",
+            "path": "/workshop/api/shop/orders/return_order",
+            "status": 500,
+            "details": [
+                "HTTP 500 — possible crash/unhandled exception"
+            ],
+            "type": "Crash/500",
+            "chain": [
+                "return_order",
+                "create_order",
+                "update_order",
+                "get_order_byID"
+            ]
+        },
+        {
+            "api": "get_report_byID",
+            "method": "GET",
+            "path": "/workshop/api/mechanic/mechanic_report",
+            "status": 500,
+            "details": [
+                "HTTP 500 — possible crash/unhandled exception"
+            ],
+            "type": "Crash/500",
+            "chain": [
+                "get_report_byID"
+            ]
+        }
+    ],
     "top_strategies": [
         {
-            "rank": 1,
-            "chain": [
-                "login",
-                "login_with_token_v2_7"
-            ],
-            "depth": 1,
-            "bucket": "auth",
-            "score": 132.0,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": [
-                {
-                    "api_id": "login_with_token_v2_7",
-                    "status": 500,
-                    "details": [
-                        "HTTP 500 — possible crash/unhandled exception"
-                    ]
-                }
-            ]
-        },
-        {
-            "rank": 2,
-            "chain": [
-                "login",
-                "verify_email_token"
-            ],
-            "depth": 1,
-            "bucket": "auth",
-            "score": 132.0,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": [
-                {
-                    "api_id": "verify_email_token",
-                    "status": 500,
-                    "details": [
-                        "HTTP 500 — possible crash/unhandled exception"
-                    ]
-                }
-            ]
-        },
-        {
-            "rank": 3,
-            "chain": [
-                "create_service_report",
-                "get_report_byID",
-                "validate_coupon",
-                "mechanic_signup"
-            ],
-            "depth": 3,
-            "bucket": "auth",
-            "score": 102.9558,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": [
-                {
-                    "api_id": "get_report_byID",
-                    "status": 500,
-                    "details": [
-                        "HTTP 500 — possible crash/unhandled exception"
-                    ]
-                }
-            ]
-        },
-        {
-            "rank": 4,
-            "chain": [
-                "create_service_report",
-                "get_report_byID",
-                "get_vehicles",
-                "validate_coupon",
-                "contact_mechanic"
-            ],
-            "depth": 4,
-            "bucket": "other",
-            "score": 95.5556,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": [
-                {
-                    "api_id": "get_report_byID",
-                    "status": 500,
-                    "details": [
-                        "HTTP 500 — possible crash/unhandled exception"
-                    ]
-                }
-            ]
-        },
-        {
-            "rank": 5,
-            "chain": [
-                "create_service_report",
-                "get_report_byID",
-                "get_vehicles",
-                "get_location",
-                "add_vehicle"
-            ],
-            "depth": 4,
-            "bucket": "crud",
-            "score": 87.5592,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": [
-                {
-                    "api_id": "get_report_byID",
-                    "status": 500,
-                    "details": [
-                        "HTTP 500 — possible crash/unhandled exception"
-                    ]
-                }
-            ]
-        },
-        {
-            "rank": 6,
-            "chain": [
-                "get_location",
-                "validate_coupon",
-                "get_vehicles",
-                "create_service_report",
-                "get_report_byID",
-                "get_post",
-                "contact_mechanic"
-            ],
-            "depth": 6,
-            "bucket": "other",
-            "score": 40.862,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": [
-                {
-                    "api_id": "get_report_byID",
-                    "status": 500,
-                    "details": [
-                        "HTTP 500 — possible crash/unhandled exception"
-                    ]
-                }
-            ]
-        },
-        {
-            "rank": 7,
-            "chain": [
-                "create_post",
-                "validate_coupon",
-                "get_vehicles",
-                "create_service_report",
-                "get_report_byID",
-                "get_location",
-                "contact_mechanic"
-            ],
-            "depth": 6,
-            "bucket": "other",
-            "score": 40.862,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": [
-                {
-                    "api_id": "get_report_byID",
-                    "status": 500,
-                    "details": [
-                        "HTTP 500 — possible crash/unhandled exception"
-                    ]
-                }
-            ]
-        },
-        {
-            "rank": 8,
-            "chain": [
-                "get_vehicles",
-                "validate_coupon",
-                "get_location",
-                "create_service_report",
-                "get_report_byID",
-                "mechanic_signup"
-            ],
-            "depth": 5,
-            "bucket": "auth",
-            "score": 40.7268,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": [
-                {
-                    "api_id": "get_report_byID",
-                    "status": 500,
-                    "details": [
-                        "HTTP 500 — possible crash/unhandled exception"
-                    ]
-                }
-            ]
-        },
-        {
-            "rank": 9,
-            "chain": [
-                "get_location",
-                "validate_coupon",
-                "get_vehicles",
-                "create_service_report",
-                "get_report_byID",
-                "mechanic_signup"
-            ],
-            "depth": 5,
-            "bucket": "auth",
-            "score": 40.7268,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": [
-                {
-                    "api_id": "get_report_byID",
-                    "status": 500,
-                    "details": [
-                        "HTTP 500 — possible crash/unhandled exception"
-                    ]
-                }
-            ]
-        },
-        {
-            "rank": 10,
-            "chain": [
-                "get_post",
-                "validate_coupon",
-                "get_vehicles",
-                "create_service_report",
-                "get_report_byID",
-                "mechanic_signup"
-            ],
-            "depth": 5,
-            "bucket": "auth",
-            "score": 40.7268,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": [
-                {
-                    "api_id": "get_report_byID",
-                    "status": 500,
-                    "details": [
-                        "HTTP 500 — possible crash/unhandled exception"
-                    ]
-                }
-            ]
-        },
-        {
-            "rank": 11,
-            "chain": [
-                "create_post",
-                "validate_coupon",
-                "get_vehicles",
-                "create_service_report",
-                "get_report_byID",
-                "mechanic_signup"
-            ],
-            "depth": 5,
-            "bucket": "auth",
-            "score": 40.7268,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": [
-                {
-                    "api_id": "get_report_byID",
-                    "status": 500,
-                    "details": [
-                        "HTTP 500 — possible crash/unhandled exception"
-                    ]
-                }
-            ]
-        },
-        {
-            "rank": 12,
-            "chain": [
-                "post_comment",
-                "validate_coupon",
-                "get_vehicles",
-                "create_service_report",
-                "get_report_byID",
-                "mechanic_signup"
-            ],
-            "depth": 5,
-            "bucket": "auth",
-            "score": 40.7268,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": [
-                {
-                    "api_id": "get_report_byID",
-                    "status": 500,
-                    "details": [
-                        "HTTP 500 — possible crash/unhandled exception"
-                    ]
-                }
-            ]
-        },
-        {
-            "rank": 13,
-            "chain": [
-                "get_recent_posts",
-                "validate_coupon",
-                "get_vehicles",
-                "create_service_report",
-                "get_report_byID",
-                "mechanic_signup"
-            ],
-            "depth": 5,
-            "bucket": "auth",
-            "score": 40.7268,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": [
-                {
-                    "api_id": "get_report_byID",
-                    "status": 500,
-                    "details": [
-                        "HTTP 500 — possible crash/unhandled exception"
-                    ]
-                }
-            ]
-        },
-        {
-            "rank": 14,
-            "chain": [
-                "get_vehicles",
-                "validate_coupon",
-                "get_location",
-                "create_service_report",
-                "get_report_byID",
-                "get_post",
-                "contact_mechanic"
-            ],
-            "depth": 6,
-            "bucket": "other",
-            "score": 39.1953,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": [
-                {
-                    "api_id": "get_report_byID",
-                    "status": 500,
-                    "details": [
-                        "HTTP 500 — possible crash/unhandled exception"
-                    ]
-                }
-            ]
-        },
-        {
-            "rank": 15,
-            "chain": [
-                "get_recent_posts",
-                "validate_coupon",
-                "get_vehicles",
-                "create_service_report",
-                "get_report_byID",
-                "get_location",
-                "contact_mechanic"
-            ],
-            "depth": 6,
-            "bucket": "other",
-            "score": 39.1953,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": [
-                {
-                    "api_id": "get_report_byID",
-                    "status": 500,
-                    "details": [
-                        "HTTP 500 — possible crash/unhandled exception"
-                    ]
-                }
-            ]
-        },
-        {
-            "rank": 16,
-            "chain": [
-                "get_post",
-                "validate_coupon",
-                "get_vehicles",
-                "create_service_report",
-                "get_report_byID",
-                "get_location",
-                "contact_mechanic"
-            ],
-            "depth": 6,
-            "bucket": "other",
-            "score": 37.5287,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": [
-                {
-                    "api_id": "get_report_byID",
-                    "status": 500,
-                    "details": [
-                        "HTTP 500 — possible crash/unhandled exception"
-                    ]
-                }
-            ]
-        },
-        {
-            "rank": 17,
-            "chain": [
-                "post_comment",
-                "validate_coupon",
-                "get_vehicles",
-                "create_service_report",
-                "get_report_byID",
-                "get_location",
-                "contact_mechanic"
-            ],
-            "depth": 6,
-            "bucket": "other",
-            "score": 37.5287,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": [
-                {
-                    "api_id": "get_report_byID",
-                    "status": 500,
-                    "details": [
-                        "HTTP 500 — possible crash/unhandled exception"
-                    ]
-                }
-            ]
-        },
-        {
-            "rank": 18,
-            "chain": [
-                "get_vehicles",
-                "validate_coupon",
-                "get_location",
-                "create_service_report",
-                "get_report_byID",
-                "get_post",
-                "add_vehicle"
-            ],
-            "depth": 6,
-            "bucket": "crud",
-            "score": 33.5046,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": [
-                {
-                    "api_id": "get_report_byID",
-                    "status": 500,
-                    "details": [
-                        "HTTP 500 — possible crash/unhandled exception"
-                    ]
-                }
-            ]
-        },
-        {
-            "rank": 19,
-            "chain": [
-                "get_location",
-                "validate_coupon",
-                "get_vehicles",
-                "create_service_report",
-                "get_report_byID",
-                "get_post",
-                "add_vehicle"
-            ],
-            "depth": 6,
-            "bucket": "crud",
-            "score": 33.5046,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": [
-                {
-                    "api_id": "get_report_byID",
-                    "status": 500,
-                    "details": [
-                        "HTTP 500 — possible crash/unhandled exception"
-                    ]
-                }
-            ]
-        },
-        {
-            "rank": 20,
-            "chain": [
-                "get_post",
-                "validate_coupon",
-                "get_vehicles",
-                "create_service_report",
-                "get_report_byID",
-                "get_location",
-                "add_vehicle"
-            ],
-            "depth": 6,
-            "bucket": "crud",
-            "score": 33.5046,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": [
-                {
-                    "api_id": "get_report_byID",
-                    "status": 500,
-                    "details": [
-                        "HTTP 500 — possible crash/unhandled exception"
-                    ]
-                }
-            ]
-        },
-        {
-            "rank": 21,
-            "chain": [
-                "create_post",
-                "validate_coupon",
-                "get_vehicles",
-                "create_service_report",
-                "get_report_byID",
-                "get_location",
-                "add_vehicle"
-            ],
-            "depth": 6,
-            "bucket": "crud",
-            "score": 33.5046,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": [
-                {
-                    "api_id": "get_report_byID",
-                    "status": 500,
-                    "details": [
-                        "HTTP 500 — possible crash/unhandled exception"
-                    ]
-                }
-            ]
-        },
-        {
-            "rank": 22,
-            "chain": [
-                "post_comment",
-                "validate_coupon",
-                "get_vehicles",
-                "create_service_report",
-                "get_report_byID",
-                "get_location",
-                "add_vehicle"
-            ],
-            "depth": 6,
-            "bucket": "crud",
-            "score": 33.5046,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": [
-                {
-                    "api_id": "get_report_byID",
-                    "status": 500,
-                    "details": [
-                        "HTTP 500 — possible crash/unhandled exception"
-                    ]
-                }
-            ]
-        },
-        {
-            "rank": 23,
-            "chain": [
-                "get_recent_posts",
-                "validate_coupon",
-                "get_vehicles",
-                "create_service_report",
-                "get_report_byID",
-                "get_location",
-                "add_vehicle"
-            ],
-            "depth": 6,
-            "bucket": "crud",
-            "score": 33.5046,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": [
-                {
-                    "api_id": "get_report_byID",
-                    "status": 500,
-                    "details": [
-                        "HTTP 500 — possible crash/unhandled exception"
-                    ]
-                }
-            ]
-        },
-        {
-            "rank": 24,
-            "chain": [
-                "get_vehicles",
-                "get_location",
-                "validate_coupon",
-                "contact_mechanic"
-            ],
-            "depth": 3,
-            "bucket": "other",
-            "score": 32.0,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": []
-        },
-        {
-            "rank": 25,
-            "chain": [
-                "get_location",
-                "get_vehicles",
-                "validate_coupon",
-                "contact_mechanic"
-            ],
-            "depth": 3,
-            "bucket": "other",
-            "score": 32.0,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": []
-        },
-        {
-            "rank": 26,
-            "chain": [
-                "get_post",
-                "get_vehicles",
-                "validate_coupon",
-                "contact_mechanic"
-            ],
-            "depth": 3,
-            "bucket": "other",
-            "score": 32.0,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": []
-        },
-        {
-            "rank": 27,
-            "chain": [
-                "post_comment",
-                "get_vehicles",
-                "validate_coupon",
-                "contact_mechanic"
-            ],
-            "depth": 3,
-            "bucket": "other",
-            "score": 32.0,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": []
-        },
-        {
-            "rank": 28,
-            "chain": [
-                "validate_coupon",
-                "apply_coupon"
-            ],
-            "depth": 1,
-            "bucket": "other",
-            "score": 32.0,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": []
-        },
-        {
-            "rank": 29,
-            "chain": [
-                "validate_coupon",
-                "get_vehicles",
-                "create_service_report",
-                "get_report_byID",
-                "contact_mechanic"
-            ],
-            "depth": 4,
-            "bucket": "other",
-            "score": 32.0,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": []
-        },
-        {
-            "rank": 30,
-            "chain": [
-                "validate_coupon",
-                "create_service_report",
-                "get_report_byID",
-                "mechanic_signup"
-            ],
-            "depth": 3,
-            "bucket": "auth",
-            "score": 32.0,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": []
-        },
-        {
-            "rank": 31,
-            "chain": [
-                "get_report_byID",
-                "validate_coupon",
-                "mechanic_signup"
-            ],
-            "depth": 2,
-            "bucket": "auth",
-            "score": 32.0,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": []
-        },
-        {
-            "rank": 32,
-            "chain": [
-                "get_dashboard",
-                "get_profile_video",
-                "update_profile_video"
-            ],
-            "depth": 2,
-            "bucket": "crud",
-            "score": 28.3333,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": []
-        },
-        {
-            "rank": 33,
-            "chain": [
-                "get_dashboard",
-                "update_profile_video"
-            ],
-            "depth": 1,
-            "bucket": "crud",
             "score": 27.0,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": []
-        },
-        {
-            "rank": 34,
-            "chain": [
-                "get_dashboard",
-                "delete_profile_video"
-            ],
-            "depth": 1,
-            "bucket": "crud",
-            "score": 27.0,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": []
-        },
-        {
-            "rank": 35,
-            "chain": [
-                "get_dashboard",
-                "admin_delete_profile_video"
-            ],
-            "depth": 1,
-            "bucket": "admin",
-            "score": 27.0,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": []
-        },
-        {
-            "rank": 36,
-            "chain": [
-                "upload_profile_video",
-                "get_dashboard",
-                "update_profile_video"
-            ],
-            "depth": 2,
-            "bucket": "crud",
-            "score": 27.0,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": []
-        },
-        {
-            "rank": 37,
-            "chain": [
-                "get_profile_video",
-                "get_dashboard",
-                "update_profile_video"
-            ],
-            "depth": 2,
-            "bucket": "crud",
-            "score": 27.0,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": []
-        },
-        {
-            "rank": 38,
-            "chain": [
-                "create_post",
-                "get_vehicles",
-                "validate_coupon",
-                "contact_mechanic"
-            ],
-            "depth": 3,
-            "bucket": "other",
-            "score": 27.0,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": []
-        },
-        {
-            "rank": 39,
-            "chain": [
-                "get_recent_posts",
-                "get_vehicles",
-                "validate_coupon",
-                "contact_mechanic"
-            ],
-            "depth": 3,
-            "bucket": "other",
-            "score": 27.0,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": []
-        },
-        {
-            "rank": 40,
-            "chain": [
-                "validate_coupon",
-                "add_new_coupon"
-            ],
-            "depth": 1,
-            "bucket": "crud",
-            "score": 27.0,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": []
-        },
-        {
-            "rank": 41,
-            "chain": [
-                "get_report_byID",
-                "get_vehicles",
-                "validate_coupon",
-                "contact_mechanic"
-            ],
-            "depth": 3,
-            "bucket": "other",
-            "score": 27.0,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": []
-        },
-        {
-            "rank": 42,
-            "chain": [
-                "login",
-                "login_with_token"
-            ],
-            "depth": 1,
-            "bucket": "auth",
-            "score": 14.5,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": []
-        },
-        {
-            "rank": 43,
-            "chain": [
-                "get_dashboard",
-                "convert_profile_video"
-            ],
-            "depth": 1,
-            "bucket": "other",
-            "score": 14.5,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": []
-        },
-        {
-            "rank": 44,
-            "chain": [
-                "get_vehicles",
-                "get_location",
-                "add_vehicle"
-            ],
-            "depth": 2,
-            "bucket": "crud",
-            "score": 14.5,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": []
-        },
-        {
-            "rank": 45,
-            "chain": [
-                "get_location",
-                "get_vehicles",
-                "get_post",
-                "add_vehicle"
-            ],
-            "depth": 3,
-            "bucket": "crud",
-            "score": 14.5,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": []
-        },
-        {
-            "rank": 46,
-            "chain": [
-                "get_post",
-                "get_vehicles",
-                "get_location",
-                "add_vehicle"
-            ],
-            "depth": 3,
-            "bucket": "crud",
-            "score": 14.5,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": []
-        },
-        {
-            "rank": 47,
-            "chain": [
-                "create_post",
-                "get_vehicles",
-                "get_location",
-                "add_vehicle"
-            ],
-            "depth": 3,
-            "bucket": "crud",
-            "score": 14.5,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": []
-        },
-        {
-            "rank": 48,
-            "chain": [
-                "post_comment",
-                "get_vehicles",
-                "get_location",
-                "add_vehicle"
-            ],
-            "depth": 3,
-            "bucket": "crud",
-            "score": 14.5,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": []
-        },
-        {
-            "rank": 49,
-            "chain": [
-                "get_recent_posts",
-                "get_vehicles",
-                "get_location",
-                "add_vehicle"
-            ],
-            "depth": 3,
-            "bucket": "crud",
-            "score": 14.5,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": []
-        },
-        {
-            "rank": 50,
-            "chain": [
-                "get_report_byID",
-                "get_vehicles",
-                "get_location",
-                "add_vehicle"
-            ],
-            "depth": 3,
-            "bucket": "crud",
-            "score": 14.5,
-            "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
-                "name": "John Doe",
-                "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
-                "token_type": "Bearer",
-                "user_role": "",
-                "user_id": 10
-            },
-            "vulnerabilities": []
-        },
-        {
-            "rank": 51,
             "chain": [
                 "signup"
             ],
-            "depth": 0,
-            "bucket": "auth",
-            "score": 0,
             "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
+                "email": "fuzzer_297b50be@test.com",
                 "name": "John Doe",
                 "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
                 "token_type": "Bearer",
                 "user_role": "",
-                "user_id": 10
+                "user_id": "9"
             },
             "vulnerabilities": []
         },
         {
-            "rank": 52,
+            "score": 52.0,
             "chain": [
                 "forgot_password"
             ],
-            "depth": 0,
-            "bucket": "auth",
-            "score": 0,
             "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
+                "email": "fuzzer_297b50be@test.com",
                 "name": "John Doe",
                 "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
                 "token_type": "Bearer",
                 "user_role": "",
-                "user_id": 10
+                "user_id": "9"
             },
             "vulnerabilities": []
         },
         {
-            "rank": 53,
+            "score": 182.0,
             "chain": [
                 "check_otp_v3"
             ],
-            "depth": 0,
-            "bucket": "other",
-            "score": 0,
             "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
+                "email": "fuzzer_297b50be@test.com",
                 "name": "John Doe",
                 "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
                 "token_type": "Bearer",
                 "user_role": "",
-                "user_id": 10
+                "user_id": "9"
             },
-            "vulnerabilities": []
+            "vulnerabilities": [
+                {
+                    "api": "check_otp_v3",
+                    "status": 500,
+                    "details": [
+                        "HTTP 500 — possible crash/unhandled exception"
+                    ],
+                    "type": "Crash/500"
+                }
+            ]
         },
         {
-            "rank": 54,
+            "score": 182.0,
             "chain": [
                 "check_otp_v2"
             ],
-            "depth": 0,
-            "bucket": "other",
-            "score": 0,
             "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
+                "email": "fuzzer_297b50be@test.com",
                 "name": "John Doe",
                 "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
                 "token_type": "Bearer",
                 "user_role": "",
-                "user_id": 10
+                "user_id": "9"
             },
-            "vulnerabilities": []
+            "vulnerabilities": [
+                {
+                    "api": "check_otp_v2",
+                    "status": 500,
+                    "details": [
+                        "HTTP 500 — possible crash/unhandled exception"
+                    ],
+                    "type": "Crash/500"
+                }
+            ]
         },
         {
-            "rank": 55,
+            "score": 27.0,
             "chain": [
-                "login_with_token"
+                "login_with_token",
+                "login"
             ],
-            "depth": 0,
-            "bucket": "auth",
-            "score": 0,
             "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
+                "email": "fuzzer_297b50be@test.com",
                 "name": "John Doe",
                 "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
                 "token_type": "Bearer",
                 "user_role": "",
-                "user_id": 10
+                "user_id": "9"
             },
             "vulnerabilities": []
         },
         {
-            "rank": 56,
+            "score": 62.0,
             "chain": [
-                "login_with_token_v2_7"
+                "login_with_token_v2_7",
+                "login"
             ],
-            "depth": 0,
-            "bucket": "auth",
-            "score": 0,
             "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
+                "email": "fuzzer_297b50be@test.com",
                 "name": "John Doe",
                 "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
                 "token_type": "Bearer",
                 "user_role": "",
-                "user_id": 10
+                "user_id": "9"
             },
             "vulnerabilities": []
         },
         {
-            "rank": 57,
+            "score": 52.0,
             "chain": [
                 "reset_password"
             ],
-            "depth": 0,
-            "bucket": "auth",
-            "score": 0,
             "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
+                "email": "fuzzer_297b50be@test.com",
                 "name": "John Doe",
                 "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
                 "token_type": "Bearer",
                 "user_role": "",
-                "user_id": 10
+                "user_id": "9"
             },
             "vulnerabilities": []
         },
         {
-            "rank": 58,
+            "score": 52.0,
             "chain": [
                 "change_email"
             ],
-            "depth": 0,
-            "bucket": "other",
-            "score": 0,
             "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
+                "email": "fuzzer_297b50be@test.com",
                 "name": "John Doe",
                 "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
                 "token_type": "Bearer",
                 "user_role": "",
-                "user_id": 10
+                "user_id": "9"
             },
             "vulnerabilities": []
         },
         {
-            "rank": 59,
+            "score": 182.0,
             "chain": [
-                "verify_email_token"
+                "verify_email_token",
+                "login"
             ],
-            "depth": 0,
-            "bucket": "auth",
-            "score": 0,
             "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
+                "email": "fuzzer_297b50be@test.com",
                 "name": "John Doe",
                 "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
                 "token_type": "Bearer",
                 "user_role": "",
-                "user_id": 10
+                "user_id": "9"
             },
-            "vulnerabilities": []
+            "vulnerabilities": [
+                {
+                    "api": "verify_email_token",
+                    "status": 500,
+                    "details": [
+                        "HTTP 500 — possible crash/unhandled exception"
+                    ],
+                    "type": "Crash/500"
+                }
+            ]
         },
         {
-            "rank": 60,
+            "score": 182.0,
             "chain": [
                 "update_profile_pic"
             ],
-            "depth": 0,
-            "bucket": "crud",
-            "score": 0,
             "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
+                "email": "fuzzer_297b50be@test.com",
                 "name": "John Doe",
                 "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
                 "token_type": "Bearer",
                 "user_role": "",
-                "user_id": 10
+                "user_id": "9"
             },
-            "vulnerabilities": []
+            "vulnerabilities": [
+                {
+                    "api": "update_profile_pic",
+                    "status": 500,
+                    "details": [
+                        "HTTP 500 — possible crash/unhandled exception"
+                    ],
+                    "type": "Crash/500"
+                }
+            ]
         },
         {
-            "rank": 61,
+            "score": 52.0,
             "chain": [
-                "update_profile_video"
+                "update_profile_video",
+                "get_dashboard"
             ],
-            "depth": 0,
-            "bucket": "crud",
-            "score": 0,
             "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
+                "email": "fuzzer_297b50be@test.com",
                 "name": "John Doe",
                 "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
                 "token_type": "Bearer",
                 "user_role": "",
-                "user_id": 10
+                "user_id": "9"
             },
             "vulnerabilities": []
         },
         {
-            "rank": 62,
+            "score": 52.0,
             "chain": [
-                "delete_profile_video"
+                "delete_profile_video",
+                "get_dashboard"
             ],
-            "depth": 0,
-            "bucket": "crud",
-            "score": 0,
             "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
+                "email": "fuzzer_297b50be@test.com",
                 "name": "John Doe",
                 "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
                 "token_type": "Bearer",
                 "user_role": "",
-                "user_id": 10
+                "user_id": "9"
             },
             "vulnerabilities": []
         },
         {
-            "rank": 63,
+            "score": 27.0,
             "chain": [
-                "convert_profile_video"
+                "convert_profile_video",
+                "get_dashboard"
             ],
-            "depth": 0,
-            "bucket": "other",
-            "score": 0,
             "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
+                "email": "fuzzer_297b50be@test.com",
                 "name": "John Doe",
                 "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
                 "token_type": "Bearer",
                 "user_role": "",
-                "user_id": 10
+                "user_id": "9"
             },
             "vulnerabilities": []
         },
         {
-            "rank": 64,
+            "score": 52.0,
             "chain": [
-                "admin_delete_profile_video"
+                "admin_delete_profile_video",
+                "get_dashboard"
             ],
-            "depth": 0,
-            "bucket": "admin",
-            "score": 0,
             "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
+                "email": "fuzzer_297b50be@test.com",
                 "name": "John Doe",
                 "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
                 "token_type": "Bearer",
                 "user_role": "",
-                "user_id": 10
+                "user_id": "9"
             },
             "vulnerabilities": []
         },
         {
-            "rank": 65,
+            "score": 27.0,
             "chain": [
-                "add_vehicle"
+                "add_vehicle",
+                "get_vehicles",
+                "get_location",
+                "get_post",
+                "create_post"
             ],
-            "depth": 0,
-            "bucket": "crud",
-            "score": 0,
             "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
+                "email": "fuzzer_297b50be@test.com",
                 "name": "John Doe",
                 "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
                 "token_type": "Bearer",
                 "user_role": "",
-                "user_id": 10
+                "user_id": "9"
             },
             "vulnerabilities": []
         },
         {
-            "rank": 66,
+            "score": 52.0,
             "chain": [
                 "vehicle_resend_email"
             ],
-            "depth": 0,
-            "bucket": "other",
-            "score": 0,
             "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
+                "email": "fuzzer_297b50be@test.com",
                 "name": "John Doe",
                 "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
                 "token_type": "Bearer",
                 "user_role": "",
-                "user_id": 10
+                "user_id": "9"
             },
             "vulnerabilities": []
         },
         {
-            "rank": 67,
+            "score": 52.0,
             "chain": [
-                "add_new_coupon"
+                "add_new_coupon",
+                "validate_coupon"
             ],
-            "depth": 0,
-            "bucket": "crud",
-            "score": 0,
             "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
+                "email": "fuzzer_297b50be@test.com",
                 "name": "John Doe",
                 "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
                 "token_type": "Bearer",
                 "user_role": "",
-                "user_id": 10
+                "user_id": "9"
             },
             "vulnerabilities": []
         },
         {
-            "rank": 68,
+            "score": 52.0,
             "chain": [
                 "get_orders"
             ],
-            "depth": 0,
-            "bucket": "other",
-            "score": 0,
             "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
+                "email": "fuzzer_297b50be@test.com",
                 "name": "John Doe",
                 "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
                 "token_type": "Bearer",
                 "user_role": "",
-                "user_id": 10
+                "user_id": "9"
             },
             "vulnerabilities": []
         },
         {
-            "rank": 69,
+            "score": 62.0,
             "chain": [
-                "apply_coupon"
+                "apply_coupon",
+                "validate_coupon"
             ],
-            "depth": 0,
-            "bucket": "other",
-            "score": 0,
             "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
+                "email": "fuzzer_297b50be@test.com",
                 "name": "John Doe",
                 "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
                 "token_type": "Bearer",
                 "user_role": "",
-                "user_id": 10
+                "user_id": "9"
             },
             "vulnerabilities": []
         },
         {
-            "rank": 70,
+            "score": 52.0,
             "chain": [
                 "get_workshop_qr_code"
             ],
-            "depth": 0,
-            "bucket": "other",
-            "score": 0,
             "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
+                "email": "fuzzer_297b50be@test.com",
                 "name": "John Doe",
                 "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
                 "token_type": "Bearer",
                 "user_role": "",
-                "user_id": 10
+                "user_id": "9"
             },
             "vulnerabilities": []
         },
         {
-            "rank": 71,
+            "score": 52.0,
             "chain": [
                 "get_workshop_users_all"
             ],
-            "depth": 0,
-            "bucket": "other",
-            "score": 0,
             "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
+                "email": "fuzzer_297b50be@test.com",
                 "name": "John Doe",
                 "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
                 "token_type": "Bearer",
                 "user_role": "",
-                "user_id": 10
+                "user_id": "9"
             },
             "vulnerabilities": []
         },
         {
-            "rank": 72,
+            "score": 52.0,
             "chain": [
                 "get_mechanics"
             ],
-            "depth": 0,
-            "bucket": "other",
-            "score": 0,
             "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
+                "email": "fuzzer_297b50be@test.com",
                 "name": "John Doe",
                 "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
                 "token_type": "Bearer",
                 "user_role": "",
-                "user_id": 10
+                "user_id": "9"
             },
             "vulnerabilities": []
         },
         {
-            "rank": 73,
+            "score": 62.0,
             "chain": [
-                "contact_mechanic"
+                "contact_mechanic",
+                "get_vehicles",
+                "validate_coupon"
             ],
-            "depth": 0,
-            "bucket": "other",
-            "score": 0,
             "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
+                "email": "fuzzer_297b50be@test.com",
                 "name": "John Doe",
                 "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
                 "token_type": "Bearer",
                 "user_role": "",
-                "user_id": 10
+                "user_id": "9"
             },
             "vulnerabilities": []
         },
         {
-            "rank": 74,
+            "score": 62.0,
+            "chain": [
+                "create_service_report",
+                "validate_coupon",
+                "get_vehicles"
+            ],
+            "captured_state": {
+                "email": "fuzzer_297b50be@test.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9"
+            },
+            "vulnerabilities": []
+        },
+        {
+            "score": 52.0,
             "chain": [
                 "get_service_requests_for_mechanic"
             ],
-            "depth": 0,
-            "bucket": "other",
-            "score": 0,
             "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
+                "email": "fuzzer_297b50be@test.com",
                 "name": "John Doe",
                 "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
                 "token_type": "Bearer",
                 "user_role": "",
-                "user_id": 10
+                "user_id": "9"
             },
             "vulnerabilities": []
         },
         {
-            "rank": 75,
+            "score": 62.0,
             "chain": [
-                "mechanic_signup"
+                "mechanic_signup",
+                "validate_coupon"
             ],
-            "depth": 0,
-            "bucket": "auth",
-            "score": 0,
             "captured_state": {
-                "email": "example+57638@example.com",
-                "password": "securePassword123",
+                "email": "fuzzer_297b50be@test.com",
                 "name": "John Doe",
                 "number": "8755050728",
-                "auth_token": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJleGFtcGxlKzU3NjM4QGV4YW1wbGUuY29tIiwiaWF0IjoxNzc4NTkzODI1LCJleHAiOjE3NzkxOTg2MjUsInJvbGUiOiJ1c2VyIn0.Z63SuB9vVNgfNd2u1ekhjtpy8eUCN9T0DetrDFJTkEWC7OJHkkjuUHFBfhYP5swc_SCImA_nt4GcTfQ1KOEMXEKe8bh44EGVgZq-dpyI5KfmFQv2z9GiWhIbGyf5lI2W7cVckC3uWK59qQFBlQ6zahLzB74J7wuA3R25ZkzEwFvS-oGx13g51e6DGiBRzBvuWqwqJ6PGrktw8uGJGdH2CXMOGTy4EhV4_rp3Xhw5IKXq2r_NUMryM4AbepFeQA8sN9VAoaD_E2w1avEF-JuMRF9QpjiCvfOh1zSuZobBnz6mjNVeZ5sjxoJC2QpKoKvcyoUktY85vT09q6onXWOpew",
                 "token_type": "Bearer",
                 "user_role": "",
-                "user_id": 10
+                "user_id": "9"
             },
             "vulnerabilities": []
+        },
+        {
+            "score": 106.36,
+            "chain": [
+                "login",
+                "login_with_token"
+            ],
+            "captured_state": {
+                "email": "fuzzer_297b50be@test.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9"
+            },
+            "vulnerabilities": []
+        },
+        {
+            "score": 141.36,
+            "chain": [
+                "login",
+                "login_with_token_v2_7"
+            ],
+            "captured_state": {
+                "email": "fuzzer_297b50be@test.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9"
+            },
+            "vulnerabilities": []
+        },
+        {
+            "score": 171.36,
+            "chain": [
+                "login",
+                "verify_email_token"
+            ],
+            "captured_state": {
+                "email": "fuzzer_297b50be@test.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9"
+            },
+            "vulnerabilities": []
+        },
+        {
+            "score": 91.36,
+            "chain": [
+                "get_dashboard",
+                "update_profile_video"
+            ],
+            "captured_state": {
+                "email": "fuzzer_297b50be@test.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9"
+            },
+            "vulnerabilities": []
+        },
+        {
+            "score": 91.36,
+            "chain": [
+                "get_dashboard",
+                "delete_profile_video"
+            ],
+            "captured_state": {
+                "email": "fuzzer_297b50be@test.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9"
+            },
+            "vulnerabilities": []
+        },
+        {
+            "score": 66.36,
+            "chain": [
+                "get_dashboard",
+                "convert_profile_video"
+            ],
+            "captured_state": {
+                "email": "fuzzer_297b50be@test.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9"
+            },
+            "vulnerabilities": []
+        },
+        {
+            "score": 91.36,
+            "chain": [
+                "get_dashboard",
+                "admin_delete_profile_video"
+            ],
+            "captured_state": {
+                "email": "fuzzer_297b50be@test.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9"
+            },
+            "vulnerabilities": []
+        },
+        {
+            "score": 214.87,
+            "chain": [
+                "upload_profile_video",
+                "update_profile_video",
+                "get_dashboard"
+            ],
+            "captured_state": {
+                "email": "fuzzer_297b50be@test.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9"
+            },
+            "vulnerabilities": [
+                {
+                    "api": "upload_profile_video",
+                    "status": 500,
+                    "details": [
+                        "HTTP 500 — possible crash/unhandled exception"
+                    ],
+                    "type": "Crash/500"
+                }
+            ]
+        },
+        {
+            "score": 81.0,
+            "chain": [
+                "get_profile_video",
+                "get_dashboard",
+                "update_profile_video"
+            ],
+            "captured_state": {
+                "email": "fuzzer_297b50be@test.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9"
+            },
+            "vulnerabilities": []
+        },
+        {
+            "score": 66.36,
+            "chain": [
+                "get_vehicles",
+                "add_vehicle",
+                "get_location",
+                "get_post",
+                "create_post"
+            ],
+            "captured_state": {
+                "email": "fuzzer_297b50be@test.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9"
+            },
+            "vulnerabilities": []
+        },
+        {
+            "score": 101.36,
+            "chain": [
+                "get_vehicles",
+                "contact_mechanic",
+                "get_location",
+                "get_post",
+                "create_post",
+                "validate_coupon"
+            ],
+            "captured_state": {
+                "email": "fuzzer_297b50be@test.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9"
+            },
+            "vulnerabilities": []
+        },
+        {
+            "score": 101.36,
+            "chain": [
+                "get_vehicles",
+                "create_service_report",
+                "validate_coupon",
+                "get_location",
+                "get_post",
+                "create_post"
+            ],
+            "captured_state": {
+                "email": "fuzzer_297b50be@test.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9"
+            },
+            "vulnerabilities": []
+        },
+        {
+            "score": 69.87,
+            "chain": [
+                "get_location",
+                "add_vehicle",
+                "get_vehicles",
+                "get_post",
+                "create_post"
+            ],
+            "captured_state": {
+                "email": "fuzzer_297b50be@test.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9"
+            },
+            "vulnerabilities": []
+        },
+        {
+            "score": 104.87,
+            "chain": [
+                "get_location",
+                "contact_mechanic",
+                "get_vehicles",
+                "validate_coupon"
+            ],
+            "captured_state": {
+                "email": "fuzzer_297b50be@test.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9"
+            },
+            "vulnerabilities": []
+        },
+        {
+            "score": 104.87,
+            "chain": [
+                "get_location",
+                "create_service_report",
+                "validate_coupon",
+                "get_vehicles"
+            ],
+            "captured_state": {
+                "email": "fuzzer_297b50be@test.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9"
+            },
+            "vulnerabilities": []
+        },
+        {
+            "score": 66.0,
+            "chain": [
+                "get_post",
+                "add_vehicle",
+                "get_vehicles",
+                "get_location",
+                "create_post"
+            ],
+            "captured_state": {
+                "email": "fuzzer_297b50be@test.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9"
+            },
+            "vulnerabilities": []
+        },
+        {
+            "score": 101.0,
+            "chain": [
+                "get_post",
+                "contact_mechanic",
+                "get_vehicles",
+                "validate_coupon"
+            ],
+            "captured_state": {
+                "email": "fuzzer_297b50be@test.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9"
+            },
+            "vulnerabilities": []
+        },
+        {
+            "score": 101.0,
+            "chain": [
+                "get_post",
+                "create_service_report",
+                "validate_coupon",
+                "get_vehicles"
+            ],
+            "captured_state": {
+                "email": "fuzzer_297b50be@test.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9"
+            },
+            "vulnerabilities": []
+        },
+        {
+            "score": 53.36,
+            "chain": [
+                "create_post",
+                "add_vehicle",
+                "get_vehicles",
+                "get_location",
+                "get_post",
+                "post_comment",
+                "get_recent_posts"
+            ],
+            "captured_state": {
+                "email": "fuzzer_297b50be@test.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9"
+            },
+            "vulnerabilities": []
+        },
+        {
+            "score": 88.36,
+            "chain": [
+                "create_post",
+                "contact_mechanic",
+                "get_vehicles",
+                "validate_coupon"
+            ],
+            "captured_state": {
+                "email": "fuzzer_297b50be@test.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9"
+            },
+            "vulnerabilities": []
+        },
+        {
+            "score": 88.36,
+            "chain": [
+                "create_post",
+                "create_service_report",
+                "validate_coupon",
+                "get_vehicles"
+            ],
+            "captured_state": {
+                "email": "fuzzer_297b50be@test.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9"
+            },
+            "vulnerabilities": []
+        },
+        {
+            "score": 181.41,
+            "chain": [
+                "post_comment",
+                "add_vehicle",
+                "get_vehicles",
+                "get_location",
+                "get_post",
+                "create_post"
+            ],
+            "captured_state": {
+                "email": "fuzzer_297b50be@test.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9"
+            },
+            "vulnerabilities": [
+                {
+                    "api": "post_comment",
+                    "status": 500,
+                    "details": [
+                        "HTTP 500 — possible crash/unhandled exception"
+                    ],
+                    "type": "Crash/500"
+                }
+            ]
+        },
+        {
+            "score": 216.41,
+            "chain": [
+                "post_comment",
+                "contact_mechanic",
+                "get_vehicles",
+                "validate_coupon"
+            ],
+            "captured_state": {
+                "email": "fuzzer_297b50be@test.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9"
+            },
+            "vulnerabilities": [
+                {
+                    "api": "post_comment",
+                    "status": 500,
+                    "details": [
+                        "HTTP 500 — possible crash/unhandled exception"
+                    ],
+                    "type": "Crash/500"
+                }
+            ]
+        },
+        {
+            "score": 216.41,
+            "chain": [
+                "post_comment",
+                "create_service_report",
+                "validate_coupon",
+                "get_vehicles"
+            ],
+            "captured_state": {
+                "email": "fuzzer_297b50be@test.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9"
+            },
+            "vulnerabilities": [
+                {
+                    "api": "post_comment",
+                    "status": 500,
+                    "details": [
+                        "HTTP 500 — possible crash/unhandled exception"
+                    ],
+                    "type": "Crash/500"
+                }
+            ]
+        },
+        {
+            "score": 49.9,
+            "chain": [
+                "get_recent_posts",
+                "add_vehicle",
+                "get_vehicles",
+                "get_location",
+                "get_post",
+                "create_post"
+            ],
+            "captured_state": {
+                "email": "fuzzer_297b50be@test.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9"
+            },
+            "vulnerabilities": []
+        },
+        {
+            "score": 84.9,
+            "chain": [
+                "get_recent_posts",
+                "contact_mechanic",
+                "get_vehicles",
+                "validate_coupon",
+                "get_report_byID"
+            ],
+            "captured_state": {
+                "email": "fuzzer_297b50be@test.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9"
+            },
+            "vulnerabilities": []
+        },
+        {
+            "score": 84.9,
+            "chain": [
+                "get_recent_posts",
+                "create_service_report",
+                "validate_coupon",
+                "get_report_byID",
+                "get_vehicles"
+            ],
+            "captured_state": {
+                "email": "fuzzer_297b50be@test.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9"
+            },
+            "vulnerabilities": []
+        },
+        {
+            "score": 91.36,
+            "chain": [
+                "validate_coupon",
+                "add_new_coupon"
+            ],
+            "captured_state": {
+                "email": "fuzzer_297b50be@test.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9"
+            },
+            "vulnerabilities": []
+        },
+        {
+            "score": 101.36,
+            "chain": [
+                "validate_coupon",
+                "apply_coupon"
+            ],
+            "captured_state": {
+                "email": "fuzzer_297b50be@test.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9"
+            },
+            "vulnerabilities": []
+        },
+        {
+            "score": 83.68,
+            "chain": [
+                "validate_coupon",
+                "contact_mechanic",
+                "get_vehicles",
+                "get_report_byID"
+            ],
+            "captured_state": {
+                "email": "fuzzer_297b50be@test.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9"
+            },
+            "vulnerabilities": []
+        },
+        {
+            "score": 83.68,
+            "chain": [
+                "validate_coupon",
+                "create_service_report",
+                "get_report_byID",
+                "get_vehicles"
+            ],
+            "captured_state": {
+                "email": "fuzzer_297b50be@test.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9"
+            },
+            "vulnerabilities": []
+        },
+        {
+            "score": 101.36,
+            "chain": [
+                "validate_coupon",
+                "mechanic_signup",
+                "get_report_byID"
+            ],
+            "captured_state": {
+                "email": "fuzzer_297b50be@test.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9"
+            },
+            "vulnerabilities": []
+        },
+        {
+            "score": 66.36,
+            "chain": [
+                "get_products",
+                "update_order",
+                "create_order",
+                "get_order_byID",
+                "add_new_product",
+                "return_order"
+            ],
+            "captured_state": {
+                "email": "adam007@example.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9",
+                "order_id": "1"
+            },
+            "vulnerabilities": []
+        },
+        {
+            "score": 124.87,
+            "chain": [
+                "add_new_product",
+                "get_products",
+                "update_order",
+                "get_order_byID",
+                "create_order",
+                "return_order"
+            ],
+            "captured_state": {
+                "email": "adam007@example.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9",
+                "order_id": "1"
+            },
+            "vulnerabilities": []
+        },
+        {
+            "score": 59.87,
+            "chain": [
+                "update_order",
+                "create_order",
+                "get_order_byID",
+                "get_products",
+                "return_order",
+                "add_new_product"
+            ],
+            "captured_state": {
+                "email": "adam007@example.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9",
+                "order_id": "1"
+            },
+            "vulnerabilities": []
+        },
+        {
+            "score": 121.0,
+            "chain": [
+                "get_order_byID",
+                "create_order",
+                "update_order",
+                "return_order",
+                "add_new_product",
+                "get_products"
+            ],
+            "captured_state": {
+                "email": "adam007@example.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9",
+                "order_id": "1"
+            },
+            "vulnerabilities": []
+        },
+        {
+            "score": 208.36,
+            "chain": [
+                "return_order",
+                "create_order",
+                "update_order",
+                "get_order_byID",
+                "add_new_product",
+                "get_products"
+            ],
+            "captured_state": {
+                "email": "adam007@example.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9",
+                "order_id": "1"
+            },
+            "vulnerabilities": [
+                {
+                    "api": "return_order",
+                    "status": 500,
+                    "details": [
+                        "HTTP 500 — possible crash/unhandled exception"
+                    ],
+                    "type": "Crash/500"
+                }
+            ]
+        },
+        {
+            "score": 212.67,
+            "chain": [
+                "get_report_byID",
+                "contact_mechanic",
+                "get_vehicles",
+                "validate_coupon"
+            ],
+            "captured_state": {
+                "email": "fuzzer_297b50be@test.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9"
+            },
+            "vulnerabilities": [
+                {
+                    "api": "get_report_byID",
+                    "status": 500,
+                    "details": [
+                        "HTTP 500 — possible crash/unhandled exception"
+                    ],
+                    "type": "Crash/500"
+                }
+            ]
+        },
+        {
+            "score": 212.67,
+            "chain": [
+                "get_report_byID",
+                "create_service_report",
+                "validate_coupon",
+                "get_vehicles"
+            ],
+            "captured_state": {
+                "email": "fuzzer_297b50be@test.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9"
+            },
+            "vulnerabilities": [
+                {
+                    "api": "get_report_byID",
+                    "status": 500,
+                    "details": [
+                        "HTTP 500 — possible crash/unhandled exception"
+                    ],
+                    "type": "Crash/500"
+                }
+            ]
+        },
+        {
+            "score": 224.87,
+            "chain": [
+                "get_report_byID",
+                "mechanic_signup",
+                "validate_coupon"
+            ],
+            "captured_state": {
+                "email": "fuzzer_297b50be@test.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9"
+            },
+            "vulnerabilities": [
+                {
+                    "api": "get_report_byID",
+                    "status": 500,
+                    "details": [
+                        "HTTP 500 — possible crash/unhandled exception"
+                    ],
+                    "type": "Crash/500"
+                }
+            ]
+        },
+        {
+            "score": 178.68,
+            "chain": [
+                "get_report_byID",
+                "add_vehicle",
+                "get_vehicles",
+                "get_location",
+                "get_post",
+                "create_post"
+            ],
+            "captured_state": {
+                "email": "fuzzer_297b50be@test.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9"
+            },
+            "vulnerabilities": [
+                {
+                    "api": "get_report_byID",
+                    "status": 500,
+                    "details": [
+                        "HTTP 500 — possible crash/unhandled exception"
+                    ],
+                    "type": "Crash/500"
+                }
+            ]
+        },
+        {
+            "score": 119.72,
+            "chain": [
+                "get_dashboard",
+                "get_profile_video",
+                "update_profile_video"
+            ],
+            "captured_state": {
+                "email": "fuzzer_297b50be@test.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9"
+            },
+            "vulnerabilities": []
+        },
+        {
+            "score": 162.36,
+            "chain": [
+                "get_products",
+                "add_new_product",
+                "update_order",
+                "get_order_byID",
+                "return_order",
+                "create_order"
+            ],
+            "captured_state": {
+                "email": "adam007@example.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9",
+                "order_id": "1"
+            },
+            "vulnerabilities": []
+        },
+        {
+            "score": 206.22,
+            "chain": [
+                "get_products",
+                "create_order",
+                "add_new_product",
+                "update_order",
+                "get_order_byID",
+                "return_order"
+            ],
+            "captured_state": {
+                "email": "adam007@example.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9",
+                "order_id": "1"
+            },
+            "vulnerabilities": []
+        },
+        {
+            "score": 287.77,
+            "chain": [
+                "create_order",
+                "get_products",
+                "update_order",
+                "get_order_byID",
+                "return_order",
+                "add_new_product"
+            ],
+            "captured_state": {
+                "email": "adam007@example.com",
+                "name": "John Doe",
+                "number": "8755050728",
+                "token_type": "Bearer",
+                "user_role": "",
+                "user_id": "9",
+                "order_id": "1"
+            },
+            "vulnerabilities": [
+                {
+                    "api": "create_order",
+                    "status": 500,
+                    "details": [
+                        "HTTP 500 — possible crash/unhandled exception"
+                    ],
+                    "type": "Crash/500"
+                }
+            ]
         }
     ]
 }
