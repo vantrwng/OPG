@@ -233,11 +233,14 @@ class TestStrategyEngine:
                 self.memory.record_request(
                     api_id=provider_id,
                     method=provider_node.get("method", "GET").upper(),
-                    path=provider_node.get("path", "/"),
+                    path=exec_result.get("url", provider_node.get("path", "/")),
                     status=exec_result["status"],
                     chain=list(current_chain),
                     response_text=exec_result.get("response_text", ""),
-                    request_payload=exec_result.get("sent_payload", {})
+                    request_payload=exec_result.get("sent_payload", {}),
+                    payload_source=exec_result.get("payload_source", "NONE"),
+                    repair_reason=exec_result.get("repair_reason", ""),
+                    repair_history=exec_result.get("repair_history", [])
                 )
 
                 current_chain.append(provider_id)
@@ -264,12 +267,11 @@ class TestStrategyEngine:
         return best_edge
 
     def calculate_adaptive_bfs_threshold(self):
-        avg_out_degree = sum(len(edges) for edges in self.adjacency_list.values()) / max(1, len(self.operations))
-        if avg_out_degree > 10:
-            return 2
-        elif avg_out_degree > 5:
-            return 3
-        return 4
+        # Ép BFS Threshold = 1 để ngay từ Depth 2 trở đi, 
+        # BucketManager sẽ gọt số lượng beam xuống beam_width=3 cho mỗi API.
+        # Điều này giúp ngăn chặn bùng nổ tổ hợp (combinatorial explosion)
+        # khiến Fuzzer bị kẹt không bao giờ chạy xong.
+        return 1
 
     def run(self, max_depth=5, initial_state=None):
         if initial_state is None:
@@ -328,11 +330,14 @@ class TestStrategyEngine:
                 self.memory.record_request(
                     api_id=current_api,
                     method=api_node.get("method", "GET").upper(),
-                    path=api_node.get("path", "/"),
+                    path=exec_result.get("url", api_node.get("path", "/")),
                     status=status,
                     chain=beam['chain'],
                     response_text=exec_result.get("response_text", ""),
-                    request_payload=exec_result.get("sent_payload", {})
+                    request_payload=exec_result.get("sent_payload", {}),
+                    payload_source=exec_result.get("payload_source", "NONE"),
+                    repair_reason=exec_result.get("repair_reason", ""),
+                    repair_history=exec_result.get("repair_history", [])
                 )
                 
                 already_found = self.memory.is_vulnerability_found(current_api, status)
@@ -362,6 +367,13 @@ class TestStrategyEngine:
                 if len(beam['chain']) >= 2:
                     prev_api = beam['chain'][-2]
                     is_success = not exec_result["edge_failure"]
+                    
+                    if not is_success and exec_result.get("repair_skipped"):
+                        stats = self.memory.endpoint_stats.get(current_api, {}).get("status_counts", {})
+                        has_prior_success = any(int(st) in (200, 201, 202) for st in stats.keys())
+                        if has_prior_success:
+                            is_success = True
+                            
                     self.graph_builder.update_edge_confidence(prev_api, current_api, success=is_success)
                     self.memory.record_edge_feedback(prev_api, current_api, success=is_success)
 
@@ -385,12 +397,17 @@ class TestStrategyEngine:
                         new_chain = list(beam['chain'])
                         new_chain.append(n)
 
-                        # Penalty cho fallback edge: giảm ưu tiên trong beam
-                        fallback_penalty = -10 if edge_type == 'fallback' else 0
+                        # Phân tầng điểm theo edge_type:
+                        #   strong  → +5  (cạnh đã xác nhận confidence cao)
+                        #   medium  →  0  (cạnh bình thường)
+                        #   fallback→ -5  (cạnh yếu / safety-net, vẫn thử nhưng ưu tiên thấp)
+                        EDGE_SCORE = {'strong': 5, 'medium': 0, 'fallback': -5}
+                        edge_score_delta = EDGE_SCORE.get(edge_type, 0)
 
                         new_beam = {
                             'chain': new_chain,
-                            'score': current_score + fallback_penalty,
+                            'score': current_score + edge_score_delta,
+
                             'state': current_state.clone(),
                             'vulnerabilities': list(vulnerabilities)
                         }

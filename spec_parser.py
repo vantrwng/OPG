@@ -227,6 +227,7 @@ class SpecParser:
                 if not isinstance(details, dict): continue
                 op_id = details.get('operationId', f"{method.upper()}_{path.replace('/', '_')}")
                 inputs, outputs = {}, {}
+                req_content_type = "application/json"
 
                 # Trích xuất Inputs
                 if 'parameters' in details:
@@ -247,16 +248,24 @@ class SpecParser:
                 if 'requestBody' in details:
                     try:
                         rb = details['requestBody']
-                        # requestBody.required = True nghĩa là phải có body, nhưng từng field bên trong tùy schema
-                        schema = rb['content']['application/json']['schema']
-                        # Lấy required list ở top-level nếu có
-                        top_required = set()
-                        if '$ref' in schema:
-                            resolved, _ = self.resolve_ref(schema['$ref'])
-                            top_required = set(resolved.get('required', []))
-                        else:
-                            top_required = set(schema.get('required', []))
-                        inputs.update(self.extract_props(schema, op_name=op_id, required_fields=top_required))
+                        content = rb.get('content', {})
+                        schema = None
+                        
+                        # Chọn content_type theo thứ tự ưu tiên
+                        for ct in ['application/json', 'multipart/form-data', 'application/x-www-form-urlencoded', '*/*']:
+                            if ct in content:
+                                schema = content[ct].get('schema')
+                                req_content_type = ct
+                                break
+                                
+                        if schema:
+                            top_required = set()
+                            if '$ref' in schema:
+                                resolved, _ = self.resolve_ref(schema['$ref'])
+                                top_required = set(resolved.get('required', []))
+                            else:
+                                top_required = set(schema.get('required', []))
+                            inputs.update(self.extract_props(schema, op_name=op_id, required_fields=top_required))
                     except Exception as e:
                         print(f"[SpecParser] Warning: cannot parse requestBody for {op_id}: {e}")
 
@@ -266,21 +275,24 @@ class SpecParser:
                     for code in ['200', '201', '202']:
                         if code in details['responses']:
                             try:
-                                resp_schema = details['responses'][code]['content']['application/json']['schema']
-                                # Xác định parent hint từ schema gốc (array/object)
-                                # để extract_props có context khi ghép tên
-                                root_hint = ''
-                                if resp_schema.get('type') == 'array':
-                                    # VD: response là list orders → parent hint = "orders"
-                                    # Thử lấy từ property name hay operationId
-                                    root_hint = re.sub(
-                                        r'^(get|list|fetch|search)_?', '', op_id, flags=re.I
-                                    ).lower()
-                                outputs.update(self.extract_props(
-                                    resp_schema,
-                                    parent_schema=root_hint,
-                                    op_name=op_id
-                                ))
+                                content = details['responses'][code].get('content', {})
+                                resp_schema = None
+                                for ct in ['application/json', '*/*']:
+                                    if ct in content:
+                                        resp_schema = content[ct].get('schema')
+                                        break
+                                
+                                if resp_schema:
+                                    root_hint = ''
+                                    if resp_schema.get('type') == 'array':
+                                        root_hint = re.sub(
+                                            r'^(get|list|fetch|search)_?', '', op_id, flags=re.I
+                                        ).lower()
+                                    outputs.update(self.extract_props(
+                                        resp_schema,
+                                        parent_schema=root_hint,
+                                        op_name=op_id
+                                    ))
                             except Exception as e:
                                 print(f"[SpecParser] Warning: cannot parse response {code} for {op_id}: {e}")
 
@@ -329,7 +341,14 @@ class SpecParser:
                             }
                 outputs.update(expanded)
 
-                self.operations.append({'id': op_id, 'method': method.upper(), 'path': path, 'inputs': inputs, 'outputs': outputs})
+                self.operations.append({
+                    'id': op_id, 
+                    'method': method.upper(), 
+                    'path': path, 
+                    'inputs': inputs, 
+                    'outputs': outputs,
+                    'content_type': req_content_type
+                })
 
         
         return self.operations

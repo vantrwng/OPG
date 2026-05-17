@@ -2,8 +2,10 @@ import os
 import json
 import re
 import time
+import uuid
 import logging
-from typing import Any, Dict, Optional, List
+import hashlib
+from typing import Any, Dict, Optional, List, Tuple
 from openai import OpenAI, RateLimitError, APIError
 from dotenv import load_dotenv
 from state_store import StateStore
@@ -19,21 +21,42 @@ class LLMPlanner:
       2. Gom nhóm thực thể (Identity Clustering)
       3. Sinh payload JSON thông minh (Payload Generation)
     """
+    _EMAIL_RE    = re.compile(r"email", re.I)
+    _PHONE_RE    = re.compile(r"phone|mobile|contact|^number$", re.I)
+    _NAME_RE     = re.compile(r"^(name|full_?name|display_?name|user_?name)$", re.I)
+    _PASSWORD_RE = re.compile(r"pass(word)?|passwd", re.I)
+
     def __init__(self):
-        self.github_token = os.getenv("GITHUB_TOKEN", "")
-        self.endpoint = "https://models.github.ai/inference"
-        self.model = "gpt-4o-mini"
+        openai_key     = os.getenv("OPENAI_API_KEY", "")
+        github_token   = os.getenv("GITHUB_TOKEN", "")
+
+        if openai_key:
+            # Dùng OpenAI-compatible API
+            self.endpoint = "https://codex.xirothedev.io.vn/v1"
+            self.model    = "gpt-5.5"
+            api_key       = openai_key
+            log.info("[LLMPlanner] Using Custom OpenAI API — model: gpt-5.5")
+        elif github_token:
+            # Fallback: GitHub Models
+            self.endpoint = "https://models.github.ai/inference"
+            self.model    = "gpt-4o-mini"
+            api_key       = github_token
+            log.info("[LLMPlanner] Using GitHub Models — model: gpt-4o-mini")
+        else:
+            self.endpoint = ""
+            self.model    = ""
+            api_key       = ""
+            log.warning("[LLMPlanner] No API key found — heuristic fallback only.")
+
         self.max_retries = 2
-        
-        if not self.github_token:
-            log.warning("[LLMPlanner] GITHUB_TOKEN chưa set — sẽ dùng heuristic fallback.")
         self._client = OpenAI(
             base_url=self.endpoint,
-            api_key=self.github_token,
-        ) if self.github_token else None
+            api_key=api_key,
+        ) if api_key else None
 
         self._llm_cache = {}
         self._identity_cluster_map = {}
+        self._payload_cache = {}
 
     def classify_unknown_fields(self, unknown_fields: List[str]) -> Dict[str, str]:
         """Gọi LLM để phân loại các field 'unknown'."""
@@ -62,7 +85,7 @@ Fields to classify:
                 temperature=0.0
             )
             result = json.loads(response.choices[0].message.content)
-            log.info(f"  [LLM] GitHub Models (gpt-4o-mini) OK")
+            log.info(f"  [LLM] {self.model} OK")
             
             # Cập nhật cache
             for field, category in result.items():
@@ -133,23 +156,23 @@ Rules:
     def _norm(name: str) -> str:
         return re.sub(r'[_\-\.\s]', '', str(name)).lower()
 
-    def generate_payload(self, api_node: Dict, state: StateStore, edge_deps: Optional[list] = None) -> Dict[str, Any]:
+    def generate_payload(self, api_node: Dict, state: StateStore, edge_deps: Optional[list] = None) -> Tuple[Dict[str, Any], str]:
         method = api_node.get("method", "GET").upper()
         if method in ("GET", "DELETE"):
-            return {}
+            return {}, "NONE"
 
         source = "LLM"
         payload = self._llm_generate(api_node, state, edge_deps=edge_deps)
         if payload is None:
             source = "HEURISTIC"
             payload = self._heuristic_generate(api_node, state, edge_deps=edge_deps)
-
-        if source == "LLM":
-            log.info(f"\033[95m[LLM Payload]\033[0m {api_node['id']} → {json.dumps(payload, ensure_ascii=False)[:200]}")
-        else:
-            log.info(f"\033[93m[HEURISTIC Payload]\033[0m {api_node['id']} → {json.dumps(payload, ensure_ascii=False)[:200]}")
             
-        return payload
+        # Đảm bảo rule cuối cùng được áp dụng cho mọi source
+        if payload:
+            payload = self._randomize_volatile_fields(payload, api_node, state)
+            
+        log.info(f"  [{source} Payload] {api_node.get('id')} → {json.dumps(payload, ensure_ascii=False)}")
+        return payload, source
 
     def _build_prompt(self, api_node: Dict, state: StateStore, edge_deps: Optional[list] = None) -> str:
         inputs_schema = api_node.get("inputs", {})
@@ -167,10 +190,17 @@ Rules:
                 field_lines.append(f"  - {field_name}")
         fields_block = "\n".join(field_lines) if field_lines else "  (no explicit schema)"
 
-        AUTH_KEYS = {"auth_token", "token_type", "user_role"}
+        combined = path + " " + api_node.get("id", "").lower()
+        is_create = bool(re.search(r"signup|register|create|add", combined))
+
+        SKIP_KEYS = {"auth_token", "token_type", "user_role"}
+        if is_create:
+            # Ép sinh mới hoàn toàn
+            SKIP_KEYS.update({"email", "password", "name", "number", "phone", "mobile"})
+
         context_lines = []
         for k, v in state.memory.items():
-            if k in AUTH_KEYS:
+            if k in SKIP_KEYS:
                 continue
             context_lines.append(f"  - {k}: \"{v}\"")
         context_block = "\n".join(context_lines) if context_lines else "  (empty — no prior state)"
@@ -203,7 +233,9 @@ RULES:
 - Respond ONLY with a valid JSON object. No markdown tags, no explanations.
 - Map fields exactly as required by the Strict Dependencies.
 - For other fields, if a matching context variable exists, use its value.
-- For missing fields, generate realistic synthetic data (e.g. standard emails, safe passwords).
+- For email fields: generate a UNIQUE, RANDOM email like fuzz_{{random_hex}}@test.com. NEVER use john.doe@example.com or any example.com address.
+- For password fields: use a valid password with uppercase, number, and symbol.
+- For other missing fields, generate realistic synthetic data.
 """
         return prompt
 
@@ -211,7 +243,12 @@ RULES:
         if not self._client:
             return None
         prompt = self._build_prompt(api_node, state, edge_deps)
-        
+        prompt_hash = hashlib.md5(prompt.encode('utf-8')).hexdigest()
+        if prompt_hash in self._payload_cache:
+            log.info(f"  [LLM Payload] CACHE HIT for {api_node['id']}")
+            cached = self._payload_cache[prompt_hash].copy()
+            return cached
+            
         for attempt in range(self.max_retries):
             try:
                 response = self._client.chat.completions.create(
@@ -222,7 +259,9 @@ RULES:
                     max_tokens=512,
                 )
                 raw = response.choices[0].message.content
-                return json.loads(raw)
+                parsed = json.loads(raw)
+                self._payload_cache[prompt_hash] = parsed
+                return parsed.copy()
             except RateLimitError:
                 log.warning(f"[LLM] Rate limit hit — waiting 5s (attempt {attempt})")
                 time.sleep(5)
@@ -235,6 +274,50 @@ RULES:
             except Exception as e:
                 log.error(f"[LLM] Unexpected error: {e}")
                 return None
+        return None
+
+    def repair_payload(self, api_node: Dict, state: StateStore, bad_payload: Dict, error_response: str, edge_deps: Optional[list] = None) -> Optional[Dict]:
+        """Gửi payload bị lỗi và server response cho LLM để fix tự động."""
+        if not self._client:
+            return None
+            
+        base_prompt = self._build_prompt(api_node, state, edge_deps)
+        
+        repair_prompt = f"{base_prompt}\n\n" + f"""CRITICAL ERROR:
+The previous payload generated for this endpoint caused an HTTP Error!
+Previous Payload:
+{json.dumps(bad_payload, indent=2, ensure_ascii=False)}
+
+Server Error Response:
+{error_response}
+
+YOUR TASK:
+Analyze the error response and FIX the payload to satisfy the server's requirements.
+CRITICAL RULE FOR REPAIR: If the error indicates a duplicate value (e.g., "already exists", "already registered", "duplicate"), you MUST generate a completely NEW, RANDOM, and UNIQUE value for the offending field. DO NOT reuse the value from the Previous Payload or the Available Context.
+Ensure the output is ONLY a valid JSON object.
+"""
+        log.warning(f"\033[93m[LLM Repair]\033[0m Attempting to fix payload for {api_node['id']}")
+        
+        for attempt in range(self.max_retries):
+            try:
+                response = self._client.chat.completions.create(
+                    model=self.model,
+                    messages=[{"role": "user", "content": repair_prompt}],
+                    response_format={"type": "json_object"},
+                    temperature=0.8,
+                    max_tokens=512,
+                )
+                raw = response.choices[0].message.content
+                parsed = json.loads(raw)
+                
+                # Bỏ qua _randomize_volatile_fields ở đây để tôn trọng tuyệt đối 
+                # cách sửa lỗi của LLM (nếu không nó sẽ bị ghi đè lại email cũ từ StateStore)
+                return parsed
+            except RateLimitError:
+                time.sleep(5)
+            except Exception as e:
+                log.error(f"[LLM Repair] Error: {e}")
+                
         return None
 
     def _heuristic_generate(self, api_node: Dict, state: StateStore, edge_deps: Optional[list] = None) -> Dict:
@@ -262,11 +345,14 @@ RULES:
                 payload[original] = dep_map[fld_norm]
             else:
                 matched_val = None
-                for sk, sv in state.memory.items():
-                    sk_norm = self._norm(sk)
-                    if sk_norm == orig_norm or sk_norm == fld_norm:
-                        matched_val = sv
-                        break
+                # Không tự động lôi email cũ ra xài để luôn sinh random email mới,
+                # ngoại trừ trường hợp có edge dependency (đã xử lý ở trên).
+                if orig_norm != "email" and fld_norm != "email":
+                    for sk, sv in state.memory.items():
+                        sk_norm = self._norm(sk)
+                        if sk_norm == orig_norm or sk_norm == fld_norm:
+                            matched_val = sv
+                            break
                 if matched_val is not None:
                     payload[original] = matched_val
                 else:
@@ -275,11 +361,71 @@ RULES:
         return payload
 
     @staticmethod
+    def _randomize_volatile_fields(payload: Dict, api_node: Dict, state: StateStore) -> Dict:
+        """Post-process payload thông minh theo Context (API Type)."""
+        hex6 = uuid.uuid4().hex[:6]
+        hex4 = uuid.uuid4().hex[:4]
+
+        rand_pass = (
+            uuid.uuid4().hex[:4].upper()
+            + uuid.uuid4().hex[:4]
+            + f"@{uuid.uuid4().int % 999 + 1}!"
+        )
+
+        path = api_node.get("path", "").lower()
+        op_id = api_node.get("id", "").lower()
+        combined = path + " " + op_id
+
+        if re.search(r"signup|register|create|add", combined):
+            api_type = "CREATE"
+        elif re.search(r"login|verify|forgot|reset|auth|signin", combined):
+            api_type = "AUTH"
+        else:
+            api_type = "OTHER"
+
+        out = {}
+        for k, v in payload.items():
+            is_email = LLMPlanner._EMAIL_RE.search(k)
+            is_phone = LLMPlanner._PHONE_RE.search(k)
+            is_name  = LLMPlanner._NAME_RE.search(k)
+            is_pass  = LLMPlanner._PASSWORD_RE.search(k)
+
+            if not (is_email or is_phone or is_name or is_pass):
+                out[k] = v
+                continue
+
+            if api_type == "CREATE":
+                # Luôn sinh mới, bỏ qua State
+                if is_email: out[k] = f"fuzz_{hex6}@test.com"
+                elif is_phone: out[k] = f"09{uuid.uuid4().int % 100_000_000:08d}"
+                elif is_name: out[k] = f"Fuzzer {hex4.upper()}"
+                elif is_pass: out[k] = rand_pass
+                continue
+
+            # AUTH hoặc OTHER -> Ưu tiên dùng dữ liệu từ StateStore
+            matched_val = None
+            if is_email: matched_val = state.get("email")
+            elif is_pass: matched_val = state.get("password")
+            elif is_phone: matched_val = state.get("number") or state.get("phone") or state.get("mobile")
+            elif is_name: matched_val = state.get("name")
+
+            if matched_val is not None:
+                out[k] = matched_val
+            else:
+                # Không có trong Store thì mới sinh mới
+                if is_email: out[k] = f"fuzz_{hex6}@test.com"
+                elif is_phone: out[k] = f"09{uuid.uuid4().int % 100_000_000:08d}"
+                elif is_name: out[k] = f"Fuzzer {hex4.upper()}"
+                elif is_pass: out[k] = rand_pass
+
+        return out
+
+    @staticmethod
     def _default_fuzz_value(ftype: str, field_name: str) -> Any:
         if ftype == "integer": return 1
         if ftype == "number": return 0.01
         if ftype == "boolean": return True
-        if re.search(r"email", field_name, re.I): return "fuzz@test.com"
+        if re.search(r"email", field_name, re.I): return f"fuzz_{uuid.uuid4().hex[:6]}@test.com"
         if re.search(r"phone|mobile|number", field_name, re.I): return "+84900000000"
         if re.search(r"password|pass", field_name, re.I): return "Fuzz@12345!"
         return "fuzz_test_value"

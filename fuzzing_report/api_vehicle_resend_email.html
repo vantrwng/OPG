@@ -62,7 +62,26 @@
         <p>Tổng số lần gọi: <strong>1</strong></p>
         
         <h2 style="margin-top: 2rem; margin-bottom: 1rem;">Lịch sử các lần Request/Response</h2>
-<p style='color: var(--text-muted);'>Chưa có dữ liệu lịch sử nào được ghi lại (có thể API này fuzzer chưa quét tới hoặc chưa được cập nhật code ghi nhận lịch sử).</p>
+
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #1 — POST http://localhost:8888/identity/api/v2/vehicle/resend_email — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;message&quot;: &quot;Your newly purchased Vehicle Details have been sent to you email address. If you have used example.com email, check your email using the MailHog web portal. &quot;,
+  &quot;status&quot;: 200
+}</pre>
+                </div>
+                
     </div>
 </body>
 </html>

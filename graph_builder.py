@@ -1,4 +1,5 @@
 import os
+import re
 from collections import defaultdict
 from rule_inference_layer import RuleInferenceLayer
 from llm_planner import LLMPlanner
@@ -225,16 +226,14 @@ class DependencyGraphBuilder:
         bất kỳ incoming edge nào → tìm provider tốt nhất và inject cạnh.
         Cơ chế tìm kiếm: fuzzy normalized name matching trên toàn bộ outputs.
         """
-        import re
-
         def _norm(name: str) -> str:
-            s = re.sub(r'([a-z])([A-Z])', r'\\1 \\2', str(name))
-            s = re.sub(r'[-_\\.\\s]', '', s)
+            s = re.sub(r'([a-z])([A-Z])', r'\1 \2', str(name))
+            s = re.sub(r'[-_.\s]', '', s)
             return s.lower()
 
         def _tokens(name: str) -> set:
-            s = re.sub(r'([a-z])([A-Z])', r'\\1 \\2', str(name))
-            return set(re.split(r'[-_\\.\\s]', s.lower()))
+            s = re.sub(r'([a-z])([A-Z])', r'\1 \2', str(name))
+            return set(re.split(r'[-_.\s]', s.lower()))
 
         # --- Xây output lookup: norm_name → list of (api_id, original_field) ---
         output_lookup: dict = defaultdict(list)
@@ -284,16 +283,13 @@ class DependencyGraphBuilder:
                         hits = output_lookup.get(tok, [])
                         candidates_raw.extend(hits)
 
-                # Lọc bỏ self-loop và API đã có edge đến api_in
-                existing_providers = {
-                    e['to'] for api_src, edges in self.adjacency_list.items()
-                    for e in edges if api_src != api_in
-                }
-                # Chọn provider tốt nhất: ưu tiên POST/PUT (tạo resource) hơn GET
+                # Lọc bỏ self-loop — chỉ xét provider khác api_in
+                # (bỏ biến existing_providers không cần thiết)
                 METHOD_PRIORITY = {'POST': 3, 'PUT': 2, 'PATCH': 2, 'GET': 1, 'DELETE': 0}
-                best_provider = None
-                best_score    = -1
+                TOP_K = 3   # inject tối đa 3 provider candidate cho mỗi required field
 
+                # Chấm điểm tất cả candidate, giữ top-k
+                scored_providers: list = []
                 seen_providers = set()
                 for (src_api, f_out) in candidates_raw:
                     if src_api == api_in or src_api in seen_providers:
@@ -306,55 +302,60 @@ class DependencyGraphBuilder:
                     # Exact norm match → điểm cao hơn token match
                     exact_bonus  = 2 if _norm(f_out) == norm_consumer else 0
                     score        = method_score + exact_bonus
-                    if score > best_score:
-                        best_score    = score
-                        best_provider = (src_api, f_out)
+                    scored_providers.append((score, src_api, f_out))
 
-                if not best_provider:
+                if not scored_providers:
                     continue
 
-                src_api, f_out = best_provider
+                # Sắp xếp giảm dần theo score, lấy top-k
+                scored_providers.sort(key=lambda x: x[0], reverse=True)
+                top_providers = scored_providers[:TOP_K]
 
-                # Kiểm tra xem cạnh src_api → api_in đã tồn tại chưa
-                existing_edge = next(
-                    (e for e in self.adjacency_list.get(src_api, []) if e['to'] == api_in),
-                    None
-                )
-                new_dep = {
-                    'producer_field': f_out,
-                    'consumer_field': meta.get('original', field_name),
-                    'confidence':     0.40,   # safety-net: secondary confidence
-                    'match_type':     'safety_net',
-                    'semantic_type':  'identity' if location == 'path' else 'unknown',
-                    'importance':     'secondary',
-                }
+                for _score, src_api, f_out in top_providers:
+                    # Confidence giảm dần theo rank: 0.40 → 0.35 → 0.30
+                    rank_idx    = top_providers.index((_score, src_api, f_out))
+                    confidence  = max(0.30, 0.40 - rank_idx * 0.05)
 
-                if existing_edge:
-                    # Chỉ thêm dep mới nếu chưa có cặp field này
-                    dep_key = f"{f_out}|{meta.get('original', field_name)}"
-                    existing_keys = {
-                        f"{d['producer_field']}|{d['consumer_field']}"
-                        for d in existing_edge.get('dependencies', [])
+                    existing_edge = next(
+                        (e for e in self.adjacency_list.get(src_api, []) if e['to'] == api_in),
+                        None
+                    )
+                    new_dep = {
+                        'producer_field': f_out,
+                        'consumer_field': meta.get('original', field_name),
+                        'confidence':     confidence,
+                        'match_type':     'safety_net',
+                        'semantic_type':  'identity' if location == 'path' else 'unknown',
+                        'importance':     'secondary',
                     }
-                    if dep_key not in existing_keys:
-                        existing_edge['dependencies'].append(new_dep)
-                        existing_edge['max_confidence'] = max(
-                            existing_edge['max_confidence'], new_dep['confidence']
-                        )
+
+                    if existing_edge:
+                        # Chỉ thêm dep mới nếu chưa có cặp field này
+                        dep_key = f"{f_out}|{meta.get('original', field_name)}"
+                        existing_keys = {
+                            f"{d['producer_field']}|{d['consumer_field']}"
+                            for d in existing_edge.get('dependencies', [])
+                        }
+                        if dep_key not in existing_keys:
+                            existing_edge['dependencies'].append(new_dep)
+                            existing_edge['max_confidence'] = max(
+                                existing_edge['max_confidence'], new_dep['confidence']
+                            )
+                            covered.add((api_in, norm_consumer))
+                            injected_count += 1
+                    else:
+                        # Tạo cạnh mới hoàn toàn
+                        self.adjacency_list[src_api].append({
+                            'to':             api_in,
+                            'dependencies':   [new_dep],
+                            'max_confidence': new_dep['confidence'],
+                            'edge_type':      'medium',
+                        })
                         covered.add((api_in, norm_consumer))
                         injected_count += 1
-                else:
-                    # Tạo cạnh mới hoàn toàn
-                    self.adjacency_list[src_api].append({
-                        'to':             api_in,
-                        'dependencies':   [new_dep],
-                        'max_confidence': new_dep['confidence'],
-                        'edge_type':      'medium',
-                    })
-                    covered.add((api_in, norm_consumer))
-                    injected_count += 1
-                    print(f"  [SafetyNet] Inject cạnh: {src_api} → {api_in} "
-                          f"({f_out} → {meta.get('original', field_name)}) "
-                          f"[{location}, required={is_required}]")
+                        print(f"  [SafetyNet] Inject cạnh: {src_api} → {api_in} "
+                              f"({f_out} → {meta.get('original', field_name)}) "
+                              f"[rank={rank_idx+1}/{TOP_K}, conf={confidence:.2f}, "
+                              f"{location}, required={is_required}]")
 
         return injected_count

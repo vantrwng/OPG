@@ -62,7 +62,947 @@
         <p>Tổng số lần gọi: <strong>1</strong></p>
         
         <h2 style="margin-top: 2rem; margin-bottom: 1rem;">Lịch sử các lần Request/Response</h2>
-<p style='color: var(--text-muted);'>Chưa có dữ liệu lịch sử nào được ghi lại (có thể API này fuzzer chưa quét tới hoặc chưa được cập nhật code ghi nhận lịch sử).</p>
+
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #1 — GET http://localhost:8888/community/api/v2/community/posts/recent — HTTP 200 
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;posts&quot;: [
+    {
+      &quot;id&quot;: &quot;Z3uUpbhKzgWofzNhu8c4iE&quot;,
+      &quot;title&quot;: &quot;Community Project Update&quot;,
+      &quot;content&quot;: &quot;I&amp;#39;m sharing an update with the community about a recent project milestone and would love to hear everyone&amp;#39;s feedback and suggestions.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:36:13.874Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:36:13.874Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;2KE6y7wrrb5VhMEALnZxJh&quot;,
+      &quot;title&quot;: &quot;Community Project Update&quot;,
+      &quot;content&quot;: &quot;I&amp;#39;m sharing an update with the community about a recent project milestone and would love to hear everyone&amp;#39;s feedback and suggestions.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:35:50.868Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:35:50.868Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;nbN36iZDLKeuLcX4MK9xFg&quot;,
+      &quot;title&quot;: &quot;Community Project Update&quot;,
+      &quot;content&quot;: &quot;I&amp;#39;m sharing an update with the community about a recent project milestone and would love to hear everyone&amp;#39;s feedback and suggestions.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:35:12.309Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:35:12.309Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;BWfHXw7VcCBq92hstiWX5K&quot;,
+      &quot;title&quot;: &quot;Community Project Update&quot;,
+      &quot;content&quot;: &quot;I&amp;#39;m sharing an update with the community about a recent project milestone and would love to hear everyone&amp;#39;s feedback and suggestions.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:34:16.179Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:34:16.179Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;UisLaMtVAGF7kXuUzRWAXG&quot;,
+      &quot;title&quot;: &quot;Community Update and Feedback Request&quot;,
+      &quot;content&quot;: &quot;This is a community post sharing a quick update and inviting feedback from other members.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:24:11.847Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:24:11.847Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;PHdv75sUabbqy3fDa6bSQN&quot;,
+      &quot;title&quot;: &quot;Community Update and Feedback Request&quot;,
+      &quot;content&quot;: &quot;This is a community post sharing a quick update and inviting feedback from other members.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:24:11.343Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:24:11.343Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;9Y3mzqRMcWtVPrjUaQPREB&quot;,
+      &quot;title&quot;: &quot;Community Update and Feedback Request&quot;,
+      &quot;content&quot;: &quot;This is a community post sharing a quick update and inviting feedback from other members.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:23:36.123Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:23:36.123Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;bSEkfvfXYATnMCw7ncRHpB&quot;,
+      &quot;title&quot;: &quot;Community Update and Feedback Request&quot;,
+      &quot;content&quot;: &quot;This is a community post sharing a quick update and inviting feedback from other members.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:23:35.852Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:23:35.852Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;CaFoDEVJDWkWeRuFZtPnme&quot;,
+      &quot;title&quot;: &quot;Community Update and Feedback Request&quot;,
+      &quot;content&quot;: &quot;This is a community post sharing a quick update and inviting feedback from other members.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:23:34.453Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:23:34.453Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;D4JgDYvSkLCyDsBH23eBEE&quot;,
+      &quot;title&quot;: &quot;Community Update and Feedback Request&quot;,
+      &quot;content&quot;: &quot;I wanted to share a quick update with the community about a recent order experience and gather feedback from other members.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:23:30.444Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:23:30.444Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;vFzmTM3dZDdcVzeLZFCbkE&quot;,
+      &quot;title&quot;: &quot;Community Update and Feedback Request&quot;,
+      &quot;content&quot;: &quot;This is a community post sharing a quick update and inviting feedback from other members.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:23:30.084Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:23:30.084Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;obmdkZYsLUu4f33Kw9YH6H&quot;,
+      &quot;title&quot;: &quot;Community Update and Feedback Request&quot;,
+      &quot;content&quot;: &quot;I wanted to share a quick update with the community about a recent order experience and gather feedback from other members.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:23:29.71Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:23:29.71Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;rQmXuoETDcn2E9iZYsydWg&quot;,
+      &quot;title&quot;: &quot;Community Update and Feedback Request&quot;,
+      &quot;content&quot;: &quot;I wanted to share a quick update with the community about a recent order experience and gather feedback from other members.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:23:29.315Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:23:29.315Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;sXieuK52CHYctnj6YMpbzQ&quot;,
+      &quot;title&quot;: &quot;Community Update and Feedback Request&quot;,
+      &quot;content&quot;: &quot;I wanted to share a quick update with the community about a recent order experience and gather feedback from other members.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:23:29.181Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:23:29.181Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;qZHoDDfpsEQMeFiwDGKVeF&quot;,
+      &quot;title&quot;: &quot;Community Update and Feedback Request&quot;,
+      &quot;content&quot;: &quot;I wanted to share a quick update with the community about a recent order experience and gather feedback from other members.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:23:29.105Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:23:29.105Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;cPWwAAVGrra6R7xYyvoCZV&quot;,
+      &quot;title&quot;: &quot;Community Update and Feedback Request&quot;,
+      &quot;content&quot;: &quot;I wanted to share a quick update with the community about a recent order experience and gather feedback from other members.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:21:28.473Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:21:28.473Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;PojKWYnxWpTrNhXRyz8yj5&quot;,
+      &quot;title&quot;: &quot;Community Update and Feedback Request&quot;,
+      &quot;content&quot;: &quot;I wanted to share a quick update with the community about a recent order experience and gather feedback from other members.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:21:24.555Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:21:24.555Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;JzanUm2bH4btWuN3QCjmNP&quot;,
+      &quot;title&quot;: &quot;Community Update and Feedback Request&quot;,
+      &quot;content&quot;: &quot;This is a community post sharing a quick update and inviting feedback from other members.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:21:21.504Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:21:21.504Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;KpFJAfRxtXGmdLCv9GgWeZ&quot;,
+      &quot;title&quot;: &quot;Community Update and Feedback Request&quot;,
+      &quot;content&quot;: &quot;This is a community post sharing a quick update and inviting feedback from other members.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:21:21.347Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:21:21.347Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;mJMcKctoAJG7VKFjUdjBDR&quot;,
+      &quot;title&quot;: &quot;Community Update and Feedback Request&quot;,
+      &quot;content&quot;: &quot;This is a community post sharing a quick update and inviting feedback from other members.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:21:21.225Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:21:21.225Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;AtEyGmyToKZMA4tP6J2YCG&quot;,
+      &quot;title&quot;: &quot;Community Update and Feedback Request&quot;,
+      &quot;content&quot;: &quot;This is a community post sharing a quick update and inviting feedback from other members.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:21:20.116Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:21:20.116Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;V89VdW3h2MMgiFszbWHF2k&quot;,
+      &quot;title&quot;: &quot;Community Update and Feedback Request&quot;,
+      &quot;content&quot;: &quot;This is a community post sharing a quick update and inviting feedback from other members.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:21:19.829Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:21:19.829Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;jYzRkXEmPEExEapu7tPDFj&quot;,
+      &quot;title&quot;: &quot;Community Update and Feedback Request&quot;,
+      &quot;content&quot;: &quot;This is a community post sharing a quick update and inviting feedback from other members.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:21:19.735Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:21:19.735Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;qASxCszVUdCRvshWwXvJGZ&quot;,
+      &quot;title&quot;: &quot;Community Update and Feedback Request&quot;,
+      &quot;content&quot;: &quot;This is a community post sharing a quick update and inviting feedback from other members.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:21:19.505Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:21:19.505Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;nQ6r8eC6rL2q76snrHyjz4&quot;,
+      &quot;title&quot;: &quot;Community Update and Feedback Request&quot;,
+      &quot;content&quot;: &quot;This is a community post sharing a quick update and inviting feedback from other members.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:21:19.183Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:21:19.183Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;Xyq8Pe94P4abKoFBSoqyPM&quot;,
+      &quot;title&quot;: &quot;Community Update and Feedback Request&quot;,
+      &quot;content&quot;: &quot;This is a community post sharing a quick update and inviting feedback from other members.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:21:18.899Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:21:18.899Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;XJZqW9T4fTeQVuC6WBTD5h&quot;,
+      &quot;title&quot;: &quot;Community Update and Feedback Request&quot;,
+      &quot;content&quot;: &quot;This is a community post sharing a quick update and inviting feedback from other members.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:21:17.898Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:21:17.898Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;KwoKNbvSgw6p8dNWcvyAhD&quot;,
+      &quot;title&quot;: &quot;Community Update and Feedback Request&quot;,
+      &quot;content&quot;: &quot;This is a community post sharing a quick update and inviting feedback from other members.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:21:17.613Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:21:17.613Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;JA5ZJPQQSFSh3ixujAwpp6&quot;,
+      &quot;title&quot;: &quot;Community Update and Feedback Request&quot;,
+      &quot;content&quot;: &quot;This is a community post sharing a quick update and inviting feedback from other members.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:21:17.517Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:21:17.517Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;jbsSnGmF75XyJhuTJGp9fh&quot;,
+      &quot;title&quot;: &quot;Community Update and Feedback Request&quot;,
+      &quot;content&quot;: &quot;This is a community post sharing a quick update and inviting feedback from other members.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:21:15.17Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:21:15.17Z&quot;
+    }
+  ],
+  &quot;next_offset&quot;: 30,
+  &quot;previous_offset&quot;: null,
+  &quot;total&quot;: 30
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #2 — GET http://localhost:8888/community/api/v2/community/posts/recent — HTTP 200 
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;posts&quot;: [
+    {
+      &quot;id&quot;: &quot;whGDzD2TW9vcCXnjkXFzYa&quot;,
+      &quot;title&quot;: &quot;Community Project Update&quot;,
+      &quot;content&quot;: &quot;I&amp;#39;m sharing an update with the community about a recent project milestone and would love to hear everyone&amp;#39;s feedback and suggestions.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:48:50.463Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:48:50.463Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;M7CnQDLatw7boxnqazquX9&quot;,
+      &quot;title&quot;: &quot;My Recent Community Update&quot;,
+      &quot;content&quot;: &quot;I recently completed an order and wanted to share a quick update with the community. The overall experience was smooth, and I am looking forward to hearing feedback from others.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:48:37.373Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:48:37.373Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;TGCmSghYPF9qzKyQQXT7e5&quot;,
+      &quot;title&quot;: &quot;Community Project Update&quot;,
+      &quot;content&quot;: &quot;I&amp;#39;m sharing an update with the community about a recent project milestone and would love to hear everyone&amp;#39;s feedback and suggestions.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:48:36.958Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:48:36.958Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;AX4BXQVsVM2LFnANLXnp9H&quot;,
+      &quot;title&quot;: &quot;My Recent Community Update&quot;,
+      &quot;content&quot;: &quot;I recently completed an order and wanted to share a quick update with the community. The overall experience was smooth, and I am looking forward to hearing feedback from others.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:48:31.556Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:48:31.556Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;bKKYXirEeksXWZWiP2jZiP&quot;,
+      &quot;title&quot;: &quot;My Recent Community Update&quot;,
+      &quot;content&quot;: &quot;I recently completed an order and wanted to share a quick update with the community. The overall experience was smooth, and I am looking forward to hearing feedback from others.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:48:19.237Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:48:19.237Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;2WEZBynS4oiSACyTf5r2yk&quot;,
+      &quot;title&quot;: &quot;My Recent Community Update&quot;,
+      &quot;content&quot;: &quot;I recently completed an order and wanted to share a quick update with the community. The overall experience was smooth, and I am looking forward to hearing feedback from others.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:46:20.55Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:46:20.55Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;My9VAZEFQFtX2GtMPpJ36G&quot;,
+      &quot;title&quot;: &quot;My Recent Community Update&quot;,
+      &quot;content&quot;: &quot;I recently completed an order and wanted to share a quick update with the community. The overall experience was smooth, and I am looking forward to hearing feedback from others.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:46:20.202Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:46:20.202Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;9Txc7r3KBsEPuVRSN78ESN&quot;,
+      &quot;title&quot;: &quot;Community Project Update&quot;,
+      &quot;content&quot;: &quot;I&amp;#39;m sharing an update with the community about a recent project milestone and would love to hear everyone&amp;#39;s feedback and suggestions.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:46:07.363Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:46:07.363Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;CgVcWaxHWwy3hUKysSKsjA&quot;,
+      &quot;title&quot;: &quot;Community Project Update&quot;,
+      &quot;content&quot;: &quot;I&amp;#39;m sharing an update with the community about a recent project milestone and would love to hear everyone&amp;#39;s feedback and suggestions.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:45:53.999Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:45:53.999Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;VRGh7F6dK3tsBLTXD9YJm3&quot;,
+      &quot;title&quot;: &quot;Community Project Update&quot;,
+      &quot;content&quot;: &quot;I&amp;#39;m sharing an update with the community about a recent project milestone and would love to hear everyone&amp;#39;s feedback and suggestions.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:45:41.695Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:45:41.695Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;HSgQ8vU3anZntahYtM3sQL&quot;,
+      &quot;title&quot;: &quot;Community Project Update&quot;,
+      &quot;content&quot;: &quot;I&amp;#39;m sharing an update with the community about a recent project milestone and would love to hear everyone&amp;#39;s feedback and suggestions.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:45:29.467Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:45:29.467Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;sLLKtDCNqbhGE2AVsp6fdV&quot;,
+      &quot;title&quot;: &quot;Community Project Update&quot;,
+      &quot;content&quot;: &quot;I&amp;#39;m sharing an update with the community about a recent project milestone and would love to hear everyone&amp;#39;s feedback and suggestions.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:45:16.261Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:45:16.261Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;7mPaT3SjLdaLVCftvJvQUU&quot;,
+      &quot;title&quot;: &quot;Community Project Update&quot;,
+      &quot;content&quot;: &quot;I&amp;#39;m sharing an update with the community about a recent project milestone and would love to hear everyone&amp;#39;s feedback and suggestions.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:45:03.96Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:45:03.96Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;3NbWkdisjGFiRPXGbEMgkK&quot;,
+      &quot;title&quot;: &quot;Community Project Update&quot;,
+      &quot;content&quot;: &quot;I&amp;#39;m sharing an update with the community about a recent project milestone and would love to hear everyone&amp;#39;s feedback and suggestions.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:44:01.684Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:44:01.684Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;CbxodwuoJAnRr2vNZbt2Ej&quot;,
+      &quot;title&quot;: &quot;Community Project Update&quot;,
+      &quot;content&quot;: &quot;I&amp;#39;m sharing an update with the community about a recent project milestone and would love to hear everyone&amp;#39;s feedback and suggestions.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:43:48.464Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:43:48.464Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;SFQqA9Bk3bEV8krZkNq2xj&quot;,
+      &quot;title&quot;: &quot;Community Project Update&quot;,
+      &quot;content&quot;: &quot;I&amp;#39;m sharing an update with the community about a recent project milestone and would love to hear everyone&amp;#39;s feedback and suggestions.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:43:36.152Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:43:36.152Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;i4um8BkgeSJYu4CSdQopiB&quot;,
+      &quot;title&quot;: &quot;Community Project Update&quot;,
+      &quot;content&quot;: &quot;I&amp;#39;m sharing an update with the community about a recent project milestone and would love to hear everyone&amp;#39;s feedback and suggestions.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:43:23.933Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:43:23.933Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;uUDgfZNVLvmG2tquhXciuM&quot;,
+      &quot;title&quot;: &quot;Community Project Update&quot;,
+      &quot;content&quot;: &quot;I&amp;#39;m sharing an update with the community about a recent project milestone and would love to hear everyone&amp;#39;s feedback and suggestions.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:43:11.64Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:43:11.64Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;mxWQtDr59HCf2Xob9awnnQ&quot;,
+      &quot;title&quot;: &quot;Community Project Update&quot;,
+      &quot;content&quot;: &quot;I&amp;#39;m sharing an update with the community about a recent project milestone and would love to hear everyone&amp;#39;s feedback and suggestions.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:42:59.399Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:42:59.399Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;F8TKWVwGPMTKMdG4sMhLqW&quot;,
+      &quot;title&quot;: &quot;Community Project Update&quot;,
+      &quot;content&quot;: &quot;I&amp;#39;m sharing an update with the community about a recent project milestone and would love to hear everyone&amp;#39;s feedback and suggestions.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:42:46.623Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:42:46.623Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;HhVmHCdG3NcESqPNWuKpQS&quot;,
+      &quot;title&quot;: &quot;Community Project Update&quot;,
+      &quot;content&quot;: &quot;I&amp;#39;m sharing an update with the community about a recent project milestone and would love to hear everyone&amp;#39;s feedback and suggestions.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:42:34.299Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:42:34.299Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;vc4yFXnBop6qBNCH7xcMwc&quot;,
+      &quot;title&quot;: &quot;Community Project Update&quot;,
+      &quot;content&quot;: &quot;I&amp;#39;m sharing an update with the community about a recent project milestone and would love to hear everyone&amp;#39;s feedback and suggestions.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:42:34.185Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:42:34.185Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;vCVqevR8yrwckqJQzse48W&quot;,
+      &quot;title&quot;: &quot;Community Project Update&quot;,
+      &quot;content&quot;: &quot;I&amp;#39;m sharing an update with the community about a recent project milestone and would love to hear everyone&amp;#39;s feedback and suggestions.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:42:21.727Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:42:21.727Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;tVGRkSjtSFWi6AvYLPY4e7&quot;,
+      &quot;title&quot;: &quot;Community Project Update&quot;,
+      &quot;content&quot;: &quot;I&amp;#39;m sharing an update with the community about a recent project milestone and would love to hear everyone&amp;#39;s feedback and suggestions.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:42:17.597Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:42:17.597Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;2jvjsYihJxKxBmwUkSfwjA&quot;,
+      &quot;title&quot;: &quot;Community Project Update&quot;,
+      &quot;content&quot;: &quot;I&amp;#39;m sharing an update with the community about a recent project milestone and would love to hear everyone&amp;#39;s feedback and suggestions.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:41:48.741Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:41:48.741Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;4s9znwEMogADY2ZC9jyKVE&quot;,
+      &quot;title&quot;: &quot;Community Project Update&quot;,
+      &quot;content&quot;: &quot;I&amp;#39;m sharing an update with the community about a recent project milestone and would love to hear everyone&amp;#39;s feedback and suggestions.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:41:35.923Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:41:35.923Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;sMmhNLcGow86okRy6wDThg&quot;,
+      &quot;title&quot;: &quot;Community Project Update&quot;,
+      &quot;content&quot;: &quot;I&amp;#39;m sharing an update with the community about a recent project milestone and would love to hear everyone&amp;#39;s feedback and suggestions.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:41:35.823Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:41:35.823Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;nyDUGEkQ3s8sb8GTpYGwbh&quot;,
+      &quot;title&quot;: &quot;Community Project Update&quot;,
+      &quot;content&quot;: &quot;I&amp;#39;m sharing an update with the community about a recent project milestone and would love to hear everyone&amp;#39;s feedback and suggestions.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:41:35.758Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:41:35.758Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;CWwaxXiU3bkw6DBnBz9A6h&quot;,
+      &quot;title&quot;: &quot;Community Project Update&quot;,
+      &quot;content&quot;: &quot;I&amp;#39;m sharing an update with the community about a recent project milestone and would love to hear everyone&amp;#39;s feedback and suggestions.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:41:22.918Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:41:22.918Z&quot;
+    },
+    {
+      &quot;id&quot;: &quot;aoUxKvNap5LcgwNomMRzMi&quot;,
+      &quot;title&quot;: &quot;Community Project Update&quot;,
+      &quot;content&quot;: &quot;I&amp;#39;m sharing an update with the community about a recent project milestone and would love to hear everyone&amp;#39;s feedback and suggestions.&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;John Doe&quot;,
+        &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-16T15:41:22.826Z&quot;
+      },
+      &quot;comments&quot;: [],
+      &quot;authorid&quot;: 9,
+      &quot;CreatedAt&quot;: &quot;2026-05-16T15:41:22.826Z&quot;
+    }
+  ],
+  &quot;next_offset&quot;: 30,
+  &quot;previous_offset&quot;: null,
+  &quot;total&quot;: 30
+}</pre>
+                </div>
+                
     </div>
 </body>
 </html>

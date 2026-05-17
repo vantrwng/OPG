@@ -30,7 +30,7 @@ def generate_html_report(json_file="beam_strategies.json", output_dir="fuzzing_r
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Details - {api}</title>
+    <title>API Details - {html.escape(api)}</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {{
@@ -96,9 +96,14 @@ def generate_html_report(json_file="beam_strategies.json", output_dir="fuzzing_r
             api_html += "<p style='color: var(--text-muted);'>Chưa có dữ liệu lịch sử nào được ghi lại (có thể API này fuzzer chưa quét tới hoặc chưa được cập nhật code ghi nhận lịch sử).</p>"
         else:
             for i, req in enumerate(all_requests):
+                method_str = req.get("method", "GET").upper()
+                path_str   = req.get("path", "/")
                 status_str = req.get("status", "0")
+                payload_source = req.get("payload_source", "NONE")
                 request_payload = req.get("request_payload", {})
                 response_text = req.get("response_text", "")
+                repair_reason = req.get("repair_reason", "")
+                repair_history = req.get("repair_history", [])
                 
                 status_int = int(status_str)
                 if status_int >= 500: color = "var(--danger)"
@@ -113,10 +118,60 @@ def generate_html_report(json_file="beam_strategies.json", output_dir="fuzzing_r
                     safe_resp = html.escape(json.dumps(parsed_json, indent=2, ensure_ascii=False))
                 except Exception:
                     pass
+                
+                source_badge = ""
+                if payload_source == "LLM_REPAIR":
+                    source_badge = "<span style='background: #f59e0b; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🛠️ LLM Repaired</span>"
+                elif payload_source == "LLM":
+                    source_badge = "<span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>"
+                elif payload_source == "HEURISTIC":
+                    source_badge = "<span style='background: #3b82f6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>⚡ Heuristic</span>"
+
+                repair_html = ""
+                if repair_reason:
+                    history_items = ""
+                    for hist in repair_history:
+                        h_payload = html.escape(json.dumps(hist.get("payload", {}), indent=2, ensure_ascii=False))
+                        
+                        h_resp_raw = str(hist.get("response", ""))
+                        try:
+                            h_resp_raw = json.dumps(json.loads(h_resp_raw), indent=2, ensure_ascii=False)
+                        except:
+                            pass
+                        h_resp = html.escape(h_resp_raw)
+                        h_status = hist.get("status", "Unknown")
+                        h_attempt = hist.get("attempt", 1)
+                        
+                        history_items += f"""
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
+                            <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #{h_attempt} Failed (HTTP {h_status})</h5>
+                            <div style="display: flex; gap: 1rem;">
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{h_payload}</pre>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">{h_resp}</pre>
+                                </div>
+                            </div>
+                        </div>
+                        """
+                        
+                    repair_html = f"""
+                    <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 0.75rem; margin-bottom: 1rem; font-size: 0.85rem; color: #b45309; border-radius: 0 4px 4px 0;">
+                        <strong>⚠️ {html.escape(repair_reason)}</strong>
+                        {history_items}
+                    </div>
+                    """
 
                 api_html += f"""
                 <div class="status-section" style="border-left: 4px solid {color}; margin-bottom: 2rem;">
-                    <h3 style="color: {color}; margin-bottom: 1rem;">Lần gọi #{i+1} — HTTP {status_str}</h3>
+                    <h3 style="color: {color}; margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #{i+1} — {method_str} {path_str} — HTTP {status_str} {source_badge}
+                    </h3>
+                    
+                    {repair_html}
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{safe_req}</pre>
@@ -250,6 +305,10 @@ def generate_html_report(json_file="beam_strategies.json", output_dir="fuzzing_r
                 <div class="stat-label">Vulnerabilities Found</div>
             </div>
         </div>
+
+        <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem; font-family: 'Fira Code', monospace; word-break: break-all;">
+            {html.escape(api)}
+        </h1>
 
         <div class="api-stats-section" style="margin-bottom: 3rem;">
             <h2 style="font-size: 1.8rem; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem;">Thống kê Fuzzing API</h2>

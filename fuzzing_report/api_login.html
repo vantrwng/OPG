@@ -59,10 +59,1005 @@
         <a href="index.html" class="back-btn">&larr; Quay lại Dashboard</a>
         <h1>API: <span style="font-family: 'Fira Code', monospace; color: var(--accent-primary);">login</span></h1>
         
-        <p>Tổng số lần gọi: <strong>1</strong></p>
+        <p>Tổng số lần gọi: <strong>14</strong></p>
         
         <h2 style="margin-top: 2rem; margin-bottom: 1rem;">Lịch sử các lần Request/Response</h2>
-<p style='color: var(--text-muted);'>Chưa có dữ liệu lịch sử nào được ghi lại (có thể API này fuzzer chưa quét tới hoặc chưa được cập nhật code ghi nhận lịch sử).</p>
+
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #1 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDU1MTcsImV4cCI6MTc3OTU1MDMxNywicm9sZSI6InVzZXIifQ.M-_CEOOaTFPUyBNT6BPyFxc_9QF_iSJcmF2v4iWI6IeoC0TIQe_TNAHkXvGFXA3On1QkCuVHJTmC-MkSOVjY_l_Vv4LNNeXNhvjm4MBOXPvBHp7L0MWEIA5QDOqjuILDwkbji15JUSlmxdj0m4ejBk1DOkyxGTfxG9LndgR7XoSgfCGr01Fl8i0ODRCRJsD5G3BImZ9DTCgGJFN-MAGa4Z3r9uDTJgx3f8KnFZGL5hCHQ1sALfoFTZUrBg1nGO14iI0Stj709Sk-iauAHJ5BZz7R0JKobp8-HnOUZL4llhJH5hgvnZW80oB2bMU4K2aPbLoezTKCqY2N4trBp2bVOA&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #2 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDU1NTEsImV4cCI6MTc3OTU1MDM1MSwicm9sZSI6InVzZXIifQ.ab2WvNZ89Kif_KbH4PPTLy-7YkX4M4Bin2t6Z-aBsB9Hrfh3a1PZTa0bDUteIIEST5XPcVOriAl6WTDLkE-Z5Ht9YHq5PZcEYDvsy_Ig2RVpccuKviql_MfgBIanALoSTNJVSN93WI6l2GKCwG24Ug_G5cmE9gQAuDXVTHUTXuXOvfQYF4Nn1ylfeZDNf7tQbx7B9fGNlQ3aO3zzcsiJrwATAHwufsLXalUG4Hw8QDGcCzGj_hbqUv-0e_WnF5FDiL9eN9DYGr4XUrA2vLxKy-BaU7cUufLrJmoi2bBfPgkBED0bkXkubI9cqGZnrkyx_tOl-qKDNkokmW57JLcC5w&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #3 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDU1NzYsImV4cCI6MTc3OTU1MDM3Niwicm9sZSI6InVzZXIifQ.XDoDjuvEYaIG-2n_V7EQZI9T2bPPWYtb2SGY4NzjMvqFDVw4f2-ULDO79bOH_ATy5xTmMUMJx1tK7tWpYS0u04ci0ubW29R2WlOgVhIjHA3mmdCUxOUB_LnCD9tNYdLer_-7YD-3JoHeCiO3TEW3Tn-GKRtec1cmdmehxpNxCzmhhDg1ypZoFGVxsjuuZFmHcAG7QoiIYfSZRCXEvlVYfpnPr_E2nLcqXNFynMUOGeKjXNig3_KNjKRSbh5NZ2RcnFNiBj_EeWsV85iQsNNpd8_knu9GoAQs1ZQQ0PLRB0PlakX6YEAg8WQAGBImqmm9zEd6wLS4kxwNkVV_aI6sVA&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #4 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDU5ODgsImV4cCI6MTc3OTU1MDc4OCwicm9sZSI6InVzZXIifQ.pzSNO5Lbh5RiaylveYuyK3eZm7f2eY4JGVZ2bNdisP7Hs4etwnPJuCuS7B9wDb6QcO3qraNW5gft3twOtTDwKOIB9D4jvj-GCn3Kp6rr3DOXbGVWS4IDiuPFceKFAzilUVYx9xrgQm37oYPZeW1Xbk6sfVeVlH8R9nE16xMv1VSY6Wg3iU1IRtrwUTPxDi6jCP0tsLxM_IaeF9-evJ_X1XieSn5GATxq3JWUVMmyJ8Vip1P5ZBoyxdDe_Qe86pANILwph9RcfgiMUZa40BcUdCVu5w52AYfmk-lgfdY9OsCa4P8cu0HDvsFnusF_uv7xJP0mKQMAJeFC2nCmSWtyEg&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #5 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDU5ODgsImV4cCI6MTc3OTU1MDc4OCwicm9sZSI6InVzZXIifQ.pzSNO5Lbh5RiaylveYuyK3eZm7f2eY4JGVZ2bNdisP7Hs4etwnPJuCuS7B9wDb6QcO3qraNW5gft3twOtTDwKOIB9D4jvj-GCn3Kp6rr3DOXbGVWS4IDiuPFceKFAzilUVYx9xrgQm37oYPZeW1Xbk6sfVeVlH8R9nE16xMv1VSY6Wg3iU1IRtrwUTPxDi6jCP0tsLxM_IaeF9-evJ_X1XieSn5GATxq3JWUVMmyJ8Vip1P5ZBoyxdDe_Qe86pANILwph9RcfgiMUZa40BcUdCVu5w52AYfmk-lgfdY9OsCa4P8cu0HDvsFnusF_uv7xJP0mKQMAJeFC2nCmSWtyEg&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #6 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDU5ODgsImV4cCI6MTc3OTU1MDc4OCwicm9sZSI6InVzZXIifQ.pzSNO5Lbh5RiaylveYuyK3eZm7f2eY4JGVZ2bNdisP7Hs4etwnPJuCuS7B9wDb6QcO3qraNW5gft3twOtTDwKOIB9D4jvj-GCn3Kp6rr3DOXbGVWS4IDiuPFceKFAzilUVYx9xrgQm37oYPZeW1Xbk6sfVeVlH8R9nE16xMv1VSY6Wg3iU1IRtrwUTPxDi6jCP0tsLxM_IaeF9-evJ_X1XieSn5GATxq3JWUVMmyJ8Vip1P5ZBoyxdDe_Qe86pANILwph9RcfgiMUZa40BcUdCVu5w52AYfmk-lgfdY9OsCa4P8cu0HDvsFnusF_uv7xJP0mKQMAJeFC2nCmSWtyEg&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #7 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDYwODIsImV4cCI6MTc3OTU1MDg4Miwicm9sZSI6InVzZXIifQ.c4JKRoX6MAWfpqT3Mx3OBW2Mt_1ndseIOkHlMf4c0rIWVts4r1EbJ4dfDOTo4ucUvWSZcMXO71YpKj2SFqz0mRNPnEu_yvtHxH-y_mJFYzPxamwvfxLZ_313miag23rqNiJMpKDC7f2a2JNK1YGhLsOzQI3MXIcfRnCWWehR9gyUiLkkKV0oOvQNqEnibI57BnhKOnHpUix6ud_w98H8xtYOVgsGy5zmRKV7-77mypFVtJXKPu_d-XHXQb3P-Z-GW3ah6xgY2JBCGsXHTSZXhbEEeOPHmZfPz_DGj21AbhRVX6P5IlHQlqkq8NWt6DsEEO3iLJmttKhRPSUXlhbfGA&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #8 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDYwODIsImV4cCI6MTc3OTU1MDg4Miwicm9sZSI6InVzZXIifQ.c4JKRoX6MAWfpqT3Mx3OBW2Mt_1ndseIOkHlMf4c0rIWVts4r1EbJ4dfDOTo4ucUvWSZcMXO71YpKj2SFqz0mRNPnEu_yvtHxH-y_mJFYzPxamwvfxLZ_313miag23rqNiJMpKDC7f2a2JNK1YGhLsOzQI3MXIcfRnCWWehR9gyUiLkkKV0oOvQNqEnibI57BnhKOnHpUix6ud_w98H8xtYOVgsGy5zmRKV7-77mypFVtJXKPu_d-XHXQb3P-Z-GW3ah6xgY2JBCGsXHTSZXhbEEeOPHmZfPz_DGj21AbhRVX6P5IlHQlqkq8NWt6DsEEO3iLJmttKhRPSUXlhbfGA&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #9 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDYwODIsImV4cCI6MTc3OTU1MDg4Miwicm9sZSI6InVzZXIifQ.c4JKRoX6MAWfpqT3Mx3OBW2Mt_1ndseIOkHlMf4c0rIWVts4r1EbJ4dfDOTo4ucUvWSZcMXO71YpKj2SFqz0mRNPnEu_yvtHxH-y_mJFYzPxamwvfxLZ_313miag23rqNiJMpKDC7f2a2JNK1YGhLsOzQI3MXIcfRnCWWehR9gyUiLkkKV0oOvQNqEnibI57BnhKOnHpUix6ud_w98H8xtYOVgsGy5zmRKV7-77mypFVtJXKPu_d-XHXQb3P-Z-GW3ah6xgY2JBCGsXHTSZXhbEEeOPHmZfPz_DGj21AbhRVX6P5IlHQlqkq8NWt6DsEEO3iLJmttKhRPSUXlhbfGA&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #10 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDYwOTUsImV4cCI6MTc3OTU1MDg5NSwicm9sZSI6InVzZXIifQ.nCmGjyiKe14uZ_c4lcUyJQnryBxvEDttW1YObew38ktBsf4sZBagXbbRcRXyWgmPk_wOUrWv2A7agZLGvI3Gog9AEIrtTgOfNmIBqhx0_BUan_dSd1kQfGQy8ZdEdgDJa6jxrkyex27IrqXm7iaPm_s5JvPjdfQCHHUrHL_4JF0wOmSQ3osueT7P096uXvvm43g3K7M6sIjel10_9mCd9-KDAsfPWeqpMntSQ9ZbQ9ltY46OAE0laDm2_1C6UVj57r2rBiVNkgvAApTT1Ka1bTX-Oep8BJCTdyecDyB3AffgWF5lFLW2YgiY4_QBrR0ubg4yU8t8SyJIbNMzu1haUA&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #11 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDYwOTUsImV4cCI6MTc3OTU1MDg5NSwicm9sZSI6InVzZXIifQ.nCmGjyiKe14uZ_c4lcUyJQnryBxvEDttW1YObew38ktBsf4sZBagXbbRcRXyWgmPk_wOUrWv2A7agZLGvI3Gog9AEIrtTgOfNmIBqhx0_BUan_dSd1kQfGQy8ZdEdgDJa6jxrkyex27IrqXm7iaPm_s5JvPjdfQCHHUrHL_4JF0wOmSQ3osueT7P096uXvvm43g3K7M6sIjel10_9mCd9-KDAsfPWeqpMntSQ9ZbQ9ltY46OAE0laDm2_1C6UVj57r2rBiVNkgvAApTT1Ka1bTX-Oep8BJCTdyecDyB3AffgWF5lFLW2YgiY4_QBrR0ubg4yU8t8SyJIbNMzu1haUA&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #12 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDYwOTUsImV4cCI6MTc3OTU1MDg5NSwicm9sZSI6InVzZXIifQ.nCmGjyiKe14uZ_c4lcUyJQnryBxvEDttW1YObew38ktBsf4sZBagXbbRcRXyWgmPk_wOUrWv2A7agZLGvI3Gog9AEIrtTgOfNmIBqhx0_BUan_dSd1kQfGQy8ZdEdgDJa6jxrkyex27IrqXm7iaPm_s5JvPjdfQCHHUrHL_4JF0wOmSQ3osueT7P096uXvvm43g3K7M6sIjel10_9mCd9-KDAsfPWeqpMntSQ9ZbQ9ltY46OAE0laDm2_1C6UVj57r2rBiVNkgvAApTT1Ka1bTX-Oep8BJCTdyecDyB3AffgWF5lFLW2YgiY4_QBrR0ubg4yU8t8SyJIbNMzu1haUA&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #13 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDYxMDgsImV4cCI6MTc3OTU1MDkwOCwicm9sZSI6InVzZXIifQ.h6re3TrB-Q4pmTD5N7vI4owIv_rxG_pErgz28iIgxCxjhese4Mseias0EDvZJFjzCUwS8DE7RShRNJXM7J3NxCkEMvNhsR3KGMsNtpH6LyN0rC0BjaWpRXCgEzAWodn_hgruDTb-XUgAghi3W68gANfv434OZEHOHoAruIPLfltB-zqMQXM4NV2vv0vB_PXt9EL6223ioLJCu4Q7sfYKNmeZAk1OsSQjvaCbHII5UCsiCY7z8ToaDLa6uYOMxeXAluYjpUkdvmPCdBVM7U3yySLr9vfs2yqPf7Vdyu9E3bPlknrDWHL4k32NI1NABDPWHBAqRz88wx0La5CPWz-cjQ&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #14 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDYxMDgsImV4cCI6MTc3OTU1MDkwOCwicm9sZSI6InVzZXIifQ.h6re3TrB-Q4pmTD5N7vI4owIv_rxG_pErgz28iIgxCxjhese4Mseias0EDvZJFjzCUwS8DE7RShRNJXM7J3NxCkEMvNhsR3KGMsNtpH6LyN0rC0BjaWpRXCgEzAWodn_hgruDTb-XUgAghi3W68gANfv434OZEHOHoAruIPLfltB-zqMQXM4NV2vv0vB_PXt9EL6223ioLJCu4Q7sfYKNmeZAk1OsSQjvaCbHII5UCsiCY7z8ToaDLa6uYOMxeXAluYjpUkdvmPCdBVM7U3yySLr9vfs2yqPf7Vdyu9E3bPlknrDWHL4k32NI1NABDPWHBAqRz88wx0La5CPWz-cjQ&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #15 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDYxMDgsImV4cCI6MTc3OTU1MDkwOCwicm9sZSI6InVzZXIifQ.h6re3TrB-Q4pmTD5N7vI4owIv_rxG_pErgz28iIgxCxjhese4Mseias0EDvZJFjzCUwS8DE7RShRNJXM7J3NxCkEMvNhsR3KGMsNtpH6LyN0rC0BjaWpRXCgEzAWodn_hgruDTb-XUgAghi3W68gANfv434OZEHOHoAruIPLfltB-zqMQXM4NV2vv0vB_PXt9EL6223ioLJCu4Q7sfYKNmeZAk1OsSQjvaCbHII5UCsiCY7z8ToaDLa6uYOMxeXAluYjpUkdvmPCdBVM7U3yySLr9vfs2yqPf7Vdyu9E3bPlknrDWHL4k32NI1NABDPWHBAqRz88wx0La5CPWz-cjQ&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #16 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDYxNzgsImV4cCI6MTc3OTU1MDk3OCwicm9sZSI6InVzZXIifQ.lD0BeEx11tFrqwUcqGbcaqhrBdZBCND8YErAPXZZh9-gSmGtiAwrWL2pg4VKZpXNH21jbvQea66fnmaqpYYz77UkTKPy0_d2YTj-jyZdvjjGPyrYCw0NgPZ49rixiq1PERwTCJNL2_ldBZxUyZ0rZQ4jf69xD9HmFK9NQ7aUPC70DLKXyHxstfpMY5zdmLBM8FFlG7MnOx2zIx_XF7xr8OehjWmorTVITfqbNJuQLP-KhYQQb0kYsu_NMobDjru1HYKMb_a836LbzkRVwn6R3UTXcnRX0PbD2I3rSokIYxSoOGQL9DVZAm3l-F8MT8QhM87DUo-TbSeK2MLFaQ6byA&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #17 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDYxNzksImV4cCI6MTc3OTU1MDk3OSwicm9sZSI6InVzZXIifQ.dsWf4TkNxJguANOHjVF7f1LpPSkf2DtaCYJh-h9h-RJzUHYBWZZ71zd7ULTXUk27mPEPmQs7_DUU69XNLiezUxmRLLvcYZhfYTKDt4l8T6ybJkvNOVASTQTwg4YdyCUULZg40965KA51_RlmOVuuTtlfczbAjsXe2voZeJehRxDtnptIXuPHTrgMyIj8WM91y685F21s4avSlL1_IT7Dx-1eUFUA0VHuq5xavfWXF7JqQ6jKEwSWujbpBg4Bgd5Dw4oaTA9W-MmTLGLxZPHQV0TSA4lj1eCefqZ17EguBYG3a0_p3wbCauj1laWE6rEa8LeEnJrgk0OJWgVUvqDmwA&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #18 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDYxNzksImV4cCI6MTc3OTU1MDk3OSwicm9sZSI6InVzZXIifQ.dsWf4TkNxJguANOHjVF7f1LpPSkf2DtaCYJh-h9h-RJzUHYBWZZ71zd7ULTXUk27mPEPmQs7_DUU69XNLiezUxmRLLvcYZhfYTKDt4l8T6ybJkvNOVASTQTwg4YdyCUULZg40965KA51_RlmOVuuTtlfczbAjsXe2voZeJehRxDtnptIXuPHTrgMyIj8WM91y685F21s4avSlL1_IT7Dx-1eUFUA0VHuq5xavfWXF7JqQ6jKEwSWujbpBg4Bgd5Dw4oaTA9W-MmTLGLxZPHQV0TSA4lj1eCefqZ17EguBYG3a0_p3wbCauj1laWE6rEa8LeEnJrgk0OJWgVUvqDmwA&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #19 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDYyNDEsImV4cCI6MTc3OTU1MTA0MSwicm9sZSI6InVzZXIifQ.betbsPE7FttOsx-VbqYyxRJk4TjPPWEtv-tbvEC3rVjGqjc33mA4RASLRWMe-Wc2jBtV0TogXVqdVOtZB4J8tPEkp62D--kGJsoLtEKEcmxTrrtOEnj_2xd2Em27Popz3D2ckFFv7iL2reGm4hCJCuAkkYonlSXibuCXhe8TdoBAC4E-TwQ_W7jJWD3e_VQc6oveBpSc9xlc01T2sAfL6OqqbfX-22-s6o2IFNbfS1r2eXagd7zyk5Kk8ktXxhw1nrmK6dsWxCqKF9fKpIkQ-oj9IxDiochYBoSupnYwyuoCRkeF1yUNKF06sXedzL-4aX7O2jmLuLemIIF3sSQZ_w&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #20 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDYyNDEsImV4cCI6MTc3OTU1MTA0MSwicm9sZSI6InVzZXIifQ.betbsPE7FttOsx-VbqYyxRJk4TjPPWEtv-tbvEC3rVjGqjc33mA4RASLRWMe-Wc2jBtV0TogXVqdVOtZB4J8tPEkp62D--kGJsoLtEKEcmxTrrtOEnj_2xd2Em27Popz3D2ckFFv7iL2reGm4hCJCuAkkYonlSXibuCXhe8TdoBAC4E-TwQ_W7jJWD3e_VQc6oveBpSc9xlc01T2sAfL6OqqbfX-22-s6o2IFNbfS1r2eXagd7zyk5Kk8ktXxhw1nrmK6dsWxCqKF9fKpIkQ-oj9IxDiochYBoSupnYwyuoCRkeF1yUNKF06sXedzL-4aX7O2jmLuLemIIF3sSQZ_w&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #21 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDYyNDEsImV4cCI6MTc3OTU1MTA0MSwicm9sZSI6InVzZXIifQ.betbsPE7FttOsx-VbqYyxRJk4TjPPWEtv-tbvEC3rVjGqjc33mA4RASLRWMe-Wc2jBtV0TogXVqdVOtZB4J8tPEkp62D--kGJsoLtEKEcmxTrrtOEnj_2xd2Em27Popz3D2ckFFv7iL2reGm4hCJCuAkkYonlSXibuCXhe8TdoBAC4E-TwQ_W7jJWD3e_VQc6oveBpSc9xlc01T2sAfL6OqqbfX-22-s6o2IFNbfS1r2eXagd7zyk5Kk8ktXxhw1nrmK6dsWxCqKF9fKpIkQ-oj9IxDiochYBoSupnYwyuoCRkeF1yUNKF06sXedzL-4aX7O2jmLuLemIIF3sSQZ_w&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #22 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDYyOTEsImV4cCI6MTc3OTU1MTA5MSwicm9sZSI6InVzZXIifQ.Sk1Rskre13oNoTXb4xxIZYF31hnGEfac76eQg7RSfB-v4Yo_m--bXt-Ap0IuOaYStI90VyxB-yw3Dc9sc8upySkeR9g6bAhvHlNU3JkyY68-snxLsm0GF0qqUcGkVkPIL6rCvDej5fCYFNu-XJiH8RZfpBS_M1JDRDZ0HtmTg7P5uYaxE_RoV9srroOiVzWDYUo7VemM6COUPeFJhknLUixJGx5ZQTqliYjCeDpr1nFvFlECvwh8GK-qXyelFRlV8zy8Zy5BMF65Qx1k6qGMJeDcdA7780r23Ne8DQn25atq6GK4ifBB7iNBisGn2InGD7KOtWhA9vHDZ3ZvkVxLdw&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #23 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDYyOTEsImV4cCI6MTc3OTU1MTA5MSwicm9sZSI6InVzZXIifQ.Sk1Rskre13oNoTXb4xxIZYF31hnGEfac76eQg7RSfB-v4Yo_m--bXt-Ap0IuOaYStI90VyxB-yw3Dc9sc8upySkeR9g6bAhvHlNU3JkyY68-snxLsm0GF0qqUcGkVkPIL6rCvDej5fCYFNu-XJiH8RZfpBS_M1JDRDZ0HtmTg7P5uYaxE_RoV9srroOiVzWDYUo7VemM6COUPeFJhknLUixJGx5ZQTqliYjCeDpr1nFvFlECvwh8GK-qXyelFRlV8zy8Zy5BMF65Qx1k6qGMJeDcdA7780r23Ne8DQn25atq6GK4ifBB7iNBisGn2InGD7KOtWhA9vHDZ3ZvkVxLdw&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #24 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDYyOTEsImV4cCI6MTc3OTU1MTA5MSwicm9sZSI6InVzZXIifQ.Sk1Rskre13oNoTXb4xxIZYF31hnGEfac76eQg7RSfB-v4Yo_m--bXt-Ap0IuOaYStI90VyxB-yw3Dc9sc8upySkeR9g6bAhvHlNU3JkyY68-snxLsm0GF0qqUcGkVkPIL6rCvDej5fCYFNu-XJiH8RZfpBS_M1JDRDZ0HtmTg7P5uYaxE_RoV9srroOiVzWDYUo7VemM6COUPeFJhknLUixJGx5ZQTqliYjCeDpr1nFvFlECvwh8GK-qXyelFRlV8zy8Zy5BMF65Qx1k6qGMJeDcdA7780r23Ne8DQn25atq6GK4ifBB7iNBisGn2InGD7KOtWhA9vHDZ3ZvkVxLdw&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #25 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDYzMjgsImV4cCI6MTc3OTU1MTEyOCwicm9sZSI6InVzZXIifQ.kjxwsfhx2BKaog3SCyChrCjQ3JwgZrZpTAtH0sO6jGwMLUHHbmp49CQbImwChs1gY8Jo_qIDkoVDgu9onhQcbLIGArhbJAMcNeVEac8mGk9O2Xw-WEabLVCPgmllxgWBKwcxGoybw3cGiDh0RFBKzWDMhhdQ8NxiopjdQYTrpxpotj4a5ylPkoawR9vzG45nm4hiRiw2aq0I_GAJexmV6exytyFrZcNR3EWp2fi6nk7MjLBeFuAl-40ip3kOQpfM1UjUuKLWK7kXEhVnyOyZlXZiCp7BYLXFAjBody-vpEmRsvj7vdJjtmaDmFip5MVkLutxFOxCU7A5i1P6TujWug&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #26 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDYzMjksImV4cCI6MTc3OTU1MTEyOSwicm9sZSI6InVzZXIifQ.TBKDGyw7Eysv7M1k6zWMiEoqe6WEUwE88-vFLMY1m_z_zdYtzVUMd2nAURzcickapEFjgf4YpVxSrF41EWIWWYYL-Ngz0Rih04kvhncJoE2-eE8yTv1u9QjcJjqDcVoCFe693odnQT_d6blcsYcKOU2zY9K4ls2fhNmBp14F8GyS7lldUGhr6qglPCXc81N8BMIZC9XNbtj8FTSVCbvfhnn_aG6_6y5GnkEOyU8FgeOr0Zi4FmcdcJ618GfY6Mfgf4F7tJsxnfhAWT54mSoJDT_TqCSGIKVfWXpa2MDG0hDZggrx-cKZiiXTqzIOE6foJwORrsqZiGH0z1kvrM8mEQ&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #27 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDYzMjksImV4cCI6MTc3OTU1MTEyOSwicm9sZSI6InVzZXIifQ.TBKDGyw7Eysv7M1k6zWMiEoqe6WEUwE88-vFLMY1m_z_zdYtzVUMd2nAURzcickapEFjgf4YpVxSrF41EWIWWYYL-Ngz0Rih04kvhncJoE2-eE8yTv1u9QjcJjqDcVoCFe693odnQT_d6blcsYcKOU2zY9K4ls2fhNmBp14F8GyS7lldUGhr6qglPCXc81N8BMIZC9XNbtj8FTSVCbvfhnn_aG6_6y5GnkEOyU8FgeOr0Zi4FmcdcJ618GfY6Mfgf4F7tJsxnfhAWT54mSoJDT_TqCSGIKVfWXpa2MDG0hDZggrx-cKZiiXTqzIOE6foJwORrsqZiGH0z1kvrM8mEQ&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #28 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDYzNjYsImV4cCI6MTc3OTU1MTE2Niwicm9sZSI6InVzZXIifQ.WWy2dLxWVKfRL59qa7fxEgcwznVhfkK3v3iFGgjH8qNT4XZNxwHeepkE-izBbOZqGriOK7RVsxF-QkajlzGD00NjbbNL1FGxIfMvYqVod39MvG6RinvXnD82W4qtudzCuEsUKqYXT-Axy5JLfiUdA5iabIvEaBNjVu-4ifXRx6iidXweqi3NwNRt6eJ9blxyCEbxs1T6I1Grbjp1BE2i28HMbxTE34OaawbvJZXYGZyof1KGOVN_3fqP9ATIl560DY1ooiNQund_IUEqiAZeTAYcn-mSuDMWzCCma76j0nTnq-PVrBsQjw5w138zfWFm2ZNdjzBUONv4nCH8jXD-gQ&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #29 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDYzNjYsImV4cCI6MTc3OTU1MTE2Niwicm9sZSI6InVzZXIifQ.WWy2dLxWVKfRL59qa7fxEgcwznVhfkK3v3iFGgjH8qNT4XZNxwHeepkE-izBbOZqGriOK7RVsxF-QkajlzGD00NjbbNL1FGxIfMvYqVod39MvG6RinvXnD82W4qtudzCuEsUKqYXT-Axy5JLfiUdA5iabIvEaBNjVu-4ifXRx6iidXweqi3NwNRt6eJ9blxyCEbxs1T6I1Grbjp1BE2i28HMbxTE34OaawbvJZXYGZyof1KGOVN_3fqP9ATIl560DY1ooiNQund_IUEqiAZeTAYcn-mSuDMWzCCma76j0nTnq-PVrBsQjw5w138zfWFm2ZNdjzBUONv4nCH8jXD-gQ&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #30 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDYzNjcsImV4cCI6MTc3OTU1MTE2Nywicm9sZSI6InVzZXIifQ.ob50he0OSvyVYNSVX_J6weJ-CTXxyxXH_hXn_zEknw6gzCaXztVw3AMXGHZHBhE8xWSunLOq6MRpXBHP2AuDX3klD50EPFgFMEzSJ2U4oc5c2yLilJ6SuTrTHVxRb5MkD_dfkNAHWqT-cIX8n3Qy702iYt6qkoTb2Jtbhd3l-PoudDTOaWbhHOMITF2cM2ZhDoKvfuIvgLl-Mq7Wtit0XLnW7mXl02E19wyhDlh_UglFZAqcoRrH4L4FYkSRr_B_0a8gsvC38uBVkL1CMj5mXK9rjr7V02ddeTu9anYtRbxXaI2st_Ozml0_pxiianpTMlfHnk49YJ3R91UXQmSgHA&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #31 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDYzODgsImV4cCI6MTc3OTU1MTE4OCwicm9sZSI6InVzZXIifQ.cUs8PiP1E-5-fSY3VxhsPuNjiP3rTCk-va8MwJI4PNihtBXY1aVS739WZxNP1Zgz585mGAZLF3cASIoJVdLNelTr4WF6vB8OG8fj7ncf3gA1GmE5HN81pekILfaejObdkaoTIcULDUpBq9atXK1W7CqOavSyt4uy92SNnGimxuvtQGCJ7BDFnSw8H9lYogr1n2V8O8VdjK9LBSz2WH1QfO7FdDaWxyVzSPnLdBCfnRD2s_llmuXW4kCehCXNyM9ponoSNf8Gz1ZCv-iqOnXdUctvOWakcs1w4VWj6Z8QAuBYLNcWgw7R-svamW-9BPcDW64JlpacpZCTlsi0MTn1qw&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #32 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDYzOTksImV4cCI6MTc3OTU1MTE5OSwicm9sZSI6InVzZXIifQ.ZN_g6YuAAlLcS6cD2E--2U9994OhNs3DzVldca6mvqR4qwwpPdeP2nL8F1Vx3SyRNNcJIDmsBf34V3FffIJ-F2TVNlvFdgNEwLdnRc-luupn0qPvFVvdfWrU5zYMaVkQrMixZzqE-DNnuRnwut83iyvJpJ0vQN-1KUnZYgXk__6Pzzajfs-ne6bQe03Rln0unRcDrAdkc7vx3ohsD6kaWDYeyOx1Awi7YNttzAk9CaMo3jSmvB4NcMJmInA6BOAI0zwiEC1oRYa4ItkeDEgvpUz0QDIqEYdQsJEDSMSRPoyhfnqxJwdq6gaVAsjicbRkY6_uVuovvqDysVPihrtDmQ&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #33 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDY0MDQsImV4cCI6MTc3OTU1MTIwNCwicm9sZSI6InVzZXIifQ.NMYoRp3t7GvTJL-82Qmrc34-a36f0XTcpTXYo5NajTT6_TR4443NstG6sbp4Uc3rgCoVM73FCMBclBhB24HoxmfeaUMolp_LF-SpTXPm2VR2Ksy6pmewrBRpoU17eLhc9tJ6OPUibKzcg3P7oIDNznucw3klab9HHgTqdkxBHBvY5PiEdgc-Vh3GD_QDC97vlr61LG0_8dzZvorPm0hPiM1OTw4BEJhPpZ7HPbjo__NuV81TBMirKDiR5-b1a6ZE4GGwC0kr2FYMh24-u5xYqrSlE8TWtoPYcJ8lTBL0PprcO7kYMvUzTXW3bWWVPNoOobftih18Z8SeKE4AJMjqUg&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #34 — POST http://localhost:8888/identity/api/auth/login — HTTP 401 <span style='background: #f59e0b; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🛠️ LLM Repaired</span>
+                    </h3>
+                    
+                    
+                    <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 0.75rem; margin-bottom: 1rem; font-size: 0.85rem; color: #b45309; border-radius: 0 4px 4px 0;">
+                        <strong>⚠️ Original Error HTTP 401: {&quot;token&quot;:null,&quot;type&quot;:&quot;&quot;,&quot;message&quot;:&quot;Given Email is not registered! &quot;,&quot;mfaRequired&quot;:false}</strong>
+                        
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
+                            <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #1 Failed (HTTP 401)</h5>
+                            <div style="display: flex; gap: 1rem;">
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
+  &quot;email&quot;: &quot;adam007@example.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">{
+  &quot;token&quot;: null,
+  &quot;type&quot;: &quot;&quot;,
+  &quot;message&quot;: &quot;Invalid Credentials&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
+                            <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #2 Failed (HTTP 401)</h5>
+                            <div style="display: flex; gap: 1rem;">
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
+  &quot;email&quot;: &quot;fuzz_a7c9e3f12b@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">{
+  &quot;token&quot;: null,
+  &quot;type&quot;: &quot;&quot;,
+  &quot;message&quot;: &quot;Given Email is not registered! &quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
+                            <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #3 Failed (HTTP 401)</h5>
+                            <div style="display: flex; gap: 1rem;">
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
+  &quot;email&quot;: &quot;adam007@example.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">{
+  &quot;token&quot;: null,
+  &quot;type&quot;: &quot;&quot;,
+  &quot;message&quot;: &quot;Invalid Credentials&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;adam007@example.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: null,
+  &quot;type&quot;: &quot;&quot;,
+  &quot;message&quot;: &quot;Invalid Credentials&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #35 — POST http://localhost:8888/identity/api/auth/login — HTTP 401 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;adam007@example.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: null,
+  &quot;type&quot;: &quot;&quot;,
+  &quot;message&quot;: &quot;Invalid Credentials&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #36 — POST http://localhost:8888/identity/api/auth/login — HTTP 401 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;adam007@example.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: null,
+  &quot;type&quot;: &quot;&quot;,
+  &quot;message&quot;: &quot;Invalid Credentials&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #37 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDY1MTcsImV4cCI6MTc3OTU1MTMxNywicm9sZSI6InVzZXIifQ.npiyKXDHsVurwbQF2M1evlfm6rlG4WgHpEfN7w3W3f4Kb_sOuPydZN6be_S9QyDILSnJUZls4qFKagz014S3tpClszXUjD8gR9rBbnNiJi798SCDwAXe9J58C8t_p0nqvCeWjXh9eSW5w6GIVCeU6WWF518DDk39dUAPjIFpwg829s_8PUYdYHTE14OfFgUUPNNZc_GcT2uLdEeOesa1MR-R-zvZWc2typO1E-kTm8hwVk3JD9yZPb_vLvfGieE2dcs3k-hqddVpL8IFHcqL1AYKM9h0jruj3blHY9GrGNA4w6hroEtNKsiCOOoQsA_wLg71riOYOJYwkz8dT3nN5Q&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #38 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDY1MTcsImV4cCI6MTc3OTU1MTMxNywicm9sZSI6InVzZXIifQ.npiyKXDHsVurwbQF2M1evlfm6rlG4WgHpEfN7w3W3f4Kb_sOuPydZN6be_S9QyDILSnJUZls4qFKagz014S3tpClszXUjD8gR9rBbnNiJi798SCDwAXe9J58C8t_p0nqvCeWjXh9eSW5w6GIVCeU6WWF518DDk39dUAPjIFpwg829s_8PUYdYHTE14OfFgUUPNNZc_GcT2uLdEeOesa1MR-R-zvZWc2typO1E-kTm8hwVk3JD9yZPb_vLvfGieE2dcs3k-hqddVpL8IFHcqL1AYKM9h0jruj3blHY9GrGNA4w6hroEtNKsiCOOoQsA_wLg71riOYOJYwkz8dT3nN5Q&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #39 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDY1MTcsImV4cCI6MTc3OTU1MTMxNywicm9sZSI6InVzZXIifQ.npiyKXDHsVurwbQF2M1evlfm6rlG4WgHpEfN7w3W3f4Kb_sOuPydZN6be_S9QyDILSnJUZls4qFKagz014S3tpClszXUjD8gR9rBbnNiJi798SCDwAXe9J58C8t_p0nqvCeWjXh9eSW5w6GIVCeU6WWF518DDk39dUAPjIFpwg829s_8PUYdYHTE14OfFgUUPNNZc_GcT2uLdEeOesa1MR-R-zvZWc2typO1E-kTm8hwVk3JD9yZPb_vLvfGieE2dcs3k-hqddVpL8IFHcqL1AYKM9h0jruj3blHY9GrGNA4w6hroEtNKsiCOOoQsA_wLg71riOYOJYwkz8dT3nN5Q&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #40 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDY1NDIsImV4cCI6MTc3OTU1MTM0Miwicm9sZSI6InVzZXIifQ.ccJYbzj7cCXhHbMnkzsrIbWzpvMdF_X3badmqQIEqqAfZFDxHjnnfIVkeLd3t9ZkgwU0uFRpemixubIrYsn6CroPTmzYgUJ5US07MZCNIYPOkQqoDtxMJx9PNlthPnlRwM99QoLloGFCV9cSv4fvQyotqYZIoUjJZzWX7Iv45stmEadAaUSRae03gpr-gtGiKDvuxUHkvH_mHOnTOO7um0fz8W7zY-JuMWQNnzp4AWEV3YVYhTbVjtaUFjsOxfxH61K2au9pnxIQDD6V24jbGIkHuE_T2XAex5FAfkHAejISyM_mSzKMfaF3A2emPxuL4ypKVIqvsf2SU-EuJeSJEQ&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #41 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDY1NDMsImV4cCI6MTc3OTU1MTM0Mywicm9sZSI6InVzZXIifQ.mlhSfUm3tNA5q4EspMkoBYTjjmYKV7uGRdidP8X2ecE2pSsJA9tkjcd5-xXx2JeRft3Jp-1IqIY8tvhDpQBBx7CxpyiPibxtcKEVJLTO_CVI7DIOWdd3EgO-AHza3a3qhwJvlAJAUXuc9dNOMP3sadxRjXTby5bTOrKSBsEYfDAeqz7Ch3vEUHENs-HjcassNuNJD7HUTbDbyMLQWbpMuyjIpHdpQjKiCny3pz_6KzblZvh558JwveAMxo7ca4yD7QP073mVlLesV_qlnGlW4IXxG7RrXUcSsLUJ1IGzUcbnp_DMpl-2byRsaaH_nFEnUWRcDs7ZnyqvAvzLmxyyTA&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #42 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
+  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmdXp6ZXJfMjk3YjUwYmVAdGVzdC5jb20iLCJpYXQiOjE3Nzg5NDY1NDMsImV4cCI6MTc3OTU1MTM0Mywicm9sZSI6InVzZXIifQ.mlhSfUm3tNA5q4EspMkoBYTjjmYKV7uGRdidP8X2ecE2pSsJA9tkjcd5-xXx2JeRft3Jp-1IqIY8tvhDpQBBx7CxpyiPibxtcKEVJLTO_CVI7DIOWdd3EgO-AHza3a3qhwJvlAJAUXuc9dNOMP3sadxRjXTby5bTOrKSBsEYfDAeqz7Ch3vEUHENs-HjcassNuNJD7HUTbDbyMLQWbpMuyjIpHdpQjKiCny3pz_6KzblZvh558JwveAMxo7ca4yD7QP073mVlLesV_qlnGlW4IXxG7RrXUcSsLUJ1IGzUcbnp_DMpl-2byRsaaH_nFEnUWRcDs7ZnyqvAvzLmxyyTA&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
     </div>
 </body>
 </html>

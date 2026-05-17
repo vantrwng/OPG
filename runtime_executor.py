@@ -1,9 +1,9 @@
-import os
 import json
 import re
 import uuid
 import logging
 import requests
+import hashlib
 from typing import Any, Dict, Optional
 
 from state_store import StateStore
@@ -34,7 +34,9 @@ class FeedbackAnalyzer:
 
         if status == 200:
             has_token = state.has("auth_token")
-            if not has_token and re.search(r"admin|account|profile|order|vehicle", body_text, re.I):
+            # Cải thiện keyword nhạy cảm tổng quát hơn cho nhiều hệ thống
+            sensitive_keywords = r"admin|account|profile|order|vehicle|payment|salary|secret|invoice|wallet|setting"
+            if not has_token and re.search(sensitive_keywords, body_text, re.I):
                 result["auth_anomaly"] = True
                 result["anomaly_details"].append("Auth Bypass: 200 on sensitive endpoint without token")
                 log.warning(f"\033[93m[AUTH BYPASS]\033[0m 200 received without auth_token in state")
@@ -70,22 +72,108 @@ class RequestExecutor:
         self.analyzer        = FeedbackAnalyzer()
         self.memory          = knowledge_memory # Có thể dùng để ghi log requests
         self._session        = requests.Session()
-        self._session.headers.update({"Content-Type": "application/json", "Accept": "application/json"})
+        self._session.headers.update({"Accept": "application/json, */*"})
+        
+        # State tracking cho Repair để tránh gọi LLM vô tận
+        self._repair_budget = {}  # key: f"{api_id}:{status}", value: int
+        self._repair_seen = set() # key: f"{api_id}:{status}:{hash(payload)}"
 
     def execute_request(self, api_node: Dict, current_state: StateStore,
                         edge_deps: Optional[list] = None) -> Dict[str, Any]:
         api_id  = api_node.get("id", "unknown_api")
         method  = api_node.get("method", "GET").upper()
-        path    = api_node.get("path", "/")
 
-        sent_payload = self.planner.generate_payload(api_node, current_state, edge_deps=edge_deps)
+        sent_payload, payload_source = self.planner.generate_payload(api_node, current_state, edge_deps=edge_deps)
+        
+        # 1. Thực thi lần đầu
+        exec_result = self._do_execute(api_node, current_state, sent_payload, payload_source)
+        
+        # 2. Vòng lặp Self-Healing (Tự phục hồi lỗi)
+        # Chỉ áp dụng nếu lỗi >= 400 và method cho phép thay đổi body payload
+        if exec_result["status"] >= 400 and method in ("POST", "PUT", "PATCH") and exec_result["response_text"]:
+            current_payload = sent_payload
+            current_exec = exec_result
+            repair_history = []
+            
+            for attempt in range(3):
+                curr_status = current_exec['status']
+                
+                # Lưu lại lịch sử trước khi sửa
+                repair_history.append({
+                    "attempt": attempt + 1,
+                    "status": curr_status,
+                    "payload": current_payload,
+                    "response": current_exec["response_text"]
+                })
+                
+                budget_key = f"{api_id}:{curr_status}"
+                max_repairs_allowed = 1 if curr_status >= 500 else 3
+                
+                # Rule 1 & 3: Giới hạn số lần repair tổng cộng trong toàn bộ phiên fuzzing (500 chỉ cho 1 lần)
+                if self._repair_budget.get(budget_key, 0) >= max_repairs_allowed:
+                    log.info(f"\033[90m[Repair Skip]\033[0m Global budget exhausted for {budget_key} ({max_repairs_allowed}/{max_repairs_allowed})")
+                    current_exec["repair_skipped"] = True
+                    break
+                    
+                # Rule 2: Chống repair trùng lặp cùng một payload
+                payload_str = json.dumps(current_payload, sort_keys=True)
+                payload_hash = hashlib.md5(payload_str.encode('utf-8')).hexdigest()
+                seen_key = f"{budget_key}:{payload_hash}"
+                
+                if seen_key in self._repair_seen:
+                    log.info(f"\033[90m[Repair Skip]\033[0m Duplicate payload signature for {seen_key}")
+                    current_exec["repair_skipped"] = True
+                    break
+                    
+                # Trừ đi 1 lượt sử dụng
+                self._repair_seen.add(seen_key)
+                self._repair_budget[budget_key] = self._repair_budget.get(budget_key, 0) + 1
+
+                log.warning(f"\033[93m[Self-Healing]\033[0m API {api_id} returned {curr_status}. Triggering LLM repair (Attempt {attempt+1}/3)...")
+                repaired_payload = self.planner.repair_payload(
+                    api_node, current_state, current_payload, current_exec["response_text"], edge_deps
+                )
+                
+                if not repaired_payload:
+                    break
+                    
+                exec_result_new = self._do_execute(api_node, current_state, repaired_payload, "LLM_REPAIR")
+                exec_result_new["repair_reason"] = f"Original Error HTTP {curr_status}: {current_exec['response_text']}"
+                
+                # Quan trọng: Giữ lại bằng chứng nếu payload cũ đã gây ra 500 Server Error
+                if exec_result["server_error"]:
+                    exec_result_new["server_error"] = True
+                    # Tránh chèn trùng lặp chuỗi Original 500
+                    if not any("[Original 500]" in d for d in exec_result_new["anomaly_details"]):
+                        exec_result_new["anomaly_details"].insert(0, f"[Original 500] {exec_result['response_text'][:100]}")
+                
+                if exec_result_new["status"] < 400:
+                    log.info(f"\033[92m[Repair SUCCESS]\033[0m {api_id} fixed from {exec_result['status']} to {exec_result_new['status']}")
+                    exec_result_new["repair_history"] = repair_history
+                    return exec_result_new
+                    
+                # Cập nhật dữ liệu để nếu chạy tiếp vòng lặp, LLM sẽ nhận được lỗi MỚI
+                log.warning(f"\033[91m[Repair FAILED]\033[0m {api_id} still failing with {exec_result_new['status']}")
+                current_payload = repaired_payload
+                current_exec = exec_result_new
+                
+            current_exec["repair_history"] = repair_history
+            return current_exec
+            
+        return exec_result
+
+    def _do_execute(self, api_node: Dict, current_state: StateStore, sent_payload: Dict, payload_source: str) -> Dict[str, Any]:
+        api_id  = api_node.get("id", "unknown_api")
+        method  = api_node.get("method", "GET").upper()
+        path    = api_node.get("path", "/")
 
         url     = self._build_url(path, api_node, current_state, sent_payload)
         headers = self._build_headers(current_state)
+        content_type = api_node.get("content_type", "application/json")
 
         log.info(f"\033[96m[>>]\033[0m {method} {url}  payload={json.dumps(sent_payload, ensure_ascii=False)[:120]}")
 
-        response = self._fire_request(method, url, headers, sent_payload)
+        response = self._fire_request(method, url, headers, sent_payload, content_type)
 
         if response is None:
             log.error(f"\033[91m[!!] Request failed (timeout/connection)\033[0m for {api_id}")
@@ -124,7 +212,10 @@ class RequestExecutor:
             "raw_response":    response_json,
             "response_text":   response.text if hasattr(response, 'text') else "",
             "sent_payload":    sent_payload,
+            "payload_source":  payload_source,
+            "url":             url,
         }
+
 
     def _build_url(self, path: str, api_node: Dict, state: StateStore, payload: Dict) -> str:
         def _norm(s: str) -> str:
@@ -147,23 +238,41 @@ class RequestExecutor:
         headers: Dict[str, str] = {}
         token = state.get("auth_token")
         if token:
-            if re.match(r"^ey", str(token)):   
-                headers["Authorization"] = f"Bearer {token}"
+            header_name = state.get("auth_header_name", "Authorization")
+            header_prefix = state.get("auth_header_prefix")
+            
+            if header_prefix:
+                # Tôn trọng cấu hình từ .env (VD: "Bearer " hoặc "Token ")
+                headers[header_name] = f"{header_prefix}{token}"
             else:
-                headers["Authorization"] = f"Token {token}"
+                # Nếu không có cấu hình prefix, dùng heuristic tự đoán
+                if re.match(r"^ey", str(token)):   
+                    headers[header_name] = f"Bearer {token}"
+                else:
+                    headers[header_name] = f"Token {token}"
         return headers
 
     def _fire_request(self, method: str, url: str, headers: Dict,
-                      payload: Dict) -> Optional[requests.Response]:
+                      payload: Dict, content_type: str = "application/json") -> Optional[requests.Response]:
         try:
-            resp = self._session.request(
-                method  = method,
-                url     = url,
-                headers = headers,
-                json    = payload if payload else None,
-                timeout = REQUEST_TIMEOUT,
-                allow_redirects = True,
-            )
+            req_kwargs = {
+                "method": method,
+                "url": url,
+                "headers": headers,
+                "timeout": REQUEST_TIMEOUT,
+                "allow_redirects": True
+            }
+            
+            if payload:
+                if content_type == "application/x-www-form-urlencoded":
+                    req_kwargs["data"] = payload
+                elif content_type == "multipart/form-data":
+                    # requests tự thêm header multipart boundary khi có files
+                    req_kwargs["files"] = {k: (None, str(v)) for k, v in payload.items()}
+                else:
+                    req_kwargs["json"] = payload
+                    
+            resp = self._session.request(**req_kwargs)
             return resp
         except requests.exceptions.Timeout:
             log.error(f"[HTTP] Timeout after {REQUEST_TIMEOUT}s — {url}")
@@ -195,124 +304,3 @@ class RequestExecutor:
         if status >= 400: return "\033[93m"
         if status >= 200: return "\033[92m"
         return "\033[0m"
-
-
-class BootstrapExecutor:
-    SIGNUP_PATH = "/identity/api/auth/signup"
-    LOGIN_PATH  = "/identity/api/auth/login"
-
-    FIXED_EMAIL    = os.getenv("CRAPI_EMAIL")
-    FIXED_NAME     = "John Doe"
-    FIXED_NUMBER   = "8755050728"
-    FIXED_PASSWORD = os.getenv("CRAPI_PASSWORD")
-
-    def __init__(self, base_url: str = "http://localhost:8888"):
-        self.base_url = base_url.rstrip("/")
-        self._session = requests.Session()
-        self._session.headers.update({
-            "Content-Type": "application/json",
-            "Accept":       "application/json",
-        })
-
-    def bootstrap(self) -> StateStore:
-        state = StateStore()
-
-        if self.FIXED_EMAIL:
-            email    = self.FIXED_EMAIL
-            password = self.FIXED_PASSWORD
-            log.info(f"\033[1m[Bootstrap]\033[0m Dùng credentials cố định: {email}")
-            state.update("email",    email)
-            state.update("password", password)
-            state.update("name",     self.FIXED_NAME)
-            state.update("number",   self.FIXED_NUMBER)
-
-            token = self._do_login(email, password, state)
-        else:
-            rand_suffix = uuid.uuid4().hex[:8]
-            email    = f"fuzzer_{rand_suffix}@test.com"
-            password = "FuzzPass@123!"
-            log.info(f"\033[1m[Bootstrap]\033[0m Auto-signup với email: {email}")
-            state.update("email",    email)
-            state.update("password", password)
-
-            signup_ok = self._do_signup(email, password)
-            if not signup_ok:
-                log.warning(f"\033[93m[Bootstrap]\033[0m Signup không thành công — thử login thẳng")
-
-            token = self._do_login(email, password, state)
-
-        if not token:
-            log.error(f"\033[91m[Bootstrap]\033[0m Login thất bại! Fuzzer sẽ chạy KHÔNG có auth_token.")
-            return state
-
-        log.info(f"\033[92m[Bootstrap]\033[0m ✓ auth_token = {str(token)[:50]}...")
-        self._discover_resources(state)
-        return state
-
-    def _discover_resources(self, state: StateStore) -> None:
-        token = state.get("auth_token")
-        if not token:
-            return
-        headers = {
-            "Authorization": f"Bearer {token}",
-            "Accept": "application/json",
-        }
-
-        try:
-            url  = f"{self.base_url}/identity/api/v2/user/dashboard"
-            resp = self._session.get(url, headers=headers, timeout=10)
-            if resp.status_code == 200:
-                data = resp.json()
-                if data.get("id"): state.update("user_id", data["id"])
-                if data.get("video_id"): state.update("video_id", data["video_id"])
-                if data.get("video_name"): state.update("video_name", data["video_name"])
-        except Exception as e:
-            pass
-
-        try:
-            url  = f"{self.base_url}/identity/api/v2/vehicle/vehicles"
-            resp = self._session.get(url, headers=headers, timeout=10)
-            if resp.status_code == 200:
-                vehicles = resp.json()
-                if isinstance(vehicles, list) and vehicles:
-                    v = vehicles[0]
-                    if v.get("id"): state.update("vehicle_id", v["id"])
-                    if v.get("uuid"): state.update("vehicle_uuid", v["uuid"])
-                    if v.get("vin"): state.update("vin", v["vin"])
-                    if v.get("pincode"): state.update("pincode", v["pincode"])
-                elif isinstance(vehicles, dict) and vehicles.get("vehicles"):
-                    vlist = vehicles["vehicles"]
-                    if vlist:
-                        v = vlist[0]
-                        state.update("vehicle_id", v.get("id", ""))
-                        state.update("vin", v.get("vin", ""))
-                        state.update("pincode", v.get("pincode", ""))
-        except Exception as e:
-            pass
-
-    def _do_signup(self, email: str, password: str) -> bool:
-        url     = f"{self.base_url}{self.SIGNUP_PATH}"
-        payload = {"email": email, "name": "FuzzerBot", "number": "9876543210", "password": password}
-        try:
-            resp = self._session.post(url, json=payload, timeout=15)
-            return resp.status_code in (200, 201, 400, 409)
-        except requests.exceptions.RequestException:
-            return False
-
-    def _do_login(self, email: str, password: str, state: StateStore) -> Optional[str]:
-        url     = f"{self.base_url}{self.LOGIN_PATH}"
-        payload = {"email": email, "password": password}
-        try:
-            resp = self._session.post(url, json=payload, timeout=15)
-            if resp.status_code not in (200, 201):
-                return None
-            data  = resp.json()
-            token = data.get("token") or data.get("access_token") or data.get("accessToken") or data.get("jwt")
-            if not token: return None
-
-            state.update("auth_token",  token)
-            state.update("token_type",  data.get("type", "Bearer"))
-            state.update("user_role",   data.get("role", ""))
-            return token
-        except (requests.exceptions.RequestException, ValueError):
-            return None

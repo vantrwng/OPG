@@ -12,18 +12,23 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
 from spec_parser import SpecParser
 from graph_builder import DependencyGraphBuilder
 from test_strategy_engine import TestStrategyEngine
-from runtime_executor import BootstrapExecutor, RequestExecutor
+from runtime_executor import RequestExecutor
 from llm_planner import LLMPlanner
+from state_store import StateStore
 from rule_inference_layer import RuleInferenceLayer
 from knowledge_memory import KnowledgeMemory
 from generate_report import generate_html_report
 
-TARGET_URL = "http://localhost:8888"  # ← Đổi sang URL của server mục tiêu
+import argparse
 
-def build_system(operations):
+def build_system(operations, base_url, beam_width):
     # DI Containers
     planner = LLMPlanner()
     rule_layer = RuleInferenceLayer(planner, operations)
@@ -39,7 +44,7 @@ def build_system(operations):
 
     # Request Executor
     request_executor = RequestExecutor(
-        base_url=TARGET_URL,
+        base_url=base_url,
         planner=planner,
         knowledge_memory=knowledge_memory
     )
@@ -51,19 +56,25 @@ def build_system(operations):
         request_executor=request_executor,
         graph_builder=graph_builder,
         knowledge_memory=knowledge_memory,
-        beam_width=5
+        beam_width=beam_width
     )
 
     return strategy_engine, knowledge_memory
 
 def main():
+    parser = argparse.ArgumentParser(description="Hybrid Stateful API Fuzzer")
+    parser.add_argument("--spec", type=str, default="crapi-openapi-spec.json", help="Path to OpenAPI spec file")
+    parser.add_argument("--base-url", type=str, default="http://localhost:8888", help="Target API Base URL")
+    parser.add_argument("--max-depth", type=int, default=5, help="Max depth for path execution")
+    parser.add_argument("--beam-width", type=int, default=3, help="Beam search width")
+    args = parser.parse_args()
+
     print("=== Hệ thống Phân tích và Xây dựng Chiến lược Kiểm thử API (Component-Based DI) ===")
 
     # ── Phase 1: Phân tích OpenAPI Spec ──────────────────────────────────────
-    print("\n[Phase 1] Đang phân tích OpenAPI Specification...")
-    spec_file = 'crapi-openapi-spec.json'
-    parser    = SpecParser(spec_file)
-    operations = parser.extract_operations()
+    print(f"\n[Phase 1] Đang phân tích OpenAPI Specification từ {args.spec}...")
+    parser_obj = SpecParser(args.spec)
+    operations = parser_obj.extract_operations()
     if not operations:
         print("[-] Không tìm thấy operations nào hoặc lỗi khi đọc spec.")
         return
@@ -71,21 +82,28 @@ def main():
 
     # ── Phase 2: Khởi tạo Hệ Thống qua Dependency Injection ──────────────────
     print("\n[Phase 2] Khởi tạo các module hệ thống (DI)...")
-    strategy_engine, knowledge_memory = build_system(operations)
+    strategy_engine, knowledge_memory = build_system(operations, args.base_url, args.beam_width)
 
-    # ── Phase 0 (Bootstrap): Signup → Login → Lấy auth_token ─────────────────
-    print(f"\n[Phase 0] Bootstrap: Signup → Login trên {TARGET_URL}...")
-    bootstrapper   = BootstrapExecutor(base_url=TARGET_URL)
-    initial_state  = bootstrapper.bootstrap()
-
-    if initial_state.has("auth_token"):
-        print("[Phase 0] ✓ auth_token đã sẵn sàng — bắt đầu Fuzzing với session đã xác thực.")
+    # ── Phase 0: Cấu hình State Store từ biến môi trường ─────────────────────
+    print(f"\n[Phase 0] Khởi tạo StateStore với cấu hình người dùng...")
+    auth_token = os.getenv("AUTH_TOKEN", "")
+    auth_header_name = os.getenv("AUTH_HEADER_NAME", "Authorization")
+    auth_header_prefix = os.getenv("AUTH_HEADER_PREFIX", "")
+    
+    initial_state_data = {}
+    if auth_token:
+        initial_state_data["auth_token"] = auth_token
+        initial_state_data["auth_header_name"] = auth_header_name
+        initial_state_data["auth_header_prefix"] = auth_header_prefix
+        print("[Phase 0] ✓ Đã nạp auth_token và cấu hình Header từ biến môi trường .env")
     else:
-        print("[Phase 0] ⚠ Không lấy được token — Fuzzer sẽ chạy ở chế độ unauthenticated.")
+        print("[Phase 0] ⚠ Không tìm thấy AUTH_TOKEN trong .env — Fuzzer chạy unauthenticated.")
+        
+    initial_state = StateStore(initial_state_data)
 
     # ── Phase 3: Khởi chạy Fuzzer (Live HTTP) ────────────────────────────────
-    print(f"\n[Phase 3] Khởi chạy Test Strategy Engine → {TARGET_URL}")
-    best_chains = strategy_engine.run(max_depth=10, initial_state=initial_state)
+    print(f"\n[Phase 3] Khởi chạy Test Strategy Engine → {args.base_url}")
+    best_chains = strategy_engine.run(max_depth=args.max_depth, initial_state=initial_state)
 
     # ── Xuất kết quả ─────────────────────────────────────────────────────────
     # Lưu vào format tương thích với generate_html_report
