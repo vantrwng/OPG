@@ -19,12 +19,6 @@ digraph G {
     "api_views.users.update_password";
     "api_views.books.get_all_books" -> "api_views.books.get_by_title" [label="book → book_title [fallback]\nConf: 0.3", color="#999999", fontcolor="#999999"];
     "api_views.books.get_by_title" -> "api_views.books.add_new_book" [label="book_title → book_title [secondary]\nsecret → secret [secondary]\nConf: 0.57", color="#F9A825", fontcolor="#F9A825"];
-    "api_views.books.get_by_title" -> "api_views.users.login_user" [label="owner → username [secondary]\nConf: 0.51", color="#F9A825", fontcolor="#F9A825"];
-    "api_views.books.get_by_title" -> "api_views.users.register_user" [label="owner → username [secondary]\nConf: 0.51", color="#F9A825", fontcolor="#F9A825"];
-    "api_views.books.get_by_title" -> "api_views.users.delete_user" [label="owner → username [primary]\nConf: 0.85", color="#1E88E5", fontcolor="#1E88E5"];
-    "api_views.books.get_by_title" -> "api_views.users.get_by_username" [label="owner → username [primary]\nConf: 0.85", color="#1E88E5", fontcolor="#1E88E5"];
-    "api_views.books.get_by_title" -> "api_views.users.update_email" [label="owner → username [secondary]\nConf: 0.51", color="#F9A825", fontcolor="#F9A825"];
-    "api_views.books.get_by_title" -> "api_views.users.update_password" [label="owner → username [secondary]\nConf: 0.51", color="#F9A825", fontcolor="#F9A825"];
     "api_views.users.me" -> "api_views.users.register_user" [label="emailid → email [secondary]\nConf: 0.51", color="#F9A825", fontcolor="#F9A825"];
     "api_views.users.me" -> "api_views.users.update_email" [label="emailid → email [secondary]\nConf: 0.51", color="#F9A825", fontcolor="#F9A825"];
     "api_views.users.me" -> "api_views.users.login_user" [label="usernameid → username [fallback]\nConf: 0.28", color="#999999", fontcolor="#999999"];
