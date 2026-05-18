@@ -63,58 +63,279 @@
         
         <h2 style="margin-top: 2rem; margin-bottom: 1rem;">Lịch sử các lần Request/Response</h2>
 
-                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
-                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #1 — POST http://localhost:8888/identity/api/v2/user/pictures — HTTP 500 <span style='background: #f59e0b; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🛠️ LLM Repaired</span>
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #1 — POST http://localhost:8888/identity/api/v2/user/pictures — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;file&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;type&quot;: &quot;about:blank&quot;,
+  &quot;title&quot;: &quot;Bad Request&quot;,
+  &quot;status&quot;: 400,
+  &quot;detail&quot;: &quot;Required part &#x27;file&#x27; is not present.&quot;,
+  &quot;instance&quot;: &quot;/identity/api/v2/user/pictures&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #2 — POST http://localhost:8888/identity/api/v2/user/pictures — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;file&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;type&quot;: &quot;about:blank&quot;,
+  &quot;title&quot;: &quot;Bad Request&quot;,
+  &quot;status&quot;: 400,
+  &quot;detail&quot;: &quot;Required part &#x27;file&#x27; is not present.&quot;,
+  &quot;instance&quot;: &quot;/identity/api/v2/user/pictures&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #3 — POST http://localhost:8888/identity/api/v2/user/pictures — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;file&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;type&quot;: &quot;about:blank&quot;,
+  &quot;title&quot;: &quot;Bad Request&quot;,
+  &quot;status&quot;: 400,
+  &quot;detail&quot;: &quot;Required part &#x27;file&#x27; is not present.&quot;,
+  &quot;instance&quot;: &quot;/identity/api/v2/user/pictures&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #4 — POST http://localhost:8888/identity/api/v2/user/pictures — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;file&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;type&quot;: &quot;about:blank&quot;,
+  &quot;title&quot;: &quot;Bad Request&quot;,
+  &quot;status&quot;: 400,
+  &quot;detail&quot;: &quot;Required part &#x27;file&#x27; is not present.&quot;,
+  &quot;instance&quot;: &quot;/identity/api/v2/user/pictures&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #5 — POST http://localhost:8888/identity/api/v2/user/pictures — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;file&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;type&quot;: &quot;about:blank&quot;,
+  &quot;title&quot;: &quot;Bad Request&quot;,
+  &quot;status&quot;: 400,
+  &quot;detail&quot;: &quot;Required part &#x27;file&#x27; is not present.&quot;,
+  &quot;instance&quot;: &quot;/identity/api/v2/user/pictures&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #6 — POST http://localhost:8888/identity/api/v2/user/pictures — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;file&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;type&quot;: &quot;about:blank&quot;,
+  &quot;title&quot;: &quot;Bad Request&quot;,
+  &quot;status&quot;: 400,
+  &quot;detail&quot;: &quot;Required part &#x27;file&#x27; is not present.&quot;,
+  &quot;instance&quot;: &quot;/identity/api/v2/user/pictures&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #7 — POST http://localhost:8888/identity/api/v2/user/pictures — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;file&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;type&quot;: &quot;about:blank&quot;,
+  &quot;title&quot;: &quot;Bad Request&quot;,
+  &quot;status&quot;: 400,
+  &quot;detail&quot;: &quot;Required part &#x27;file&#x27; is not present.&quot;,
+  &quot;instance&quot;: &quot;/identity/api/v2/user/pictures&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #8 — POST http://localhost:8888/identity/api/v2/user/pictures — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;file&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;type&quot;: &quot;about:blank&quot;,
+  &quot;title&quot;: &quot;Bad Request&quot;,
+  &quot;status&quot;: 400,
+  &quot;detail&quot;: &quot;Required part &#x27;file&#x27; is not present.&quot;,
+  &quot;instance&quot;: &quot;/identity/api/v2/user/pictures&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #9 — POST http://localhost:8888/identity/api/v2/user/pictures — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;file&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;type&quot;: &quot;about:blank&quot;,
+  &quot;title&quot;: &quot;Bad Request&quot;,
+  &quot;status&quot;: 400,
+  &quot;detail&quot;: &quot;Required part &#x27;file&#x27; is not present.&quot;,
+  &quot;instance&quot;: &quot;/identity/api/v2/user/pictures&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #10 — POST http://localhost:8888/identity/api/v2/user/pictures — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;file&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;type&quot;: &quot;about:blank&quot;,
+  &quot;title&quot;: &quot;Bad Request&quot;,
+  &quot;status&quot;: 400,
+  &quot;detail&quot;: &quot;Required part &#x27;file&#x27; is not present.&quot;,
+  &quot;instance&quot;: &quot;/identity/api/v2/user/pictures&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #11 — POST http://localhost:8888/identity/api/v2/user/pictures — HTTP 400 <span style='background: #f59e0b; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🛠️ LLM Repaired</span>
                     </h3>
                     
                     
                     <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 0.75rem; margin-bottom: 1rem; font-size: 0.85rem; color: #b45309; border-radius: 0 4px 4px 0;">
-                        <strong>⚠️ Original Error HTTP 500: Current request is not a multipart request</strong>
+                        <strong>⚠️ Original Error HTTP 400: {&quot;type&quot;:&quot;about:blank&quot;,&quot;title&quot;:&quot;Bad Request&quot;,&quot;status&quot;:400,&quot;detail&quot;:&quot;Required part &#x27;file&#x27; is not present.&quot;,&quot;instance&quot;:&quot;/identity/api/v2/user/pictures&quot;}</strong>
                         
                         <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
-                            <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #1 Failed (HTTP 500)</h5>
+                            <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #1 Failed (HTTP 400)</h5>
                             <div style="display: flex; gap: 1rem;">
                                 <div style="flex: 1;">
                                     <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
                                     <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
-  &quot;user_id&quot;: &quot;9&quot;,
-  &quot;picture&quot;: &quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=&quot;,
-  &quot;file_name&quot;: &quot;profile_picture.png&quot;,
-  &quot;content_type&quot;: &quot;image/png&quot;
+  &quot;file&quot;: &quot;test-image-binary-content&quot;
 }</pre>
                                 </div>
                                 <div style="flex: 1;">
                                     <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
-                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">Current request is not a multipart request</pre>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">{
+  &quot;type&quot;: &quot;about:blank&quot;,
+  &quot;title&quot;: &quot;Bad Request&quot;,
+  &quot;status&quot;: 400,
+  &quot;detail&quot;: &quot;Required part &#x27;file&#x27; is not present.&quot;,
+  &quot;instance&quot;: &quot;/identity/api/v2/user/pictures&quot;
+}</pre>
                                 </div>
                             </div>
                         </div>
                         
                         <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
-                            <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #2 Failed (HTTP 500)</h5>
+                            <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #2 Failed (HTTP 400)</h5>
                             <div style="display: flex; gap: 1rem;">
                                 <div style="flex: 1;">
                                     <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
                                     <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
-  &quot;content_type&quot;: &quot;multipart/form-data&quot;,
-  &quot;multipart&quot;: true,
-  &quot;form&quot;: {
-    &quot;user_id&quot;: &quot;9&quot;
-  },
-  &quot;files&quot;: [
-    {
-      &quot;field&quot;: &quot;file&quot;,
-      &quot;filename&quot;: &quot;profile_picture.png&quot;,
-      &quot;content_type&quot;: &quot;image/png&quot;,
-      &quot;content&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=&quot;
-    }
-  ]
+  &quot;file&quot;: {
+    &quot;filename&quot;: &quot;profile.png&quot;,
+    &quot;contentType&quot;: &quot;image/png&quot;,
+    &quot;content&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=&quot;
+  }
 }</pre>
                                 </div>
                                 <div style="flex: 1;">
                                     <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
-                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">Current request is not a multipart request</pre>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">{
+  &quot;type&quot;: &quot;about:blank&quot;,
+  &quot;title&quot;: &quot;Bad Request&quot;,
+  &quot;status&quot;: 400,
+  &quot;detail&quot;: &quot;Required part &#x27;file&#x27; is not present.&quot;,
+  &quot;instance&quot;: &quot;/identity/api/v2/user/pictures&quot;
+}</pre>
                                 </div>
                             </div>
                         </div>
@@ -124,23 +345,417 @@
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;content_type&quot;: &quot;multipart/form-data&quot;,
-  &quot;multipart&quot;: true,
-  &quot;form&quot;: {
-    &quot;user_id&quot;: &quot;9&quot;
-  },
-  &quot;files&quot;: [
-    {
-      &quot;field&quot;: &quot;file&quot;,
-      &quot;filename&quot;: &quot;profile_picture.png&quot;,
-      &quot;content_type&quot;: &quot;image/png&quot;,
-      &quot;content&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=&quot;
-    }
-  ]
+  &quot;file&quot;: {
+    &quot;filename&quot;: &quot;profile.png&quot;,
+    &quot;contentType&quot;: &quot;image/png&quot;,
+    &quot;content&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=&quot;
+  }
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">Current request is not a multipart request</pre>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;type&quot;: &quot;about:blank&quot;,
+  &quot;title&quot;: &quot;Bad Request&quot;,
+  &quot;status&quot;: 400,
+  &quot;detail&quot;: &quot;Required part &#x27;file&#x27; is not present.&quot;,
+  &quot;instance&quot;: &quot;/identity/api/v2/user/pictures&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #12 — POST http://localhost:8888/identity/api/v2/user/pictures — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;file&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;type&quot;: &quot;about:blank&quot;,
+  &quot;title&quot;: &quot;Bad Request&quot;,
+  &quot;status&quot;: 400,
+  &quot;detail&quot;: &quot;Required part &#x27;file&#x27; is not present.&quot;,
+  &quot;instance&quot;: &quot;/identity/api/v2/user/pictures&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #13 — POST http://localhost:8888/identity/api/v2/user/pictures — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;file&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;type&quot;: &quot;about:blank&quot;,
+  &quot;title&quot;: &quot;Bad Request&quot;,
+  &quot;status&quot;: 400,
+  &quot;detail&quot;: &quot;Required part &#x27;file&#x27; is not present.&quot;,
+  &quot;instance&quot;: &quot;/identity/api/v2/user/pictures&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #14 — POST http://localhost:8888/identity/api/v2/user/pictures — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;file&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;type&quot;: &quot;about:blank&quot;,
+  &quot;title&quot;: &quot;Bad Request&quot;,
+  &quot;status&quot;: 400,
+  &quot;detail&quot;: &quot;Required part &#x27;file&#x27; is not present.&quot;,
+  &quot;instance&quot;: &quot;/identity/api/v2/user/pictures&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #15 — POST http://localhost:8888/identity/api/v2/user/pictures — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;file&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;type&quot;: &quot;about:blank&quot;,
+  &quot;title&quot;: &quot;Bad Request&quot;,
+  &quot;status&quot;: 400,
+  &quot;detail&quot;: &quot;Required part &#x27;file&#x27; is not present.&quot;,
+  &quot;instance&quot;: &quot;/identity/api/v2/user/pictures&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #16 — POST http://localhost:8888/identity/api/v2/user/pictures — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;file&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;type&quot;: &quot;about:blank&quot;,
+  &quot;title&quot;: &quot;Bad Request&quot;,
+  &quot;status&quot;: 400,
+  &quot;detail&quot;: &quot;Required part &#x27;file&#x27; is not present.&quot;,
+  &quot;instance&quot;: &quot;/identity/api/v2/user/pictures&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #17 — POST http://localhost:8888/identity/api/v2/user/pictures — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;file&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;type&quot;: &quot;about:blank&quot;,
+  &quot;title&quot;: &quot;Bad Request&quot;,
+  &quot;status&quot;: 400,
+  &quot;detail&quot;: &quot;Required part &#x27;file&#x27; is not present.&quot;,
+  &quot;instance&quot;: &quot;/identity/api/v2/user/pictures&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #18 — POST http://localhost:8888/identity/api/v2/user/pictures — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;file&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;type&quot;: &quot;about:blank&quot;,
+  &quot;title&quot;: &quot;Bad Request&quot;,
+  &quot;status&quot;: 400,
+  &quot;detail&quot;: &quot;Required part &#x27;file&#x27; is not present.&quot;,
+  &quot;instance&quot;: &quot;/identity/api/v2/user/pictures&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #19 — POST http://localhost:8888/identity/api/v2/user/pictures — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;file&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;type&quot;: &quot;about:blank&quot;,
+  &quot;title&quot;: &quot;Bad Request&quot;,
+  &quot;status&quot;: 400,
+  &quot;detail&quot;: &quot;Required part &#x27;file&#x27; is not present.&quot;,
+  &quot;instance&quot;: &quot;/identity/api/v2/user/pictures&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #20 — POST http://localhost:8888/identity/api/v2/user/pictures — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;file&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;type&quot;: &quot;about:blank&quot;,
+  &quot;title&quot;: &quot;Bad Request&quot;,
+  &quot;status&quot;: 400,
+  &quot;detail&quot;: &quot;Required part &#x27;file&#x27; is not present.&quot;,
+  &quot;instance&quot;: &quot;/identity/api/v2/user/pictures&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #21 — POST http://localhost:8888/identity/api/v2/user/pictures — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;file&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;type&quot;: &quot;about:blank&quot;,
+  &quot;title&quot;: &quot;Bad Request&quot;,
+  &quot;status&quot;: 400,
+  &quot;detail&quot;: &quot;Required part &#x27;file&#x27; is not present.&quot;,
+  &quot;instance&quot;: &quot;/identity/api/v2/user/pictures&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #22 — POST http://localhost:8888/identity/api/v2/user/pictures — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;file&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;type&quot;: &quot;about:blank&quot;,
+  &quot;title&quot;: &quot;Bad Request&quot;,
+  &quot;status&quot;: 400,
+  &quot;detail&quot;: &quot;Required part &#x27;file&#x27; is not present.&quot;,
+  &quot;instance&quot;: &quot;/identity/api/v2/user/pictures&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #23 — POST http://localhost:8888/identity/api/v2/user/pictures — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;file&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;type&quot;: &quot;about:blank&quot;,
+  &quot;title&quot;: &quot;Bad Request&quot;,
+  &quot;status&quot;: 400,
+  &quot;detail&quot;: &quot;Required part &#x27;file&#x27; is not present.&quot;,
+  &quot;instance&quot;: &quot;/identity/api/v2/user/pictures&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #24 — POST http://localhost:8888/identity/api/v2/user/pictures — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;file&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;type&quot;: &quot;about:blank&quot;,
+  &quot;title&quot;: &quot;Bad Request&quot;,
+  &quot;status&quot;: 400,
+  &quot;detail&quot;: &quot;Required part &#x27;file&#x27; is not present.&quot;,
+  &quot;instance&quot;: &quot;/identity/api/v2/user/pictures&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #25 — POST http://localhost:8888/identity/api/v2/user/pictures — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;file&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;type&quot;: &quot;about:blank&quot;,
+  &quot;title&quot;: &quot;Bad Request&quot;,
+  &quot;status&quot;: 400,
+  &quot;detail&quot;: &quot;Required part &#x27;file&#x27; is not present.&quot;,
+  &quot;instance&quot;: &quot;/identity/api/v2/user/pictures&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #26 — POST http://localhost:8888/identity/api/v2/user/pictures — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;file&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;type&quot;: &quot;about:blank&quot;,
+  &quot;title&quot;: &quot;Bad Request&quot;,
+  &quot;status&quot;: 400,
+  &quot;detail&quot;: &quot;Required part &#x27;file&#x27; is not present.&quot;,
+  &quot;instance&quot;: &quot;/identity/api/v2/user/pictures&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #27 — POST http://localhost:8888/identity/api/v2/user/pictures — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;file&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;type&quot;: &quot;about:blank&quot;,
+  &quot;title&quot;: &quot;Bad Request&quot;,
+  &quot;status&quot;: 400,
+  &quot;detail&quot;: &quot;Required part &#x27;file&#x27; is not present.&quot;,
+  &quot;instance&quot;: &quot;/identity/api/v2/user/pictures&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #28 — POST http://localhost:8888/identity/api/v2/user/pictures — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;file&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;type&quot;: &quot;about:blank&quot;,
+  &quot;title&quot;: &quot;Bad Request&quot;,
+  &quot;status&quot;: 400,
+  &quot;detail&quot;: &quot;Required part &#x27;file&#x27; is not present.&quot;,
+  &quot;instance&quot;: &quot;/identity/api/v2/user/pictures&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #29 — POST http://localhost:8888/identity/api/v2/user/pictures — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;file&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;type&quot;: &quot;about:blank&quot;,
+  &quot;title&quot;: &quot;Bad Request&quot;,
+  &quot;status&quot;: 400,
+  &quot;detail&quot;: &quot;Required part &#x27;file&#x27; is not present.&quot;,
+  &quot;instance&quot;: &quot;/identity/api/v2/user/pictures&quot;
+}</pre>
                 </div>
                 
     </div>

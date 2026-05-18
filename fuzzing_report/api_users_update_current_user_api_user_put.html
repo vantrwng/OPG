@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Details - users_update_current_user_api_user_put</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --surface-color: rgba(30, 41, 59, 0.7);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-primary: #3b82f6;
+            --accent-secondary: #8b5cf6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 2rem;
+            line-height: 1.6;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        a.back-btn {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        a.back-btn:hover { text-decoration: underline; }
+        h1 { margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem; }
+        .status-section {
+            background: var(--surface-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        pre {
+            background: rgba(0,0,0,0.4);
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            color: #e2e8f0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-btn">&larr; Quay lại Dashboard</a>
+        <h1>API: <span style="font-family: 'Fira Code', monospace; color: var(--accent-primary);">users_update_current_user_api_user_put</span></h1>
+        
+        <p>Tổng số lần gọi: <strong>4</strong></p>
+        
+        <h2 style="margin-top: 2rem; margin-bottom: 1rem;">Lịch sử các lần Request/Response</h2>
+
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #1 — PUT http://localhost:8000/api/user — HTTP 200 <span style='background: #f59e0b; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🛠️ LLM Repaired</span>
+                    </h3>
+                    
+                    
+                    <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 0.75rem; margin-bottom: 1rem; font-size: 0.85rem; color: #b45309; border-radius: 0 4px 4px 0;">
+                        <strong>⚠️ Original Error HTTP 422: {&quot;errors&quot;:[{&quot;loc&quot;:[&quot;body&quot;,&quot;user&quot;],&quot;msg&quot;:&quot;field required&quot;,&quot;type&quot;:&quot;value_error.missing&quot;}]}</strong>
+                        
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
+                            <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #1 Failed (HTTP 422)</h5>
+                            <div style="display: flex; gap: 1rem;">
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
+  &quot;username&quot;: &quot;Fuzzer 1CAC&quot;,
+  &quot;email&quot;: &quot;fuzz_bf27e5@test.com&quot;,
+  &quot;password&quot;: &quot;2009fa36@734!&quot;,
+  &quot;bio&quot;: &quot;API fuzz test user profile with a concise synthetic biography.&quot;,
+  &quot;image&quot;: &quot;https://cdn.test.com/images/users/trieu292005.png&quot;,
+  &quot;admin&quot;: false
+}</pre>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">{
+  &quot;errors&quot;: [
+    {
+      &quot;loc&quot;: [
+        &quot;body&quot;,
+        &quot;user&quot;
+      ],
+      &quot;msg&quot;: &quot;field required&quot;,
+      &quot;type&quot;: &quot;value_error.missing&quot;
+    }
+  ]
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;user&quot;: {
+    &quot;username&quot;: &quot;trieu292005&quot;,
+    &quot;email&quot;: &quot;fuzz_9a7c3e1b@test.com&quot;,
+    &quot;password&quot;: &quot;Secure9@Fuzz&quot;,
+    &quot;bio&quot;: &quot;API fuzz test user profile with a concise synthetic biography.&quot;,
+    &quot;image&quot;: &quot;https://cdn.test.com/images/users/trieu292005.png&quot;,
+    &quot;admin&quot;: false
+  }
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;user&quot;: {
+    &quot;username&quot;: &quot;trieu292005&quot;,
+    &quot;email&quot;: &quot;fuzz_9a7c3e1b@test.com&quot;,
+    &quot;bio&quot;: &quot;API fuzz test user profile with a concise synthetic biography.&quot;,
+    &quot;image&quot;: &quot;https://cdn.test.com/images/users/trieu292005.png&quot;,
+    &quot;admin&quot;: false,
+    &quot;token&quot;: &quot;eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRyaWV1MjkyMDA1IiwiZXhwIjoxNzc5NjMyNTMwLCJzdWIiOiJhY2Nlc3MifQ.RmroEcdI10P8h76J3Hr3QOeoPvrNdcmrg6jApm1QioU&quot;
+  }
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #2 — PUT http://localhost:8000/api/user — HTTP 400 <span style='background: #f59e0b; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🛠️ LLM Repaired</span>
+                    </h3>
+                    
+                    
+                    <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 0.75rem; margin-bottom: 1rem; font-size: 0.85rem; color: #b45309; border-radius: 0 4px 4px 0;">
+                        <strong>⚠️ Original Error HTTP 400: {&quot;errors&quot;:[&quot;user with this email already exists&quot;]}</strong>
+                        
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
+                            <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #1 Failed (HTTP 422)</h5>
+                            <div style="display: flex; gap: 1rem;">
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
+  &quot;username&quot;: &quot;Fuzzer 5F47&quot;,
+  &quot;email&quot;: &quot;fuzz_7c4e9a1f2b@test.com&quot;,
+  &quot;password&quot;: &quot;72666e5e@788!&quot;,
+  &quot;bio&quot;: &quot;API testing profile for trieu292005.&quot;,
+  &quot;image&quot;: &quot;https://cdn.test.com/images/users/trieu292005.png&quot;,
+  &quot;admin&quot;: false
+}</pre>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">{
+  &quot;errors&quot;: [
+    {
+      &quot;loc&quot;: [
+        &quot;body&quot;,
+        &quot;user&quot;
+      ],
+      &quot;msg&quot;: &quot;field required&quot;,
+      &quot;type&quot;: &quot;value_error.missing&quot;
+    }
+  ]
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
+                            <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #2 Failed (HTTP 400)</h5>
+                            <div style="display: flex; gap: 1rem;">
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
+  &quot;user&quot;: {
+    &quot;username&quot;: &quot;trieu292005&quot;,
+    &quot;email&quot;: &quot;abc@example.com&quot;,
+    &quot;password&quot;: &quot;Trieu292005!&quot;,
+    &quot;bio&quot;: &quot;API testing profile for trieu292005.&quot;,
+    &quot;image&quot;: &quot;https://cdn.test.com/images/users/trieu292005.png&quot;,
+    &quot;admin&quot;: false
+  }
+}</pre>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">{
+  &quot;errors&quot;: [
+    &quot;user with this username already exists&quot;
+  ]
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
+                            <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #3 Failed (HTTP 400)</h5>
+                            <div style="display: flex; gap: 1rem;">
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
+  &quot;user&quot;: {
+    &quot;username&quot;: &quot;fuzz_user_9f3a7c2d1b&quot;,
+    &quot;email&quot;: &quot;abc@example.com&quot;,
+    &quot;password&quot;: &quot;Trieu292005!&quot;,
+    &quot;bio&quot;: &quot;API testing profile for fuzz_user_9f3a7c2d1b.&quot;,
+    &quot;image&quot;: &quot;https://cdn.test.com/images/users/fuzz_user_9f3a7c2d1b.png&quot;,
+    &quot;admin&quot;: false
+  }
+}</pre>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">{
+  &quot;errors&quot;: [
+    &quot;user with this email already exists&quot;
+  ]
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;user&quot;: {
+    &quot;username&quot;: &quot;trieu292005&quot;,
+    &quot;email&quot;: &quot;fuzz_a9c4e7b2d6f1@test.com&quot;,
+    &quot;password&quot;: &quot;Trieu292005!&quot;,
+    &quot;bio&quot;: &quot;API testing profile for trieu292005.&quot;,
+    &quot;image&quot;: &quot;https://cdn.test.com/images/users/trieu292005.png&quot;,
+    &quot;admin&quot;: false
+  }
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;errors&quot;: [
+    &quot;user with this username already exists&quot;
+  ]
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #3 — PUT http://localhost:8000/api/user — HTTP 200 <span style='background: #f59e0b; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🛠️ LLM Repaired</span>
+                    </h3>
+                    
+                    
+                    <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 0.75rem; margin-bottom: 1rem; font-size: 0.85rem; color: #b45309; border-radius: 0 4px 4px 0;">
+                        <strong>⚠️ Original Error HTTP 400: {&quot;errors&quot;:[&quot;user with this email already exists&quot;]}</strong>
+                        
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
+                            <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #1 Failed (HTTP 422)</h5>
+                            <div style="display: flex; gap: 1rem;">
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
+  &quot;username&quot;: &quot;Fuzzer B69C&quot;,
+  &quot;email&quot;: &quot;fuzz_7a9c3e1f@test.com&quot;,
+  &quot;password&quot;: &quot;4EEF01a5@509!&quot;,
+  &quot;bio&quot;: &quot;API enthusiast and software tester exploring new technologies.&quot;,
+  &quot;image&quot;: &quot;https://test.com/images/trieu292005.png&quot;,
+  &quot;admin&quot;: false
+}</pre>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">{
+  &quot;errors&quot;: [
+    {
+      &quot;loc&quot;: [
+        &quot;body&quot;,
+        &quot;user&quot;
+      ],
+      &quot;msg&quot;: &quot;field required&quot;,
+      &quot;type&quot;: &quot;value_error.missing&quot;
+    }
+  ]
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
+                            <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #2 Failed (HTTP 400)</h5>
+                            <div style="display: flex; gap: 1rem;">
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
+  &quot;user&quot;: {
+    &quot;username&quot;: &quot;trieu292005&quot;,
+    &quot;email&quot;: &quot;abc@example.com&quot;,
+    &quot;password&quot;: &quot;trieu292005&quot;,
+    &quot;bio&quot;: &quot;API enthusiast and software tester exploring new technologies.&quot;,
+    &quot;image&quot;: &quot;https://test.com/images/trieu292005.png&quot;,
+    &quot;admin&quot;: false
+  }
+}</pre>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">{
+  &quot;errors&quot;: [
+    &quot;user with this email already exists&quot;
+  ]
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;user&quot;: {
+    &quot;username&quot;: &quot;trieu292005&quot;,
+    &quot;email&quot;: &quot;fuzz_c4e91a7b2d@test.com&quot;,
+    &quot;password&quot;: &quot;SecurePass9!&quot;,
+    &quot;bio&quot;: &quot;API enthusiast and software tester exploring new technologies.&quot;,
+    &quot;image&quot;: &quot;https://test.com/images/trieu292005.png&quot;,
+    &quot;admin&quot;: false
+  }
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;user&quot;: {
+    &quot;username&quot;: &quot;trieu292005&quot;,
+    &quot;email&quot;: &quot;fuzz_c4e91a7b2d@test.com&quot;,
+    &quot;bio&quot;: &quot;API enthusiast and software tester exploring new technologies.&quot;,
+    &quot;image&quot;: &quot;https://test.com/images/trieu292005.png&quot;,
+    &quot;admin&quot;: false,
+    &quot;token&quot;: &quot;eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRyaWV1MjkyMDA1IiwiZXhwIjoxNzc5NjMyODA2LCJzdWIiOiJhY2Nlc3MifQ.XhApRLFX6-7jDQzUmPNWa8Km3K4X4r8F8u30yTJIKo0&quot;
+  }
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #4 — PUT http://localhost:8000/api/user — HTTP 422 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;username&quot;: &quot;Fuzzer BF4E&quot;,
+  &quot;email&quot;: &quot;fuzz_7a9c3e1f@test.com&quot;,
+  &quot;password&quot;: &quot;9676c6e1@92!&quot;,
+  &quot;bio&quot;: &quot;API enthusiast and software tester exploring new technologies.&quot;,
+  &quot;image&quot;: &quot;https://test.com/images/trieu292005.png&quot;,
+  &quot;admin&quot;: false
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;errors&quot;: [
+    {
+      &quot;loc&quot;: [
+        &quot;body&quot;,
+        &quot;user&quot;
+      ],
+      &quot;msg&quot;: &quot;field required&quot;,
+      &quot;type&quot;: &quot;value_error.missing&quot;
+    }
+  ]
+}</pre>
+                </div>
+                
+    </div>
+</body>
+</html>

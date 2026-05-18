@@ -54,6 +54,8 @@ class StateStore:
         """
         Duyệt đệ quy response JSON, so khớp với _HARVEST_PATTERNS,
         tự động ghi vào memory.
+        Nếu có schema guide (output fields từ OpenAPI spec) → harvest thêm theo tên field.
+        Flatten response trước khi so khớp để xử lý nested wrapper (vd: {"Books": [{...}]}).
 
         Returns True nếu có ít nhất 1 trường mới được harvest.
         """
@@ -65,12 +67,14 @@ class StateStore:
                 return False
 
         found_new = False
+
+        # ── Bước 1: Harvest theo Pattern (giữ nguyên logic cũ) ──────────────
         for resp_key, resp_val in response_json.items():
             if not isinstance(resp_key, str):
                 continue
                 
             matched = False
-            # 1. So khớp core pattern
+            # 1a. So khớp core pattern
             for state_key, pattern in self._HARVEST_PATTERNS.items():
                 if pattern.search(resp_key):
                     if resp_val and resp_val != self.memory.get(state_key):
@@ -79,15 +83,13 @@ class StateStore:
                     matched = True
                     break
                     
-            # 2. So khớp generic pattern cho các loại ID
+            # 1b. So khớp generic pattern cho các loại ID
             if not matched and self._GENERIC_ID_PATTERN.search(resp_key):
-                # Lưu state_key dựa trên chính tên biến trả về
-                # ví dụ: "patientId" -> "patientId"
                 if resp_val and resp_val != self.memory.get(resp_key):
                     self.update(resp_key, resp_val)
                     found_new = True
                     
-            # 3. Đệ quy vào nested object
+            # 1c. Đệ quy vào nested object
             if isinstance(resp_val, dict):
                 if self.extract_from_response(resp_val):
                     found_new = True
@@ -97,7 +99,53 @@ class StateStore:
                         if self.extract_from_response(item):
                             found_new = True
 
+        # ── Bước 2: Schema-guided harvest (dùng output spec làm guide) ──────
+        # Flatten toàn bộ response (kể cả nested) để so khớp với spec fields
+        flat = self._flatten(response_json)
+
+        if schema:
+            for field_key, field_meta in schema.items():
+                orig = field_meta.get("original", field_key) \
+                       if isinstance(field_meta, dict) else field_key
+                if orig in flat:
+                    val = flat[orig]
+                    if isinstance(val, (str, int)) and val and val != self.memory.get(orig):
+                        self.update(orig, val)
+                        log.debug(f"\033[96m[State] SCHEMA-HARVEST\033[0m {orig} = {repr(val)[:60]}")
+                        found_new = True
+
+        # ── Bước 3: Fallback — harvest toàn bộ leaf string từ flat (kể cả nested array) ──
+        # Giúp tóm các field quan trọng không được khai báo rõ trong spec
+        for k, v in flat.items():
+            if not isinstance(k, str) or not isinstance(v, (str, int)):
+                continue
+            if not v or v == self.memory.get(k):
+                continue
+            # Chỉ harvest nếu chưa được lưu bởi bước 1 (pattern harvest)
+            if k not in self.memory:
+                self.update(k, v)
+                found_new = True
+
         return found_new
+
+    @staticmethod
+    def _flatten(obj, result=None):
+        """Flatten nested dict/list thành dict phẳng để harvest field ở mọi level."""
+        if result is None:
+            result = {}
+        if isinstance(obj, dict):
+            for k, v in obj.items():
+                if isinstance(v, (str, int, float)) and v != "" and v is not None:
+                    result[k] = v
+                elif isinstance(v, dict):
+                    StateStore._flatten(v, result)
+                elif isinstance(v, list):
+                    for item in v:
+                        StateStore._flatten(item, result)
+        elif isinstance(obj, list):
+            for item in obj:
+                StateStore._flatten(item, result)
+        return result
 
     def __repr__(self) -> str:
         safe = {k: (str(v)[:40] + "...") if len(str(v)) > 40 else v

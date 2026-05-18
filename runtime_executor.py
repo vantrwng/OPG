@@ -94,6 +94,7 @@ class RequestExecutor:
             current_payload = sent_payload
             current_exec = exec_result
             repair_history = []
+            _local_seen = set()   # local per-call, không dedup cross-beam
             
             for attempt in range(3):
                 curr_status = current_exec['status']
@@ -114,19 +115,24 @@ class RequestExecutor:
                     log.info(f"\033[90m[Repair Skip]\033[0m Global budget exhausted for {budget_key} ({max_repairs_allowed}/{max_repairs_allowed})")
                     current_exec["repair_skipped"] = True
                     break
-                    
-                # Rule 2: Chống repair trùng lặp cùng một payload
+                
+                # Thay đổi 2: Invalidate schema cache khi gặp "already exists" để LLM sinh payload mới
+                if "already exists" in current_exec.get("response_text", "").lower():
+                    self.planner._schema_cache.pop(api_node.get("id"), None)
+                    log.info(f"[Cache Invalidate] Cleared schema cache for {api_id} — duplicate content detected")
+
+                # Rule 2: Chống repair trùng lặp cùng một payload trong cùng 1 lần execute_request
                 payload_str = json.dumps(current_payload, sort_keys=True)
                 payload_hash = hashlib.md5(payload_str.encode('utf-8')).hexdigest()
                 seen_key = f"{budget_key}:{payload_hash}"
                 
-                if seen_key in self._repair_seen:
+                if seen_key in _local_seen:   # chỉ check trong local scope
                     log.info(f"\033[90m[Repair Skip]\033[0m Duplicate payload signature for {seen_key}")
                     current_exec["repair_skipped"] = True
                     break
                     
                 # Trừ đi 1 lượt sử dụng
-                self._repair_seen.add(seen_key)
+                _local_seen.add(seen_key)     # chỉ add vào local
                 self._repair_budget[budget_key] = self._repair_budget.get(budget_key, 0) + 1
 
                 log.warning(f"\033[93m[Self-Healing]\033[0m API {api_id} returned {curr_status}. Triggering LLM repair (Attempt {attempt+1}/3)...")
@@ -193,7 +199,10 @@ class RequestExecutor:
 
         state_transition = False
         if response_json and status in (200, 201, 202):
-            state_transition = current_state.extract_from_response(response_json)
+            state_transition = current_state.extract_from_response(
+                response_json,
+                schema=api_node.get("outputs", {})
+            )
 
         edge_failure = (status == 400)
 
@@ -224,10 +233,24 @@ class RequestExecutor:
         def _replace(m):
             param      = m.group(1)
             param_norm = _norm(param)
+            
+            # 1. Exact norm match trong StateStore
             for k, v in state.memory.items():
-                if _norm(k) == param_norm: return str(v)
+                if _norm(k) == param_norm:
+                    return str(v)
+            
+            # 2. Exact norm match trong payload
             for k, v in payload.items():
-                if _norm(k) == param_norm: return str(v)
+                if _norm(k) == param_norm:
+                    return str(v)
+            
+            # 3. Partial match: state key contains param name (vd: "book_title" chứa "title")
+            for k, v in state.memory.items():
+                if isinstance(v, (str, int)) and v:
+                    if param_norm in _norm(k) or _norm(k) in param_norm:
+                        log.debug(f"[URL] Partial match {{{param}}} ← state['{k}'] = {repr(str(v))[:40]}")
+                        return str(v)
+            
             log.debug(f"[URL] No match for {{{param}}} — using sentinel '1'")
             return "1"
 
@@ -240,10 +263,10 @@ class RequestExecutor:
         if token:
             header_name = state.get("auth_header_name", "Authorization")
             header_prefix = state.get("auth_header_prefix")
-            
+            log.warning(f"[DEBUG] prefix={repr(header_prefix)} token[:10]={repr(str(token)[:10])}")
             if header_prefix:
                 # Tôn trọng cấu hình từ .env (VD: "Bearer " hoặc "Token ")
-                headers[header_name] = f"{header_prefix}{token}"
+                headers[header_name] = f"{header_prefix.rstrip()} {token}"
             else:
                 # Nếu không có cấu hình prefix, dùng heuristic tự đoán
                 if re.match(r"^ey", str(token)):   

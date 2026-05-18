@@ -57,6 +57,7 @@ class LLMPlanner:
         self._llm_cache = {}
         self._identity_cluster_map = {}
         self._payload_cache = {}
+        self._schema_cache = {}   # schema cache cho mỗi api_id, dùng để invalidate khi cần
 
     def classify_unknown_fields(self, unknown_fields: List[str]) -> Dict[str, str]:
         """Gọi LLM để phân loại các field 'unknown'."""
@@ -385,6 +386,11 @@ Ensure the output is ONLY a valid JSON object.
 
         out = {}
         for k, v in payload.items():
+            if isinstance(v, dict):
+                # Đệ quy vào các dictionary con (ví dụ: {"user": {"email": ...}})
+                out[k] = LLMPlanner._randomize_volatile_fields(v, api_node, state)
+                continue
+                
             is_email = LLMPlanner._EMAIL_RE.search(k)
             is_phone = LLMPlanner._PHONE_RE.search(k)
             is_name  = LLMPlanner._NAME_RE.search(k)
@@ -407,7 +413,7 @@ Ensure the output is ONLY a valid JSON object.
             if is_email: matched_val = state.get("email")
             elif is_pass: matched_val = state.get("password")
             elif is_phone: matched_val = state.get("number") or state.get("phone") or state.get("mobile")
-            elif is_name: matched_val = state.get("name")
+            elif is_name: matched_val = state.get("name") or state.get("username")
 
             if matched_val is not None:
                 out[k] = matched_val

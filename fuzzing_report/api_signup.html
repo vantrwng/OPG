@@ -72,10 +72,10 @@
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;fuzz_3c212f@test.com&quot;,
-  &quot;name&quot;: &quot;Fuzzer 4CE9&quot;,
-  &quot;number&quot;: &quot;0937332660&quot;,
-  &quot;password&quot;: &quot;AC5Da72d@571!&quot;
+  &quot;email&quot;: &quot;fuzz_21cae9@test.com&quot;,
+  &quot;name&quot;: &quot;Fuzzer 3DD1&quot;,
+  &quot;number&quot;: &quot;0950669166&quot;,
+  &quot;password&quot;: &quot;561F1e65@167!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -92,7 +92,8 @@
                     
                     
                     <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 0.75rem; margin-bottom: 1rem; font-size: 0.85rem; color: #b45309; border-radius: 0 4px 4px 0;">
-                        <strong>⚠️ Original Error HTTP 400: {&quot;message&quot;:&quot;Validation failed&quot;,&quot;details&quot;:&quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;signUpForm&#x27; on field &#x27;number&#x27;: rejected value [{{state[&#x27;number&#x27;]}}]; codes [Size.signUpForm.number,Size.number,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [signUpForm.number,number]; arguments []; default message [number],15,0]; default message [size must be between 0 and 15]&quot;}</strong>
+                        <strong>⚠️ Original Error HTTP 500: could not execute statement [ERROR: duplicate key value violates unique constraint &quot;user_login_pkey&quot;
+  Detail: Key (id)=(101) already exists.] [insert into user_login (api_key,code,created_on,email,jwt_token,number,password,role,id) values (?,?,?,?,?,?,?,?,?)]; SQL [insert into user_login (api_key,code,created_on,email,jwt_token,number,password,role,id) values (?,?,?,?,?,?,?,?,?)]; constraint [user_login_pkey]</strong>
                         
                         <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
                             <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #1 Failed (HTTP 500)</h5>
@@ -100,38 +101,16 @@
                                 <div style="flex: 1;">
                                     <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
                                     <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
-  &quot;email&quot;: &quot;fuzz_d07b41@test.com&quot;,
-  &quot;name&quot;: &quot;Fuzzer B65D&quot;,
-  &quot;number&quot;: &quot;0915601821&quot;,
-  &quot;password&quot;: &quot;069E33cc@791!&quot;
+  &quot;email&quot;: &quot;fuzz_bc0cf8@test.com&quot;,
+  &quot;name&quot;: &quot;Fuzzer 775A&quot;,
+  &quot;number&quot;: &quot;0994645819&quot;,
+  &quot;password&quot;: &quot;C4F6d272@219!&quot;
 }</pre>
                                 </div>
                                 <div style="flex: 1;">
                                     <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
                                     <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">could not execute statement [ERROR: duplicate key value violates unique constraint &quot;user_login_pkey&quot;
-  Detail: Key (id)=(84) already exists.] [insert into user_login (api_key,code,created_on,email,jwt_token,number,password,role,id) values (?,?,?,?,?,?,?,?,?)]; SQL [insert into user_login (api_key,code,created_on,email,jwt_token,number,password,role,id) values (?,?,?,?,?,?,?,?,?)]; constraint [user_login_pkey]</pre>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
-                            <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #2 Failed (HTTP 400)</h5>
-                            <div style="display: flex; gap: 1rem;">
-                                <div style="flex: 1;">
-                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
-                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
-  &quot;email&quot;: &quot;fuzz_a9f3c72e@test.com&quot;,
-  &quot;name&quot;: &quot;{{state[&#x27;name&#x27;]}}&quot;,
-  &quot;number&quot;: &quot;{{state[&#x27;number&#x27;]}}&quot;,
-  &quot;password&quot;: &quot;V7m#q9Zp!2Lx&quot;
-}</pre>
-                                </div>
-                                <div style="flex: 1;">
-                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
-                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">{
-  &quot;message&quot;: &quot;Validation failed&quot;,
-  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;signUpForm&#x27; on field &#x27;number&#x27;: rejected value [{{state[&#x27;number&#x27;]}}]; codes [Size.signUpForm.number,Size.number,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [signUpForm.number,number]; arguments []; default message [number],15,0]; default message [size must be between 0 and 15]&quot;
-}</pre>
+  Detail: Key (id)=(101) already exists.] [insert into user_login (api_key,code,created_on,email,jwt_token,number,password,role,id) values (?,?,?,?,?,?,?,?,?)]; SQL [insert into user_login (api_key,code,created_on,email,jwt_token,number,password,role,id) values (?,?,?,?,?,?,?,?,?)]; constraint [user_login_pkey]</pre>
                                 </div>
                             </div>
                         </div>
@@ -141,10 +120,11 @@
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;fuzz_3e7b9c4a1f@test.com&quot;,
-  &quot;name&quot;: &quot;Alex Morgan&quot;,
-  &quot;number&quot;: &quot;5551234567&quot;,
-  &quot;password&quot;: &quot;Q9r#T6v!Lm2p&quot;
+  &quot;email&quot;: &quot;fuzz_7f3a9c2d@test.com&quot;,
+  &quot;name&quot;: &quot;Maya Hartwell&quot;,
+  &quot;number&quot;: &quot;0718294635&quot;,
+  &quot;password&quot;: &quot;V9m#qL42s!&quot;,
+  &quot;id&quot;: &quot;847392&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -163,35 +143,37 @@
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;fuzz_08bed6@test.com&quot;,
-  &quot;name&quot;: &quot;Fuzzer 4823&quot;,
-  &quot;number&quot;: &quot;0961282306&quot;,
-  &quot;password&quot;: &quot;481F49f8@375!&quot;
+  &quot;email&quot;: &quot;fuzz_791355@test.com&quot;,
+  &quot;name&quot;: &quot;Fuzzer 5950&quot;,
+  &quot;number&quot;: &quot;0969712464&quot;,
+  &quot;password&quot;: &quot;F34Bf801@856!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">could not execute statement [ERROR: duplicate key value violates unique constraint &quot;user_login_pkey&quot;
-  Detail: Key (id)=(86) already exists.] [insert into user_login (api_key,code,created_on,email,jwt_token,number,password,role,id) values (?,?,?,?,?,?,?,?,?)]; SQL [insert into user_login (api_key,code,created_on,email,jwt_token,number,password,role,id) values (?,?,?,?,?,?,?,?,?)]; constraint [user_login_pkey]</pre>
+  Detail: Key (id)=(103) already exists.] [insert into user_login (api_key,code,created_on,email,jwt_token,number,password,role,id) values (?,?,?,?,?,?,?,?,?)]; SQL [insert into user_login (api_key,code,created_on,email,jwt_token,number,password,role,id) values (?,?,?,?,?,?,?,?,?)]; constraint [user_login_pkey]</pre>
                 </div>
                 
-                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
-                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #4 — POST http://localhost:8888/identity/api/auth/signup — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #4 — POST http://localhost:8888/identity/api/auth/signup — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;fuzz_65be34@test.com&quot;,
-  &quot;name&quot;: &quot;Fuzzer 6DF3&quot;,
-  &quot;number&quot;: &quot;0942922064&quot;,
-  &quot;password&quot;: &quot;6A597d11@180!&quot;
+  &quot;email&quot;: &quot;fuzz_5dfe6a@test.com&quot;,
+  &quot;name&quot;: &quot;Fuzzer DDCF&quot;,
+  &quot;number&quot;: &quot;0908994673&quot;,
+  &quot;password&quot;: &quot;E66Bb2a2@7!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">could not execute statement [ERROR: duplicate key value violates unique constraint &quot;user_login_pkey&quot;
-  Detail: Key (id)=(87) already exists.] [insert into user_login (api_key,code,created_on,email,jwt_token,number,password,role,id) values (?,?,?,?,?,?,?,?,?)]; SQL [insert into user_login (api_key,code,created_on,email,jwt_token,number,password,role,id) values (?,?,?,?,?,?,?,?,?)]; constraint [user_login_pkey]</pre>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;message&quot;: &quot;User registered successfully! Please Login.&quot;,
+  &quot;status&quot;: 200
+}</pre>
                 </div>
                 
                 <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
@@ -203,10 +185,10 @@
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;fuzz_21dfc8@test.com&quot;,
-  &quot;name&quot;: &quot;Fuzzer 0689&quot;,
-  &quot;number&quot;: &quot;0938419834&quot;,
-  &quot;password&quot;: &quot;C24Da533@794!&quot;
+  &quot;email&quot;: &quot;fuzz_999699@test.com&quot;,
+  &quot;name&quot;: &quot;Fuzzer 5145&quot;,
+  &quot;number&quot;: &quot;0943133369&quot;,
+  &quot;password&quot;: &quot;44C43d4e@645!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -225,10 +207,10 @@
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;fuzz_577a2a@test.com&quot;,
-  &quot;name&quot;: &quot;Fuzzer C3DF&quot;,
-  &quot;number&quot;: &quot;0936201968&quot;,
-  &quot;password&quot;: &quot;8B6Ad96d@423!&quot;
+  &quot;email&quot;: &quot;fuzz_b5bab9@test.com&quot;,
+  &quot;name&quot;: &quot;Fuzzer DE16&quot;,
+  &quot;number&quot;: &quot;0930869818&quot;,
+  &quot;password&quot;: &quot;70F85758@627!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -247,10 +229,10 @@
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;fuzz_a923e5@test.com&quot;,
-  &quot;name&quot;: &quot;Fuzzer 32B1&quot;,
-  &quot;number&quot;: &quot;0940686809&quot;,
-  &quot;password&quot;: &quot;FD65a904@475!&quot;
+  &quot;email&quot;: &quot;fuzz_a86ca0@test.com&quot;,
+  &quot;name&quot;: &quot;Fuzzer 11FB&quot;,
+  &quot;number&quot;: &quot;0926269102&quot;,
+  &quot;password&quot;: &quot;E24Ebd66@211!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -269,10 +251,10 @@
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;fuzz_2b4b08@test.com&quot;,
-  &quot;name&quot;: &quot;Fuzzer 6EAD&quot;,
-  &quot;number&quot;: &quot;0910866689&quot;,
-  &quot;password&quot;: &quot;0CA20d9e@304!&quot;
+  &quot;email&quot;: &quot;fuzz_3f2f99@test.com&quot;,
+  &quot;name&quot;: &quot;Fuzzer B8D8&quot;,
+  &quot;number&quot;: &quot;0990430516&quot;,
+  &quot;password&quot;: &quot;9D3A14fa@978!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -291,10 +273,10 @@
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;fuzz_9acbaa@test.com&quot;,
-  &quot;name&quot;: &quot;Fuzzer 35D4&quot;,
-  &quot;number&quot;: &quot;0959497427&quot;,
-  &quot;password&quot;: &quot;ADB7f391@202!&quot;
+  &quot;email&quot;: &quot;fuzz_dcc214@test.com&quot;,
+  &quot;name&quot;: &quot;Fuzzer AD04&quot;,
+  &quot;number&quot;: &quot;0943082452&quot;,
+  &quot;password&quot;: &quot;66F15c98@64!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -313,10 +295,10 @@
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;fuzz_3e9e9f@test.com&quot;,
-  &quot;name&quot;: &quot;Fuzzer DD67&quot;,
-  &quot;number&quot;: &quot;0901634029&quot;,
-  &quot;password&quot;: &quot;601322f7@282!&quot;
+  &quot;email&quot;: &quot;fuzz_55b6cb@test.com&quot;,
+  &quot;name&quot;: &quot;Fuzzer 42C9&quot;,
+  &quot;number&quot;: &quot;0925809832&quot;,
+  &quot;password&quot;: &quot;A94E1185@424!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -335,10 +317,10 @@
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;fuzz_7de1fc@test.com&quot;,
-  &quot;name&quot;: &quot;Fuzzer 95E2&quot;,
-  &quot;number&quot;: &quot;0966784921&quot;,
-  &quot;password&quot;: &quot;5DF6fcbf@762!&quot;
+  &quot;email&quot;: &quot;fuzz_423391@test.com&quot;,
+  &quot;name&quot;: &quot;Fuzzer 6BEA&quot;,
+  &quot;number&quot;: &quot;0925597515&quot;,
+  &quot;password&quot;: &quot;97DDbe5c@474!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -357,10 +339,10 @@
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;fuzz_b404b3@test.com&quot;,
-  &quot;name&quot;: &quot;Fuzzer 8F9C&quot;,
-  &quot;number&quot;: &quot;0982397155&quot;,
-  &quot;password&quot;: &quot;127Df469@440!&quot;
+  &quot;email&quot;: &quot;fuzz_e2ab98@test.com&quot;,
+  &quot;name&quot;: &quot;Fuzzer 52AA&quot;,
+  &quot;number&quot;: &quot;0978058272&quot;,
+  &quot;password&quot;: &quot;E281c073@811!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -370,24 +352,26 @@
 }</pre>
                 </div>
                 
-                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
-                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #13 — POST http://localhost:8888/identity/api/auth/signup — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #13 — POST http://localhost:8888/identity/api/auth/signup — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;fuzz_36527d@test.com&quot;,
-  &quot;name&quot;: &quot;Fuzzer 3000&quot;,
-  &quot;number&quot;: &quot;0942032630&quot;,
-  &quot;password&quot;: &quot;6E471d44@949!&quot;
+  &quot;email&quot;: &quot;fuzz_2ed0f8@test.com&quot;,
+  &quot;name&quot;: &quot;Fuzzer 1C56&quot;,
+  &quot;number&quot;: &quot;0956942075&quot;,
+  &quot;password&quot;: &quot;CD559012@942!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">could not execute statement [ERROR: duplicate key value violates unique constraint &quot;user_login_pkey&quot;
-  Detail: Key (id)=(96) already exists.] [insert into user_login (api_key,code,created_on,email,jwt_token,number,password,role,id) values (?,?,?,?,?,?,?,?,?)]; SQL [insert into user_login (api_key,code,created_on,email,jwt_token,number,password,role,id) values (?,?,?,?,?,?,?,?,?)]; constraint [user_login_pkey]</pre>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;message&quot;: &quot;User registered successfully! Please Login.&quot;,
+  &quot;status&quot;: 200
+}</pre>
                 </div>
                 
                 <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
@@ -399,10 +383,10 @@
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;fuzz_1d92d9@test.com&quot;,
-  &quot;name&quot;: &quot;Fuzzer 7A18&quot;,
-  &quot;number&quot;: &quot;0917162697&quot;,
-  &quot;password&quot;: &quot;13A27552@412!&quot;
+  &quot;email&quot;: &quot;fuzz_c0ac4f@test.com&quot;,
+  &quot;name&quot;: &quot;Fuzzer 6154&quot;,
+  &quot;number&quot;: &quot;0929079339&quot;,
+  &quot;password&quot;: &quot;72DD56a0@8!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -421,10 +405,10 @@
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;fuzz_2782ca@test.com&quot;,
-  &quot;name&quot;: &quot;Fuzzer 821C&quot;,
-  &quot;number&quot;: &quot;0917700926&quot;,
-  &quot;password&quot;: &quot;47CD547a@565!&quot;
+  &quot;email&quot;: &quot;fuzz_483066@test.com&quot;,
+  &quot;name&quot;: &quot;Fuzzer D56B&quot;,
+  &quot;number&quot;: &quot;0917970820&quot;,
+  &quot;password&quot;: &quot;F6B4103e@568!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>

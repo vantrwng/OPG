@@ -63,35 +63,102 @@
         
         <h2 style="margin-top: 2rem; margin-bottom: 1rem;">Lịch sử các lần Request/Response</h2>
 
-                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
-                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #1 — POST http://localhost:8888/workshop/api/shop/orders — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #1 — POST http://localhost:8888/workshop/api/shop/orders — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;product_id&quot;: 1,
+  &quot;product_id&quot;: 295,
   &quot;quantity&quot;: 1
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;message&quot;: &quot;Insufficient Balance. Please apply coupons to get more balance!&quot;
+  &quot;id&quot;: 79,
+  &quot;message&quot;: &quot;Order sent successfully.&quot;,
+  &quot;credit&quot;: 5.030000000000001
 }</pre>
                 </div>
                 
                 <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
                     <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #2 — POST http://localhost:8888/workshop/api/shop/orders — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                        Lần gọi #2 — POST http://localhost:8888/workshop/api/shop/orders — HTTP 400 <span style='background: #f59e0b; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🛠️ LLM Repaired</span>
                     </h3>
                     
+                    
+                    <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 0.75rem; margin-bottom: 1rem; font-size: 0.85rem; color: #b45309; border-radius: 0 4px 4px 0;">
+                        <strong>⚠️ Original Error HTTP 400: {&quot;message&quot;:&quot;Insufficient Balance. Please apply coupons to get more balance!&quot;}</strong>
+                        
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
+                            <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #1 Failed (HTTP 400)</h5>
+                            <div style="display: flex; gap: 1rem;">
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
+  &quot;product_id&quot;: 296,
+  &quot;quantity&quot;: 1,
+  &quot;order_id&quot;: &quot;1&quot;
+}</pre>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">{
+  &quot;message&quot;: &quot;Insufficient Balance. Please apply coupons to get more balance!&quot;
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
+                            <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #2 Failed (HTTP 400)</h5>
+                            <div style="display: flex; gap: 1rem;">
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
+  &quot;product_id&quot;: 1,
+  &quot;quantity&quot;: 1,
+  &quot;order_id&quot;: &quot;1&quot;
+}</pre>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">{
+  &quot;message&quot;: &quot;Insufficient Balance. Please apply coupons to get more balance!&quot;
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
+                            <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #3 Failed (HTTP 400)</h5>
+                            <div style="display: flex; gap: 1rem;">
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
+  &quot;product_id&quot;: 1,
+  &quot;quantity&quot;: 0,
+  &quot;order_id&quot;: &quot;1&quot;
+}</pre>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">{
+  &quot;message&quot;: &quot;Insufficient Balance. Please apply coupons to get more balance!&quot;
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
                     
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;product_id&quot;: 1,
+  &quot;product_id&quot;: 296,
   &quot;quantity&quot;: 1,
   &quot;order_id&quot;: &quot;1&quot;
 }</pre>
@@ -111,7 +178,7 @@
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;product_id&quot;: 1,
+  &quot;product_id&quot;: 298,
   &quot;quantity&quot;: 1
 }</pre>
                     
@@ -130,7 +197,7 @@
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;product_id&quot;: 1,
+  &quot;product_id&quot;: 299,
   &quot;quantity&quot;: 1,
   &quot;order_id&quot;: &quot;1&quot;
 }</pre>
@@ -150,8 +217,9 @@
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;product_id&quot;: 1,
-  &quot;quantity&quot;: 1
+  &quot;product_id&quot;: 300,
+  &quot;quantity&quot;: 1,
+  &quot;order_id&quot;: &quot;1&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -169,7 +237,7 @@
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;product_id&quot;: 1,
+  &quot;product_id&quot;: 301,
   &quot;quantity&quot;: 1,
   &quot;order_id&quot;: &quot;1&quot;
 }</pre>
@@ -191,7 +259,7 @@
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
   &quot;product_id&quot;: 1,
   &quot;quantity&quot;: 1,
-  &quot;order_id&quot;: &quot;1&quot;
+  &quot;order_id&quot;: 1
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -270,7 +338,8 @@
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
   &quot;product_id&quot;: 1,
-  &quot;quantity&quot;: 1
+  &quot;quantity&quot;: 1,
+  &quot;order_id&quot;: &quot;1&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -288,8 +357,9 @@
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;product_id&quot;: 1,
-  &quot;quantity&quot;: 1
+  &quot;product_id&quot;: 302,
+  &quot;quantity&quot;: 1,
+  &quot;order_id&quot;: &quot;1&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -307,7 +377,7 @@
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;product_id&quot;: 1,
+  &quot;product_id&quot;: 303,
   &quot;quantity&quot;: 1,
   &quot;order_id&quot;: &quot;1&quot;
 }</pre>
@@ -328,7 +398,8 @@
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
   &quot;product_id&quot;: 1,
-  &quot;quantity&quot;: 1
+  &quot;quantity&quot;: 1,
+  &quot;order_id&quot;: 1
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -340,6 +411,106 @@
                 <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
                     <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
                         Lần gọi #15 — POST http://localhost:8888/workshop/api/shop/orders — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;product_id&quot;: 204,
+  &quot;quantity&quot;: 1,
+  &quot;order_id&quot;: 1
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;message&quot;: &quot;Insufficient Balance. Please apply coupons to get more balance!&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #16 — POST http://localhost:8888/workshop/api/shop/orders — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;product_id&quot;: 1,
+  &quot;quantity&quot;: 1,
+  &quot;order_id&quot;: 1
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;message&quot;: &quot;Insufficient Balance. Please apply coupons to get more balance!&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #17 — POST http://localhost:8888/workshop/api/shop/orders — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;product_id&quot;: 205,
+  &quot;quantity&quot;: 1,
+  &quot;order_id&quot;: &quot;1&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;message&quot;: &quot;Insufficient Balance. Please apply coupons to get more balance!&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #18 — POST http://localhost:8888/workshop/api/shop/orders — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;product_id&quot;: 206,
+  &quot;quantity&quot;: 1,
+  &quot;order_id&quot;: &quot;1&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;message&quot;: &quot;Insufficient Balance. Please apply coupons to get more balance!&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #19 — POST http://localhost:8888/workshop/api/shop/orders — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;product_id&quot;: 1,
+  &quot;quantity&quot;: 1,
+  &quot;order_id&quot;: 1
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;message&quot;: &quot;Insufficient Balance. Please apply coupons to get more balance!&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #20 — POST http://localhost:8888/workshop/api/shop/orders — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
@@ -359,7 +530,47 @@
                 
                 <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
                     <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #16 — POST http://localhost:8888/workshop/api/shop/orders — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                        Lần gọi #21 — POST http://localhost:8888/workshop/api/shop/orders — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;product_id&quot;: 1,
+  &quot;quantity&quot;: 1,
+  &quot;order_id&quot;: &quot;1&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;message&quot;: &quot;Insufficient Balance. Please apply coupons to get more balance!&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #22 — POST http://localhost:8888/workshop/api/shop/orders — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;product_id&quot;: 207,
+  &quot;quantity&quot;: 1,
+  &quot;order_id&quot;: 1
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;message&quot;: &quot;Insufficient Balance. Please apply coupons to get more balance!&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #23 — POST http://localhost:8888/workshop/api/shop/orders — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
@@ -372,13 +583,144 @@
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;id&quot;: 80,
+  &quot;message&quot;: &quot;Order sent successfully.&quot;,
+  &quot;credit&quot;: 95.03
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #24 — POST http://localhost:8888/workshop/api/shop/orders — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;product_id&quot;: 309,
+  &quot;quantity&quot;: 1,
+  &quot;order_id&quot;: &quot;1&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;id&quot;: 81,
+  &quot;message&quot;: &quot;Order sent successfully.&quot;,
+  &quot;credit&quot;: 75.04
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #25 — POST http://localhost:8888/workshop/api/shop/orders — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;product_id&quot;: 1,
+  &quot;quantity&quot;: 1,
+  &quot;order_id&quot;: 1
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;id&quot;: 82,
+  &quot;message&quot;: &quot;Order sent successfully.&quot;,
+  &quot;credit&quot;: 65.04
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #26 — POST http://localhost:8888/workshop/api/shop/orders — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;product_id&quot;: 311,
+  &quot;quantity&quot;: 1,
+  &quot;order_id&quot;: &quot;1&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;id&quot;: 83,
+  &quot;message&quot;: &quot;Order sent successfully.&quot;,
+  &quot;credit&quot;: 40.05000000000001
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #27 — POST http://localhost:8888/workshop/api/shop/orders — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;product_id&quot;: 313,
+  &quot;quantity&quot;: 1
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;id&quot;: 84,
+  &quot;message&quot;: &quot;Order sent successfully.&quot;,
+  &quot;credit&quot;: 20.060000000000013
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #28 — POST http://localhost:8888/workshop/api/shop/orders — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;product_id&quot;: 314,
+  &quot;quantity&quot;: 1,
+  &quot;order_id&quot;: &quot;1&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;id&quot;: 85,
+  &quot;message&quot;: &quot;Order sent successfully.&quot;,
+  &quot;credit&quot;: 0.0700000000000145
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #29 — POST http://localhost:8888/workshop/api/shop/orders — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;product_id&quot;: 1,
+  &quot;quantity&quot;: 1,
+  &quot;order_id&quot;: &quot;1&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;message&quot;: &quot;Insufficient Balance. Please apply coupons to get more balance!&quot;
 }</pre>
                 </div>
                 
                 <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
                     <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #17 — POST http://localhost:8888/workshop/api/shop/orders — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                        Lần gọi #30 — POST http://localhost:8888/workshop/api/shop/orders — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     

@@ -63,8 +63,8 @@ def build_system(operations, base_url, beam_width):
 
 def main():
     parser = argparse.ArgumentParser(description="Hybrid Stateful API Fuzzer")
-    parser.add_argument("--spec", type=str, default="crapi-openapi-spec.json", help="Path to OpenAPI spec file")
-    parser.add_argument("--base-url", type=str, default="http://localhost:8888", help="Target API Base URL")
+    parser.add_argument("--spec", type=str, default="vmAPI.json", help="Path to OpenAPI spec file")
+    parser.add_argument("--base-url", type=str, default="http://localhost:5001", help="Target API Base URL")
     parser.add_argument("--max-depth", type=int, default=5, help="Max depth for path execution")
     parser.add_argument("--beam-width", type=int, default=3, help="Beam search width")
     args = parser.parse_args()
@@ -91,13 +91,28 @@ def main():
     auth_header_prefix = os.getenv("AUTH_HEADER_PREFIX", "")
     
     initial_state_data = {}
+    
+    # Luôn nạp cấu hình Header từ .env
+    initial_state_data["auth_header_name"] = auth_header_name
+    initial_state_data["auth_header_prefix"] = auth_header_prefix
+
     if auth_token:
         initial_state_data["auth_token"] = auth_token
-        initial_state_data["auth_header_name"] = auth_header_name
-        initial_state_data["auth_header_prefix"] = auth_header_prefix
         print("[Phase 0] ✓ Đã nạp auth_token và cấu hình Header từ biến môi trường .env")
     else:
-        print("[Phase 0] ⚠ Không tìm thấy AUTH_TOKEN trong .env — Fuzzer chạy unauthenticated.")
+        print("[Phase 0] ⚠ Không tìm thấy AUTH_TOKEN trong .env — Fuzzer chạy unauthenticated (hoặc tự login).")
+
+    # Đọc các biến mồi (Seed) từ .env có tiền tố SEED_
+    seed_count = 0
+    for key, value in os.environ.items():
+        if key.startswith("SEED_"):
+            # Lấy tên biến sau chữ SEED_ (ví dụ SEED_email -> email)
+            state_key = key[5:]
+            initial_state_data[state_key] = value
+            seed_count += 1
+            
+    if seed_count > 0:
+        print(f"[Phase 0] ✓ Đã nạp {seed_count} biến mồi (Seed) bổ sung vào StateStore.")
         
     initial_state = StateStore(initial_state_data)
 

@@ -73,7 +73,7 @@
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
   &quot;order_id&quot;: 1,
-  &quot;product_id&quot;: 1,
+  &quot;product_id&quot;: 296,
   &quot;quantity&quot;: 2
 }</pre>
                     
@@ -83,24 +83,103 @@
 }</pre>
                 </div>
                 
-                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
-                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #2 — PUT http://localhost:8888/workshop/api/shop/orders/1 — HTTP 403 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
+                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #2 — PUT http://localhost:8888/workshop/api/shop/orders/297 — HTTP 500 <span style='background: #f59e0b; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🛠️ LLM Repaired</span>
                     </h3>
                     
+                    
+                    <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 0.75rem; margin-bottom: 1rem; font-size: 0.85rem; color: #b45309; border-radius: 0 4px 4px 0;">
+                        <strong>⚠️ Original Error HTTP 500: 
+&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;title&gt;Server Error (500)&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Server Error (500)&lt;/h1&gt;&lt;p&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</strong>
+                        
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
+                            <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #1 Failed (HTTP 500)</h5>
+                            <div style="display: flex; gap: 1rem;">
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
+  &quot;order_id&quot;: 297,
+  &quot;product_id&quot;: 297,
+  &quot;quantity&quot;: 2
+}</pre>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">
+&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;title&gt;Server Error (500)&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Server Error (500)&lt;/h1&gt;&lt;p&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
+                            <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #2 Failed (HTTP 500)</h5>
+                            <div style="display: flex; gap: 1rem;">
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
+  &quot;order_id&quot;: 297,
+  &quot;product_id&quot;: 1,
+  &quot;quantity&quot;: 1
+}</pre>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">
+&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;title&gt;Server Error (500)&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Server Error (500)&lt;/h1&gt;&lt;p&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
                     
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;order_id&quot;: 1,
+  &quot;order_id&quot;: 297,
   &quot;product_id&quot;: 1,
-  &quot;quantity&quot;: 2
+  &quot;quantity&quot;: 1
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;message&quot;: &quot;You are not allowed to access this resource!&quot;
-}</pre>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">
+&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;title&gt;Server Error (500)&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Server Error (500)&lt;/h1&gt;&lt;p&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
                 </div>
                 
                 <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
@@ -113,7 +192,7 @@
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
   &quot;order_id&quot;: 1,
-  &quot;product_id&quot;: 101,
+  &quot;product_id&quot;: 199,
   &quot;quantity&quot;: 2
 }</pre>
                     
@@ -133,7 +212,7 @@
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
   &quot;order_id&quot;: 1,
-  &quot;product_id&quot;: 1,
+  &quot;product_id&quot;: 300,
   &quot;quantity&quot;: 2
 }</pre>
                     
@@ -153,7 +232,7 @@
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
   &quot;order_id&quot;: 1,
-  &quot;product_id&quot;: 101,
+  &quot;product_id&quot;: 301,
   &quot;quantity&quot;: 2
 }</pre>
                     
@@ -173,7 +252,7 @@
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
   &quot;order_id&quot;: 1,
-  &quot;product_id&quot;: 101,
+  &quot;product_id&quot;: 1,
   &quot;quantity&quot;: 2
 }</pre>
                     
@@ -193,7 +272,7 @@
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
   &quot;order_id&quot;: 1,
-  &quot;product_id&quot;: 101,
+  &quot;product_id&quot;: 1,
   &quot;quantity&quot;: 2
 }</pre>
                     
@@ -213,7 +292,7 @@
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
   &quot;order_id&quot;: 1,
-  &quot;product_id&quot;: 101,
+  &quot;product_id&quot;: 1,
   &quot;quantity&quot;: 2
 }</pre>
                     
@@ -233,7 +312,7 @@
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
   &quot;order_id&quot;: 1,
-  &quot;product_id&quot;: 101,
+  &quot;product_id&quot;: 1,
   &quot;quantity&quot;: 2
 }</pre>
                     
@@ -273,7 +352,7 @@
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
   &quot;order_id&quot;: 1,
-  &quot;product_id&quot;: 1,
+  &quot;product_id&quot;: 302,
   &quot;quantity&quot;: 2
 }</pre>
                     
@@ -293,7 +372,7 @@
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
   &quot;order_id&quot;: 1,
-  &quot;product_id&quot;: 1,
+  &quot;product_id&quot;: 303,
   &quot;quantity&quot;: 2
 }</pre>
                     
@@ -393,7 +472,255 @@
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
   &quot;order_id&quot;: 1,
-  &quot;product_id&quot;: 101,
+  &quot;product_id&quot;: 1,
+  &quot;quantity&quot;: 2
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;message&quot;: &quot;You are not allowed to access this resource!&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #18 — PUT http://localhost:8888/workshop/api/shop/orders/1 — HTTP 403 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;order_id&quot;: 1,
+  &quot;product_id&quot;: 1,
+  &quot;quantity&quot;: 2
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;message&quot;: &quot;You are not allowed to access this resource!&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #19 — PUT http://localhost:8888/workshop/api/shop/orders/1 — HTTP 403 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;order_id&quot;: 1,
+  &quot;product_id&quot;: 1,
+  &quot;quantity&quot;: 2
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;message&quot;: &quot;You are not allowed to access this resource!&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #20 — PUT http://localhost:8888/workshop/api/shop/orders/1 — HTTP 403 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;order_id&quot;: 1,
+  &quot;product_id&quot;: 1,
+  &quot;quantity&quot;: 2
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;message&quot;: &quot;You are not allowed to access this resource!&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #21 — PUT http://localhost:8888/workshop/api/shop/orders/1 — HTTP 403 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;order_id&quot;: 1,
+  &quot;product_id&quot;: 1,
+  &quot;quantity&quot;: 2
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;message&quot;: &quot;You are not allowed to access this resource!&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #22 — PUT http://localhost:8888/workshop/api/shop/orders/1 — HTTP 403 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;order_id&quot;: 1,
+  &quot;product_id&quot;: 308,
+  &quot;quantity&quot;: 1
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;message&quot;: &quot;You are not allowed to access this resource!&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #23 — PUT http://localhost:8888/workshop/api/shop/orders/1 — HTTP 403 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;order_id&quot;: 1,
+  &quot;product_id&quot;: 81,
+  &quot;quantity&quot;: 2
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;message&quot;: &quot;You are not allowed to access this resource!&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #24 — PUT http://localhost:8888/workshop/api/shop/orders/1 — HTTP 403 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;order_id&quot;: 1,
+  &quot;product_id&quot;: 82,
+  &quot;quantity&quot;: 2
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;message&quot;: &quot;You are not allowed to access this resource!&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #25 — PUT http://localhost:8888/workshop/api/shop/orders/1 — HTTP 403 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;order_id&quot;: 1,
+  &quot;product_id&quot;: 83,
+  &quot;quantity&quot;: 2
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;message&quot;: &quot;You are not allowed to access this resource!&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
+                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #26 — PUT http://localhost:8888/workshop/api/shop/orders/312 — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;order_id&quot;: 312,
+  &quot;product_id&quot;: 1,
+  &quot;quantity&quot;: 2
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">
+&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;title&gt;Server Error (500)&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Server Error (500)&lt;/h1&gt;&lt;p&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #27 — PUT http://localhost:8888/workshop/api/shop/orders/1 — HTTP 403 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;order_id&quot;: 1,
+  &quot;product_id&quot;: 214,
+  &quot;quantity&quot;: 2
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;message&quot;: &quot;You are not allowed to access this resource!&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #28 — PUT http://localhost:8888/workshop/api/shop/orders/1 — HTTP 403 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;order_id&quot;: 1,
+  &quot;product_id&quot;: 1,
+  &quot;quantity&quot;: 2
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;message&quot;: &quot;You are not allowed to access this resource!&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #29 — PUT http://localhost:8888/workshop/api/shop/orders/1 — HTTP 403 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;order_id&quot;: 1,
+  &quot;product_id&quot;: 1,
   &quot;quantity&quot;: 2
 }</pre>
                     
