@@ -59,7 +59,7 @@
         <a href="index.html" class="back-btn">&larr; Quay lại Dashboard</a>
         <h1>API: <span style="font-family: 'Fira Code', monospace; color: var(--accent-primary);">api_views.users.delete_user</span></h1>
         
-        <p>Tổng số lần gọi: <strong>9</strong></p>
+        <p>Tổng số lần gọi: <strong>10</strong></p>
         
         <h2 style="margin-top: 2rem; margin-bottom: 1rem;">Lịch sử các lần Request/Response</h2>
 
@@ -70,7 +70,12 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...BFZqk&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -100,7 +105,7 @@
 &lt;h2 class=&quot;traceback&quot;&gt;Traceback &lt;em&gt;(most recent call last)&lt;/em&gt;&lt;/h2&gt;
 &lt;div class=&quot;traceback&quot;&gt;
   &lt;h3&gt;&lt;/h3&gt;
-  &lt;ul&gt;&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049240041600&quot;&gt;
+  &lt;ul&gt;&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049252081680&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;2548&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;__call__&lt;/code&gt;&lt;/h4&gt;
@@ -113,7 +118,7 @@
 &lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049240041744&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049252081968&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;2528&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wsgi_app&lt;/code&gt;&lt;/h4&gt;
@@ -131,7 +136,7 @@
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;finally:&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049240041888&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244824432&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;2525&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wsgi_app&lt;/code&gt;&lt;/h4&gt;
@@ -149,7 +154,7 @@
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;                &lt;/span&gt;error = sys.exc_info()[1]&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049240042032&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244824288&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;1822&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;full_dispatch_request&lt;/code&gt;&lt;/h4&gt;
@@ -167,7 +172,7 @@
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;rv: t.Union[ft.ResponseReturnValue, HTTPException],&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049240042176&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244824576&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;1820&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;full_dispatch_request&lt;/code&gt;&lt;/h4&gt;
@@ -185,7 +190,7 @@
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;    &lt;/span&gt;def finalize_request(&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049240042320&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244824720&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;1796&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;dispatch_request&lt;/code&gt;&lt;/h4&gt;
@@ -203,7 +208,7 @@
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;error handling.&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049240042464&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244824864&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/decorator.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;68&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -219,7 +224,7 @@
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;return wrapper&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049240042608&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244825008&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/security/security_handler_factory.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;388&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -237,7 +242,7 @@
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;    &lt;/span&gt;def _raise_most_specific(exceptions: t.List[Exception]) -&amp;gt; None:&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049240042752&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244825152&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/uri_parsing.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;149&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -255,7 +260,7 @@
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;&lt;/span&gt; &lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049240042896&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244825296&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/validation.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;399&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -270,7 +275,7 @@
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;return wrapper&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049240043040&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244825440&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/parameter.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;120&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -285,7 +290,7 @@
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;    &lt;/span&gt;return wrapper&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049240043184&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244825584&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/vampi/api_views/users.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;212&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;delete_user&lt;/code&gt;&lt;/h4&gt;
@@ -434,7 +439,12 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...BFZqk&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -464,7 +474,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;h2 class=&quot;traceback&quot;&gt;Traceback &lt;em&gt;(most recent call last)&lt;/em&gt;&lt;/h2&gt;
 &lt;div class=&quot;traceback&quot;&gt;
   &lt;h3&gt;&lt;/h3&gt;
-  &lt;ul&gt;&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049240365824&quot;&gt;
+  &lt;ul&gt;&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231744384&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;2548&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;__call__&lt;/code&gt;&lt;/h4&gt;
@@ -477,7 +487,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049240365968&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231744240&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;2528&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wsgi_app&lt;/code&gt;&lt;/h4&gt;
@@ -495,7 +505,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;finally:&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049240366112&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231744528&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;2525&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wsgi_app&lt;/code&gt;&lt;/h4&gt;
@@ -513,7 +523,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;                &lt;/span&gt;error = sys.exc_info()[1]&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049240366256&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231744672&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;1822&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;full_dispatch_request&lt;/code&gt;&lt;/h4&gt;
@@ -531,7 +541,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;rv: t.Union[ft.ResponseReturnValue, HTTPException],&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049240366400&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231744816&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;1820&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;full_dispatch_request&lt;/code&gt;&lt;/h4&gt;
@@ -549,7 +559,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;    &lt;/span&gt;def finalize_request(&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049240366544&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231744960&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;1796&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;dispatch_request&lt;/code&gt;&lt;/h4&gt;
@@ -567,7 +577,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;error handling.&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049240366688&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231745104&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/decorator.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;68&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -583,7 +593,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;return wrapper&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049240366832&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231745248&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/security/security_handler_factory.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;388&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -601,7 +611,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;    &lt;/span&gt;def _raise_most_specific(exceptions: t.List[Exception]) -&amp;gt; None:&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049240366976&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231745392&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/uri_parsing.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;149&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -619,7 +629,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;&lt;/span&gt; &lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049240367120&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231745536&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/validation.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;399&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -634,7 +644,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;return wrapper&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049240367264&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231745680&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/parameter.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;120&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -649,7 +659,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;    &lt;/span&gt;return wrapper&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049240367408&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231745824&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/vampi/api_views/users.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;212&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;delete_user&lt;/code&gt;&lt;/h4&gt;
@@ -798,7 +808,12 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...BFZqk&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -828,7 +843,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;h2 class=&quot;traceback&quot;&gt;Traceback &lt;em&gt;(most recent call last)&lt;/em&gt;&lt;/h2&gt;
 &lt;div class=&quot;traceback&quot;&gt;
   &lt;h3&gt;&lt;/h3&gt;
-  &lt;ul&gt;&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049240369424&quot;&gt;
+  &lt;ul&gt;&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231751728&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;2548&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;__call__&lt;/code&gt;&lt;/h4&gt;
@@ -841,7 +856,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049240369568&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231751584&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;2528&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wsgi_app&lt;/code&gt;&lt;/h4&gt;
@@ -859,7 +874,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;finally:&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049240369712&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231751872&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;2525&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wsgi_app&lt;/code&gt;&lt;/h4&gt;
@@ -877,7 +892,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;                &lt;/span&gt;error = sys.exc_info()[1]&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049240369856&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231752016&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;1822&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;full_dispatch_request&lt;/code&gt;&lt;/h4&gt;
@@ -895,7 +910,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;rv: t.Union[ft.ResponseReturnValue, HTTPException],&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049240370000&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231752160&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;1820&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;full_dispatch_request&lt;/code&gt;&lt;/h4&gt;
@@ -913,7 +928,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;    &lt;/span&gt;def finalize_request(&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049240370144&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231752304&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;1796&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;dispatch_request&lt;/code&gt;&lt;/h4&gt;
@@ -931,7 +946,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;error handling.&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049240370288&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231752448&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/decorator.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;68&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -947,7 +962,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;return wrapper&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049240370432&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231752592&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/security/security_handler_factory.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;388&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -965,7 +980,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;    &lt;/span&gt;def _raise_most_specific(exceptions: t.List[Exception]) -&amp;gt; None:&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049240370576&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231752736&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/uri_parsing.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;149&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -983,7 +998,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;&lt;/span&gt; &lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049240370720&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231752880&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/validation.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;399&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -998,7 +1013,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;return wrapper&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049240370864&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231753024&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/parameter.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;120&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -1013,7 +1028,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;    &lt;/span&gt;return wrapper&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049240371008&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231982656&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/vampi/api_views/users.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;212&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;delete_user&lt;/code&gt;&lt;/h4&gt;
@@ -1162,7 +1177,12 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...BFZqk&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -1192,7 +1212,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;h2 class=&quot;traceback&quot;&gt;Traceback &lt;em&gt;(most recent call last)&lt;/em&gt;&lt;/h2&gt;
 &lt;div class=&quot;traceback&quot;&gt;
   &lt;h3&gt;&lt;/h3&gt;
-  &lt;ul&gt;&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244471296&quot;&gt;
+  &lt;ul&gt;&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231984672&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;2548&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;__call__&lt;/code&gt;&lt;/h4&gt;
@@ -1205,7 +1225,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244471152&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231984816&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;2528&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wsgi_app&lt;/code&gt;&lt;/h4&gt;
@@ -1223,7 +1243,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;finally:&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244471008&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231984960&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;2525&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wsgi_app&lt;/code&gt;&lt;/h4&gt;
@@ -1241,7 +1261,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;                &lt;/span&gt;error = sys.exc_info()[1]&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244471440&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231985104&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;1822&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;full_dispatch_request&lt;/code&gt;&lt;/h4&gt;
@@ -1259,7 +1279,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;rv: t.Union[ft.ResponseReturnValue, HTTPException],&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244471584&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231985248&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;1820&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;full_dispatch_request&lt;/code&gt;&lt;/h4&gt;
@@ -1277,7 +1297,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;    &lt;/span&gt;def finalize_request(&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244471728&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231985392&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;1796&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;dispatch_request&lt;/code&gt;&lt;/h4&gt;
@@ -1295,7 +1315,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;error handling.&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244471872&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231985536&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/decorator.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;68&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -1311,7 +1331,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;return wrapper&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244472016&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231985680&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/security/security_handler_factory.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;388&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -1329,7 +1349,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;    &lt;/span&gt;def _raise_most_specific(exceptions: t.List[Exception]) -&amp;gt; None:&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244472160&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231985824&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/uri_parsing.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;149&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -1347,7 +1367,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;&lt;/span&gt; &lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244472304&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231985968&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/validation.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;399&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -1362,7 +1382,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;return wrapper&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244472448&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231986112&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/parameter.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;120&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -1377,7 +1397,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;    &lt;/span&gt;return wrapper&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244472592&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231986256&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/vampi/api_views/users.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;212&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;delete_user&lt;/code&gt;&lt;/h4&gt;
@@ -1526,7 +1546,12 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...BFZqk&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -1556,7 +1581,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;h2 class=&quot;traceback&quot;&gt;Traceback &lt;em&gt;(most recent call last)&lt;/em&gt;&lt;/h2&gt;
 &lt;div class=&quot;traceback&quot;&gt;
   &lt;h3&gt;&lt;/h3&gt;
-  &lt;ul&gt;&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244478496&quot;&gt;
+  &lt;ul&gt;&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231990144&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;2548&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;__call__&lt;/code&gt;&lt;/h4&gt;
@@ -1569,7 +1594,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244478352&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231990288&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;2528&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wsgi_app&lt;/code&gt;&lt;/h4&gt;
@@ -1587,7 +1612,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;finally:&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244478640&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231990432&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;2525&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wsgi_app&lt;/code&gt;&lt;/h4&gt;
@@ -1605,7 +1630,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;                &lt;/span&gt;error = sys.exc_info()[1]&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244478784&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231990576&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;1822&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;full_dispatch_request&lt;/code&gt;&lt;/h4&gt;
@@ -1623,7 +1648,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;rv: t.Union[ft.ResponseReturnValue, HTTPException],&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244478928&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231990720&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;1820&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;full_dispatch_request&lt;/code&gt;&lt;/h4&gt;
@@ -1641,7 +1666,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;    &lt;/span&gt;def finalize_request(&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244479072&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231990864&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;1796&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;dispatch_request&lt;/code&gt;&lt;/h4&gt;
@@ -1659,7 +1684,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;error handling.&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244479216&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231991008&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/decorator.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;68&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -1675,7 +1700,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;return wrapper&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244479360&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231991152&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/security/security_handler_factory.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;388&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -1693,7 +1718,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;    &lt;/span&gt;def _raise_most_specific(exceptions: t.List[Exception]) -&amp;gt; None:&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244479504&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231991296&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/uri_parsing.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;149&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -1711,7 +1736,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;&lt;/span&gt; &lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244479648&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231991440&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/validation.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;399&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -1726,7 +1751,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;return wrapper&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244479792&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231991584&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/parameter.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;120&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -1741,7 +1766,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;    &lt;/span&gt;return wrapper&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244479936&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231991728&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/vampi/api_views/users.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;212&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;delete_user&lt;/code&gt;&lt;/h4&gt;
@@ -1890,7 +1915,12 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...BFZqk&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -1920,7 +1950,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;h2 class=&quot;traceback&quot;&gt;Traceback &lt;em&gt;(most recent call last)&lt;/em&gt;&lt;/h2&gt;
 &lt;div class=&quot;traceback&quot;&gt;
   &lt;h3&gt;&lt;/h3&gt;
-  &lt;ul&gt;&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244481952&quot;&gt;
+  &lt;ul&gt;&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231997632&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;2548&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;__call__&lt;/code&gt;&lt;/h4&gt;
@@ -1933,7 +1963,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244482096&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231997488&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;2528&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wsgi_app&lt;/code&gt;&lt;/h4&gt;
@@ -1951,7 +1981,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;finally:&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244482240&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231997776&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;2525&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wsgi_app&lt;/code&gt;&lt;/h4&gt;
@@ -1969,7 +1999,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;                &lt;/span&gt;error = sys.exc_info()[1]&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244482384&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231997920&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;1822&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;full_dispatch_request&lt;/code&gt;&lt;/h4&gt;
@@ -1987,7 +2017,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;rv: t.Union[ft.ResponseReturnValue, HTTPException],&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244482528&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231998064&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;1820&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;full_dispatch_request&lt;/code&gt;&lt;/h4&gt;
@@ -2005,7 +2035,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;    &lt;/span&gt;def finalize_request(&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244482672&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231998208&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;1796&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;dispatch_request&lt;/code&gt;&lt;/h4&gt;
@@ -2023,7 +2053,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;error handling.&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244482816&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231998352&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/decorator.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;68&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -2039,7 +2069,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;return wrapper&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244482960&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231998496&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/security/security_handler_factory.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;388&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -2057,7 +2087,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;    &lt;/span&gt;def _raise_most_specific(exceptions: t.List[Exception]) -&amp;gt; None:&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244483104&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231998640&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/uri_parsing.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;149&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -2075,7 +2105,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;&lt;/span&gt; &lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244483248&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049231998784&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/validation.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;399&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -2090,7 +2120,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;return wrapper&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244483392&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229066304&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/parameter.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;120&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -2105,7 +2135,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;    &lt;/span&gt;return wrapper&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244811328&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229066448&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/vampi/api_views/users.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;212&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;delete_user&lt;/code&gt;&lt;/h4&gt;
@@ -2254,7 +2284,12 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...BFZqk&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -2284,7 +2319,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;h2 class=&quot;traceback&quot;&gt;Traceback &lt;em&gt;(most recent call last)&lt;/em&gt;&lt;/h2&gt;
 &lt;div class=&quot;traceback&quot;&gt;
   &lt;h3&gt;&lt;/h3&gt;
-  &lt;ul&gt;&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244813344&quot;&gt;
+  &lt;ul&gt;&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229068464&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;2548&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;__call__&lt;/code&gt;&lt;/h4&gt;
@@ -2297,7 +2332,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244813488&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229068608&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;2528&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wsgi_app&lt;/code&gt;&lt;/h4&gt;
@@ -2315,7 +2350,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;finally:&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244813632&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229068752&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;2525&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wsgi_app&lt;/code&gt;&lt;/h4&gt;
@@ -2333,7 +2368,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;                &lt;/span&gt;error = sys.exc_info()[1]&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244813776&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229068896&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;1822&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;full_dispatch_request&lt;/code&gt;&lt;/h4&gt;
@@ -2351,7 +2386,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;rv: t.Union[ft.ResponseReturnValue, HTTPException],&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244813920&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229069040&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;1820&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;full_dispatch_request&lt;/code&gt;&lt;/h4&gt;
@@ -2369,7 +2404,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;    &lt;/span&gt;def finalize_request(&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244814064&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229069184&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;1796&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;dispatch_request&lt;/code&gt;&lt;/h4&gt;
@@ -2387,7 +2422,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;error handling.&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244814208&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229069328&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/decorator.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;68&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -2403,7 +2438,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;return wrapper&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244814352&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229069472&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/security/security_handler_factory.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;388&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -2421,7 +2456,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;    &lt;/span&gt;def _raise_most_specific(exceptions: t.List[Exception]) -&amp;gt; None:&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244814496&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229069616&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/uri_parsing.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;149&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -2439,7 +2474,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;&lt;/span&gt; &lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244814640&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229069760&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/validation.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;399&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -2454,7 +2489,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;return wrapper&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244814784&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229069904&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/parameter.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;120&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -2469,7 +2504,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;    &lt;/span&gt;return wrapper&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244814928&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229070048&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/vampi/api_views/users.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;212&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;delete_user&lt;/code&gt;&lt;/h4&gt;
@@ -2618,7 +2653,12 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...BFZqk&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -2648,7 +2688,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;h2 class=&quot;traceback&quot;&gt;Traceback &lt;em&gt;(most recent call last)&lt;/em&gt;&lt;/h2&gt;
 &lt;div class=&quot;traceback&quot;&gt;
   &lt;h3&gt;&lt;/h3&gt;
-  &lt;ul&gt;&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244822560&quot;&gt;
+  &lt;ul&gt;&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229072064&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;2548&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;__call__&lt;/code&gt;&lt;/h4&gt;
@@ -2661,7 +2701,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244822704&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229072208&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;2528&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wsgi_app&lt;/code&gt;&lt;/h4&gt;
@@ -2679,7 +2719,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;finally:&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244822848&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229072352&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;2525&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wsgi_app&lt;/code&gt;&lt;/h4&gt;
@@ -2697,7 +2737,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;                &lt;/span&gt;error = sys.exc_info()[1]&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244822992&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229072496&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;1822&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;full_dispatch_request&lt;/code&gt;&lt;/h4&gt;
@@ -2715,7 +2755,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;rv: t.Union[ft.ResponseReturnValue, HTTPException],&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244823136&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229072640&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;1820&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;full_dispatch_request&lt;/code&gt;&lt;/h4&gt;
@@ -2733,7 +2773,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;    &lt;/span&gt;def finalize_request(&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244823280&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229072784&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;1796&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;dispatch_request&lt;/code&gt;&lt;/h4&gt;
@@ -2751,7 +2791,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;error handling.&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244823424&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229072928&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/decorator.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;68&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -2767,7 +2807,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;return wrapper&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244823568&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229073072&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/security/security_handler_factory.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;388&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -2785,7 +2825,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;    &lt;/span&gt;def _raise_most_specific(exceptions: t.List[Exception]) -&amp;gt; None:&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244823712&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229073216&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/uri_parsing.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;149&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -2803,7 +2843,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;&lt;/span&gt; &lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244823856&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229073360&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/validation.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;399&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -2818,7 +2858,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;return wrapper&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244824000&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229073504&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/parameter.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;120&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -2833,7 +2873,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;    &lt;/span&gt;return wrapper&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049244824144&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229073648&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/vampi/api_views/users.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;212&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;delete_user&lt;/code&gt;&lt;/h4&gt;
@@ -2982,7 +3022,12 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...BFZqk&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -3012,7 +3057,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;h2 class=&quot;traceback&quot;&gt;Traceback &lt;em&gt;(most recent call last)&lt;/em&gt;&lt;/h2&gt;
 &lt;div class=&quot;traceback&quot;&gt;
   &lt;h3&gt;&lt;/h3&gt;
-  &lt;ul&gt;&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049242011968&quot;&gt;
+  &lt;ul&gt;&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229081280&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;2548&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;__call__&lt;/code&gt;&lt;/h4&gt;
@@ -3025,7 +3070,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049247163600&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229081424&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;2528&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wsgi_app&lt;/code&gt;&lt;/h4&gt;
@@ -3043,7 +3088,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;finally:&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049247164752&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229081568&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;2525&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wsgi_app&lt;/code&gt;&lt;/h4&gt;
@@ -3061,7 +3106,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;                &lt;/span&gt;error = sys.exc_info()[1]&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049247164320&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229081712&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;1822&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;full_dispatch_request&lt;/code&gt;&lt;/h4&gt;
@@ -3079,7 +3124,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;rv: t.Union[ft.ResponseReturnValue, HTTPException],&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049247167344&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229081856&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;1820&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;full_dispatch_request&lt;/code&gt;&lt;/h4&gt;
@@ -3097,7 +3142,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;    &lt;/span&gt;def finalize_request(&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049247167056&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229082000&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;1796&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;dispatch_request&lt;/code&gt;&lt;/h4&gt;
@@ -3115,7 +3160,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;error handling.&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049247166768&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229082144&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/decorator.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;68&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -3131,7 +3176,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;return wrapper&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049247166336&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229082288&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/security/security_handler_factory.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;388&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -3149,7 +3194,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;    &lt;/span&gt;def _raise_most_specific(exceptions: t.List[Exception]) -&amp;gt; None:&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049247165040&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229082432&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/uri_parsing.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;149&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -3167,7 +3212,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;&lt;/span&gt; &lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049247164896&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229361216&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/validation.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;399&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -3182,7 +3227,7 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;return wrapper&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049247166048&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229361360&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/parameter.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;120&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
@@ -3197,7 +3242,376 @@ AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
 &lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;    &lt;/span&gt;return wrapper&lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049247165760&quot;&gt;
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229361504&quot;&gt;
+  &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/vampi/api_views/users.py&quot;&lt;/cite&gt;,
+      line &lt;em class=&quot;line&quot;&gt;212&lt;/em&gt;,
+      in &lt;code class=&quot;function&quot;&gt;delete_user&lt;/code&gt;&lt;/h4&gt;
+  &lt;div class=&quot;source &quot;&gt;&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;    &lt;/span&gt;resp = token_validator(request.headers.get(&amp;#39;Authorization&amp;#39;))&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;    &lt;/span&gt;if &amp;#34;error&amp;#34; in resp:&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;return Response(error_message_helper(resp), 401, mimetype=&amp;#34;application/json&amp;#34;)&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;    &lt;/span&gt;else:&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;user = User.query.filter_by(username=resp[&amp;#39;sub&amp;#39;]).first()&lt;/pre&gt;
+&lt;pre class=&quot;line current&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;if user.admin:
+&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;   ^^^^^^^^^^&lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;            &lt;/span&gt;if bool(User.delete_user(username)):&lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;                &lt;/span&gt;responseObject = {&lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;                    &lt;/span&gt;&amp;#39;status&amp;#39;: &amp;#39;success&amp;#39;,&lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;                    &lt;/span&gt;&amp;#39;message&amp;#39;: &amp;#39;User deleted.&amp;#39;&lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;                &lt;/span&gt;}&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/ul&gt;
+  &lt;blockquote&gt;AttributeError: &amp;#39;NoneType&amp;#39; object has no attribute &amp;#39;admin&amp;#39;
+&lt;/blockquote&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;plain&quot;&gt;
+    &lt;p&gt;
+      This is the Copy/Paste friendly version of the traceback.
+    &lt;/p&gt;
+    &lt;textarea cols=&quot;50&quot; rows=&quot;10&quot; name=&quot;code&quot; readonly&gt;Traceback (most recent call last):
+  File &amp;#34;/usr/local/lib/python3.11/site-packages/flask/app.py&amp;#34;, line 2548, in __call__
+    return self.wsgi_app(environ, start_response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &amp;#34;/usr/local/lib/python3.11/site-packages/flask/app.py&amp;#34;, line 2528, in wsgi_app
+    response = self.handle_exception(e)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File &amp;#34;/usr/local/lib/python3.11/site-packages/flask/app.py&amp;#34;, line 2525, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &amp;#34;/usr/local/lib/python3.11/site-packages/flask/app.py&amp;#34;, line 1822, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &amp;#34;/usr/local/lib/python3.11/site-packages/flask/app.py&amp;#34;, line 1820, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File &amp;#34;/usr/local/lib/python3.11/site-packages/flask/app.py&amp;#34;, line 1796, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &amp;#34;/usr/local/lib/python3.11/site-packages/connexion/decorators/decorator.py&amp;#34;, line 68, in wrapper
+    response = function(request)
+               ^^^^^^^^^^^^^^^^^
+  File &amp;#34;/usr/local/lib/python3.11/site-packages/connexion/security/security_handler_factory.py&amp;#34;, line 388, in wrapper
+    return function(request)
+           ^^^^^^^^^^^^^^^^^
+  File &amp;#34;/usr/local/lib/python3.11/site-packages/connexion/decorators/uri_parsing.py&amp;#34;, line 149, in wrapper
+    response = function(request)
+               ^^^^^^^^^^^^^^^^^
+  File &amp;#34;/usr/local/lib/python3.11/site-packages/connexion/decorators/validation.py&amp;#34;, line 399, in wrapper
+    return function(request)
+           ^^^^^^^^^^^^^^^^^
+  File &amp;#34;/usr/local/lib/python3.11/site-packages/connexion/decorators/parameter.py&amp;#34;, line 120, in wrapper
+    return function(**kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File &amp;#34;/vampi/api_views/users.py&amp;#34;, line 212, in delete_user
+    if user.admin:
+       ^^^^^^^^^^^
+AttributeError: &amp;#39;NoneType&amp;#39; object has no attribute &amp;#39;admin&amp;#39;
+&lt;/textarea&gt;
+&lt;/div&gt;
+&lt;div class=&quot;explanation&quot;&gt;
+  The debugger caught an exception in your WSGI application.  You can now
+  look at the traceback which led to the error.  &lt;span class=&quot;nojavascript&quot;&gt;
+  If you enable JavaScript you can also use additional features such as code
+  execution (if the evalex feature is enabled), automatic pasting of the
+  exceptions and much more.&lt;/span&gt;
+&lt;/div&gt;
+      &lt;div class=&quot;footer&quot;&gt;
+        Brought to you by &lt;strong class=&quot;arthur&quot;&gt;DON&#x27;T PANIC&lt;/strong&gt;, your
+        friendly Werkzeug powered traceback interpreter.
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;pin-prompt&quot;&gt;
+      &lt;div class=&quot;inner&quot;&gt;
+        &lt;h3&gt;Console Locked&lt;/h3&gt;
+        &lt;p&gt;
+          The console is locked and needs to be unlocked by entering the PIN.
+          You can find the PIN printed out on the standard output of your
+          shell that runs the server.
+        &lt;form&gt;
+          &lt;p&gt;PIN:
+            &lt;input type=text name=pin size=14&gt;
+            &lt;input type=submit name=btn value=&quot;Confirm Pin&quot;&gt;
+        &lt;/form&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+
+&lt;!--
+
+Traceback (most recent call last):
+  File &quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;, line 2548, in __call__
+    return self.wsgi_app(environ, start_response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;, line 2528, in wsgi_app
+    response = self.handle_exception(e)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;, line 2525, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;, line 1822, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;, line 1820, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;, line 1796, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/decorator.py&quot;, line 68, in wrapper
+    response = function(request)
+               ^^^^^^^^^^^^^^^^^
+  File &quot;/usr/local/lib/python3.11/site-packages/connexion/security/security_handler_factory.py&quot;, line 388, in wrapper
+    return function(request)
+           ^^^^^^^^^^^^^^^^^
+  File &quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/uri_parsing.py&quot;, line 149, in wrapper
+    response = function(request)
+               ^^^^^^^^^^^^^^^^^
+  File &quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/validation.py&quot;, line 399, in wrapper
+    return function(request)
+           ^^^^^^^^^^^^^^^^^
+  File &quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/parameter.py&quot;, line 120, in wrapper
+    return function(**kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File &quot;/vampi/api_views/users.py&quot;, line 212, in delete_user
+    if user.admin:
+       ^^^^^^^^^^^
+AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
+
+
+--&gt;
+</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
+                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #10 — DELETE http://localhost:5001/users/v1/trieu10a22005 — HTTP 500 
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...BFZqk&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">&lt;!doctype html&gt;
+&lt;html lang=en&gt;
+  &lt;head&gt;
+    &lt;title&gt;AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;admin&#x27;
+ // Werkzeug Debugger&lt;/title&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;?__debugger__=yes&amp;amp;cmd=resource&amp;amp;f=style.css&quot;&gt;
+    &lt;link rel=&quot;shortcut icon&quot;
+        href=&quot;?__debugger__=yes&amp;amp;cmd=resource&amp;amp;f=console.png&quot;&gt;
+    &lt;script src=&quot;?__debugger__=yes&amp;amp;cmd=resource&amp;amp;f=debugger.js&quot;&gt;&lt;/script&gt;
+    &lt;script&gt;
+      var CONSOLE_MODE = false,
+          EVALEX = true,
+          EVALEX_TRUSTED = false,
+          SECRET = &quot;TnKWg9SYKZVXlxZdWkwo&quot;;
+    &lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body style=&quot;background-color: #fff&quot;&gt;
+    &lt;div class=&quot;debugger&quot;&gt;
+&lt;h1&gt;AttributeError&lt;/h1&gt;
+&lt;div class=&quot;detail&quot;&gt;
+  &lt;p class=&quot;errormsg&quot;&gt;AttributeError: &amp;#39;NoneType&amp;#39; object has no attribute &amp;#39;admin&amp;#39;
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;h2 class=&quot;traceback&quot;&gt;Traceback &lt;em&gt;(most recent call last)&lt;/em&gt;&lt;/h2&gt;
+&lt;div class=&quot;traceback&quot;&gt;
+  &lt;h3&gt;&lt;/h3&gt;
+  &lt;ul&gt;&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229361648&quot;&gt;
+  &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
+      line &lt;em class=&quot;line&quot;&gt;2548&lt;/em&gt;,
+      in &lt;code class=&quot;function&quot;&gt;__call__&lt;/code&gt;&lt;/h4&gt;
+  &lt;div class=&quot;source library&quot;&gt;&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;    &lt;/span&gt;def __call__(self, environ: dict, start_response: t.Callable) -&amp;gt; t.Any:&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;&amp;#34;&amp;#34;&amp;#34;The WSGI server calls the Flask application object as the&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;WSGI application. This calls :meth:`wsgi_app`, which can be&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;wrapped to apply middleware.&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;&amp;#34;&amp;#34;&amp;#34;&lt;/pre&gt;
+&lt;pre class=&quot;line current&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;return self.wsgi_app(environ, start_response)
+&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229361792&quot;&gt;
+  &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
+      line &lt;em class=&quot;line&quot;&gt;2528&lt;/em&gt;,
+      in &lt;code class=&quot;function&quot;&gt;wsgi_app&lt;/code&gt;&lt;/h4&gt;
+  &lt;div class=&quot;source library&quot;&gt;&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;            &lt;/span&gt;try:&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;                &lt;/span&gt;ctx.push()&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;                &lt;/span&gt;response = self.full_dispatch_request()&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;            &lt;/span&gt;except Exception as e:&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;                &lt;/span&gt;error = e&lt;/pre&gt;
+&lt;pre class=&quot;line current&quot;&gt;&lt;span class=&quot;ws&quot;&gt;                &lt;/span&gt;response = self.handle_exception(e)
+&lt;span class=&quot;ws&quot;&gt;                &lt;/span&gt;           ^^^^^^^^^^^^^^^^^^^^^^^^&lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;            &lt;/span&gt;except:  # noqa: B001&lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;                &lt;/span&gt;error = sys.exc_info()[1]&lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;                &lt;/span&gt;raise&lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;            &lt;/span&gt;return response(environ, start_response)&lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;finally:&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229361936&quot;&gt;
+  &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
+      line &lt;em class=&quot;line&quot;&gt;2525&lt;/em&gt;,
+      in &lt;code class=&quot;function&quot;&gt;wsgi_app&lt;/code&gt;&lt;/h4&gt;
+  &lt;div class=&quot;source library&quot;&gt;&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;ctx = self.request_context(environ)&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;error: t.Optional[BaseException] = None&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;try:&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;            &lt;/span&gt;try:&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;                &lt;/span&gt;ctx.push()&lt;/pre&gt;
+&lt;pre class=&quot;line current&quot;&gt;&lt;span class=&quot;ws&quot;&gt;                &lt;/span&gt;response = self.full_dispatch_request()
+&lt;span class=&quot;ws&quot;&gt;                &lt;/span&gt;           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^&lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;            &lt;/span&gt;except Exception as e:&lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;                &lt;/span&gt;error = e&lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;                &lt;/span&gt;response = self.handle_exception(e)&lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;            &lt;/span&gt;except:  # noqa: B001&lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;                &lt;/span&gt;error = sys.exc_info()[1]&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229362080&quot;&gt;
+  &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
+      line &lt;em class=&quot;line&quot;&gt;1822&lt;/em&gt;,
+      in &lt;code class=&quot;function&quot;&gt;full_dispatch_request&lt;/code&gt;&lt;/h4&gt;
+  &lt;div class=&quot;source library&quot;&gt;&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;            &lt;/span&gt;request_started.send(self)&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;            &lt;/span&gt;rv = self.preprocess_request()&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;            &lt;/span&gt;if rv is None:&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;                &lt;/span&gt;rv = self.dispatch_request()&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;except Exception as e:&lt;/pre&gt;
+&lt;pre class=&quot;line current&quot;&gt;&lt;span class=&quot;ws&quot;&gt;            &lt;/span&gt;rv = self.handle_user_exception(e)
+&lt;span class=&quot;ws&quot;&gt;            &lt;/span&gt;     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;return self.finalize_request(rv)&lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;&lt;/span&gt; &lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;    &lt;/span&gt;def finalize_request(&lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;self,&lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;rv: t.Union[ft.ResponseReturnValue, HTTPException],&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229362224&quot;&gt;
+  &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
+      line &lt;em class=&quot;line&quot;&gt;1820&lt;/em&gt;,
+      in &lt;code class=&quot;function&quot;&gt;full_dispatch_request&lt;/code&gt;&lt;/h4&gt;
+  &lt;div class=&quot;source library&quot;&gt;&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;&lt;/span&gt; &lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;try:&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;            &lt;/span&gt;request_started.send(self)&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;            &lt;/span&gt;rv = self.preprocess_request()&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;            &lt;/span&gt;if rv is None:&lt;/pre&gt;
+&lt;pre class=&quot;line current&quot;&gt;&lt;span class=&quot;ws&quot;&gt;                &lt;/span&gt;rv = self.dispatch_request()
+&lt;span class=&quot;ws&quot;&gt;                &lt;/span&gt;     ^^^^^^^^^^^^^^^^^^^^^^^&lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;except Exception as e:&lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;            &lt;/span&gt;rv = self.handle_user_exception(e)&lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;return self.finalize_request(rv)&lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;&lt;/span&gt; &lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;    &lt;/span&gt;def finalize_request(&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229362368&quot;&gt;
+  &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/flask/app.py&quot;&lt;/cite&gt;,
+      line &lt;em class=&quot;line&quot;&gt;1796&lt;/em&gt;,
+      in &lt;code class=&quot;function&quot;&gt;dispatch_request&lt;/code&gt;&lt;/h4&gt;
+  &lt;div class=&quot;source library&quot;&gt;&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;            &lt;/span&gt;and req.method == &amp;#34;OPTIONS&amp;#34;&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;):&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;            &lt;/span&gt;return self.make_default_options_response()&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;# otherwise dispatch to the handler for that endpoint&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;view_args: t.Dict[str, t.Any] = req.view_args  # type: ignore[assignment]&lt;/pre&gt;
+&lt;pre class=&quot;line current&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;&lt;/span&gt; &lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;    &lt;/span&gt;def full_dispatch_request(self) -&amp;gt; Response:&lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;&amp;#34;&amp;#34;&amp;#34;Dispatches the request and on top of that performs request&lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;pre and postprocessing as well as HTTP exception catching and&lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;error handling.&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229362512&quot;&gt;
+  &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/decorator.py&quot;&lt;/cite&gt;,
+      line &lt;em class=&quot;line&quot;&gt;68&lt;/em&gt;,
+      in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
+  &lt;div class=&quot;source library&quot;&gt;&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;&lt;/span&gt; &lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;else:  # pragma: no cover&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;            &lt;/span&gt;@functools.wraps(function)&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;            &lt;/span&gt;def wrapper(*args, **kwargs):&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;                &lt;/span&gt;request = self.api.get_request(*args, **kwargs)&lt;/pre&gt;
+&lt;pre class=&quot;line current&quot;&gt;&lt;span class=&quot;ws&quot;&gt;                &lt;/span&gt;response = function(request)
+&lt;span class=&quot;ws&quot;&gt;                &lt;/span&gt;           ^^^^^^^^^^^^^^^^^&lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;                &lt;/span&gt;return self.api.get_response(response, self.mimetype, request)&lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;&lt;/span&gt; &lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;return wrapper&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229362656&quot;&gt;
+  &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/security/security_handler_factory.py&quot;&lt;/cite&gt;,
+      line &lt;em class=&quot;line&quot;&gt;388&lt;/em&gt;,
+      in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
+  &lt;div class=&quot;source library&quot;&gt;&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;                    &lt;/span&gt;raise OAuthProblem(description=&amp;#39;No authorization token provided&amp;#39;)&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;&lt;/span&gt; &lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;            &lt;/span&gt;# Fallback to &amp;#39;uid&amp;#39; for backward compatibility&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;            &lt;/span&gt;request.context[&amp;#39;user&amp;#39;] = token_info.get(&amp;#39;sub&amp;#39;, token_info.get(&amp;#39;uid&amp;#39;))&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;            &lt;/span&gt;request.context[&amp;#39;token_info&amp;#39;] = token_info&lt;/pre&gt;
+&lt;pre class=&quot;line current&quot;&gt;&lt;span class=&quot;ws&quot;&gt;            &lt;/span&gt;return function(request)
+&lt;span class=&quot;ws&quot;&gt;            &lt;/span&gt;       ^^^^^^^^^^^^^^^^^&lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;&lt;/span&gt; &lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;return wrapper&lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;&lt;/span&gt; &lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;    &lt;/span&gt;@staticmethod&lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;    &lt;/span&gt;def _raise_most_specific(exceptions: t.List[Exception]) -&amp;gt; None:&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229362800&quot;&gt;
+  &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/uri_parsing.py&quot;&lt;/cite&gt;,
+      line &lt;em class=&quot;line&quot;&gt;149&lt;/em&gt;,
+      in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
+  &lt;div class=&quot;source library&quot;&gt;&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;            &lt;/span&gt;form = coerce_dict(request.form)&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;&lt;/span&gt; &lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;            &lt;/span&gt;request.query = self.resolve_query(query)&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;            &lt;/span&gt;request.path_params = self.resolve_path(path_params)&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;            &lt;/span&gt;request.form = self.resolve_form(form)&lt;/pre&gt;
+&lt;pre class=&quot;line current&quot;&gt;&lt;span class=&quot;ws&quot;&gt;            &lt;/span&gt;response = function(request)
+&lt;span class=&quot;ws&quot;&gt;            &lt;/span&gt;           ^^^^^^^^^^^^^^^^^&lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;            &lt;/span&gt;return response&lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;&lt;/span&gt; &lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;return wrapper&lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;&lt;/span&gt; &lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;&lt;/span&gt; &lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229362944&quot;&gt;
+  &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/validation.py&quot;&lt;/cite&gt;,
+      line &lt;em class=&quot;line&quot;&gt;399&lt;/em&gt;,
+      in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
+  &lt;div class=&quot;source library&quot;&gt;&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;            &lt;/span&gt;for param in self.parameters.get(&amp;#39;formData&amp;#39;, []):&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;                &lt;/span&gt;error = self.validate_formdata_parameter(param[&amp;#34;name&amp;#34;], param, request)&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;                &lt;/span&gt;if error:&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;                    &lt;/span&gt;raise BadRequestProblem(detail=error)&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;&lt;/span&gt; &lt;/pre&gt;
+&lt;pre class=&quot;line current&quot;&gt;&lt;span class=&quot;ws&quot;&gt;            &lt;/span&gt;return function(request)
+&lt;span class=&quot;ws&quot;&gt;            &lt;/span&gt;       ^^^^^^^^^^^^^^^^^&lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;&lt;/span&gt; &lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;return wrapper&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229363088&quot;&gt;
+  &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/usr/local/lib/python3.11/site-packages/connexion/decorators/parameter.py&quot;&lt;/cite&gt;,
+      line &lt;em class=&quot;line&quot;&gt;120&lt;/em&gt;,
+      in &lt;code class=&quot;function&quot;&gt;wrapper&lt;/code&gt;&lt;/h4&gt;
+  &lt;div class=&quot;source library&quot;&gt;&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;&lt;/span&gt; &lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;# attempt to provide the request context to the function&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;if pass_context_arg_name and (has_kwargs or pass_context_arg_name in arguments):&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;            &lt;/span&gt;kwargs[pass_context_arg_name] = request.context&lt;/pre&gt;
+&lt;pre class=&quot;line before&quot;&gt;&lt;span class=&quot;ws&quot;&gt;&lt;/span&gt; &lt;/pre&gt;
+&lt;pre class=&quot;line current&quot;&gt;&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;return function(**kwargs)
+&lt;span class=&quot;ws&quot;&gt;        &lt;/span&gt;       ^^^^^^^^^^^^^^^^^^&lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;&lt;/span&gt; &lt;/pre&gt;
+&lt;pre class=&quot;line after&quot;&gt;&lt;span class=&quot;ws&quot;&gt;    &lt;/span&gt;return wrapper&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;li&gt;&lt;div class=&quot;frame&quot; id=&quot;frame-129049229363232&quot;&gt;
   &lt;h4&gt;File &lt;cite class=&quot;filename&quot;&gt;&quot;/vampi/api_views/users.py&quot;&lt;/cite&gt;,
       line &lt;em class=&quot;line&quot;&gt;212&lt;/em&gt;,
       in &lt;code class=&quot;function&quot;&gt;delete_user&lt;/code&gt;&lt;/h4&gt;

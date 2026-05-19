@@ -59,7 +59,7 @@
         <a href="index.html" class="back-btn">&larr; Quay lại Dashboard</a>
         <h1>API: <span style="font-family: 'Fira Code', monospace; color: var(--accent-primary);">change_email</span></h1>
         
-        <p>Tổng số lần gọi: <strong>15</strong></p>
+        <p>Tổng số lần gọi: <strong>16</strong></p>
         
         <h2 style="margin-top: 2rem; margin-bottom: 1rem;">Lịch sử các lần Request/Response</h2>
 
@@ -70,7 +70,7 @@
                     
                     
                     <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 0.75rem; margin-bottom: 1rem; font-size: 0.85rem; color: #b45309; border-radius: 0 4px 4px 0;">
-                        <strong>⚠️ Original Error HTTP 403: {&quot;message&quot;:&quot;Email already registered! Email: trieu7a2005@gmail.com&quot;,&quot;status&quot;:403}</strong>
+                        <strong>⚠️ Original Error HTTP 403: {&quot;message&quot;:&quot;Email already registered! Email: trieu7a@gmail.com&quot;,&quot;status&quot;:403}</strong>
                         
                         <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
                             <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #1 Failed (HTTP 403)</h5>
@@ -78,14 +78,14 @@
                                 <div style="flex: 1;">
                                     <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
                                     <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
-  &quot;new_email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;old_email&quot;: &quot;trieu7a2005@gmail.com&quot;
+  &quot;new_email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;old_email&quot;: &quot;trieu7a@gmail.com&quot;
 }</pre>
                                 </div>
                                 <div style="flex: 1;">
                                     <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
                                     <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">{
-  &quot;message&quot;: &quot;Email already registered! Email: trieu7a2005@gmail.com&quot;,
+  &quot;message&quot;: &quot;Email already registered! Email: trieu7a@gmail.com&quot;,
   &quot;status&quot;: 403
 }</pre>
                                 </div>
@@ -95,36 +95,71 @@
                     </div>
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;new_email&quot;: &quot;fuzz_7c9a4f2b1e6d@test.com&quot;,
-  &quot;old_email&quot;: &quot;trieu7a2005@gmail.com&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;new_email&quot;: &quot;fuzz_7e3a9c4b2f1d@test.com&quot;,
+  &quot;old_email&quot;: &quot;trieu7a@gmail.com&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;message&quot;: &quot;The token has been sent to your email. If you have used example.com email, check your email using the MailHog web portal.   fuzz_7c9a4f2b1e6d@test.com&quot;,
+  &quot;message&quot;: &quot;The token has been sent to your email. If you have used example.com email, check your email using the MailHog web portal.   fuzz_7e3a9c4b2f1d@test.com&quot;,
   &quot;status&quot;: 200
 }</pre>
                 </div>
                 
-                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
-                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #2 — POST http://localhost:8888/identity/api/v2/user/change-email — HTTP 403 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #2 — POST http://localhost:8888/identity/api/v2/user/change-email — HTTP 200 <span style='background: #f59e0b; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🛠️ LLM Repaired</span>
                     </h3>
                     
                     
+                    <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 0.75rem; margin-bottom: 1rem; font-size: 0.85rem; color: #b45309; border-radius: 0 4px 4px 0;">
+                        <strong>⚠️ Original Error HTTP 403: {&quot;message&quot;:&quot;Email already registered! Email: trieu7a@gmail.com&quot;,&quot;status&quot;:403}</strong>
+                        
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
+                            <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #1 Failed (HTTP 403)</h5>
+                            <div style="display: flex; gap: 1rem;">
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
+  &quot;new_email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;old_email&quot;: &quot;trieu7a@gmail.com&quot;
+}</pre>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">{
+  &quot;message&quot;: &quot;Email already registered! Email: trieu7a@gmail.com&quot;,
+  &quot;status&quot;: 403
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;new_email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;old_email&quot;: &quot;trieu7a2005@gmail.com&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;new_email&quot;: &quot;fuzz_9f3a7c2e1b@test.com&quot;,
+  &quot;old_email&quot;: &quot;trieu7a@gmail.com&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;message&quot;: &quot;Email already registered! Email: trieu7a2005@gmail.com&quot;,
-  &quot;status&quot;: 403
+  &quot;message&quot;: &quot;The token has been sent to your email. If you have used example.com email, check your email using the MailHog web portal.   fuzz_9f3a7c2e1b@test.com&quot;,
+  &quot;status&quot;: 200
 }</pre>
                 </div>
                 
@@ -135,7 +170,7 @@
                     
                     
                     <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 0.75rem; margin-bottom: 1rem; font-size: 0.85rem; color: #b45309; border-radius: 0 4px 4px 0;">
-                        <strong>⚠️ Original Error HTTP 403: {&quot;message&quot;:&quot;Email already registered! Email: adam007@example.com&quot;,&quot;status&quot;:403}</strong>
+                        <strong>⚠️ Original Error HTTP 403: {&quot;message&quot;:&quot;Email already registered! Email: trieu7a@gmail.com&quot;,&quot;status&quot;:403}</strong>
                         
                         <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
                             <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #1 Failed (HTTP 403)</h5>
@@ -143,14 +178,14 @@
                                 <div style="flex: 1;">
                                     <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
                                     <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
-  &quot;new_email&quot;: &quot;adam007@example.com&quot;,
-  &quot;old_email&quot;: &quot;adam007@example.com&quot;
+  &quot;new_email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;old_email&quot;: &quot;trieu7a@gmail.com&quot;
 }</pre>
                                 </div>
                                 <div style="flex: 1;">
                                     <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
                                     <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">{
-  &quot;message&quot;: &quot;Email already registered! Email: adam007@example.com&quot;,
+  &quot;message&quot;: &quot;Email already registered! Email: trieu7a@gmail.com&quot;,
   &quot;status&quot;: 403
 }</pre>
                                 </div>
@@ -160,15 +195,20 @@
                     </div>
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;new_email&quot;: &quot;fuzz_7e3a9c4b2d1f@test.com&quot;,
-  &quot;old_email&quot;: &quot;adam007@example.com&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;new_email&quot;: &quot;fuzz_9f3a7c2d1b@test.com&quot;,
+  &quot;old_email&quot;: &quot;trieu7a@gmail.com&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;message&quot;: &quot;The token has been sent to your email. If you have used example.com email, check your email using the MailHog web portal.   fuzz_7e3a9c4b2d1f@test.com&quot;,
+  &quot;message&quot;: &quot;The token has been sent to your email. If you have used example.com email, check your email using the MailHog web portal.   fuzz_9f3a7c2d1b@test.com&quot;,
   &quot;status&quot;: 200
 }</pre>
                 </div>
@@ -180,15 +220,20 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;new_email&quot;: &quot;adam007@example.com&quot;,
-  &quot;old_email&quot;: &quot;adam007@example.com&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;new_email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;old_email&quot;: &quot;trieu7a@gmail.com&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;message&quot;: &quot;Email already registered! Email: adam007@example.com&quot;,
+  &quot;message&quot;: &quot;Email already registered! Email: trieu7a@gmail.com&quot;,
   &quot;status&quot;: 403
 }</pre>
                 </div>
@@ -200,15 +245,20 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;new_email&quot;: &quot;adam007@example.com&quot;,
-  &quot;old_email&quot;: &quot;adam007@example.com&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;new_email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;old_email&quot;: &quot;trieu7a@gmail.com&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;message&quot;: &quot;Email already registered! Email: adam007@example.com&quot;,
+  &quot;message&quot;: &quot;Email already registered! Email: trieu7a@gmail.com&quot;,
   &quot;status&quot;: 403
 }</pre>
                 </div>
@@ -220,15 +270,20 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;new_email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;old_email&quot;: &quot;trieu7a2005@gmail.com&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;new_email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;old_email&quot;: &quot;trieu7a@gmail.com&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;message&quot;: &quot;Email already registered! Email: trieu7a2005@gmail.com&quot;,
+  &quot;message&quot;: &quot;Email already registered! Email: trieu7a@gmail.com&quot;,
   &quot;status&quot;: 403
 }</pre>
                 </div>
@@ -240,15 +295,20 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;new_email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;old_email&quot;: &quot;trieu7a2005@gmail.com&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;new_email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;old_email&quot;: &quot;trieu7a@gmail.com&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;message&quot;: &quot;Email already registered! Email: trieu7a2005@gmail.com&quot;,
+  &quot;message&quot;: &quot;Email already registered! Email: trieu7a@gmail.com&quot;,
   &quot;status&quot;: 403
 }</pre>
                 </div>
@@ -260,15 +320,20 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;new_email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;old_email&quot;: &quot;trieu7a2005@gmail.com&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;new_email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;old_email&quot;: &quot;trieu7a@gmail.com&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;message&quot;: &quot;Email already registered! Email: trieu7a2005@gmail.com&quot;,
+  &quot;message&quot;: &quot;Email already registered! Email: trieu7a@gmail.com&quot;,
   &quot;status&quot;: 403
 }</pre>
                 </div>
@@ -280,15 +345,20 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;new_email&quot;: &quot;adam007@example.com&quot;,
-  &quot;old_email&quot;: &quot;adam007@example.com&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;new_email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;old_email&quot;: &quot;trieu7a@gmail.com&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;message&quot;: &quot;Email already registered! Email: adam007@example.com&quot;,
+  &quot;message&quot;: &quot;Email already registered! Email: trieu7a@gmail.com&quot;,
   &quot;status&quot;: 403
 }</pre>
                 </div>
@@ -300,15 +370,20 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;new_email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;old_email&quot;: &quot;trieu7a2005@gmail.com&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;new_email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;old_email&quot;: &quot;trieu7a@gmail.com&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;message&quot;: &quot;Email already registered! Email: trieu7a2005@gmail.com&quot;,
+  &quot;message&quot;: &quot;Email already registered! Email: trieu7a@gmail.com&quot;,
   &quot;status&quot;: 403
 }</pre>
                 </div>
@@ -320,15 +395,20 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;new_email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;old_email&quot;: &quot;trieu7a2005@gmail.com&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;new_email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;old_email&quot;: &quot;trieu7a@gmail.com&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;message&quot;: &quot;Email already registered! Email: trieu7a2005@gmail.com&quot;,
+  &quot;message&quot;: &quot;Email already registered! Email: trieu7a@gmail.com&quot;,
   &quot;status&quot;: 403
 }</pre>
                 </div>
@@ -340,15 +420,20 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;new_email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;old_email&quot;: &quot;trieu7a2005@gmail.com&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;new_email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;old_email&quot;: &quot;trieu7a@gmail.com&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;message&quot;: &quot;Email already registered! Email: trieu7a2005@gmail.com&quot;,
+  &quot;message&quot;: &quot;Email already registered! Email: trieu7a@gmail.com&quot;,
   &quot;status&quot;: 403
 }</pre>
                 </div>
@@ -360,15 +445,20 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;new_email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;old_email&quot;: &quot;trieu7a2005@gmail.com&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;new_email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;old_email&quot;: &quot;trieu7a@gmail.com&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;message&quot;: &quot;Email already registered! Email: trieu7a2005@gmail.com&quot;,
+  &quot;message&quot;: &quot;Email already registered! Email: trieu7a@gmail.com&quot;,
   &quot;status&quot;: 403
 }</pre>
                 </div>
@@ -380,15 +470,20 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;new_email&quot;: &quot;adam007@example.com&quot;,
-  &quot;old_email&quot;: &quot;adam007@example.com&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;new_email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;old_email&quot;: &quot;trieu7a@gmail.com&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;message&quot;: &quot;Email already registered! Email: adam007@example.com&quot;,
+  &quot;message&quot;: &quot;Email already registered! Email: trieu7a@gmail.com&quot;,
   &quot;status&quot;: 403
 }</pre>
                 </div>
@@ -400,15 +495,45 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;new_email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;old_email&quot;: &quot;trieu7a2005@gmail.com&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;new_email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;old_email&quot;: &quot;trieu7a@gmail.com&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;message&quot;: &quot;Email already registered! Email: trieu7a2005@gmail.com&quot;,
+  &quot;message&quot;: &quot;Email already registered! Email: trieu7a@gmail.com&quot;,
+  &quot;status&quot;: 403
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #16 — POST http://localhost:8888/identity/api/v2/user/change-email — HTTP 403 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;new_email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;old_email&quot;: &quot;trieu7a@gmail.com&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;message&quot;: &quot;Email already registered! Email: trieu7a@gmail.com&quot;,
   &quot;status&quot;: 403
 }</pre>
                 </div>

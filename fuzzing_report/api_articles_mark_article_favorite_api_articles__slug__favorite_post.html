@@ -63,9 +63,107 @@
         
         <h2 style="margin-top: 2rem; margin-bottom: 1rem;">Lịch sử các lần Request/Response</h2>
 
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #1 — POST http://localhost:8000/api/articles/reliable-api-testing-workflows-9f3a7c/favorite — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Token eyJ0e...Twuxc&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;slug&quot;: &quot;reliable-api-testing-workflows-9f3a7c&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;article&quot;: {
+    &quot;createdAt&quot;: &quot;2026-05-19T04:29:20.231457Z&quot;,
+    &quot;updatedAt&quot;: &quot;2026-05-19T04:29:20.231457Z&quot;,
+    &quot;id&quot;: 41,
+    &quot;slug&quot;: &quot;reliable-api-testing-workflows-9f3a7c&quot;,
+    &quot;title&quot;: &quot;Reliable API Testing Workflows 9f3a7c&quot;,
+    &quot;description&quot;: &quot;A practical guide to building resilient API test workflows with structured fuzz inputs.&quot;,
+    &quot;body&quot;: &quot;Effective API testing combines valid request shapes with varied data to uncover validation gaps, edge cases, and reliability issues. This article explains how to design realistic payloads, rotate unique values, and observe server responses to improve robustness.&quot;,
+    &quot;tagList&quot;: [
+      &quot;api&quot;,
+      &quot;testing&quot;,
+      &quot;fuzzing&quot;
+    ],
+    &quot;author&quot;: {
+      &quot;admin&quot;: false,
+      &quot;username&quot;: &quot;trieu10a22005&quot;,
+      &quot;bio&quot;: &quot;Software developer and API testing enthusiast.&quot;,
+      &quot;image&quot;: &quot;https://test.com/images/trieu10a22005.png&quot;,
+      &quot;following&quot;: false,
+      &quot;cardName&quot;: null,
+      &quot;cardNumber&quot;: null,
+      &quot;cardCvc&quot;: null,
+      &quot;cardExpiry&quot;: null
+    },
+    &quot;favorited&quot;: true,
+    &quot;favoritesCount&quot;: 1
+  }
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #2 — POST http://localhost:8000/api/articles/resilient-api-testing-workflows/favorite — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Token eyJ0e...Twuxc&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;slug&quot;: &quot;resilient-api-testing-workflows&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;article&quot;: {
+    &quot;createdAt&quot;: &quot;2026-05-19T04:29:26.430391Z&quot;,
+    &quot;updatedAt&quot;: &quot;2026-05-19T04:29:26.430391Z&quot;,
+    &quot;id&quot;: 42,
+    &quot;slug&quot;: &quot;resilient-api-testing-workflows&quot;,
+    &quot;title&quot;: &quot;Resilient API Testing Workflows&quot;,
+    &quot;description&quot;: &quot;A practical guide to building reliable API test coverage with structured fuzz inputs.&quot;,
+    &quot;body&quot;: &quot;Effective API fuzzing combines valid request shapes with varied realistic data to uncover validation issues, edge cases, and unexpected server behavior. This article explains how to design payloads that exercise application logic while remaining compatible with endpoint schemas.&quot;,
+    &quot;tagList&quot;: [
+      &quot;api&quot;,
+      &quot;testing&quot;,
+      &quot;fuzzing&quot;
+    ],
+    &quot;author&quot;: {
+      &quot;admin&quot;: false,
+      &quot;username&quot;: &quot;trieu10a22005&quot;,
+      &quot;bio&quot;: &quot;Software developer and API testing enthusiast.&quot;,
+      &quot;image&quot;: &quot;https://test.com/images/trieu10a22005.png&quot;,
+      &quot;following&quot;: false,
+      &quot;cardName&quot;: null,
+      &quot;cardNumber&quot;: null,
+      &quot;cardCvc&quot;: null,
+      &quot;cardExpiry&quot;: null
+    },
+    &quot;favorited&quot;: true,
+    &quot;favoritesCount&quot;: 1
+  }
+}</pre>
+                </div>
+                
                 <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
                     <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #1 — POST http://localhost:8000/api/articles/how-to-train-your-dragon/favorite — HTTP 404 <span style='background: #f59e0b; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🛠️ LLM Repaired</span>
+                        Lần gọi #3 — POST http://localhost:8000/api/articles/how-to-train-your-dragon/favorite — HTTP 404 <span style='background: #f59e0b; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🛠️ LLM Repaired</span>
                     </h3>
                     
                     
@@ -118,7 +216,7 @@
                                 <div style="flex: 1;">
                                     <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
                                     <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
-  &quot;slug&quot;: &quot;article-39&quot;
+  &quot;slug&quot;: &quot;welcome-to-realworld-project&quot;
 }</pre>
                                 </div>
                                 <div style="flex: 1;">
@@ -135,7 +233,12 @@
                     </div>
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Token eyJ0e...Twuxc&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
   &quot;slug&quot;: &quot;how-to-train-your-dragon&quot;
 }</pre>
@@ -150,14 +253,19 @@
                 
                 <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
                     <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #2 — POST http://localhost:8000/api/articles/how-to-build-a-rest-api-40/favorite — HTTP 404 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                        Lần gọi #4 — POST http://localhost:8000/api/articles/getting-started-with-api-fuzzing/favorite — HTTP 404 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;slug&quot;: &quot;how-to-build-a-rest-api-40&quot;
+  &quot;Authorization&quot;: &quot;Token eyJ0e...Twuxc&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;slug&quot;: &quot;getting-started-with-api-fuzzing&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -170,14 +278,19 @@
                 
                 <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
                     <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #3 — POST http://localhost:8000/api/articles/how-to-build-a-rest-api/favorite — HTTP 404 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                        Lần gọi #5 — POST http://localhost:8000/api/articles/getting-started-with-api-fuzzing/favorite — HTTP 404 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;slug&quot;: &quot;how-to-build-a-rest-api&quot;
+  &quot;Authorization&quot;: &quot;Token eyJ0e...Twuxc&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;slug&quot;: &quot;getting-started-with-api-fuzzing&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -190,14 +303,19 @@
                 
                 <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
                     <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #4 — POST http://localhost:8000/api/articles/how-to-build-a-rest-api/favorite — HTTP 404 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                        Lần gọi #6 — POST http://localhost:8000/api/articles/getting-started-with-api-fuzzing/favorite — HTTP 404 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;slug&quot;: &quot;how-to-build-a-rest-api&quot;
+  &quot;Authorization&quot;: &quot;Token eyJ0e...Twuxc&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;slug&quot;: &quot;getting-started-with-api-fuzzing&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -210,14 +328,19 @@
                 
                 <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
                     <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #5 — POST http://localhost:8000/api/articles/how-to-build-a-rest-api/favorite — HTTP 404 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                        Lần gọi #7 — POST http://localhost:8000/api/articles/getting-started-with-api-fuzzing/favorite — HTTP 404 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;slug&quot;: &quot;how-to-build-a-rest-api&quot;
+  &quot;Authorization&quot;: &quot;Token eyJ0e...Twuxc&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;slug&quot;: &quot;getting-started-with-api-fuzzing&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -230,14 +353,19 @@
                 
                 <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
                     <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #6 — POST http://localhost:8000/api/articles/how-to-build-a-rest-api/favorite — HTTP 404 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                        Lần gọi #8 — POST http://localhost:8000/api/articles/getting-started-with-api-fuzzing/favorite — HTTP 404 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;slug&quot;: &quot;how-to-build-a-rest-api&quot;
+  &quot;Authorization&quot;: &quot;Token eyJ0e...Twuxc&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;slug&quot;: &quot;getting-started-with-api-fuzzing&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -250,54 +378,19 @@
                 
                 <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
                     <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #7 — POST http://localhost:8000/api/articles/how-to-build-a-rest-api/favorite — HTTP 404 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                        Lần gọi #9 — POST http://localhost:8000/api/articles/getting-started-with-api-fuzzing/favorite — HTTP 404 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;slug&quot;: &quot;how-to-build-a-rest-api&quot;
+  &quot;Authorization&quot;: &quot;Token eyJ0e...Twuxc&quot;
 }</pre>
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;errors&quot;: [
-    &quot;article does not exist&quot;
-  ]
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
-                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #8 — POST http://localhost:8000/api/articles/how-to-build-a-rest-api/favorite — HTTP 404 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;slug&quot;: &quot;how-to-build-a-rest-api&quot;
-}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;errors&quot;: [
-    &quot;article does not exist&quot;
-  ]
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
-                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #9 — POST http://localhost:8000/api/articles/how-to-build-a-rest-api/favorite — HTTP 404 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;slug&quot;: &quot;how-to-build-a-rest-api&quot;
+  &quot;slug&quot;: &quot;getting-started-with-api-fuzzing&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>

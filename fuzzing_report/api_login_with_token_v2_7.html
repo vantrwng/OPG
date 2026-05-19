@@ -59,21 +59,93 @@
         <a href="index.html" class="back-btn">&larr; Quay lại Dashboard</a>
         <h1>API: <span style="font-family: 'Fira Code', monospace; color: var(--accent-primary);">login_with_token_v2_7</span></h1>
         
-        <p>Tổng số lần gọi: <strong>15</strong></p>
+        <p>Tổng số lần gọi: <strong>16</strong></p>
         
         <h2 style="margin-top: 2rem; margin-bottom: 1rem;">Lịch sử các lần Request/Response</h2>
 
                 <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
                     <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #1 — POST http://localhost:8888/identity/api/auth/v2.7/user/login-with-token — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                        Lần gọi #1 — POST http://localhost:8888/identity/api/auth/v2.7/user/login-with-token — HTTP 500 <span style='background: #f59e0b; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🛠️ LLM Repaired</span>
                     </h3>
                     
                     
+                    <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 0.75rem; margin-bottom: 1rem; font-size: 0.85rem; color: #b45309; border-radius: 0 4px 4px 0;">
+                        <strong>⚠️ Original Error HTTP 400: {&quot;message&quot;:&quot;Validation failed&quot;,&quot;details&quot;:&quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJ0cmlldTdhQGdtYWlsLmNvbSIsImlhdCI6MTc3OTEyMjA3MCwiZXhwIjoxNzc5NzI2ODcwLCJyb2xlIjoidXNlciJ9.ltKQOMAS9ekYrFAQ6CZngyVaa-YBckW_NaFNP2cT9me4jtQU-QOVd6iwrVpM-VbCn76YHzX2yg5MenZBEC2KV4JjkHXAbzzw3b6gPhQCilVB-9ptk7WG3RHVE5ba8iLkOxZOFH7yYOWcHjPsoX3L63dZRRWMUNY5mtKNQkPGuNcQ8sn4Eo7i5Hp0XvUALzSKY1JtJT0mNsE07mpBkhK08h5oAL5pS7Phg-HKjjlr-f094bmDEA4s8_GREEKH28Im5FUJYS5-oBGZCTQ5FZH6yYevza6WrQxald-um_3hBTCFJ8Abne7q3je2tZ53IelLq9bjmiRD1cIzAgLCLwI1vg]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;}</strong>
+                        
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
+                            <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #1 Failed (HTTP 400)</h5>
+                            <div style="display: flex; gap: 1rem;">
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
+  &quot;email&quot;: &quot;fuzz_aa2bd7@test.com&quot;,
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJ0cmlldTdhQGdtYWlsLmNvbSIsImlhdCI6MTc3OTEyMjA3MCwiZXhwIjoxNzc5NzI2ODcwLCJyb2xlIjoidXNlciJ9.ltKQOMAS9ekYrFAQ6CZngyVaa-YBckW_NaFNP2cT9me4jtQU-QOVd6iwrVpM-VbCn76YHzX2yg5MenZBEC2KV4JjkHXAbzzw3b6gPhQCilVB-9ptk7WG3RHVE5ba8iLkOxZOFH7yYOWcHjPsoX3L63dZRRWMUNY5mtKNQkPGuNcQ8sn4Eo7i5Hp0XvUALzSKY1JtJT0mNsE07mpBkhK08h5oAL5pS7Phg-HKjjlr-f094bmDEA4s8_GREEKH28Im5FUJYS5-oBGZCTQ5FZH6yYevza6WrQxald-um_3hBTCFJ8Abne7q3je2tZ53IelLq9bjmiRD1cIzAgLCLwI1vg&quot;
+}</pre>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">{
+  &quot;message&quot;: &quot;Validation failed&quot;,
+  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJ0cmlldTdhQGdtYWlsLmNvbSIsImlhdCI6MTc3OTEyMjA3MCwiZXhwIjoxNzc5NzI2ODcwLCJyb2xlIjoidXNlciJ9.ltKQOMAS9ekYrFAQ6CZngyVaa-YBckW_NaFNP2cT9me4jtQU-QOVd6iwrVpM-VbCn76YHzX2yg5MenZBEC2KV4JjkHXAbzzw3b6gPhQCilVB-9ptk7WG3RHVE5ba8iLkOxZOFH7yYOWcHjPsoX3L63dZRRWMUNY5mtKNQkPGuNcQ8sn4Eo7i5Hp0XvUALzSKY1JtJT0mNsE07mpBkhK08h5oAL5pS7Phg-HKjjlr-f094bmDEA4s8_GREEKH28Im5FUJYS5-oBGZCTQ5FZH6yYevza6WrQxald-um_3hBTCFJ8Abne7q3je2tZ53IelLq9bjmiRD1cIzAgLCLwI1vg]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
+                            <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #2 Failed (HTTP 500)</h5>
+                            <div style="display: flex; gap: 1rem;">
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
+  &quot;email&quot;: &quot;fuzz_9c4e2a7b@test.com&quot;,
+  &quot;token&quot;: &quot;A7k9Q2&quot;
+}</pre>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">{
+  &quot;token&quot;: null,
+  &quot;type&quot;: &quot;&quot;,
+  &quot;message&quot;: &quot;Invalid Credentials&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
+                            <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #3 Failed (HTTP 400)</h5>
+                            <div style="display: flex; gap: 1rem;">
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJ0cmlldTdhQGdtYWlsLmNvbSIsImlhdCI6MTc3OTEyMjA3MCwiZXhwIjoxNzc5NzI2ODcwLCJyb2xlIjoidXNlciJ9.ltKQOMAS9ekYrFAQ6CZngyVaa-YBckW_NaFNP2cT9me4jtQU-QOVd6iwrVpM-VbCn76YHzX2yg5MenZBEC2KV4JjkHXAbzzw3b6gPhQCilVB-9ptk7WG3RHVE5ba8iLkOxZOFH7yYOWcHjPsoX3L63dZRRWMUNY5mtKNQkPGuNcQ8sn4Eo7i5Hp0XvUALzSKY1JtJT0mNsE07mpBkhK08h5oAL5pS7Phg-HKjjlr-f094bmDEA4s8_GREEKH28Im5FUJYS5-oBGZCTQ5FZH6yYevza6WrQxald-um_3hBTCFJ8Abne7q3je2tZ53IelLq9bjmiRD1cIzAgLCLwI1vg&quot;
+}</pre>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">{
+  &quot;message&quot;: &quot;Validation failed&quot;,
+  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJ0cmlldTdhQGdtYWlsLmNvbSIsImlhdCI6MTc3OTEyMjA3MCwiZXhwIjoxNzc5NzI2ODcwLCJyb2xlIjoidXNlciJ9.ltKQOMAS9ekYrFAQ6CZngyVaa-YBckW_NaFNP2cT9me4jtQU-QOVd6iwrVpM-VbCn76YHzX2yg5MenZBEC2KV4JjkHXAbzzw3b6gPhQCilVB-9ptk7WG3RHVE5ba8iLkOxZOFH7yYOWcHjPsoX3L63dZRRWMUNY5mtKNQkPGuNcQ8sn4Eo7i5Hp0XvUALzSKY1JtJT0mNsE07mpBkhK08h5oAL5pS7Phg-HKjjlr-f094bmDEA4s8_GREEKH28Im5FUJYS5-oBGZCTQ5FZH6yYevza6WrQxald-um_3hBTCFJ8Abne7q3je2tZ53IelLq9bjmiRD1cIzAgLCLwI1vg]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;token&quot;: &quot;zSyWxGR7Q53asDB7ofCD9e&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...wI1vg&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_8f3a9c2d@test.com&quot;,
+  &quot;token&quot;: &quot;A7k9Pq2Lm4&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -92,7 +164,7 @@
                     
                     
                     <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 0.75rem; margin-bottom: 1rem; font-size: 0.85rem; color: #b45309; border-radius: 0 4px 4px 0;">
-                        <strong>⚠️ Original Error HTTP 400: {&quot;message&quot;:&quot;Validation failed&quot;,&quot;details&quot;:&quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJFTjdnbnJiQWVUM2lUb1gzRUw5NlJqIiwiaWF0IjoxNzE1OTAwMDAwfQ.VmFsaWRTeW50aGV0aWNUb2tlblNpZ25hdHVyZTEyMw]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;}</strong>
+                        <strong>⚠️ Original Error HTTP 400: {&quot;message&quot;:&quot;Validation failed&quot;,&quot;details&quot;:&quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJ0cmlldTdhQGdtYWlsLmNvbSIsImlhdCI6MTc3OTEyMTk3OSwiZXhwIjoxNzc5NzI2Nzc5LCJyb2xlIjoidXNlciJ9.jPZ55UCDpFx-_WRQTohPoLbWI3ghGp8IhkqairmZDwGVkU8XbHrYl9pyMsu8EaB9hequcEH8CayqqEVvyJVmgeK1kUA_L2MDSdjcSWIQjNtJJLBo7qpJOexxyqqAoroJknmuO8u_cXoz4Se2G3AZBf03g7vuydRBN9zYC--GrG2Q7AQ9neyJcCCbSTgg-ooob3Frfs8Rm467wRWVjqDDu8rB8NzS5M83WKEwdOrEllz6cq-vE7Y0lNwwQR_HEEOWEq4CuhZngKA7gjrYhq5IEFD6RJmlzBCmJd6g3KfomjULTsXgDXaBqBJYw5dcU9a-9ZyoDLhKGTEH0Y6BfL_zpg]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;}</strong>
                         
                         <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
                             <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #1 Failed (HTTP 400)</h5>
@@ -100,15 +172,15 @@
                                 <div style="flex: 1;">
                                     <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
                                     <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJFTjdnbnJiQWVUM2lUb1gzRUw5NlJqIiwiaWF0IjoxNzE1OTAwMDAwfQ.VmFsaWRTeW50aGV0aWNUb2tlblNpZ25hdHVyZTEyMw&quot;
+  &quot;email&quot;: &quot;fuzz_00e808@test.com&quot;,
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJ0cmlldTdhQGdtYWlsLmNvbSIsImlhdCI6MTc3OTEyMTk3OSwiZXhwIjoxNzc5NzI2Nzc5LCJyb2xlIjoidXNlciJ9.jPZ55UCDpFx-_WRQTohPoLbWI3ghGp8IhkqairmZDwGVkU8XbHrYl9pyMsu8EaB9hequcEH8CayqqEVvyJVmgeK1kUA_L2MDSdjcSWIQjNtJJLBo7qpJOexxyqqAoroJknmuO8u_cXoz4Se2G3AZBf03g7vuydRBN9zYC--GrG2Q7AQ9neyJcCCbSTgg-ooob3Frfs8Rm467wRWVjqDDu8rB8NzS5M83WKEwdOrEllz6cq-vE7Y0lNwwQR_HEEOWEq4CuhZngKA7gjrYhq5IEFD6RJmlzBCmJd6g3KfomjULTsXgDXaBqBJYw5dcU9a-9ZyoDLhKGTEH0Y6BfL_zpg&quot;
 }</pre>
                                 </div>
                                 <div style="flex: 1;">
                                     <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
                                     <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">{
   &quot;message&quot;: &quot;Validation failed&quot;,
-  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJFTjdnbnJiQWVUM2lUb1gzRUw5NlJqIiwiaWF0IjoxNzE1OTAwMDAwfQ.VmFsaWRTeW50aGV0aWNUb2tlblNpZ25hdHVyZTEyMw]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
+  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJ0cmlldTdhQGdtYWlsLmNvbSIsImlhdCI6MTc3OTEyMTk3OSwiZXhwIjoxNzc5NzI2Nzc5LCJyb2xlIjoidXNlciJ9.jPZ55UCDpFx-_WRQTohPoLbWI3ghGp8IhkqairmZDwGVkU8XbHrYl9pyMsu8EaB9hequcEH8CayqqEVvyJVmgeK1kUA_L2MDSdjcSWIQjNtJJLBo7qpJOexxyqqAoroJknmuO8u_cXoz4Se2G3AZBf03g7vuydRBN9zYC--GrG2Q7AQ9neyJcCCbSTgg-ooob3Frfs8Rm467wRWVjqDDu8rB8NzS5M83WKEwdOrEllz6cq-vE7Y0lNwwQR_HEEOWEq4CuhZngKA7gjrYhq5IEFD6RJmlzBCmJd6g3KfomjULTsXgDXaBqBJYw5dcU9a-9ZyoDLhKGTEH0Y6BfL_zpg]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
 }</pre>
                                 </div>
                             </div>
@@ -120,8 +192,8 @@
                                 <div style="flex: 1;">
                                     <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
                                     <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
-  &quot;email&quot;: &quot;fuzz_9f3a7c2e1b@test.com&quot;,
-  &quot;token&quot;: &quot;482917&quot;
+  &quot;email&quot;: &quot;fuzz_a7c93f2b@test.com&quot;,
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJ0cmlldTdhQGdtYWlsLmNvbSIsImlhdCI6MTc3OTEyMTk3OSJ9&quot;
 }</pre>
                                 </div>
                                 <div style="flex: 1;">
@@ -139,10 +211,15 @@
                     </div>
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;fuzz_9f3a7c2e1b@test.com&quot;,
-  &quot;token&quot;: &quot;482917&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...L_zpg&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_a7c93f2b@test.com&quot;,
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJ0cmlldTdhQGdtYWlsLmNvbSIsImlhdCI6MTc3OTEyMTk3OSJ9&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -161,85 +238,46 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJFTjdnbnJiQWVUM2lUb1gzRUw5NlJqIiwiaWF0IjoxNzE1OTAwMDAwfQ.VmFsaWRTeW50aGV0aWNUb2tlblNpZ25hdHVyZTEyMw&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTYiLCJlbWFpbCI6ImZ1enpfOWYzYTdjMmVAdGVzdC5jb20iLCJpYXQiOjE3MTYwMDAwMDB9.sR7qVQm9xK2pL4nB8dF6aH3wYzT1cE5uI0oP9mX4jA&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;message&quot;: &quot;Validation failed&quot;,
-  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJFTjdnbnJiQWVUM2lUb1gzRUw5NlJqIiwiaWF0IjoxNzE1OTAwMDAwfQ.VmFsaWRTeW50aGV0aWNUb2tlblNpZ25hdHVyZTEyMw]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
+  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTYiLCJlbWFpbCI6ImZ1enpfOWYzYTdjMmVAdGVzdC5jb20iLCJpYXQiOjE3MTYwMDAwMDB9.sR7qVQm9xK2pL4nB8dF6aH3wYzT1cE5uI0oP9mX4jA]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
 }</pre>
                 </div>
                 
-                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
-                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #4 — POST http://localhost:8888/identity/api/auth/v2.7/user/login-with-token — HTTP 500 <span style='background: #f59e0b; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🛠️ LLM Repaired</span>
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #4 — POST http://localhost:8888/identity/api/auth/v2.7/user/login-with-token — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
-                    <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 0.75rem; margin-bottom: 1rem; font-size: 0.85rem; color: #b45309; border-radius: 0 4px 4px 0;">
-                        <strong>⚠️ Original Error HTTP 400: {&quot;message&quot;:&quot;Validation failed&quot;,&quot;details&quot;:&quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5OSIsImVtYWlsIjoiZnV6el83ZjNhOWMyZEB0ZXN0LmNvbSIsImlhdCI6MTcxNTkwMDAwMCwiZXhwIjoxNzE1OTA2MDAwfQ.Ks9q8lYv3nWm2pR4tXz7aB1cD6eF0gH5iJ8kL9mN0oP]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;}</strong>
-                        
-                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
-                            <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #1 Failed (HTTP 400)</h5>
-                            <div style="display: flex; gap: 1rem;">
-                                <div style="flex: 1;">
-                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
-                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5OSIsImVtYWlsIjoiZnV6el83ZjNhOWMyZEB0ZXN0LmNvbSIsImlhdCI6MTcxNTkwMDAwMCwiZXhwIjoxNzE1OTA2MDAwfQ.Ks9q8lYv3nWm2pR4tXz7aB1cD6eF0gH5iJ8kL9mN0oP&quot;
-}</pre>
-                                </div>
-                                <div style="flex: 1;">
-                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
-                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">{
-  &quot;message&quot;: &quot;Validation failed&quot;,
-  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5OSIsImVtYWlsIjoiZnV6el83ZjNhOWMyZEB0ZXN0LmNvbSIsImlhdCI6MTcxNTkwMDAwMCwiZXhwIjoxNzE1OTA2MDAwfQ.Ks9q8lYv3nWm2pR4tXz7aB1cD6eF0gH5iJ8kL9mN0oP]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
-}</pre>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
-                            <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #2 Failed (HTTP 500)</h5>
-                            <div style="display: flex; gap: 1rem;">
-                                <div style="flex: 1;">
-                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
-                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
-  &quot;email&quot;: &quot;fuzz_9c4f2a7b1e@test.com&quot;,
-  &quot;token&quot;: &quot;T7kP3mQ9xR&quot;
-}</pre>
-                                </div>
-                                <div style="flex: 1;">
-                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
-                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">{
-  &quot;token&quot;: null,
-  &quot;type&quot;: &quot;&quot;,
-  &quot;message&quot;: &quot;Invalid Credentials&quot;,
-  &quot;mfaRequired&quot;: false
-}</pre>
-                                </div>
-                            </div>
-                        </div>
-                        
-                    </div>
                     
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;fuzz_9c4f2a7b1e@test.com&quot;,
-  &quot;token&quot;: &quot;T7kP3mQ9xR&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTYiLCJlbWFpbCI6ImZ1enpfOWYzYTdjMmVAdGVzdC5jb20iLCJpYXQiOjE3MTYwMDAwMDB9.sR7qVQm9xK2pL4nB8dF6aH3wYzT1cE5uI0oP9mX4jA&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;token&quot;: null,
-  &quot;type&quot;: &quot;&quot;,
-  &quot;message&quot;: &quot;Invalid Credentials&quot;,
-  &quot;mfaRequired&quot;: false
+  &quot;message&quot;: &quot;Validation failed&quot;,
+  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTYiLCJlbWFpbCI6ImZ1enpfOWYzYTdjMmVAdGVzdC5jb20iLCJpYXQiOjE3MTYwMDAwMDB9.sR7qVQm9xK2pL4nB8dF6aH3wYzT1cE5uI0oP9mX4jA]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
 }</pre>
                 </div>
                 
@@ -250,16 +288,21 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5OSIsImVtYWlsIjoiZnV6el83ZjNhOWMyZEB0ZXN0LmNvbSIsImlhdCI6MTcxNTkwMDAwMCwiZXhwIjoxNzE1OTA2MDAwfQ.Ks9q8lYv3nWm2pR4tXz7aB1cD6eF0gH5iJ8kL9mN0oP&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_2b3d8b@test.com&quot;,
+  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmdXp6X2E5ZjNjN2UxMmI0ZEB0ZXN0LmNvbSIsImlhdCI61715990400,\&quot;exp\&quot;:1715994000}.mN7Qv4xKp9sL2tR8yWcD6eF1gH3jK5lZ0bVxA2nPqRs&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;message&quot;: &quot;Validation failed&quot;,
-  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5OSIsImVtYWlsIjoiZnV6el83ZjNhOWMyZEB0ZXN0LmNvbSIsImlhdCI6MTcxNTkwMDAwMCwiZXhwIjoxNzE1OTA2MDAwfQ.Ks9q8lYv3nWm2pR4tXz7aB1cD6eF0gH5iJ8kL9mN0oP]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
+  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmdXp6X2E5ZjNjN2UxMmI0ZEB0ZXN0LmNvbSIsImlhdCI61715990400,\&quot;exp\&quot;:1715994000}.mN7Qv4xKp9sL2tR8yWcD6eF1gH3jK5lZ0bVxA2nPqRs]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
 }</pre>
                 </div>
                 
@@ -270,16 +313,21 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJrZmpTSkNtTm1BMlp4ZnVuN1N2WkZvIiwiaWF0IjoxNzE1OTA0MDAwfQ.7dKxQm9pL2nV8rY4sT6bH1aF3eC0wZ5uJ9mNqP2xRkE&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_fb4feb@test.com&quot;,
+  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmdXp6X2E5ZjNjN2UxMmI0ZEB0ZXN0LmNvbSIsImlhdCI61715990400,\&quot;exp\&quot;:1715994000}.mN7Qv4xKp9sL2tR8yWcD6eF1gH3jK5lZ0bVxA2nPqRs&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;message&quot;: &quot;Validation failed&quot;,
-  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJrZmpTSkNtTm1BMlp4ZnVuN1N2WkZvIiwiaWF0IjoxNzE1OTA0MDAwfQ.7dKxQm9pL2nV8rY4sT6bH1aF3eC0wZ5uJ9mNqP2xRkE]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
+  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmdXp6X2E5ZjNjN2UxMmI0ZEB0ZXN0LmNvbSIsImlhdCI61715990400,\&quot;exp\&quot;:1715994000}.mN7Qv4xKp9sL2tR8yWcD6eF1gH3jK5lZ0bVxA2nPqRs]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
 }</pre>
                 </div>
                 
@@ -290,16 +338,21 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;adam007@example.com&quot;,
-  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJmdXp6XzlmM2E3YzJlQHRlc3QuY29tIiwidGlkIjoiMWFjYWY0NWItYTVkYy00NjRjLWIzZWQtYmUzYzRhYzY2MTFkIn0.Xy7pQ8vL3nK2mR9sT5wZ1aB4cD6eF0gH1iJ2kL3mN4o&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTYiLCJlbWFpbCI6ImZ1enpfOWYzYTdjMmVAdGVzdC5jb20iLCJpYXQiOjE3MTYwMDAwMDB9.sR7qVQm9xK2pL4nB8dF6aH3wYzT1cE5uI0oP9mX4jA&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;message&quot;: &quot;Validation failed&quot;,
-  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJmdXp6XzlmM2E3YzJlQHRlc3QuY29tIiwidGlkIjoiMWFjYWY0NWItYTVkYy00NjRjLWIzZWQtYmUzYzRhYzY2MTFkIn0.Xy7pQ8vL3nK2mR9sT5wZ1aB4cD6eF0gH1iJ2kL3mN4o]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
+  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTYiLCJlbWFpbCI6ImZ1enpfOWYzYTdjMmVAdGVzdC5jb20iLCJpYXQiOjE3MTYwMDAwMDB9.sR7qVQm9xK2pL4nB8dF6aH3wYzT1cE5uI0oP9mX4jA]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
 }</pre>
                 </div>
                 
@@ -310,16 +363,21 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5OSIsImVtYWlsIjoiZnV6el83ZjNhOWMyZEB0ZXN0LmNvbSIsImlhdCI6MTcxNTkwMDAwMCwiZXhwIjoxNzE1OTA2MDAwfQ.Ks9q8lYv3nWm2pR4tXz7aB1cD6eF0gH5iJ8kL9mN0oP&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTYiLCJlbWFpbCI6ImZ1enpfOWYzYTdjMmVAdGVzdC5jb20iLCJpYXQiOjE3MTYwMDAwMDB9.sR7qVQm9xK2pL4nB8dF6aH3wYzT1cE5uI0oP9mX4jA&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;message&quot;: &quot;Validation failed&quot;,
-  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5OSIsImVtYWlsIjoiZnV6el83ZjNhOWMyZEB0ZXN0LmNvbSIsImlhdCI6MTcxNTkwMDAwMCwiZXhwIjoxNzE1OTA2MDAwfQ.Ks9q8lYv3nWm2pR4tXz7aB1cD6eF0gH5iJ8kL9mN0oP]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
+  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTYiLCJlbWFpbCI6ImZ1enpfOWYzYTdjMmVAdGVzdC5jb20iLCJpYXQiOjE3MTYwMDAwMDB9.sR7qVQm9xK2pL4nB8dF6aH3wYzT1cE5uI0oP9mX4jA]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
 }</pre>
                 </div>
                 
@@ -330,16 +388,21 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5OSIsImVtYWlsIjoiZnV6el83ZjNhOWMyZEB0ZXN0LmNvbSIsImlhdCI6MTcxNTkwMDAwMCwiZXhwIjoxNzE1OTA2MDAwfQ.Ks9q8lYv3nWm2pR4tXz7aB1cD6eF0gH5iJ8kL9mN0oP&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTYiLCJlbWFpbCI6ImZ1enpfOWYzYTdjMmVAdGVzdC5jb20iLCJpYXQiOjE3MTYwMDAwMDB9.sR7qVQm9xK2pL4nB8dF6aH3wYzT1cE5uI0oP9mX4jA&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;message&quot;: &quot;Validation failed&quot;,
-  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5OSIsImVtYWlsIjoiZnV6el83ZjNhOWMyZEB0ZXN0LmNvbSIsImlhdCI6MTcxNTkwMDAwMCwiZXhwIjoxNzE1OTA2MDAwfQ.Ks9q8lYv3nWm2pR4tXz7aB1cD6eF0gH5iJ8kL9mN0oP]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
+  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTYiLCJlbWFpbCI6ImZ1enpfOWYzYTdjMmVAdGVzdC5jb20iLCJpYXQiOjE3MTYwMDAwMDB9.sR7qVQm9xK2pL4nB8dF6aH3wYzT1cE5uI0oP9mX4jA]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
 }</pre>
                 </div>
                 
@@ -350,16 +413,21 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5OSIsImVtYWlsIjoiZnV6el83ZjNhOWMyZEB0ZXN0LmNvbSIsImlhdCI6MTcxNTkwMDAwMCwiZXhwIjoxNzE1OTA2MDAwfQ.Ks9q8lYv3nWm2pR4tXz7aB1cD6eF0gH5iJ8kL9mN0oP&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTYiLCJlbWFpbCI6ImZ1enpfOWYzYTdjMmVAdGVzdC5jb20iLCJpYXQiOjE3MTYwMDAwMDB9.sR7qVQm9xK2pL4nB8dF6aH3wYzT1cE5uI0oP9mX4jA&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;message&quot;: &quot;Validation failed&quot;,
-  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5OSIsImVtYWlsIjoiZnV6el83ZjNhOWMyZEB0ZXN0LmNvbSIsImlhdCI6MTcxNTkwMDAwMCwiZXhwIjoxNzE1OTA2MDAwfQ.Ks9q8lYv3nWm2pR4tXz7aB1cD6eF0gH5iJ8kL9mN0oP]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
+  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTYiLCJlbWFpbCI6ImZ1enpfOWYzYTdjMmVAdGVzdC5jb20iLCJpYXQiOjE3MTYwMDAwMDB9.sR7qVQm9xK2pL4nB8dF6aH3wYzT1cE5uI0oP9mX4jA]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
 }</pre>
                 </div>
                 
@@ -370,16 +438,21 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5OSIsImVtYWlsIjoiZnV6el83ZjNhOWMyZEB0ZXN0LmNvbSIsImlhdCI6MTcxNTkwMDAwMCwiZXhwIjoxNzE1OTA2MDAwfQ.Ks9q8lYv3nWm2pR4tXz7aB1cD6eF0gH5iJ8kL9mN0oP&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_c62471@test.com&quot;,
+  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmdXp6X2E5ZjNjN2UxMmI0ZEB0ZXN0LmNvbSIsImlhdCI61715990400,\&quot;exp\&quot;:1715994000}.mN7Qv4xKp9sL2tR8yWcD6eF1gH3jK5lZ0bVxA2nPqRs&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;message&quot;: &quot;Validation failed&quot;,
-  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5OSIsImVtYWlsIjoiZnV6el83ZjNhOWMyZEB0ZXN0LmNvbSIsImlhdCI6MTcxNTkwMDAwMCwiZXhwIjoxNzE1OTA2MDAwfQ.Ks9q8lYv3nWm2pR4tXz7aB1cD6eF0gH5iJ8kL9mN0oP]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
+  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmdXp6X2E5ZjNjN2UxMmI0ZEB0ZXN0LmNvbSIsImlhdCI61715990400,\&quot;exp\&quot;:1715994000}.mN7Qv4xKp9sL2tR8yWcD6eF1gH3jK5lZ0bVxA2nPqRs]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
 }</pre>
                 </div>
                 
@@ -390,16 +463,21 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;adam007@example.com&quot;,
-  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJmdXp6XzlmM2E3YzJlQHRlc3QuY29tIiwidGlkIjoiMWFjYWY0NWItYTVkYy00NjRjLWIzZWQtYmUzYzRhYzY2MTFkIn0.Xy7pQ8vL3nK2mR9sT5wZ1aB4cD6eF0gH1iJ2kL3mN4o&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_bad7a8@test.com&quot;,
+  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmdXp6X2E5ZjNjN2UxMmI0ZEB0ZXN0LmNvbSIsImlhdCI61715990400,\&quot;exp\&quot;:1715994000}.mN7Qv4xKp9sL2tR8yWcD6eF1gH3jK5lZ0bVxA2nPqRs&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;message&quot;: &quot;Validation failed&quot;,
-  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJmdXp6XzlmM2E3YzJlQHRlc3QuY29tIiwidGlkIjoiMWFjYWY0NWItYTVkYy00NjRjLWIzZWQtYmUzYzRhYzY2MTFkIn0.Xy7pQ8vL3nK2mR9sT5wZ1aB4cD6eF0gH1iJ2kL3mN4o]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
+  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmdXp6X2E5ZjNjN2UxMmI0ZEB0ZXN0LmNvbSIsImlhdCI61715990400,\&quot;exp\&quot;:1715994000}.mN7Qv4xKp9sL2tR8yWcD6eF1gH3jK5lZ0bVxA2nPqRs]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
 }</pre>
                 </div>
                 
@@ -410,16 +488,21 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJORkpDRGpmaFVKNmdReTZqOXlnbVBXIiwiZW1haWwiOiJmdXp6X2E3YzllM2YxYjJkNEB0ZXN0LmNvbSIsImlhdCI61715900000}._K7mR8pQ2vL9sT4nX6bC1dE3fG5hJ7kM9pQ2rS4tU6&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_ba1c6c@test.com&quot;,
+  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmdXp6X2E5ZjNjN2UxMmI0ZEB0ZXN0LmNvbSIsImlhdCI61715990400,\&quot;exp\&quot;:1715994000}.mN7Qv4xKp9sL2tR8yWcD6eF1gH3jK5lZ0bVxA2nPqRs&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;message&quot;: &quot;Validation failed&quot;,
-  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJORkpDRGpmaFVKNmdReTZqOXlnbVBXIiwiZW1haWwiOiJmdXp6X2E3YzllM2YxYjJkNEB0ZXN0LmNvbSIsImlhdCI61715900000}._K7mR8pQ2vL9sT4nX6bC1dE3fG5hJ7kM9pQ2rS4tU6]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
+  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmdXp6X2E5ZjNjN2UxMmI0ZEB0ZXN0LmNvbSIsImlhdCI61715990400,\&quot;exp\&quot;:1715994000}.mN7Qv4xKp9sL2tR8yWcD6eF1gH3jK5lZ0bVxA2nPqRs]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
 }</pre>
                 </div>
                 
@@ -430,16 +513,21 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;adam007@example.com&quot;,
-  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJmdXp6XzlmM2E3YzJlQHRlc3QuY29tIiwidGlkIjoiMWFjYWY0NWItYTVkYy00NjRjLWIzZWQtYmUzYzRhYzY2MTFkIn0.Xy7pQ8vL3nK2mR9sT5wZ1aB4cD6eF0gH1iJ2kL3mN4o&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_38a1ee@test.com&quot;,
+  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmdXp6X2E5ZjNjN2UxMmI0ZEB0ZXN0LmNvbSIsImlhdCI61715990400,\&quot;exp\&quot;:1715994000}.mN7Qv4xKp9sL2tR8yWcD6eF1gH3jK5lZ0bVxA2nPqRs&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;message&quot;: &quot;Validation failed&quot;,
-  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJmdXp6XzlmM2E3YzJlQHRlc3QuY29tIiwidGlkIjoiMWFjYWY0NWItYTVkYy00NjRjLWIzZWQtYmUzYzRhYzY2MTFkIn0.Xy7pQ8vL3nK2mR9sT5wZ1aB4cD6eF0gH1iJ2kL3mN4o]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
+  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmdXp6X2E5ZjNjN2UxMmI0ZEB0ZXN0LmNvbSIsImlhdCI61715990400,\&quot;exp\&quot;:1715994000}.mN7Qv4xKp9sL2tR8yWcD6eF1gH3jK5lZ0bVxA2nPqRs]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
 }</pre>
                 </div>
                 
@@ -450,16 +538,21 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJuY3lnbXVnS2ViNUFLQ2h0VlRxaVlZIiwiZW1haWwiOiJmdXp6XzdjOWUyYTRmQHRlc3QuY29tIiwiaWF0IjoxNzE1OTAwMDAwLCJleHAiOjE3MTU5MDM2MDB9.Km9s8Q2vYp4nL6rT0xH3dW1aZc5Fb7NeUiRjMqP4sA0&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJYRnlFaTViOG9Tb3hQZnA2OFhYY3g2IiwiZW1haWwiOiJmdXp6X2EzZjljMmQ3ZThiMTRmMGFAdGVzdC5jb20iLCJpYXQiOjE3NzkxMjIyNjF9.7mK9qP4rT2vX8nL5sD1bC6aH3jF0wYzE&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;message&quot;: &quot;Validation failed&quot;,
-  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJuY3lnbXVnS2ViNUFLQ2h0VlRxaVlZIiwiZW1haWwiOiJmdXp6XzdjOWUyYTRmQHRlc3QuY29tIiwiaWF0IjoxNzE1OTAwMDAwLCJleHAiOjE3MTU5MDM2MDB9.Km9s8Q2vYp4nL6rT0xH3dW1aZc5Fb7NeUiRjMqP4sA0]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
+  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJYRnlFaTViOG9Tb3hQZnA2OFhYY3g2IiwiZW1haWwiOiJmdXp6X2EzZjljMmQ3ZThiMTRmMGFAdGVzdC5jb20iLCJpYXQiOjE3NzkxMjIyNjF9.7mK9qP4rT2vX8nL5sD1bC6aH3jF0wYzE]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
 }</pre>
                 </div>
                 
@@ -470,16 +563,21 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJuY3lnbXVnS2ViNUFLQ2h0VlRxaVlZIiwiZW1haWwiOiJmdXp6XzdjOWUyYTRmQHRlc3QuY29tIiwiaWF0IjoxNzE1OTAwMDAwLCJleHAiOjE3MTU5MDM2MDB9.Km9s8Q2vYp4nL6rT0xH3dW1aZc5Fb7NeUiRjMqP4sA0&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJYRnlFaTViOG9Tb3hQZnA2OFhYY3g2IiwiZW1haWwiOiJmdXp6X2EzZjljMmQ3ZThiMTRmMGFAdGVzdC5jb20iLCJpYXQiOjE3NzkxMjIyNjF9.7mK9qP4rT2vX8nL5sD1bC6aH3jF0wYzE&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;message&quot;: &quot;Validation failed&quot;,
-  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJuY3lnbXVnS2ViNUFLQ2h0VlRxaVlZIiwiZW1haWwiOiJmdXp6XzdjOWUyYTRmQHRlc3QuY29tIiwiaWF0IjoxNzE1OTAwMDAwLCJleHAiOjE3MTU5MDM2MDB9.Km9s8Q2vYp4nL6rT0xH3dW1aZc5Fb7NeUiRjMqP4sA0]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
+  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJYRnlFaTViOG9Tb3hQZnA2OFhYY3g2IiwiZW1haWwiOiJmdXp6X2EzZjljMmQ3ZThiMTRmMGFAdGVzdC5jb20iLCJpYXQiOjE3NzkxMjIyNjF9.7mK9qP4rT2vX8nL5sD1bC6aH3jF0wYzE]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
 }</pre>
                 </div>
                 
@@ -490,16 +588,21 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJvYXF6Q0h6VUtiZVgyZFZ3WUFhY3hhIiwiZW1haWwiOiJmdXp6X2EzZjljOGQyZTdiMTRhNmNAdGVzdC5jb20iLCJpYXQiOjE3MTU5MDQwMDB9.Vk9kY2p4bXJwN3FzT1h6c2F0Qm5mN2xkU1p6a2JrY0hQd2xUeW1nR2s&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_f01dcc@test.com&quot;,
+  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmdXp6X2E5ZjNjN2UxMmI0ZEB0ZXN0LmNvbSIsImlhdCI61715990400,\&quot;exp\&quot;:1715994000}.mN7Qv4xKp9sL2tR8yWcD6eF1gH3jK5lZ0bVxA2nPqRs&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;message&quot;: &quot;Validation failed&quot;,
-  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJvYXF6Q0h6VUtiZVgyZFZ3WUFhY3hhIiwiZW1haWwiOiJmdXp6X2EzZjljOGQyZTdiMTRhNmNAdGVzdC5jb20iLCJpYXQiOjE3MTU5MDQwMDB9.Vk9kY2p4bXJwN3FzT1h6c2F0Qm5mN2xkU1p6a2JrY0hQd2xUeW1nR2s]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
+  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmdXp6X2E5ZjNjN2UxMmI0ZEB0ZXN0LmNvbSIsImlhdCI61715990400,\&quot;exp\&quot;:1715994000}.mN7Qv4xKp9sL2tR8yWcD6eF1gH3jK5lZ0bVxA2nPqRs]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
 }</pre>
                 </div>
                 
@@ -510,60 +613,71 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;adam007@example.com&quot;,
-  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJmdXp6XzlmM2E3YzJlQHRlc3QuY29tIiwidGlkIjoiMWFjYWY0NWItYTVkYy00NjRjLWIzZWQtYmUzYzRhYzY2MTFkIn0.Xy7pQ8vL3nK2mR9sT5wZ1aB4cD6eF0gH1iJ2kL3mN4o&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_8fdddd@test.com&quot;,
+  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmdXp6X2E5ZjNjN2UxMmI0ZEB0ZXN0LmNvbSIsImlhdCI61715990400,\&quot;exp\&quot;:1715994000}.mN7Qv4xKp9sL2tR8yWcD6eF1gH3jK5lZ0bVxA2nPqRs&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;message&quot;: &quot;Validation failed&quot;,
-  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJmdXp6XzlmM2E3YzJlQHRlc3QuY29tIiwidGlkIjoiMWFjYWY0NWItYTVkYy00NjRjLWIzZWQtYmUzYzRhYzY2MTFkIn0.Xy7pQ8vL3nK2mR9sT5wZ1aB4cD6eF0gH1iJ2kL3mN4o]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
+  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmdXp6X2E5ZjNjN2UxMmI0ZEB0ZXN0LmNvbSIsImlhdCI61715990400,\&quot;exp\&quot;:1715994000}.mN7Qv4xKp9sL2tR8yWcD6eF1gH3jK5lZ0bVxA2nPqRs]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
 }</pre>
                 </div>
                 
-                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
-                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #19 — POST http://localhost:8888/identity/api/auth/v2.7/user/login-with-token — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #19 — POST http://localhost:8888/identity/api/auth/v2.7/user/login-with-token — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
-  &quot;token&quot;: &quot;mxWQtDr59HCf2Xob9awnnQ&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
+  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjUWtqeGtKZGFYVWl1eFVDdUd1WDJhIiwiZW1haWwiOiJmdXp6X2E3YzllM2IxZDRmNkB0ZXN0LmNvbSIsImlhdCI61771176000,&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;token&quot;: null,
-  &quot;type&quot;: &quot;&quot;,
-  &quot;message&quot;: &quot;Invalid Credentials&quot;,
-  &quot;mfaRequired&quot;: false
+  &quot;message&quot;: &quot;Validation failed&quot;,
+  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjUWtqeGtKZGFYVWl1eFVDdUd1WDJhIiwiZW1haWwiOiJmdXp6X2E3YzllM2IxZDRmNkB0ZXN0LmNvbSIsImlhdCI61771176000,]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
 }</pre>
                 </div>
                 
-                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
-                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #20 — POST http://localhost:8888/identity/api/auth/v2.7/user/login-with-token — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #20 — POST http://localhost:8888/identity/api/auth/v2.7/user/login-with-token — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
-  &quot;token&quot;: &quot;mxWQtDr59HCf2Xob9awnnQ&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
+  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjUWtqeGtKZGFYVWl1eFVDdUd1WDJhIiwiZW1haWwiOiJmdXp6X2E3YzllM2IxZDRmNkB0ZXN0LmNvbSIsImlhdCI61771176000,&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;token&quot;: null,
-  &quot;type&quot;: &quot;&quot;,
-  &quot;message&quot;: &quot;Invalid Credentials&quot;,
-  &quot;mfaRequired&quot;: false
+  &quot;message&quot;: &quot;Validation failed&quot;,
+  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjUWtqeGtKZGFYVWl1eFVDdUd1WDJhIiwiZW1haWwiOiJmdXp6X2E3YzllM2IxZDRmNkB0ZXN0LmNvbSIsImlhdCI61771176000,]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
 }</pre>
                 </div>
                 
@@ -574,16 +688,21 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyOTYiLCJqdGkiOiIxYWNhZjQ1Yi1hNWRjLTQ2NGMtYjNlZC1iZTNjNGFjNjYxMWQiLCJpYXQiOjE3MTU5MDAwMDB9.q8N4vGvYw9Y1sKp3xLd2mFa7Bc6Rt0UzEj5HiQnXmAo&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmdXp6X2E3YzllMmY0MWI2ZEB0ZXN0LmNvbSIsImlhdCI6MTcxNjA0ODAwMCwiZXhwIjoxNzE2MDUxNjAwfQ.t8m4kP2nQ9vL6xR3sY1bC7dE5fG0hJ2kM9nP4qS6uV8&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;message&quot;: &quot;Validation failed&quot;,
-  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyOTYiLCJqdGkiOiIxYWNhZjQ1Yi1hNWRjLTQ2NGMtYjNlZC1iZTNjNGFjNjYxMWQiLCJpYXQiOjE3MTU5MDAwMDB9.q8N4vGvYw9Y1sKp3xLd2mFa7Bc6Rt0UzEj5HiQnXmAo]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
+  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmdXp6X2E3YzllMmY0MWI2ZEB0ZXN0LmNvbSIsImlhdCI6MTcxNjA0ODAwMCwiZXhwIjoxNzE2MDUxNjAwfQ.t8m4kP2nQ9vL6xR3sY1bC7dE5fG0hJ2kM9nP4qS6uV8]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
 }</pre>
                 </div>
                 
@@ -594,16 +713,21 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyOTYiLCJqdGkiOiIxYWNhZjQ1Yi1hNWRjLTQ2NGMtYjNlZC1iZTNjNGFjNjYxMWQiLCJpYXQiOjE3MTU5MDAwMDB9.q8N4vGvYw9Y1sKp3xLd2mFa7Bc6Rt0UzEj5HiQnXmAo&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmdXp6X2E3YzllMmY0MWI2ZEB0ZXN0LmNvbSIsImlhdCI6MTcxNjA0ODAwMCwiZXhwIjoxNzE2MDUxNjAwfQ.t8m4kP2nQ9vL6xR3sY1bC7dE5fG0hJ2kM9nP4qS6uV8&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;message&quot;: &quot;Validation failed&quot;,
-  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyOTYiLCJqdGkiOiIxYWNhZjQ1Yi1hNWRjLTQ2NGMtYjNlZC1iZTNjNGFjNjYxMWQiLCJpYXQiOjE3MTU5MDAwMDB9.q8N4vGvYw9Y1sKp3xLd2mFa7Bc6Rt0UzEj5HiQnXmAo]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
+  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmdXp6X2E3YzllMmY0MWI2ZEB0ZXN0LmNvbSIsImlhdCI6MTcxNjA0ODAwMCwiZXhwIjoxNzE2MDUxNjAwfQ.t8m4kP2nQ9vL6xR3sY1bC7dE5fG0hJ2kM9nP4qS6uV8]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
 }</pre>
                 </div>
                 
@@ -614,16 +738,21 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;adam007@example.com&quot;,
-  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJmdXp6XzlmM2E3YzJlQHRlc3QuY29tIiwidGlkIjoiMWFjYWY0NWItYTVkYy00NjRjLWIzZWQtYmUzYzRhYzY2MTFkIn0.Xy7pQ8vL3nK2mR9sT5wZ1aB4cD6eF0gH1iJ2kL3mN4o&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzMTkiLCJlbWFpbCI6ImZ1enpfOWYzYTdjMmVAdGVzdC5jb20iLCJpYXQiOjE3OTAwMDAwMDAsImV4cCI6MTc5MDAwMzYwMH0.k7Qm2XxYp9L4vN3bR8sT1aC6dE5fG0hI2jK9lM4nO7p&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;message&quot;: &quot;Validation failed&quot;,
-  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJmdXp6XzlmM2E3YzJlQHRlc3QuY29tIiwidGlkIjoiMWFjYWY0NWItYTVkYy00NjRjLWIzZWQtYmUzYzRhYzY2MTFkIn0.Xy7pQ8vL3nK2mR9sT5wZ1aB4cD6eF0gH1iJ2kL3mN4o]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
+  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzMTkiLCJlbWFpbCI6ImZ1enpfOWYzYTdjMmVAdGVzdC5jb20iLCJpYXQiOjE3OTAwMDAwMDAsImV4cCI6MTc5MDAwMzYwMH0.k7Qm2XxYp9L4vN3bR8sT1aC6dE5fG0hI2jK9lM4nO7p]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
 }</pre>
                 </div>
                 
@@ -634,16 +763,21 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;adam007@example.com&quot;,
-  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJmdXp6XzlmM2E3YzJlQHRlc3QuY29tIiwidGlkIjoiMWFjYWY0NWItYTVkYy00NjRjLWIzZWQtYmUzYzRhYzY2MTFkIn0.Xy7pQ8vL3nK2mR9sT5wZ1aB4cD6eF0gH1iJ2kL3mN4o&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzMTkiLCJlbWFpbCI6ImZ1enpfOWYzYTdjMmVAdGVzdC5jb20iLCJpYXQiOjE3OTAwMDAwMDAsImV4cCI6MTc5MDAwMzYwMH0.k7Qm2XxYp9L4vN3bR8sT1aC6dE5fG0hI2jK9lM4nO7p&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;message&quot;: &quot;Validation failed&quot;,
-  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJmdXp6XzlmM2E3YzJlQHRlc3QuY29tIiwidGlkIjoiMWFjYWY0NWItYTVkYy00NjRjLWIzZWQtYmUzYzRhYzY2MTFkIn0.Xy7pQ8vL3nK2mR9sT5wZ1aB4cD6eF0gH1iJ2kL3mN4o]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
+  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzMTkiLCJlbWFpbCI6ImZ1enpfOWYzYTdjMmVAdGVzdC5jb20iLCJpYXQiOjE3OTAwMDAwMDAsImV4cCI6MTc5MDAwMzYwMH0.k7Qm2XxYp9L4vN3bR8sT1aC6dE5fG0hI2jK9lM4nO7p]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
 }</pre>
                 </div>
                 
@@ -654,16 +788,21 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyOTkiLCJlbWFpbCI6ImZ1enpfYTdmM2M5ZDJiODFlQHRlc3QuY29tIiwidGlkIjoiMWFjYWY0NWItYTVkYy00NjRjLWIzZWQtYmUzYzRhYzYxMWQiLCJpYXQiOjE3MTU5MDAwMDAsImV4cCI6MTcxNTkwMzYwMH0.r4nd0mS1gn4tur3V4lu3&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;adam007@example.com&quot;,
+  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzMjAiLCJlbWFpbCI6ImZ1enpfYTdmM2M5ZTJiNGQxQHRlc3QuY29tIiwiaWF0IjoxNzE2MDAwMDAwLCJleHAiOjE3MTYwMDM2MDB9.q8m3vL2n9P5sR1tK6xY4zA7bC0dE2fG5hI8jK1lM4nO&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;message&quot;: &quot;Validation failed&quot;,
-  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyOTkiLCJlbWFpbCI6ImZ1enpfYTdmM2M5ZDJiODFlQHRlc3QuY29tIiwidGlkIjoiMWFjYWY0NWItYTVkYy00NjRjLWIzZWQtYmUzYzRhYzYxMWQiLCJpYXQiOjE3MTU5MDAwMDAsImV4cCI6MTcxNTkwMzYwMH0.r4nd0mS1gn4tur3V4lu3]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
+  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzMjAiLCJlbWFpbCI6ImZ1enpfYTdmM2M5ZTJiNGQxQHRlc3QuY29tIiwiaWF0IjoxNzE2MDAwMDAwLCJleHAiOjE3MTYwMDM2MDB9.q8m3vL2n9P5sR1tK6xY4zA7bC0dE2fG5hI8jK1lM4nO]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
 }</pre>
                 </div>
                 
@@ -674,16 +813,21 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyOTkiLCJlbWFpbCI6ImZ1enpfYTdmM2M5ZDJiODFlQHRlc3QuY29tIiwidGlkIjoiMWFjYWY0NWItYTVkYy00NjRjLWIzZWQtYmUzYzRhYzYxMWQiLCJpYXQiOjE3MTU5MDAwMDAsImV4cCI6MTcxNTkwMzYwMH0.r4nd0mS1gn4tur3V4lu3&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;adam007@example.com&quot;,
+  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzMjAiLCJlbWFpbCI6ImZ1enpfYTdmM2M5ZTJiNGQxQHRlc3QuY29tIiwiaWF0IjoxNzE2MDAwMDAwLCJleHAiOjE3MTYwMDM2MDB9.q8m3vL2n9P5sR1tK6xY4zA7bC0dE2fG5hI8jK1lM4nO&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;message&quot;: &quot;Validation failed&quot;,
-  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyOTkiLCJlbWFpbCI6ImZ1enpfYTdmM2M5ZDJiODFlQHRlc3QuY29tIiwidGlkIjoiMWFjYWY0NWItYTVkYy00NjRjLWIzZWQtYmUzYzRhYzYxMWQiLCJpYXQiOjE3MTU5MDAwMDAsImV4cCI6MTcxNTkwMzYwMH0.r4nd0mS1gn4tur3V4lu3]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
+  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzMjAiLCJlbWFpbCI6ImZ1enpfYTdmM2M5ZTJiNGQxQHRlc3QuY29tIiwiaWF0IjoxNzE2MDAwMDAwLCJleHAiOjE3MTYwMDM2MDB9.q8m3vL2n9P5sR1tK6xY4zA7bC0dE2fG5hI8jK1lM4nO]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
 }</pre>
                 </div>
                 
@@ -694,16 +838,21 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJSUVFwSnBxWHQ3aFJ6NjNTNDNIMzgzIiwiZW1haWwiOiJmdXp6X2E3ZjNjOWQyYjE4ZUB0ZXN0LmNvbSIsImlhdCI6MTcxNTkwMDAwMH0.Xn9sK2pQ7mR4vT8aL1cB5dE6fG3hJ0kY2zW9qP5nM8s&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_f9fc27@test.com&quot;,
+  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmdXp6X2EzZjljOGQyYjcxZTRhNmNAdGVzdC5jb20iLCJpYXQiOjE3Nzg5MjIwODksImV4cCI6MTc3ODkyNTY4OX0.Q2YxVnlhZE5qY0R0a2pXcWZ2Z1RzY1pFa3JzTjRkUHZmV1pLQmF5b0R2NA&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;message&quot;: &quot;Validation failed&quot;,
-  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJSUVFwSnBxWHQ3aFJ6NjNTNDNIMzgzIiwiZW1haWwiOiJmdXp6X2E3ZjNjOWQyYjE4ZUB0ZXN0LmNvbSIsImlhdCI6MTcxNTkwMDAwMH0.Xn9sK2pQ7mR4vT8aL1cB5dE6fG3hJ0kY2zW9qP5nM8s]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
+  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmdXp6X2EzZjljOGQyYjcxZTRhNmNAdGVzdC5jb20iLCJpYXQiOjE3Nzg5MjIwODksImV4cCI6MTc3ODkyNTY4OX0.Q2YxVnlhZE5qY0R0a2pXcWZ2Z1RzY1pFa3JzTjRkUHZmV1pLQmF5b0R2NA]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
 }</pre>
                 </div>
                 
@@ -714,16 +863,71 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJSUVFwSnBxWHQ3aFJ6NjNTNDNIMzgzIiwiZW1haWwiOiJmdXp6X2E3ZjNjOWQyYjE4ZUB0ZXN0LmNvbSIsImlhdCI6MTcxNTkwMDAwMH0.Xn9sK2pQ7mR4vT8aL1cB5dE6fG3hJ0kY2zW9qP5nM8s&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_532a53@test.com&quot;,
+  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmdXp6X2EzZjljOGQyYjcxZTRhNmNAdGVzdC5jb20iLCJpYXQiOjE3Nzg5MjIwODksImV4cCI6MTc3ODkyNTY4OX0.Q2YxVnlhZE5qY0R0a2pXcWZ2Z1RzY1pFa3JzTjRkUHZmV1pLQmF5b0R2NA&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;message&quot;: &quot;Validation failed&quot;,
-  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJSUVFwSnBxWHQ3aFJ6NjNTNDNIMzgzIiwiZW1haWwiOiJmdXp6X2E3ZjNjOWQyYjE4ZUB0ZXN0LmNvbSIsImlhdCI6MTcxNTkwMDAwMH0.Xn9sK2pQ7mR4vT8aL1cB5dE6fG3hJ0kY2zW9qP5nM8s]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
+  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmdXp6X2EzZjljOGQyYjcxZTRhNmNAdGVzdC5jb20iLCJpYXQiOjE3Nzg5MjIwODksImV4cCI6MTc3ODkyNTY4OX0.Q2YxVnlhZE5qY0R0a2pXcWZ2Z1RzY1pFa3JzTjRkUHZmV1pLQmF5b0R2NA]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #29 — POST http://localhost:8888/identity/api/auth/v2.7/user/login-with-token — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmdXp6X2E3YzllNGIyQHRlc3QuY29tIiwiaWF0IjoxNzc5MTIxMjAwLCJleHAiOjE3NzkxMjQ4MDB9.K8mQ0bVh9c3YzF2nP6aLdR4tW1xE7uS9jH5kN2pA0cM&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;message&quot;: &quot;Validation failed&quot;,
+  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmdXp6X2E3YzllNGIyQHRlc3QuY29tIiwiaWF0IjoxNzc5MTIxMjAwLCJleHAiOjE3NzkxMjQ4MDB9.K8mQ0bVh9c3YzF2nP6aLdR4tW1xE7uS9jH5kN2pA0cM]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #30 — POST http://localhost:8888/identity/api/auth/v2.7/user/login-with-token — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmdXp6X2E3YzllNGIyQHRlc3QuY29tIiwiaWF0IjoxNzc5MTIxMjAwLCJleHAiOjE3NzkxMjQ4MDB9.K8mQ0bVh9c3YzF2nP6aLdR4tW1xE7uS9jH5kN2pA0cM&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;message&quot;: &quot;Validation failed&quot;,
+  &quot;details&quot;: &quot;org.springframework.validation.BeanPropertyBindingResult: 1 errors\nField error in object &#x27;loginWithEmailToken&#x27; on field &#x27;token&#x27;: rejected value [eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmdXp6X2E3YzllNGIyQHRlc3QuY29tIiwiaWF0IjoxNzc5MTIxMjAwLCJleHAiOjE3NzkxMjQ4MDB9.K8mQ0bVh9c3YzF2nP6aLdR4tW1xE7uS9jH5kN2pA0cM]; codes [Size.loginWithEmailToken.token,Size.token,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginWithEmailToken.token,token]; arguments []; default message [token],100,3]; default message [size must be between 3 and 100]&quot;
 }</pre>
                 </div>
                 

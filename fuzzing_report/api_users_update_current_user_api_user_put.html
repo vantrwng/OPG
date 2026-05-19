@@ -78,11 +78,11 @@
                                 <div style="flex: 1;">
                                     <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
                                     <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
-  &quot;username&quot;: &quot;Fuzzer 1CAC&quot;,
-  &quot;email&quot;: &quot;fuzz_bf27e5@test.com&quot;,
-  &quot;password&quot;: &quot;2009fa36@734!&quot;,
-  &quot;bio&quot;: &quot;API fuzz test user profile with a concise synthetic biography.&quot;,
-  &quot;image&quot;: &quot;https://cdn.test.com/images/users/trieu292005.png&quot;,
+  &quot;username&quot;: &quot;Fuzzer FB1F&quot;,
+  &quot;email&quot;: &quot;fuzz_76d759@test.com&quot;,
+  &quot;password&quot;: &quot;8C421555@462!&quot;,
+  &quot;bio&quot;: &quot;Software developer and API testing enthusiast.&quot;,
+  &quot;image&quot;: &quot;https://test.com/images/trieu10a22005.png&quot;,
   &quot;admin&quot;: false
 }</pre>
                                 </div>
@@ -107,14 +107,19 @@
                     </div>
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Token eyJ0e...Twuxc&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
   &quot;user&quot;: {
-    &quot;username&quot;: &quot;trieu292005&quot;,
-    &quot;email&quot;: &quot;fuzz_9a7c3e1b@test.com&quot;,
-    &quot;password&quot;: &quot;Secure9@Fuzz&quot;,
-    &quot;bio&quot;: &quot;API fuzz test user profile with a concise synthetic biography.&quot;,
-    &quot;image&quot;: &quot;https://cdn.test.com/images/users/trieu292005.png&quot;,
+    &quot;username&quot;: &quot;trieu10a22005&quot;,
+    &quot;email&quot;: &quot;fuzz_a9f3c7e2@test.com&quot;,
+    &quot;password&quot;: &quot;Secure7@Pass&quot;,
+    &quot;bio&quot;: &quot;Software developer and API testing enthusiast.&quot;,
+    &quot;image&quot;: &quot;https://test.com/images/trieu10a22005.png&quot;,
     &quot;admin&quot;: false
   }
 }</pre>
@@ -122,24 +127,24 @@
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;user&quot;: {
-    &quot;username&quot;: &quot;trieu292005&quot;,
-    &quot;email&quot;: &quot;fuzz_9a7c3e1b@test.com&quot;,
-    &quot;bio&quot;: &quot;API fuzz test user profile with a concise synthetic biography.&quot;,
-    &quot;image&quot;: &quot;https://cdn.test.com/images/users/trieu292005.png&quot;,
+    &quot;username&quot;: &quot;trieu10a22005&quot;,
+    &quot;email&quot;: &quot;fuzz_a9f3c7e2@test.com&quot;,
+    &quot;bio&quot;: &quot;Software developer and API testing enthusiast.&quot;,
+    &quot;image&quot;: &quot;https://test.com/images/trieu10a22005.png&quot;,
     &quot;admin&quot;: false,
-    &quot;token&quot;: &quot;eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRyaWV1MjkyMDA1IiwiZXhwIjoxNzc5NjMyNTMwLCJzdWIiOiJhY2Nlc3MifQ.RmroEcdI10P8h76J3Hr3QOeoPvrNdcmrg6jApm1QioU&quot;
+    &quot;token&quot;: &quot;eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRyaWV1MTBhMjIwMDUiLCJleHAiOjE3Nzk3Njk2NTcsInN1YiI6ImFjY2VzcyJ9.wAqCum-Hv-lUGvt52gJBXHl8aWktalwA5Dvi3QucYic&quot;
   }
 }</pre>
                 </div>
                 
-                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
-                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #2 — PUT http://localhost:8000/api/user — HTTP 400 <span style='background: #f59e0b; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🛠️ LLM Repaired</span>
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #2 — PUT http://localhost:8000/api/user — HTTP 200 <span style='background: #f59e0b; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🛠️ LLM Repaired</span>
                     </h3>
                     
                     
                     <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 0.75rem; margin-bottom: 1rem; font-size: 0.85rem; color: #b45309; border-radius: 0 4px 4px 0;">
-                        <strong>⚠️ Original Error HTTP 400: {&quot;errors&quot;:[&quot;user with this email already exists&quot;]}</strong>
+                        <strong>⚠️ Original Error HTTP 422: {&quot;errors&quot;:[{&quot;loc&quot;:[&quot;body&quot;,&quot;user&quot;],&quot;msg&quot;:&quot;field required&quot;,&quot;type&quot;:&quot;value_error.missing&quot;}]}</strong>
                         
                         <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
                             <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #1 Failed (HTTP 422)</h5>
@@ -147,11 +152,11 @@
                                 <div style="flex: 1;">
                                     <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
                                     <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
-  &quot;username&quot;: &quot;Fuzzer 5F47&quot;,
-  &quot;email&quot;: &quot;fuzz_7c4e9a1f2b@test.com&quot;,
-  &quot;password&quot;: &quot;72666e5e@788!&quot;,
-  &quot;bio&quot;: &quot;API testing profile for trieu292005.&quot;,
-  &quot;image&quot;: &quot;https://cdn.test.com/images/users/trieu292005.png&quot;,
+  &quot;username&quot;: &quot;fuzzuser_6f2b9c8d&quot;,
+  &quot;email&quot;: &quot;fuzz_a7c9e4b21d3f@test.com&quot;,
+  &quot;password&quot;: &quot;13DFebdc@205!&quot;,
+  &quot;bio&quot;: &quot;API fuzz test user profile update.&quot;,
+  &quot;image&quot;: &quot;https://test.com/images/fuzzuser_6f2b9c8d.png&quot;,
   &quot;admin&quot;: false
 }</pre>
                                 </div>
@@ -173,80 +178,36 @@
                             </div>
                         </div>
                         
-                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
-                            <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #2 Failed (HTTP 400)</h5>
-                            <div style="display: flex; gap: 1rem;">
-                                <div style="flex: 1;">
-                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
-                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
-  &quot;user&quot;: {
-    &quot;username&quot;: &quot;trieu292005&quot;,
-    &quot;email&quot;: &quot;abc@example.com&quot;,
-    &quot;password&quot;: &quot;Trieu292005!&quot;,
-    &quot;bio&quot;: &quot;API testing profile for trieu292005.&quot;,
-    &quot;image&quot;: &quot;https://cdn.test.com/images/users/trieu292005.png&quot;,
-    &quot;admin&quot;: false
-  }
-}</pre>
-                                </div>
-                                <div style="flex: 1;">
-                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
-                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">{
-  &quot;errors&quot;: [
-    &quot;user with this username already exists&quot;
-  ]
-}</pre>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
-                            <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #3 Failed (HTTP 400)</h5>
-                            <div style="display: flex; gap: 1rem;">
-                                <div style="flex: 1;">
-                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
-                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
-  &quot;user&quot;: {
-    &quot;username&quot;: &quot;fuzz_user_9f3a7c2d1b&quot;,
-    &quot;email&quot;: &quot;abc@example.com&quot;,
-    &quot;password&quot;: &quot;Trieu292005!&quot;,
-    &quot;bio&quot;: &quot;API testing profile for fuzz_user_9f3a7c2d1b.&quot;,
-    &quot;image&quot;: &quot;https://cdn.test.com/images/users/fuzz_user_9f3a7c2d1b.png&quot;,
-    &quot;admin&quot;: false
-  }
-}</pre>
-                                </div>
-                                <div style="flex: 1;">
-                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
-                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">{
-  &quot;errors&quot;: [
-    &quot;user with this email already exists&quot;
-  ]
-}</pre>
-                                </div>
-                            </div>
-                        </div>
-                        
                     </div>
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Token eyJ0e...mQmS8&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
   &quot;user&quot;: {
-    &quot;username&quot;: &quot;trieu292005&quot;,
-    &quot;email&quot;: &quot;fuzz_a9c4e7b2d6f1@test.com&quot;,
-    &quot;password&quot;: &quot;Trieu292005!&quot;,
-    &quot;bio&quot;: &quot;API testing profile for trieu292005.&quot;,
-    &quot;image&quot;: &quot;https://cdn.test.com/images/users/trieu292005.png&quot;,
+    &quot;username&quot;: &quot;fuzzuser_6f2b9c8d&quot;,
+    &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+    &quot;password&quot;: &quot;Trieu1@gmailcom&quot;,
+    &quot;bio&quot;: &quot;API fuzz test user profile update.&quot;,
+    &quot;image&quot;: &quot;https://test.com/images/fuzzuser_6f2b9c8d.png&quot;,
     &quot;admin&quot;: false
   }
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;errors&quot;: [
-    &quot;user with this username already exists&quot;
-  ]
+  &quot;user&quot;: {
+    &quot;username&quot;: &quot;fuzzuser_6f2b9c8d&quot;,
+    &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+    &quot;bio&quot;: &quot;API fuzz test user profile update.&quot;,
+    &quot;image&quot;: &quot;https://test.com/images/fuzzuser_6f2b9c8d.png&quot;,
+    &quot;admin&quot;: false,
+    &quot;token&quot;: &quot;eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImZ1enp1c2VyXzZmMmI5YzhkIiwiZXhwIjoxNzc5NzY5ODQyLCJzdWIiOiJhY2Nlc3MifQ.FIphxUCnWcxHGnhif-tWN3l9zwmJqmZhxht9ZuJ1Cxg&quot;
+  }
 }</pre>
                 </div>
                 
@@ -265,11 +226,11 @@
                                 <div style="flex: 1;">
                                     <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
                                     <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
-  &quot;username&quot;: &quot;Fuzzer B69C&quot;,
-  &quot;email&quot;: &quot;fuzz_7a9c3e1f@test.com&quot;,
-  &quot;password&quot;: &quot;4EEF01a5@509!&quot;,
-  &quot;bio&quot;: &quot;API enthusiast and software tester exploring new technologies.&quot;,
-  &quot;image&quot;: &quot;https://test.com/images/trieu292005.png&quot;,
+  &quot;username&quot;: &quot;trieu10a22005&quot;,
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;password&quot;: &quot;E5A64808@663!&quot;,
+  &quot;bio&quot;: &quot;API fuzzing profile update for integration testing.&quot;,
+  &quot;image&quot;: &quot;https://cdn.test.com/images/trieu10a22005.png&quot;,
   &quot;admin&quot;: false
 }</pre>
                                 </div>
@@ -298,11 +259,38 @@
                                     <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
                                     <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
   &quot;user&quot;: {
-    &quot;username&quot;: &quot;trieu292005&quot;,
-    &quot;email&quot;: &quot;abc@example.com&quot;,
-    &quot;password&quot;: &quot;trieu292005&quot;,
-    &quot;bio&quot;: &quot;API enthusiast and software tester exploring new technologies.&quot;,
-    &quot;image&quot;: &quot;https://test.com/images/trieu292005.png&quot;,
+    &quot;username&quot;: &quot;trieu10a22005&quot;,
+    &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+    &quot;password&quot;: &quot;Trieu1@gmailcom&quot;,
+    &quot;bio&quot;: &quot;API fuzzing profile update for integration testing.&quot;,
+    &quot;image&quot;: &quot;https://cdn.test.com/images/trieu10a22005.png&quot;,
+    &quot;admin&quot;: false
+  }
+}</pre>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">{
+  &quot;errors&quot;: [
+    &quot;user with this email already exists&quot;
+  ]
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
+                            <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #3 Failed (HTTP 400)</h5>
+                            <div style="display: flex; gap: 1rem;">
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
+  &quot;user&quot;: {
+    &quot;username&quot;: &quot;trieu10a22005&quot;,
+    &quot;email&quot;: &quot;fuzz_9f3a7c2e1b@test.com&quot;,
+    &quot;password&quot;: &quot;Trieu1@gmailcom&quot;,
+    &quot;bio&quot;: &quot;API fuzzing profile update for integration testing.&quot;,
+    &quot;image&quot;: &quot;https://cdn.test.com/images/trieu10a22005.png&quot;,
     &quot;admin&quot;: false
   }
 }</pre>
@@ -321,14 +309,19 @@
                     </div>
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Token eyJ0e...qBYOI&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
   &quot;user&quot;: {
-    &quot;username&quot;: &quot;trieu292005&quot;,
-    &quot;email&quot;: &quot;fuzz_c4e91a7b2d@test.com&quot;,
-    &quot;password&quot;: &quot;SecurePass9!&quot;,
-    &quot;bio&quot;: &quot;API enthusiast and software tester exploring new technologies.&quot;,
-    &quot;image&quot;: &quot;https://test.com/images/trieu292005.png&quot;,
+    &quot;username&quot;: &quot;trieu10a22005&quot;,
+    &quot;email&quot;: &quot;fuzz_d4b8f6a91c3e4b7f@test.com&quot;,
+    &quot;password&quot;: &quot;Trieu1@gmailcom&quot;,
+    &quot;bio&quot;: &quot;API fuzzing profile update for integration testing.&quot;,
+    &quot;image&quot;: &quot;https://cdn.test.com/images/trieu10a22005.png&quot;,
     &quot;admin&quot;: false
   }
 }</pre>
@@ -336,12 +329,12 @@
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;user&quot;: {
-    &quot;username&quot;: &quot;trieu292005&quot;,
-    &quot;email&quot;: &quot;fuzz_c4e91a7b2d@test.com&quot;,
-    &quot;bio&quot;: &quot;API enthusiast and software tester exploring new technologies.&quot;,
-    &quot;image&quot;: &quot;https://test.com/images/trieu292005.png&quot;,
+    &quot;username&quot;: &quot;trieu10a22005&quot;,
+    &quot;email&quot;: &quot;fuzz_d4b8f6a91c3e4b7f@test.com&quot;,
+    &quot;bio&quot;: &quot;API fuzzing profile update for integration testing.&quot;,
+    &quot;image&quot;: &quot;https://cdn.test.com/images/trieu10a22005.png&quot;,
     &quot;admin&quot;: false,
-    &quot;token&quot;: &quot;eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRyaWV1MjkyMDA1IiwiZXhwIjoxNzc5NjMyODA2LCJzdWIiOiJhY2Nlc3MifQ.XhApRLFX6-7jDQzUmPNWa8Km3K4X4r8F8u30yTJIKo0&quot;
+    &quot;token&quot;: &quot;eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRyaWV1MTBhMjIwMDUiLCJleHAiOjE3Nzk3Njk4OTYsInN1YiI6ImFjY2VzcyJ9.8IU_MMYX9U6ypjpPADrpVBhUIby9av_R_Vc8AXsnm68&quot;
   }
 }</pre>
                 </div>
@@ -353,13 +346,18 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;username&quot;: &quot;Fuzzer BF4E&quot;,
-  &quot;email&quot;: &quot;fuzz_7a9c3e1f@test.com&quot;,
-  &quot;password&quot;: &quot;9676c6e1@92!&quot;,
-  &quot;bio&quot;: &quot;API enthusiast and software tester exploring new technologies.&quot;,
-  &quot;image&quot;: &quot;https://test.com/images/trieu292005.png&quot;,
+  &quot;Authorization&quot;: &quot;Token eyJ0e...8lBJ0&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;username&quot;: &quot;fuzz_user_7c9e4a2f&quot;,
+  &quot;email&quot;: &quot;fuzz_7c9e4a2f1b6d@test.com&quot;,
+  &quot;password&quot;: &quot;E262935f@354!&quot;,
+  &quot;bio&quot;: &quot;API fuzz test user profile update with realistic synthetic bio content.&quot;,
+  &quot;image&quot;: &quot;https://test.com/images/fuzz-user-7c9e4a2f.png&quot;,
   &quot;admin&quot;: false
 }</pre>
                     

@@ -14,7 +14,7 @@ logging.basicConfig(
 
 import os
 from dotenv import load_dotenv
-load_dotenv()
+load_dotenv(override=True)  # override=True: .env luôn ưu tiên hơn biến môi trường hệ thống
 
 from spec_parser import SpecParser
 from graph_builder import DependencyGraphBuilder
@@ -63,8 +63,8 @@ def build_system(operations, base_url, beam_width):
 
 def main():
     parser = argparse.ArgumentParser(description="Hybrid Stateful API Fuzzer")
-    parser.add_argument("--spec", type=str, default="vmAPI.json", help="Path to OpenAPI spec file")
-    parser.add_argument("--base-url", type=str, default="http://localhost:5001", help="Target API Base URL")
+    parser.add_argument("--spec", type=str, default="capital.json", help="Path to OpenAPI spec file")
+    parser.add_argument("--base-url", type=str, default="http://localhost:8000", help="Target API Base URL")
     parser.add_argument("--max-depth", type=int, default=5, help="Max depth for path execution")
     parser.add_argument("--beam-width", type=int, default=3, help="Beam search width")
     args = parser.parse_args()
@@ -89,9 +89,9 @@ def main():
     auth_token = os.getenv("AUTH_TOKEN", "")
     auth_header_name = os.getenv("AUTH_HEADER_NAME", "Authorization")
     auth_header_prefix = os.getenv("AUTH_HEADER_PREFIX", "")
-    
+
     initial_state_data = {}
-    
+
     # Luôn nạp cấu hình Header từ .env
     initial_state_data["auth_header_name"] = auth_header_name
     initial_state_data["auth_header_prefix"] = auth_header_prefix

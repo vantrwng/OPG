@@ -240,7 +240,8 @@ class TestStrategyEngine:
                     request_payload=exec_result.get("sent_payload", {}),
                     payload_source=exec_result.get("payload_source", "NONE"),
                     repair_reason=exec_result.get("repair_reason", ""),
-                    repair_history=exec_result.get("repair_history", [])
+                    repair_history=exec_result.get("repair_history", []),
+                    sent_headers=exec_result.get("sent_headers", {})
                 )
 
                 current_chain.append(provider_id)
@@ -337,7 +338,8 @@ class TestStrategyEngine:
                     request_payload=exec_result.get("sent_payload", {}),
                     payload_source=exec_result.get("payload_source", "NONE"),
                     repair_reason=exec_result.get("repair_reason", ""),
-                    repair_history=exec_result.get("repair_history", [])
+                    repair_history=exec_result.get("repair_history", []),
+                    sent_headers=exec_result.get("sent_headers", {})
                 )
                 
                 already_found = self.memory.is_vulnerability_found(current_api, status)

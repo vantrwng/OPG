@@ -59,13 +59,13 @@
         <a href="index.html" class="back-btn">&larr; Quay lại Dashboard</a>
         <h1>API: <span style="font-family: 'Fira Code', monospace; color: var(--accent-primary);">profiles_follow_user_api_profiles__username__follow_post</span></h1>
         
-        <p>Tổng số lần gọi: <strong>6</strong></p>
+        <p>Tổng số lần gọi: <strong>5</strong></p>
         
         <h2 style="margin-top: 2rem; margin-bottom: 1rem;">Lịch sử các lần Request/Response</h2>
 
                 <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
                     <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #1 — POST http://localhost:8000/api/profiles/trieu292005/follow — HTTP 400 <span style='background: #f59e0b; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🛠️ LLM Repaired</span>
+                        Lần gọi #1 — POST http://localhost:8000/api/profiles/trieu10a22005/follow — HTTP 400 <span style='background: #f59e0b; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🛠️ LLM Repaired</span>
                     </h3>
                     
                     
@@ -78,7 +78,7 @@
                                 <div style="flex: 1;">
                                     <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
                                     <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
-  &quot;username&quot;: &quot;Fuzzer 0878&quot;
+  &quot;username&quot;: &quot;Fuzzer 5369&quot;
 }</pre>
                                 </div>
                                 <div style="flex: 1;">
@@ -98,7 +98,7 @@
                                 <div style="flex: 1;">
                                     <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
                                     <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
-  &quot;username&quot;: &quot;fuzzer_target_9a3f7c&quot;
+  &quot;username&quot;: &quot;trieu10a22005_target&quot;
 }</pre>
                                 </div>
                                 <div style="flex: 1;">
@@ -118,7 +118,7 @@
                                 <div style="flex: 1;">
                                     <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
                                     <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
-  &quot;username&quot;: &quot;target_user_a7e4c9&quot;
+  &quot;username&quot;: &quot;otheruser123&quot;
 }</pre>
                                 </div>
                                 <div style="flex: 1;">
@@ -135,9 +135,14 @@
                     </div>
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;username&quot;: &quot;other_user_9f3b7c2a&quot;
+  &quot;Authorization&quot;: &quot;Token eyJ0e...Twuxc&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;username&quot;: &quot;trieu10a22005_target&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -150,23 +155,28 @@
                 
                 <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
                     <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #2 — POST http://localhost:8000/api/profiles/trieu292005/follow — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                        Lần gọi #2 — POST http://localhost:8000/api/profiles/trieu10a22005/follow — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;username&quot;: &quot;Fuzzer 6483&quot;
+  &quot;Authorization&quot;: &quot;Token eyJ0e...mQmS8&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;username&quot;: &quot;fuzzuser_6f2b9c8d&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;profile&quot;: {
     &quot;admin&quot;: false,
-    &quot;username&quot;: &quot;trieu292005&quot;,
-    &quot;bio&quot;: &quot;API fuzz test user profile with a concise synthetic biography.&quot;,
-    &quot;image&quot;: &quot;https://cdn.test.com/images/users/trieu292005.png&quot;,
+    &quot;username&quot;: &quot;trieu10a22005&quot;,
+    &quot;bio&quot;: &quot;Software developer and API testing enthusiast.&quot;,
+    &quot;image&quot;: &quot;https://test.com/images/trieu10a22005.png&quot;,
     &quot;following&quot;: true,
     &quot;cardName&quot;: null,
     &quot;cardNumber&quot;: null,
@@ -178,14 +188,19 @@
                 
                 <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
                     <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #3 — POST http://localhost:8000/api/profiles/trieu292005/follow — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                        Lần gọi #3 — POST http://localhost:8000/api/profiles/trieu10a22005/follow — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;username&quot;: &quot;Fuzzer 36E4&quot;
+  &quot;Authorization&quot;: &quot;Token eyJ0e...Twuxc&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;username&quot;: &quot;trieu10a22005&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -198,14 +213,19 @@
                 
                 <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
                     <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #4 — POST http://localhost:8000/api/profiles/trieu292005/follow — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                        Lần gọi #4 — POST http://localhost:8000/api/profiles/trieu10a22005/follow — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;username&quot;: &quot;Fuzzer 6586&quot;
+  &quot;Authorization&quot;: &quot;Token eyJ0e...Twuxc&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;username&quot;: &quot;trieu10a22005&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -218,34 +238,19 @@
                 
                 <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
                     <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #5 — POST http://localhost:8000/api/profiles/trieu292005/follow — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                        Lần gọi #5 — POST http://localhost:8000/api/profiles/trieu10a22005/follow — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;username&quot;: &quot;Fuzzer 496A&quot;
+  &quot;Authorization&quot;: &quot;Token eyJ0e...snm68&quot;
 }</pre>
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;errors&quot;: [
-    &quot;user can not follow him self&quot;
-  ]
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
-                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #6 — POST http://localhost:8000/api/profiles/trieu292005/follow — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;username&quot;: &quot;Fuzzer FC79&quot;
+  &quot;username&quot;: &quot;trieu10a22005&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>

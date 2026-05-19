@@ -221,6 +221,7 @@ class RequestExecutor:
             "raw_response":    response_json,
             "response_text":   response.text if hasattr(response, 'text') else "",
             "sent_payload":    sent_payload,
+            "sent_headers":    headers,
             "payload_source":  payload_source,
             "url":             url,
         }
@@ -261,18 +262,11 @@ class RequestExecutor:
         headers: Dict[str, str] = {}
         token = state.get("auth_token")
         if token:
-            header_name = state.get("auth_header_name", "Authorization")
-            header_prefix = state.get("auth_header_prefix")
+            header_name   = state.get("auth_header_name", "Authorization")
+            header_prefix = state.get("auth_header_prefix") or "Token"  # Mặc định Token, không đoán mò
             log.warning(f"[DEBUG] prefix={repr(header_prefix)} token[:10]={repr(str(token)[:10])}")
-            if header_prefix:
-                # Tôn trọng cấu hình từ .env (VD: "Bearer " hoặc "Token ")
-                headers[header_name] = f"{header_prefix.rstrip()} {token}"
-            else:
-                # Nếu không có cấu hình prefix, dùng heuristic tự đoán
-                if re.match(r"^ey", str(token)):   
-                    headers[header_name] = f"Bearer {token}"
-                else:
-                    headers[header_name] = f"Token {token}"
+            # Luôn tôn trọng cấu hình prefix — không còn heuristic Bearer/Token dựa vào format token
+            headers[header_name] = f"{header_prefix.rstrip()} {token}"
         return headers
 
     def _fire_request(self, method: str, url: str, headers: Dict,

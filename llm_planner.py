@@ -8,7 +8,15 @@ import hashlib
 from typing import Any, Dict, Optional, List, Tuple
 from openai import OpenAI, RateLimitError, APIError
 from dotenv import load_dotenv
+from pydantic import ValidationError
 from state_store import StateStore
+from llm_schemas import (
+    SemanticClassificationResponse,
+    IdentityClusterResponse,
+    PayloadResponse,
+    LLMRepairResponse,
+    validate_json_response
+)
 
 load_dotenv()
 log = logging.getLogger("executor")
@@ -85,8 +93,17 @@ Fields to classify:
                 response_format={"type": "json_object"},
                 temperature=0.0
             )
-            result = json.loads(response.choices[0].message.content)
-            log.info(f"  [LLM] {self.model} OK")
+            raw_json = response.choices[0].message.content
+            
+            # ✅ VALIDATE response với Pydantic
+            try:
+                validated = validate_json_response(raw_json, SemanticClassificationResponse)
+                log.info(f"  [LLM] {self.model} OK - validated {len(validated)} fields")
+            except ValueError as validation_err:
+                log.error(f"  [LLM] JSON validation failed: {validation_err}")
+                return {}  # Fallback nếu invalid
+            
+            result = validated
             
             # Cập nhật cache
             for field, category in result.items():
@@ -128,10 +145,19 @@ Rules:
                 response_format={"type": "json_object"},
                 temperature=0.0
             )
-            raw = json.loads(response.choices[0].message.content)
-            clusters = raw.get('clusters', [])
-            if not isinstance(clusters, list):
-                clusters = next((v for v in raw.values() if isinstance(v, list)), [])
+            raw_json = response.choices[0].message.content
+            
+            # ✅ VALIDATE response với Pydantic
+            try:
+                validated = validate_json_response(raw_json, IdentityClusterResponse)
+                clusters = validated['clusters']
+                log.info(f"  [LLM Cluster] OK - validated {len(clusters)} clusters")
+            except ValueError as validation_err:
+                log.error(f"  [LLM Cluster] JSON validation failed: {validation_err}")
+                return {}  # Fallback nếu invalid
+            except json.JSONDecodeError as json_err:
+                log.error(f"  [LLM Cluster] JSON decode failed: {json_err}")
+                return {}
 
             for cluster_id, group in enumerate(clusters):
                 if isinstance(group, list):
@@ -162,6 +188,19 @@ Rules:
         if method in ("GET", "DELETE"):
             return {}, "NONE"
 
+        # Tính dep_map trước để truyền sang _randomize_volatile_fields
+        # Mục đích: bảo vệ các field đã được resolve từ ODG edge dep khỏi bị randomize mù
+        dep_map: Dict[str, Any] = {}
+        if edge_deps:
+            for dep in edge_deps:
+                prod      = dep.get("producer_field", "")
+                cons      = dep.get("consumer_field", "")
+                prod_norm = self._norm(prod)
+                for sk, sv in state.memory.items():
+                    if self._norm(sk) == prod_norm:
+                        dep_map[self._norm(cons)] = sv
+                        break
+
         source = "LLM"
         payload = self._llm_generate(api_node, state, edge_deps=edge_deps)
         if payload is None:
@@ -170,7 +209,7 @@ Rules:
             
         # Đảm bảo rule cuối cùng được áp dụng cho mọi source
         if payload:
-            payload = self._randomize_volatile_fields(payload, api_node, state)
+            payload = self._randomize_volatile_fields(payload, api_node, state, dep_map=dep_map)
             
         log.info(f"  [{source} Payload] {api_node.get('id')} → {json.dumps(payload, ensure_ascii=False)}")
         return payload, source
@@ -260,9 +299,17 @@ RULES:
                     max_tokens=512,
                 )
                 raw = response.choices[0].message.content
-                parsed = json.loads(raw)
-                self._payload_cache[prompt_hash] = parsed
-                return parsed.copy()
+                
+                # ✅ VALIDATE response với Pydantic
+                try:
+                    validated = validate_json_response(raw, PayloadResponse)
+                    parsed = validated
+                    self._payload_cache[prompt_hash] = parsed
+                    log.info(f"[LLM Payload] Generated {len(parsed)} fields")
+                    return parsed.copy()
+                except ValueError as validation_err:
+                    log.error(f"[LLM] Payload validation failed: {validation_err}")
+                    return None  # Fallback to heuristic
             except RateLimitError:
                 log.warning(f"[LLM] Rate limit hit — waiting 5s (attempt {attempt})")
                 time.sleep(5)
@@ -309,12 +356,21 @@ Ensure the output is ONLY a valid JSON object.
                     max_tokens=512,
                 )
                 raw = response.choices[0].message.content
-                parsed = json.loads(raw)
+                
+                # ✅ VALIDATE response với Pydantic
+                try:
+                    validated = validate_json_response(raw, LLMRepairResponse)
+                    parsed = validated
+                    log.info(f"[LLM Repair] Fixed payload with {len(parsed)} fields")
+                except ValueError as validation_err:
+                    log.error(f"[LLM Repair] Validation failed: {validation_err}")
+                    return None  # Fallback
                 
                 # Bỏ qua _randomize_volatile_fields ở đây để tôn trọng tuyệt đối 
                 # cách sửa lỗi của LLM (nếu không nó sẽ bị ghi đè lại email cũ từ StateStore)
                 return parsed
             except RateLimitError:
+                log.warning(f"[LLM Repair] Rate limit — waiting 5s (attempt {attempt})")
                 time.sleep(5)
             except Exception as e:
                 log.error(f"[LLM Repair] Error: {e}")
@@ -362,8 +418,14 @@ Ensure the output is ONLY a valid JSON object.
         return payload
 
     @staticmethod
-    def _randomize_volatile_fields(payload: Dict, api_node: Dict, state: StateStore) -> Dict:
-        """Post-process payload thông minh theo Context (API Type)."""
+    def _randomize_volatile_fields(payload: Dict, api_node: Dict, state: StateStore,
+                                   dep_map: Optional[Dict] = None) -> Dict:
+        """Post-process payload thông minh theo Context (API Type).
+        
+        dep_map: các field đã được resolve từ ODG edge dep — KHÔNG được randomize đè lên.
+        """
+        if dep_map is None:
+            dep_map = {}
         hex6 = uuid.uuid4().hex[:6]
         hex4 = uuid.uuid4().hex[:4]
 
@@ -388,7 +450,23 @@ Ensure the output is ONLY a valid JSON object.
         for k, v in payload.items():
             if isinstance(v, dict):
                 # Đệ quy vào các dictionary con (ví dụ: {"user": {"email": ...}})
-                out[k] = LLMPlanner._randomize_volatile_fields(v, api_node, state)
+                out[k] = LLMPlanner._randomize_volatile_fields(v, api_node, state, dep_map)
+                continue
+            elif isinstance(v, list):
+                # ✅ Xử lý nested list chứa dicts (ví dụ: {"items": [{"email": ...}, {...}]})
+                out[k] = [
+                    LLMPlanner._randomize_volatile_fields(item, api_node, state, dep_map)
+                    if isinstance(item, dict)
+                    else item  # Keep non-dict items as-is
+                    for item in v
+                ]
+                continue
+
+            # Nếu field này đã được resolve từ ODG edge dep → giữ nguyên, không randomize
+            k_norm = LLMPlanner._norm(k)
+            if k_norm in dep_map:
+                out[k] = v  # giá trị đã được set đúng từ dep_map, không đụng vào
+                log.debug(f"[Randomize] SKIP '{k}' — protected by edge dep (value from StateStore)")
                 continue
                 
             is_email = LLMPlanner._EMAIL_RE.search(k)

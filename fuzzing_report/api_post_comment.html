@@ -65,14 +65,61 @@
 
                 <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
                     <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #1 — POST http://localhost:8888/community/api/v2/community/posts/1/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                        Lần gọi #1 — POST http://localhost:8888/community/api/v2/community/posts/1/comment — HTTP 500 <span style='background: #f59e0b; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🛠️ LLM Repaired</span>
                     </h3>
                     
                     
+                    <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 0.75rem; margin-bottom: 1rem; font-size: 0.85rem; color: #b45309; border-radius: 0 4px 4px 0;">
+                        <strong>⚠️ Original Error HTTP 500: {&quot;error&quot;:&quot;mongo: no documents in result&quot;}
+</strong>
+                        
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
+                            <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #1 Failed (HTTP 500)</h5>
+                            <div style="display: flex; gap: 1rem;">
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
+  &quot;content&quot;: &quot;This is a thoughtful post—thanks for sharing your perspective!&quot;
+}</pre>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">{
+  &quot;error&quot;: &quot;mongo: no documents in result&quot;
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
+                            <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #2 Failed (HTTP 500)</h5>
+                            <div style="display: flex; gap: 1rem;">
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
+  &quot;content&quot;: &quot;I appreciate the detailed update and the helpful perspective shared here.&quot;
+}</pre>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">{
+  &quot;error&quot;: &quot;mongo: no documents in result&quot;
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;content&quot;: &quot;This is a thoughtful comment on the post. Thanks for sharing!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;content&quot;: &quot;I appreciate the detailed update and the helpful perspective shared here.&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -88,7 +135,12 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...L_zpg&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
   &quot;content&quot;: &quot;This is a test comment for the community post.&quot;
 }</pre>
@@ -106,61 +158,12 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;content&quot;: &quot;This is a test comment created via the community API.&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...wI1vg&quot;
 }</pre>
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;error&quot;: &quot;mongo: no documents in result&quot;
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
-                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #4 — POST http://localhost:8888/community/api/v2/community/posts/1/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;content&quot;: &quot;This is a test comment generated for API fuzzing.&quot;
-}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;error&quot;: &quot;mongo: no documents in result&quot;
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
-                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #5 — POST http://localhost:8888/community/api/v2/community/posts/1/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;content&quot;: &quot;This is a helpful comment added for API fuzz testing.&quot;
-}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;error&quot;: &quot;mongo: no documents in result&quot;
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
-                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #6 — POST http://localhost:8888/community/api/v2/community/posts/1/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
   &quot;content&quot;: &quot;This is a test comment for the community post.&quot;
 }</pre>
@@ -171,16 +174,282 @@
 }</pre>
                 </div>
                 
-                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
-                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #7 — POST http://localhost:8888/community/api/v2/community/posts/1/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #4 — POST http://localhost:8888/community/api/v2/community/posts/fsrbbnjE9jBHTyDDZjGS35/comment — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;content&quot;: &quot;This is a test comment for the community post.&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;content&quot;: &quot;This is a community post created to share an update and invite discussion from other members.&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;id&quot;: &quot;fsrbbnjE9jBHTyDDZjGS35&quot;,
+  &quot;title&quot;: &quot;Community Update and Discussion&quot;,
+  &quot;content&quot;: &quot;This is a community post created to share an update and invite discussion from other members.&quot;,
+  &quot;author&quot;: {
+    &quot;nickname&quot;: &quot;Long Trieu&quot;,
+    &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+    &quot;vehicleid&quot;: &quot;&quot;,
+    &quot;profile_pic_url&quot;: &quot;&quot;,
+    &quot;created_at&quot;: &quot;2026-05-18T16:44:48.045Z&quot;
+  },
+  &quot;comments&quot;: [
+    {
+      &quot;id&quot;: &quot;&quot;,
+      &quot;content&quot;: &quot;This is a community post created to share an update and invite discussion from other members.&quot;,
+      &quot;CreatedAt&quot;: &quot;2026-05-18T16:45:01.502522863Z&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;Long Trieu&quot;,
+        &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-18T16:45:01.502522803Z&quot;
+      }
+    }
+  ],
+  &quot;authorid&quot;: 116,
+  &quot;CreatedAt&quot;: &quot;2026-05-18T16:44:48.045Z&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
+                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #5 — POST http://localhost:8888/community/api/v2/community/posts/116/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;content&quot;: &quot;This is a thoughtful post. Thanks for sharing your perspective!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;error&quot;: &quot;mongo: no documents in result&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #6 — POST http://localhost:8888/community/api/v2/community/posts/oe2WMSDJsU9AUtyZR25Rxb/comment — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;content&quot;: &quot;This is a community post created to share an update and invite discussion from other members.&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;id&quot;: &quot;oe2WMSDJsU9AUtyZR25Rxb&quot;,
+  &quot;title&quot;: &quot;Community Update and Discussion&quot;,
+  &quot;content&quot;: &quot;This is a community post created to share an update and invite discussion from other members.&quot;,
+  &quot;author&quot;: {
+    &quot;nickname&quot;: &quot;Long Trieu&quot;,
+    &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+    &quot;vehicleid&quot;: &quot;&quot;,
+    &quot;profile_pic_url&quot;: &quot;&quot;,
+    &quot;created_at&quot;: &quot;2026-05-18T16:47:29.392Z&quot;
+  },
+  &quot;comments&quot;: [
+    {
+      &quot;id&quot;: &quot;&quot;,
+      &quot;content&quot;: &quot;This is a community post created to share an update and invite discussion from other members.&quot;,
+      &quot;CreatedAt&quot;: &quot;2026-05-18T16:47:32.481013535Z&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;Long Trieu&quot;,
+        &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-18T16:47:32.481013475Z&quot;
+      }
+    }
+  ],
+  &quot;authorid&quot;: 116,
+  &quot;CreatedAt&quot;: &quot;2026-05-18T16:47:29.392Z&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
+                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #7 — POST http://localhost:8888/community/api/v2/community/posts/116/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;content&quot;: &quot;This is a thoughtful post. Thanks for sharing your perspective!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;error&quot;: &quot;mongo: no documents in result&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #8 — POST http://localhost:8888/community/api/v2/community/posts/D6HH7R5FxbyzFvSPBVvBU3/comment — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;content&quot;: &quot;This is a community post created to share an update and invite discussion from other members.&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;id&quot;: &quot;D6HH7R5FxbyzFvSPBVvBU3&quot;,
+  &quot;title&quot;: &quot;Community Update and Discussion&quot;,
+  &quot;content&quot;: &quot;This is a community post created to share an update and invite discussion from other members.&quot;,
+  &quot;author&quot;: {
+    &quot;nickname&quot;: &quot;Long Trieu&quot;,
+    &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+    &quot;vehicleid&quot;: &quot;&quot;,
+    &quot;profile_pic_url&quot;: &quot;&quot;,
+    &quot;created_at&quot;: &quot;2026-05-18T16:47:59.056Z&quot;
+  },
+  &quot;comments&quot;: [
+    {
+      &quot;id&quot;: &quot;&quot;,
+      &quot;content&quot;: &quot;This is a community post created to share an update and invite discussion from other members.&quot;,
+      &quot;CreatedAt&quot;: &quot;2026-05-18T16:48:25.411889224Z&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;Long Trieu&quot;,
+        &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-18T16:48:25.411889173Z&quot;
+      }
+    }
+  ],
+  &quot;authorid&quot;: 116,
+  &quot;CreatedAt&quot;: &quot;2026-05-18T16:47:59.056Z&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
+                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #9 — POST http://localhost:8888/community/api/v2/community/posts/116/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;content&quot;: &quot;This is a thoughtful post. Thanks for sharing your perspective!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;error&quot;: &quot;mongo: no documents in result&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #10 — POST http://localhost:8888/community/api/v2/community/posts/5QtKsNEsP5UjXjiCdtyf5W/comment — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;content&quot;: &quot;This is a community post created to share an update and invite discussion from other members.&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;id&quot;: &quot;5QtKsNEsP5UjXjiCdtyf5W&quot;,
+  &quot;title&quot;: &quot;Community Update and Discussion&quot;,
+  &quot;content&quot;: &quot;This is a community post created to share an update and invite discussion from other members.&quot;,
+  &quot;author&quot;: {
+    &quot;nickname&quot;: &quot;Long Trieu&quot;,
+    &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+    &quot;vehicleid&quot;: &quot;&quot;,
+    &quot;profile_pic_url&quot;: &quot;&quot;,
+    &quot;created_at&quot;: &quot;2026-05-18T16:48:52.087Z&quot;
+  },
+  &quot;comments&quot;: [
+    {
+      &quot;id&quot;: &quot;&quot;,
+      &quot;content&quot;: &quot;This is a community post created to share an update and invite discussion from other members.&quot;,
+      &quot;CreatedAt&quot;: &quot;2026-05-18T16:48:55.485718701Z&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;Long Trieu&quot;,
+        &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-18T16:48:55.485718651Z&quot;
+      }
+    }
+  ],
+  &quot;authorid&quot;: 116,
+  &quot;CreatedAt&quot;: &quot;2026-05-18T16:48:52.087Z&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
+                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #11 — POST http://localhost:8888/community/api/v2/community/posts/116/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;content&quot;: &quot;This is a thoughtful post. Thanks for sharing your perspective!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -191,14 +460,19 @@
                 
                 <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
                     <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #8 — POST http://localhost:8888/community/api/v2/community/posts/1/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                        Lần gọi #12 — POST http://localhost:8888/community/api/v2/community/posts/116/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;content&quot;: &quot;This is a test comment generated for API fuzzing.&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;content&quot;: &quot;I&amp;#39;m exploring ways to improve community engagement and would love to hear what features or topics members find most useful.&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -209,86 +483,19 @@
                 
                 <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
                     <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #9 — POST http://localhost:8888/community/api/v2/community/posts/1/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                        Lần gọi #13 — POST http://localhost:8888/community/api/v2/community/posts/116/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;content&quot;: &quot;This is a test comment for the community post.&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
 }</pre>
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;error&quot;: &quot;mongo: no documents in result&quot;
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
-                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #10 — POST http://localhost:8888/community/api/v2/community/posts/1/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;content&quot;: &quot;This is a test comment generated for API fuzzing.&quot;
-}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;error&quot;: &quot;mongo: no documents in result&quot;
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
-                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #11 — POST http://localhost:8888/community/api/v2/community/posts/1/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;content&quot;: &quot;This is a thoughtful comment added during API testing.&quot;
-}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;error&quot;: &quot;mongo: no documents in result&quot;
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
-                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #12 — POST http://localhost:8888/community/api/v2/community/posts/1/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;content&quot;: &quot;This is a thoughtful post—thanks for sharing your perspective!&quot;
-}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;error&quot;: &quot;mongo: no documents in result&quot;
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
-                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #13 — POST http://localhost:8888/community/api/v2/community/posts/1/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;content&quot;: &quot;This is a test comment for the community post.&quot;
+  &quot;content&quot;: &quot;This is a thoughtful post. Thanks for sharing your perspective!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -304,9 +511,85 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;content&quot;: &quot;This is a thoughtful comment generated for API fuzz testing.&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;content&quot;: &quot;This is a thoughtful post—thanks for sharing your perspective!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;error&quot;: &quot;mongo: no documents in result&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #15 — POST http://localhost:8888/community/api/v2/community/posts/XFyEi5b8oSoxPfp68XXcx6/comment — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;content&quot;: &quot;I&amp;#39;m exploring ways to improve community engagement and would love to hear what features or topics members find most useful.&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;id&quot;: &quot;XFyEi5b8oSoxPfp68XXcx6&quot;,
+  &quot;title&quot;: &quot;Ideas for Improving Community Engagement&quot;,
+  &quot;content&quot;: &quot;I&amp;#39;m exploring ways to improve community engagement and would love to hear what features or topics members find most useful.&quot;,
+  &quot;author&quot;: {
+    &quot;nickname&quot;: &quot;Long Trieu&quot;,
+    &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+    &quot;vehicleid&quot;: &quot;&quot;,
+    &quot;profile_pic_url&quot;: &quot;&quot;,
+    &quot;created_at&quot;: &quot;2026-05-18T16:37:41.742Z&quot;
+  },
+  &quot;comments&quot;: [
+    {
+      &quot;id&quot;: &quot;&quot;,
+      &quot;content&quot;: &quot;I&amp;#39;m exploring ways to improve community engagement and would love to hear what features or topics members find most useful.&quot;,
+      &quot;CreatedAt&quot;: &quot;2026-05-18T16:50:53.721155778Z&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;Long Trieu&quot;,
+        &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-18T16:50:53.721155708Z&quot;
+      }
+    }
+  ],
+  &quot;authorid&quot;: 116,
+  &quot;CreatedAt&quot;: &quot;2026-05-18T16:37:41.742Z&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
+                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #16 — POST http://localhost:8888/community/api/v2/community/posts/116/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;content&quot;: &quot;I&amp;#39;m exploring ways to improve community engagement and would love to hear what features or topics members find most useful.&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -317,14 +600,19 @@
                 
                 <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
                     <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #15 — POST http://localhost:8888/community/api/v2/community/posts/1/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                        Lần gọi #17 — POST http://localhost:8888/community/api/v2/community/posts/116/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;content&quot;: &quot;This is a test comment generated for API fuzzing.&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;content&quot;: &quot;I&amp;#39;m exploring ways to improve community engagement and would love to hear what features or topics members find most useful.&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -333,14 +621,186 @@
 }</pre>
                 </div>
                 
-                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
-                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #16 — POST http://localhost:8888/community/api/v2/community/posts/1/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #18 — POST http://localhost:8888/community/api/v2/community/posts/8UtvgjTkF6YtJmicFpP3Ek/comment — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;content&quot;: &quot;Exploring the latest maintenance update for the MECH-9D2A7F4C1B8E workflow and sharing observations with the community.&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;id&quot;: &quot;8UtvgjTkF6YtJmicFpP3Ek&quot;,
+  &quot;title&quot;: &quot;Maintenance Workflow Update Discussion&quot;,
+  &quot;content&quot;: &quot;Exploring the latest maintenance update for the MECH-9D2A7F4C1B8E workflow and sharing observations with the community.&quot;,
+  &quot;author&quot;: {
+    &quot;nickname&quot;: &quot;Long Trieu&quot;,
+    &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+    &quot;vehicleid&quot;: &quot;&quot;,
+    &quot;profile_pic_url&quot;: &quot;&quot;,
+    &quot;created_at&quot;: &quot;2026-05-18T16:54:32.057Z&quot;
+  },
+  &quot;comments&quot;: [
+    {
+      &quot;id&quot;: &quot;&quot;,
+      &quot;content&quot;: &quot;Exploring the latest maintenance update for the MECH-9D2A7F4C1B8E workflow and sharing observations with the community.&quot;,
+      &quot;CreatedAt&quot;: &quot;2026-05-18T16:54:35.364321716Z&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;Long Trieu&quot;,
+        &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-18T16:54:35.364321646Z&quot;
+      }
+    }
+  ],
+  &quot;authorid&quot;: 116,
+  &quot;CreatedAt&quot;: &quot;2026-05-18T16:54:32.057Z&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #19 — POST http://localhost:8888/community/api/v2/community/posts/cQkjxkJdaXUiuxUCuGuX2a/comment — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;content&quot;: &quot;Exploring the latest maintenance update for the MECH-9D2A7F4C1B8E workflow and sharing observations with the community.&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;id&quot;: &quot;cQkjxkJdaXUiuxUCuGuX2a&quot;,
+  &quot;title&quot;: &quot;Maintenance Workflow Update Discussion&quot;,
+  &quot;content&quot;: &quot;Exploring the latest maintenance update for the MECH-9D2A7F4C1B8E workflow and sharing observations with the community.&quot;,
+  &quot;author&quot;: {
+    &quot;nickname&quot;: &quot;Long Trieu&quot;,
+    &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
+    &quot;vehicleid&quot;: &quot;&quot;,
+    &quot;profile_pic_url&quot;: &quot;&quot;,
+    &quot;created_at&quot;: &quot;2026-05-17T12:55:38.743Z&quot;
+  },
+  &quot;comments&quot;: [
+    {
+      &quot;id&quot;: &quot;&quot;,
+      &quot;content&quot;: &quot;Exploring the latest maintenance update for the MECH-9D2A7F4C1B8E workflow and sharing observations with the community.&quot;,
+      &quot;CreatedAt&quot;: &quot;2026-05-18T16:54:47.117588465Z&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;Long Trieu&quot;,
+        &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-18T16:54:47.117588345Z&quot;
+      }
+    }
+  ],
+  &quot;authorid&quot;: 99,
+  &quot;CreatedAt&quot;: &quot;2026-05-17T12:55:38.743Z&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
+                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #20 — POST http://localhost:8888/community/api/v2/community/posts/116/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;content&quot;: &quot;Great post! Thanks for sharing this update.&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;error&quot;: &quot;mongo: no documents in result&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #21 — POST http://localhost:8888/community/api/v2/community/posts/bMrwydSAmCFsmbBh7Qn5BJ/comment — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;content&quot;: &quot;Just received my artisan ceramic mug and wanted to share a quick update with the community. The quality looks great, shipping was smooth, and the order arrived in delivered status.&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;id&quot;: &quot;bMrwydSAmCFsmbBh7Qn5BJ&quot;,
+  &quot;title&quot;: &quot;Great experience with my recent mug order&quot;,
+  &quot;content&quot;: &quot;Just received my artisan ceramic mug and wanted to share a quick update with the community. The quality looks great, shipping was smooth, and the order arrived in delivered status.&quot;,
+  &quot;author&quot;: {
+    &quot;nickname&quot;: &quot;Long Trieu&quot;,
+    &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+    &quot;vehicleid&quot;: &quot;&quot;,
+    &quot;profile_pic_url&quot;: &quot;&quot;,
+    &quot;created_at&quot;: &quot;2026-05-18T16:58:03.839Z&quot;
+  },
+  &quot;comments&quot;: [
+    {
+      &quot;id&quot;: &quot;&quot;,
+      &quot;content&quot;: &quot;Just received my artisan ceramic mug and wanted to share a quick update with the community. The quality looks great, shipping was smooth, and the order arrived in delivered status.&quot;,
+      &quot;CreatedAt&quot;: &quot;2026-05-18T16:58:06.473439887Z&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;Long Trieu&quot;,
+        &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-18T16:58:06.473439817Z&quot;
+      }
+    }
+  ],
+  &quot;authorid&quot;: 116,
+  &quot;CreatedAt&quot;: &quot;2026-05-18T16:58:03.839Z&quot;
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
+                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #22 — POST http://localhost:8888/community/api/v2/community/posts/319/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
   &quot;content&quot;: &quot;This is a test comment for the community post.&quot;
 }</pre>
@@ -353,14 +813,19 @@
                 
                 <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
                     <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #17 — POST http://localhost:8888/community/api/v2/community/posts/1/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                        Lần gọi #23 — POST http://localhost:8888/community/api/v2/community/posts/116/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;content&quot;: &quot;This is a thoughtful comment on the post. Thanks for sharing!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;content&quot;: &quot;Great post! Thanks for sharing this update.&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -369,129 +834,51 @@
 }</pre>
                 </div>
                 
-                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
-                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #18 — POST http://localhost:8888/community/api/v2/community/posts/1/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #24 — POST http://localhost:8888/community/api/v2/community/posts/hgXLbywUjNsZGnJRZFHxoD/comment — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;content&quot;: &quot;This is a helpful comment added during API testing.&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;content&quot;: &quot;Sharing a quick update with the community: I just joined and I&amp;#39;m looking forward to connecting, learning, and contributing helpful ideas here.&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;error&quot;: &quot;mongo: no documents in result&quot;
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
-                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #19 — POST http://localhost:8888/community/api/v2/community/posts/1/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;content&quot;: &quot;This is a test comment generated for API fuzzing.&quot;
-}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;error&quot;: &quot;mongo: no documents in result&quot;
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
-                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #20 — POST http://localhost:8888/community/api/v2/community/posts/1/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;content&quot;: &quot;This is a test comment generated for API fuzzing.&quot;
-}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;error&quot;: &quot;mongo: no documents in result&quot;
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
-                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #21 — POST http://localhost:8888/community/api/v2/community/posts/1/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;content&quot;: &quot;This is a test comment generated for API fuzzing.&quot;
-}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;error&quot;: &quot;mongo: no documents in result&quot;
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
-                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #22 — POST http://localhost:8888/community/api/v2/community/posts/1/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;content&quot;: &quot;This is a test comment generated for API fuzzing.&quot;
-}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;error&quot;: &quot;mongo: no documents in result&quot;
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
-                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #23 — POST http://localhost:8888/community/api/v2/community/posts/1/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;content&quot;: &quot;This is a test comment generated for API fuzzing.&quot;
-}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;error&quot;: &quot;mongo: no documents in result&quot;
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
-                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #24 — POST http://localhost:8888/community/api/v2/community/posts/1/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;content&quot;: &quot;This is a test comment for the community post.&quot;
-}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;error&quot;: &quot;mongo: no documents in result&quot;
+  &quot;id&quot;: &quot;hgXLbywUjNsZGnJRZFHxoD&quot;,
+  &quot;title&quot;: &quot;Hello Community&quot;,
+  &quot;content&quot;: &quot;Sharing a quick update with the community: I just joined and I&amp;#39;m looking forward to connecting, learning, and contributing helpful ideas here.&quot;,
+  &quot;author&quot;: {
+    &quot;nickname&quot;: &quot;Long Trieu&quot;,
+    &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+    &quot;vehicleid&quot;: &quot;&quot;,
+    &quot;profile_pic_url&quot;: &quot;&quot;,
+    &quot;created_at&quot;: &quot;2026-05-18T17:01:58.335Z&quot;
+  },
+  &quot;comments&quot;: [
+    {
+      &quot;id&quot;: &quot;&quot;,
+      &quot;content&quot;: &quot;Sharing a quick update with the community: I just joined and I&amp;#39;m looking forward to connecting, learning, and contributing helpful ideas here.&quot;,
+      &quot;CreatedAt&quot;: &quot;2026-05-18T17:02:02.877624957Z&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;Long Trieu&quot;,
+        &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-18T17:02:02.877624857Z&quot;
+      }
+    }
+  ],
+  &quot;authorid&quot;: 116,
+  &quot;CreatedAt&quot;: &quot;2026-05-18T17:01:58.335Z&quot;
 }</pre>
                 </div>
                 
@@ -502,7 +889,12 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
   &quot;content&quot;: &quot;This is a test comment generated for API fuzzing.&quot;
 }</pre>
@@ -515,14 +907,19 @@
                 
                 <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
                     <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #26 — POST http://localhost:8888/community/api/v2/community/posts/1/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                        Lần gọi #26 — POST http://localhost:8888/community/api/v2/community/posts/116/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;content&quot;: &quot;This is a test comment for the community post.&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;content&quot;: &quot;Great post! Thanks for sharing this update with the community.&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -531,214 +928,69 @@
 }</pre>
                 </div>
                 
-                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
-                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #27 — POST http://localhost:8888/community/api/v2/community/posts/1/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #27 — POST http://localhost:8888/community/api/v2/community/posts/Qi8ZdR5dgaaXEqwGfwqUXj/comment — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;content&quot;: &quot;This is a test comment for the community post.&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;content&quot;: &quot;Excited to share a quick update with the community: our latest order experience was smooth, the product arrived as expected, and the delivery status is confirmed as delivered.&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;error&quot;: &quot;mongo: no documents in result&quot;
+  &quot;id&quot;: &quot;Qi8ZdR5dgaaXEqwGfwqUXj&quot;,
+  &quot;title&quot;: &quot;Positive Delivery Experience&quot;,
+  &quot;content&quot;: &quot;Excited to share a quick update with the community: our latest order experience was smooth, the product arrived as expected, and the delivery status is confirmed as delivered.&quot;,
+  &quot;author&quot;: {
+    &quot;nickname&quot;: &quot;Long Trieu&quot;,
+    &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+    &quot;vehicleid&quot;: &quot;&quot;,
+    &quot;profile_pic_url&quot;: &quot;&quot;,
+    &quot;created_at&quot;: &quot;2026-05-18T17:04:05.386Z&quot;
+  },
+  &quot;comments&quot;: [
+    {
+      &quot;id&quot;: &quot;&quot;,
+      &quot;content&quot;: &quot;Excited to share a quick update with the community: our latest order experience was smooth, the product arrived as expected, and the delivery status is confirmed as delivered.&quot;,
+      &quot;CreatedAt&quot;: &quot;2026-05-18T17:04:08.023132395Z&quot;,
+      &quot;author&quot;: {
+        &quot;nickname&quot;: &quot;Long Trieu&quot;,
+        &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+        &quot;vehicleid&quot;: &quot;&quot;,
+        &quot;profile_pic_url&quot;: &quot;&quot;,
+        &quot;created_at&quot;: &quot;2026-05-18T17:04:08.023132305Z&quot;
+      }
+    }
+  ],
+  &quot;authorid&quot;: 116,
+  &quot;CreatedAt&quot;: &quot;2026-05-18T17:04:05.386Z&quot;
 }</pre>
                 </div>
                 
                 <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
                     <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #28 — POST http://localhost:8888/community/api/v2/community/posts/1/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                        Lần gọi #28 — POST http://localhost:8888/community/api/v2/community/posts/324/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;content&quot;: &quot;Thanks for sharing this post! This is really helpful information.&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
 }</pre>
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;error&quot;: &quot;mongo: no documents in result&quot;
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
-                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #29 — POST http://localhost:8888/community/api/v2/community/posts/1/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;content&quot;: &quot;This is a test comment for the community post.&quot;
-}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;error&quot;: &quot;mongo: no documents in result&quot;
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
-                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #30 — POST http://localhost:8888/community/api/v2/community/posts/1/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;content&quot;: &quot;This is a helpful comment added via the community API.&quot;
-}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;error&quot;: &quot;mongo: no documents in result&quot;
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
-                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #31 — POST http://localhost:8888/community/api/v2/community/posts/1/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;content&quot;: &quot;This is a test comment for the community post.&quot;
-}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;error&quot;: &quot;mongo: no documents in result&quot;
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
-                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #32 — POST http://localhost:8888/community/api/v2/community/posts/1/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;content&quot;: &quot;This is a test comment for the community post.&quot;
-}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;error&quot;: &quot;mongo: no documents in result&quot;
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
-                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #33 — POST http://localhost:8888/community/api/v2/community/posts/1/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;content&quot;: &quot;Thanks for sharing this post! This is really helpful information.&quot;
-}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;error&quot;: &quot;mongo: no documents in result&quot;
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
-                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #34 — POST http://localhost:8888/community/api/v2/community/posts/1/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;content&quot;: &quot;This is a helpful follow-up comment with some additional details.&quot;
-}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;error&quot;: &quot;mongo: no documents in result&quot;
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
-                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #35 — POST http://localhost:8888/community/api/v2/community/posts/1/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;content&quot;: &quot;This is a helpful follow-up comment with some additional details.&quot;
-}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;error&quot;: &quot;mongo: no documents in result&quot;
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
-                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #36 — POST http://localhost:8888/community/api/v2/community/posts/1/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;content&quot;: &quot;This is a helpful follow-up comment with some additional details.&quot;
-}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;error&quot;: &quot;mongo: no documents in result&quot;
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
-                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #37 — POST http://localhost:8888/community/api/v2/community/posts/1/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;content&quot;: &quot;This is a thoughtful comment on the community post, generated for API fuzz testing.&quot;
-}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;error&quot;: &quot;mongo: no documents in result&quot;
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
-                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #38 — POST http://localhost:8888/community/api/v2/community/posts/1/comment — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;content&quot;: &quot;This is a test comment for the community post.&quot;
+  &quot;content&quot;: &quot;This is a helpful test comment generated for the community post.&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>

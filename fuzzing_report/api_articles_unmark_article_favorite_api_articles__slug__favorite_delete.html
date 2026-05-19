@@ -63,56 +63,119 @@
         
         <h2 style="margin-top: 2rem; margin-bottom: 1rem;">Lịch sử các lần Request/Response</h2>
 
-                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
-                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #1 — DELETE http://localhost:8000/api/articles/1/favorite — HTTP 404 
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #1 — DELETE http://localhost:8000/api/articles/resilient-api-testing-workflows/favorite — HTTP 200 
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Token eyJ0e...Twuxc&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;errors&quot;: [
-    &quot;article does not exist&quot;
-  ]
+  &quot;article&quot;: {
+    &quot;createdAt&quot;: &quot;2026-05-19T04:29:26.430391Z&quot;,
+    &quot;updatedAt&quot;: &quot;2026-05-19T04:29:26.430391Z&quot;,
+    &quot;id&quot;: 42,
+    &quot;slug&quot;: &quot;resilient-api-testing-workflows&quot;,
+    &quot;title&quot;: &quot;Resilient API Testing Workflows&quot;,
+    &quot;description&quot;: &quot;A practical guide to building reliable API test coverage with structured fuzz inputs.&quot;,
+    &quot;body&quot;: &quot;Effective API fuzzing combines valid request shapes with varied realistic data to uncover validation issues, edge cases, and unexpected server behavior. This article explains how to design payloads that exercise application logic while remaining compatible with endpoint schemas.&quot;,
+    &quot;tagList&quot;: [
+      &quot;api&quot;,
+      &quot;testing&quot;,
+      &quot;fuzzing&quot;
+    ],
+    &quot;author&quot;: {
+      &quot;admin&quot;: false,
+      &quot;username&quot;: &quot;trieu10a22005&quot;,
+      &quot;bio&quot;: &quot;Software developer and API testing enthusiast.&quot;,
+      &quot;image&quot;: &quot;https://test.com/images/trieu10a22005.png&quot;,
+      &quot;following&quot;: false,
+      &quot;cardName&quot;: null,
+      &quot;cardNumber&quot;: null,
+      &quot;cardCvc&quot;: null,
+      &quot;cardExpiry&quot;: null
+    },
+    &quot;favorited&quot;: false,
+    &quot;favoritesCount&quot;: 0
+  }
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #2 — DELETE http://localhost:8000/api/articles/reliable-api-testing-workflows-9f3a7c/favorite — HTTP 200 
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Token eyJ0e...Twuxc&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;article&quot;: {
+    &quot;createdAt&quot;: &quot;2026-05-19T04:29:20.231457Z&quot;,
+    &quot;updatedAt&quot;: &quot;2026-05-19T04:29:20.231457Z&quot;,
+    &quot;id&quot;: 41,
+    &quot;slug&quot;: &quot;reliable-api-testing-workflows-9f3a7c&quot;,
+    &quot;title&quot;: &quot;Reliable API Testing Workflows 9f3a7c&quot;,
+    &quot;description&quot;: &quot;A practical guide to building resilient API test workflows with structured fuzz inputs.&quot;,
+    &quot;body&quot;: &quot;Effective API testing combines valid request shapes with varied data to uncover validation gaps, edge cases, and reliability issues. This article explains how to design realistic payloads, rotate unique values, and observe server responses to improve robustness.&quot;,
+    &quot;tagList&quot;: [
+      &quot;api&quot;,
+      &quot;testing&quot;,
+      &quot;fuzzing&quot;
+    ],
+    &quot;author&quot;: {
+      &quot;admin&quot;: false,
+      &quot;username&quot;: &quot;trieu10a22005&quot;,
+      &quot;bio&quot;: &quot;API fuzzing profile update for integration testing.&quot;,
+      &quot;image&quot;: &quot;https://cdn.test.com/images/trieu10a22005.png&quot;,
+      &quot;following&quot;: false,
+      &quot;cardName&quot;: null,
+      &quot;cardNumber&quot;: null,
+      &quot;cardCvc&quot;: null,
+      &quot;cardExpiry&quot;: null
+    },
+    &quot;favorited&quot;: false,
+    &quot;favoritesCount&quot;: 0
+  }
 }</pre>
                 </div>
                 
                 <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
                     <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #2 — DELETE http://localhost:8000/api/articles/1/favorite — HTTP 404 
+                        Lần gọi #3 — DELETE http://localhost:8000/api/articles/resilient-api-testing-with-structured-fuzz-cases/favorite — HTTP 400 
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;errors&quot;: [
-    &quot;article does not exist&quot;
-  ]
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Token eyJ0e...Twuxc&quot;
 }</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
-                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #3 — DELETE http://localhost:8000/api/articles/1/favorite — HTTP 404 
-                    </h3>
                     
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;errors&quot;: [
-    &quot;article does not exist&quot;
+    &quot;article is not favorited&quot;
   ]
 }</pre>
                 </div>
@@ -124,7 +187,12 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Token eyJ0e...Twuxc&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>

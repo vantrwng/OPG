@@ -63,292 +63,452 @@
         
         <h2 style="margin-top: 2rem; margin-bottom: 1rem;">Lịch sử các lần Request/Response</h2>
 
-                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
-                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #1 — POST http://localhost:8000/api/articles — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #1 — POST http://localhost:8000/api/articles — HTTP 201 <span style='background: #f59e0b; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🛠️ LLM Repaired</span>
                     </h3>
                     
                     
+                    <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 0.75rem; margin-bottom: 1rem; font-size: 0.85rem; color: #b45309; border-radius: 0 4px 4px 0;">
+                        <strong>⚠️ Original Error HTTP 422: {&quot;errors&quot;:[{&quot;loc&quot;:[&quot;body&quot;,&quot;article&quot;],&quot;msg&quot;:&quot;field required&quot;,&quot;type&quot;:&quot;value_error.missing&quot;}]}</strong>
+                        
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
+                            <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #1 Failed (HTTP 422)</h5>
+                            <div style="display: flex; gap: 1rem;">
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
+  &quot;title&quot;: &quot;Practical API Fuzzing Strategies&quot;,
+  &quot;description&quot;: &quot;A concise overview of techniques for testing API robustness with generated inputs.&quot;,
+  &quot;body&quot;: &quot;API fuzzing helps identify validation gaps, unexpected edge cases, and potential reliability issues by sending varied but structured payloads to endpoints. This article covers practical strategies for designing effective fuzz cases while keeping requests valid enough to exercise application logic.&quot;,
+  &quot;tagList&quot;: [
+    &quot;api&quot;,
+    &quot;fuzzing&quot;,
+    &quot;testing&quot;
+  ]
+}</pre>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">{
+  &quot;errors&quot;: [
+    {
+      &quot;loc&quot;: [
+        &quot;body&quot;,
+        &quot;article&quot;
+      ],
+      &quot;msg&quot;: &quot;field required&quot;,
+      &quot;type&quot;: &quot;value_error.missing&quot;
+    }
+  ]
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Token eyJ0e...Twuxc&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
   &quot;article&quot;: {
-    &quot;title&quot;: &quot;Practical API Fuzzing Strategies&quot;,
-    &quot;description&quot;: &quot;A concise guide to improving API test coverage with realistic fuzzing inputs.&quot;,
-    &quot;body&quot;: &quot;API fuzzing helps uncover validation gaps, unexpected edge cases, and security issues by sending varied but structured inputs to endpoints. This article discusses practical strategies for generating realistic payloads, validating responses, and improving automated test coverage.&quot;,
+    &quot;title&quot;: &quot;Resilient API Testing with Structured Fuzz Cases&quot;,
+    &quot;description&quot;: &quot;A practical guide to creating valid yet varied API requests for robustness testing.&quot;,
+    &quot;body&quot;: &quot;Structured API fuzzing focuses on generating payloads that satisfy basic schema requirements while still exploring edge cases in validation, parsing, and business logic. By using realistic data, varying optional arrays, and preserving required request wrappers, testers can uncover reliability issues without sending completely invalid traffic.&quot;,
     &quot;tagList&quot;: [
       &quot;api&quot;,
+      &quot;testing&quot;,
       &quot;fuzzing&quot;,
-      &quot;testing&quot;
+      &quot;automation&quot;
     ]
   }
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;article&quot;: {
+    &quot;createdAt&quot;: &quot;2026-05-19T04:30:02.303783Z&quot;,
+    &quot;updatedAt&quot;: &quot;2026-05-19T04:30:02.303783Z&quot;,
+    &quot;id&quot;: 43,
+    &quot;slug&quot;: &quot;resilient-api-testing-with-structured-fuzz-cases&quot;,
+    &quot;title&quot;: &quot;Resilient API Testing with Structured Fuzz Cases&quot;,
+    &quot;description&quot;: &quot;A practical guide to creating valid yet varied API requests for robustness testing.&quot;,
+    &quot;body&quot;: &quot;Structured API fuzzing focuses on generating payloads that satisfy basic schema requirements while still exploring edge cases in validation, parsing, and business logic. By using realistic data, varying optional arrays, and preserving required request wrappers, testers can uncover reliability issues without sending completely invalid traffic.&quot;,
+    &quot;tagList&quot;: [
+      &quot;api&quot;,
+      &quot;testing&quot;,
+      &quot;fuzzing&quot;,
+      &quot;automation&quot;
+    ],
+    &quot;author&quot;: {
+      &quot;admin&quot;: false,
+      &quot;username&quot;: &quot;trieu10a22005&quot;,
+      &quot;bio&quot;: &quot;Software developer and API testing enthusiast.&quot;,
+      &quot;image&quot;: &quot;https://test.com/images/trieu10a22005.png&quot;,
+      &quot;following&quot;: false,
+      &quot;cardName&quot;: null,
+      &quot;cardNumber&quot;: null,
+      &quot;cardCvc&quot;: null,
+      &quot;cardExpiry&quot;: null
+    },
+    &quot;favorited&quot;: false,
+    &quot;favoritesCount&quot;: 0
+  }
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #2 — POST http://localhost:8000/api/articles — HTTP 422 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Token eyJ0e...Twuxc&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;title&quot;: &quot;Practical API Fuzzing Strategies&quot;,
+  &quot;description&quot;: &quot;A concise overview of techniques for testing API robustness with generated inputs.&quot;,
+  &quot;body&quot;: &quot;API fuzzing helps identify validation gaps, unexpected edge cases, and potential reliability issues by sending varied but structured payloads to endpoints. This article covers practical strategies for designing effective fuzz cases while keeping requests valid enough to exercise application logic.&quot;,
+  &quot;tagList&quot;: [
+    &quot;api&quot;,
+    &quot;fuzzing&quot;,
+    &quot;testing&quot;
+  ]
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;errors&quot;: [
-    &quot;article already exists&quot;
+    {
+      &quot;loc&quot;: [
+        &quot;body&quot;,
+        &quot;article&quot;
+      ],
+      &quot;msg&quot;: &quot;field required&quot;,
+      &quot;type&quot;: &quot;value_error.missing&quot;
+    }
   ]
 }</pre>
                 </div>
                 
                 <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
                     <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #2 — POST http://localhost:8000/api/articles — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                        Lần gọi #3 — POST http://localhost:8000/api/articles — HTTP 422 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;article&quot;: {
-    &quot;title&quot;: &quot;Practical API Fuzzing Strategies&quot;,
-    &quot;description&quot;: &quot;A concise guide to improving API test coverage with realistic fuzzing inputs.&quot;,
-    &quot;body&quot;: &quot;API fuzzing helps uncover validation gaps, unexpected edge cases, and security issues by sending varied but structured inputs to endpoints. This article discusses practical strategies for generating realistic payloads, validating responses, and improving automated test coverage.&quot;,
-    &quot;tagList&quot;: [
-      &quot;api&quot;,
-      &quot;fuzzing&quot;,
-      &quot;testing&quot;
-    ]
-  }
+  &quot;Authorization&quot;: &quot;Token eyJ0e...Twuxc&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;title&quot;: &quot;Practical API Fuzzing Strategies&quot;,
+  &quot;description&quot;: &quot;A concise overview of techniques for testing API robustness with generated inputs.&quot;,
+  &quot;body&quot;: &quot;API fuzzing helps identify validation gaps, unexpected edge cases, and potential reliability issues by sending varied but structured payloads to endpoints. This article covers practical strategies for designing effective fuzz cases while keeping requests valid enough to exercise application logic.&quot;,
+  &quot;tagList&quot;: [
+    &quot;api&quot;,
+    &quot;fuzzing&quot;,
+    &quot;testing&quot;
+  ]
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;errors&quot;: [
-    &quot;article already exists&quot;
+    {
+      &quot;loc&quot;: [
+        &quot;body&quot;,
+        &quot;article&quot;
+      ],
+      &quot;msg&quot;: &quot;field required&quot;,
+      &quot;type&quot;: &quot;value_error.missing&quot;
+    }
   ]
 }</pre>
                 </div>
                 
                 <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
                     <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #3 — POST http://localhost:8000/api/articles — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                        Lần gọi #4 — POST http://localhost:8000/api/articles — HTTP 422 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;article&quot;: {
-    &quot;title&quot;: &quot;Practical API Fuzzing Strategies&quot;,
-    &quot;description&quot;: &quot;A concise guide to improving API test coverage with realistic fuzzing inputs.&quot;,
-    &quot;body&quot;: &quot;API fuzzing helps uncover validation gaps, unexpected edge cases, and security issues by sending varied but structured inputs to endpoints. This article discusses practical strategies for generating realistic payloads, validating responses, and improving automated test coverage.&quot;,
-    &quot;tagList&quot;: [
-      &quot;api&quot;,
-      &quot;fuzzing&quot;,
-      &quot;testing&quot;
-    ]
-  }
+  &quot;Authorization&quot;: &quot;Token eyJ0e...Twuxc&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;title&quot;: &quot;Practical API Fuzzing Strategies&quot;,
+  &quot;description&quot;: &quot;A concise overview of techniques for testing API robustness with generated inputs.&quot;,
+  &quot;body&quot;: &quot;API fuzzing helps identify validation gaps, unexpected edge cases, and potential reliability issues by sending varied but structured payloads to endpoints. This article covers practical strategies for designing effective fuzz cases while keeping requests valid enough to exercise application logic.&quot;,
+  &quot;tagList&quot;: [
+    &quot;api&quot;,
+    &quot;fuzzing&quot;,
+    &quot;testing&quot;
+  ]
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;errors&quot;: [
-    &quot;article already exists&quot;
+    {
+      &quot;loc&quot;: [
+        &quot;body&quot;,
+        &quot;article&quot;
+      ],
+      &quot;msg&quot;: &quot;field required&quot;,
+      &quot;type&quot;: &quot;value_error.missing&quot;
+    }
   ]
 }</pre>
                 </div>
                 
                 <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
                     <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #4 — POST http://localhost:8000/api/articles — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                        Lần gọi #5 — POST http://localhost:8000/api/articles — HTTP 422 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;article&quot;: {
-    &quot;title&quot;: &quot;Practical API Fuzzing Strategies&quot;,
-    &quot;description&quot;: &quot;A concise guide to improving API test coverage with realistic fuzzing inputs.&quot;,
-    &quot;body&quot;: &quot;API fuzzing helps uncover validation gaps, unexpected edge cases, and security issues by sending varied but structured inputs to endpoints. This article discusses practical strategies for generating realistic payloads, validating responses, and improving automated test coverage.&quot;,
-    &quot;tagList&quot;: [
-      &quot;api&quot;,
-      &quot;fuzzing&quot;,
-      &quot;testing&quot;
-    ]
-  }
+  &quot;Authorization&quot;: &quot;Token eyJ0e...Twuxc&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;title&quot;: &quot;Practical API Fuzzing Strategies&quot;,
+  &quot;description&quot;: &quot;A concise overview of techniques for testing API robustness with generated inputs.&quot;,
+  &quot;body&quot;: &quot;API fuzzing helps identify validation gaps, unexpected edge cases, and potential reliability issues by sending varied but structured payloads to endpoints. This article covers practical strategies for designing effective fuzz cases while keeping requests valid enough to exercise application logic.&quot;,
+  &quot;tagList&quot;: [
+    &quot;api&quot;,
+    &quot;fuzzing&quot;,
+    &quot;testing&quot;
+  ]
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;errors&quot;: [
-    &quot;article already exists&quot;
+    {
+      &quot;loc&quot;: [
+        &quot;body&quot;,
+        &quot;article&quot;
+      ],
+      &quot;msg&quot;: &quot;field required&quot;,
+      &quot;type&quot;: &quot;value_error.missing&quot;
+    }
   ]
 }</pre>
                 </div>
                 
                 <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
                     <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #5 — POST http://localhost:8000/api/articles — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                        Lần gọi #6 — POST http://localhost:8000/api/articles — HTTP 422 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;article&quot;: {
-    &quot;title&quot;: &quot;Practical API Fuzzing Strategies&quot;,
-    &quot;description&quot;: &quot;A concise guide to improving API test coverage with realistic fuzzing inputs.&quot;,
-    &quot;body&quot;: &quot;API fuzzing helps uncover validation gaps, unexpected edge cases, and security issues by sending varied but structured inputs to endpoints. This article discusses practical strategies for generating realistic payloads, validating responses, and improving automated test coverage.&quot;,
-    &quot;tagList&quot;: [
-      &quot;api&quot;,
-      &quot;fuzzing&quot;,
-      &quot;testing&quot;
-    ]
-  }
+  &quot;Authorization&quot;: &quot;Token eyJ0e...Twuxc&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;title&quot;: &quot;Practical API Fuzzing Strategies&quot;,
+  &quot;description&quot;: &quot;A concise overview of techniques for testing API robustness with generated inputs.&quot;,
+  &quot;body&quot;: &quot;API fuzzing helps identify validation gaps, unexpected edge cases, and potential reliability issues by sending varied but structured payloads to endpoints. This article covers practical strategies for designing effective fuzz cases while keeping requests valid enough to exercise application logic.&quot;,
+  &quot;tagList&quot;: [
+    &quot;api&quot;,
+    &quot;fuzzing&quot;,
+    &quot;testing&quot;
+  ]
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;errors&quot;: [
-    &quot;article already exists&quot;
+    {
+      &quot;loc&quot;: [
+        &quot;body&quot;,
+        &quot;article&quot;
+      ],
+      &quot;msg&quot;: &quot;field required&quot;,
+      &quot;type&quot;: &quot;value_error.missing&quot;
+    }
   ]
 }</pre>
                 </div>
                 
                 <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
                     <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #6 — POST http://localhost:8000/api/articles — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                        Lần gọi #7 — POST http://localhost:8000/api/articles — HTTP 422 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;article&quot;: {
-    &quot;title&quot;: &quot;Practical API Fuzzing Strategies&quot;,
-    &quot;description&quot;: &quot;A concise guide to improving API test coverage with realistic fuzzing inputs.&quot;,
-    &quot;body&quot;: &quot;API fuzzing helps uncover validation gaps, unexpected edge cases, and security issues by sending varied but structured inputs to endpoints. This article discusses practical strategies for generating realistic payloads, validating responses, and improving automated test coverage.&quot;,
-    &quot;tagList&quot;: [
-      &quot;api&quot;,
-      &quot;fuzzing&quot;,
-      &quot;testing&quot;
-    ]
-  }
+  &quot;Authorization&quot;: &quot;Token eyJ0e...Twuxc&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;title&quot;: &quot;Practical API Fuzzing Strategies&quot;,
+  &quot;description&quot;: &quot;A concise overview of techniques for testing API robustness with generated inputs.&quot;,
+  &quot;body&quot;: &quot;API fuzzing helps identify validation gaps, unexpected edge cases, and potential reliability issues by sending varied but structured payloads to endpoints. This article covers practical strategies for designing effective fuzz cases while keeping requests valid enough to exercise application logic.&quot;,
+  &quot;tagList&quot;: [
+    &quot;api&quot;,
+    &quot;fuzzing&quot;,
+    &quot;testing&quot;
+  ]
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;errors&quot;: [
-    &quot;article already exists&quot;
+    {
+      &quot;loc&quot;: [
+        &quot;body&quot;,
+        &quot;article&quot;
+      ],
+      &quot;msg&quot;: &quot;field required&quot;,
+      &quot;type&quot;: &quot;value_error.missing&quot;
+    }
   ]
 }</pre>
                 </div>
                 
                 <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
                     <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #7 — POST http://localhost:8000/api/articles — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                        Lần gọi #8 — POST http://localhost:8000/api/articles — HTTP 422 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;article&quot;: {
-    &quot;title&quot;: &quot;Practical API Fuzzing Strategies&quot;,
-    &quot;description&quot;: &quot;A concise guide to improving API test coverage with realistic fuzzing inputs.&quot;,
-    &quot;body&quot;: &quot;API fuzzing helps uncover validation gaps, unexpected edge cases, and security issues by sending varied but structured inputs to endpoints. This article discusses practical strategies for generating realistic payloads, validating responses, and improving automated test coverage.&quot;,
-    &quot;tagList&quot;: [
-      &quot;api&quot;,
-      &quot;fuzzing&quot;,
-      &quot;testing&quot;
-    ]
-  }
+  &quot;Authorization&quot;: &quot;Token eyJ0e...Twuxc&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;title&quot;: &quot;Practical API Fuzzing Strategies&quot;,
+  &quot;description&quot;: &quot;A concise overview of techniques for testing API robustness with generated inputs.&quot;,
+  &quot;body&quot;: &quot;API fuzzing helps identify validation gaps, unexpected edge cases, and potential reliability issues by sending varied but structured payloads to endpoints. This article covers practical strategies for designing effective fuzz cases while keeping requests valid enough to exercise application logic.&quot;,
+  &quot;tagList&quot;: [
+    &quot;api&quot;,
+    &quot;fuzzing&quot;,
+    &quot;testing&quot;
+  ]
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;errors&quot;: [
-    &quot;article already exists&quot;
+    {
+      &quot;loc&quot;: [
+        &quot;body&quot;,
+        &quot;article&quot;
+      ],
+      &quot;msg&quot;: &quot;field required&quot;,
+      &quot;type&quot;: &quot;value_error.missing&quot;
+    }
   ]
 }</pre>
                 </div>
                 
                 <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
                     <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #8 — POST http://localhost:8000/api/articles — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                        Lần gọi #9 — POST http://localhost:8000/api/articles — HTTP 422 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;article&quot;: {
-    &quot;title&quot;: &quot;Practical API Fuzzing Strategies&quot;,
-    &quot;description&quot;: &quot;A concise guide to improving API test coverage with realistic fuzzing inputs.&quot;,
-    &quot;body&quot;: &quot;API fuzzing helps uncover validation gaps, unexpected edge cases, and security issues by sending varied but structured inputs to endpoints. This article discusses practical strategies for generating realistic payloads, validating responses, and improving automated test coverage.&quot;,
-    &quot;tagList&quot;: [
-      &quot;api&quot;,
-      &quot;fuzzing&quot;,
-      &quot;testing&quot;
-    ]
-  }
+  &quot;Authorization&quot;: &quot;Token eyJ0e...Twuxc&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;title&quot;: &quot;Practical API Fuzzing Strategies&quot;,
+  &quot;description&quot;: &quot;A concise overview of techniques for testing API robustness with generated inputs.&quot;,
+  &quot;body&quot;: &quot;API fuzzing helps identify validation gaps, unexpected edge cases, and potential reliability issues by sending varied but structured payloads to endpoints. This article covers practical strategies for designing effective fuzz cases while keeping requests valid enough to exercise application logic.&quot;,
+  &quot;tagList&quot;: [
+    &quot;api&quot;,
+    &quot;fuzzing&quot;,
+    &quot;testing&quot;
+  ]
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;errors&quot;: [
-    &quot;article already exists&quot;
+    {
+      &quot;loc&quot;: [
+        &quot;body&quot;,
+        &quot;article&quot;
+      ],
+      &quot;msg&quot;: &quot;field required&quot;,
+      &quot;type&quot;: &quot;value_error.missing&quot;
+    }
   ]
 }</pre>
                 </div>
                 
                 <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
                     <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #9 — POST http://localhost:8000/api/articles — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                        Lần gọi #10 — POST http://localhost:8000/api/articles — HTTP 422 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;article&quot;: {
-    &quot;title&quot;: &quot;Practical API Fuzzing Strategies&quot;,
-    &quot;description&quot;: &quot;A concise guide to improving API test coverage with realistic fuzzing inputs.&quot;,
-    &quot;body&quot;: &quot;API fuzzing helps uncover validation gaps, unexpected edge cases, and security issues by sending varied but structured inputs to endpoints. This article discusses practical strategies for generating realistic payloads, validating responses, and improving automated test coverage.&quot;,
-    &quot;tagList&quot;: [
-      &quot;api&quot;,
-      &quot;fuzzing&quot;,
-      &quot;testing&quot;
-    ]
-  }
+  &quot;Authorization&quot;: &quot;Token eyJ0e...Twuxc&quot;
 }</pre>
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;errors&quot;: [
-    &quot;article already exists&quot;
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;title&quot;: &quot;Practical API Fuzzing Strategies&quot;,
+  &quot;description&quot;: &quot;A concise overview of techniques for testing API robustness with generated inputs.&quot;,
+  &quot;body&quot;: &quot;API fuzzing helps identify validation gaps, unexpected edge cases, and potential reliability issues by sending varied but structured payloads to endpoints. This article covers practical strategies for designing effective fuzz cases while keeping requests valid enough to exercise application logic.&quot;,
+  &quot;tagList&quot;: [
+    &quot;api&quot;,
+    &quot;fuzzing&quot;,
+    &quot;testing&quot;
   ]
 }</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
-                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #10 — POST http://localhost:8000/api/articles — HTTP 400 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;article&quot;: {
-    &quot;title&quot;: &quot;Practical API Fuzzing Strategies&quot;,
-    &quot;description&quot;: &quot;A concise guide to improving API test coverage with realistic fuzzing inputs.&quot;,
-    &quot;body&quot;: &quot;API fuzzing helps uncover validation gaps, unexpected edge cases, and security issues by sending varied but structured inputs to endpoints. This article discusses practical strategies for generating realistic payloads, validating responses, and improving automated test coverage.&quot;,
-    &quot;tagList&quot;: [
-      &quot;api&quot;,
-      &quot;fuzzing&quot;,
-      &quot;testing&quot;
-    ]
-  }
-}</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;errors&quot;: [
-    &quot;article already exists&quot;
+    {
+      &quot;loc&quot;: [
+        &quot;body&quot;,
+        &quot;article&quot;
+      ],
+      &quot;msg&quot;: &quot;field required&quot;,
+      &quot;type&quot;: &quot;value_error.missing&quot;
+    }
   ]
 }</pre>
                 </div>

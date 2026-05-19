@@ -59,7 +59,7 @@
         <a href="index.html" class="back-btn">&larr; Quay lại Dashboard</a>
         <h1>API: <span style="font-family: 'Fira Code', monospace; color: var(--accent-primary);">check_otp_v3</span></h1>
         
-        <p>Tổng số lần gọi: <strong>15</strong></p>
+        <p>Tổng số lần gọi: <strong>16</strong></p>
         
         <h2 style="margin-top: 2rem; margin-bottom: 1rem;">Lịch sử các lần Request/Response</h2>
 
@@ -70,7 +70,7 @@
                     
                     
                     <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 0.75rem; margin-bottom: 1rem; font-size: 0.85rem; color: #b45309; border-radius: 0 4px 4px 0;">
-                        <strong>⚠️ Original Error HTTP 500: {&quot;message&quot;:&quot;Invalid OTP! Please try again..&quot;,&quot;status&quot;:500}</strong>
+                        <strong>⚠️ Original Error HTTP 500: User was not found for parameters {userEmail=fuzz_54cb5c@test.com}</strong>
                         
                         <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
                             <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #1 Failed (HTTP 500)</h5>
@@ -79,16 +79,13 @@
                                     <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
                                     <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
   &quot;otp&quot;: &quot;483920&quot;,
-  &quot;password&quot;: &quot;09A139d6@534!&quot;,
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;
+  &quot;password&quot;: &quot;5432197e@324!&quot;,
+  &quot;email&quot;: &quot;fuzz_54cb5c@test.com&quot;
 }</pre>
                                 </div>
                                 <div style="flex: 1;">
                                     <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
-                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">{
-  &quot;message&quot;: &quot;Invalid OTP! Please try again..&quot;,
-  &quot;status&quot;: 500
-}</pre>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">User was not found for parameters {userEmail=fuzz_54cb5c@test.com}</pre>
                                 </div>
                             </div>
                         </div>
@@ -99,9 +96,9 @@
                                 <div style="flex: 1;">
                                     <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
                                     <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
-  &quot;otp&quot;: &quot;123456&quot;,
-  &quot;password&quot;: &quot;StrongPass1!&quot;,
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;
+  &quot;otp&quot;: &quot;483920&quot;,
+  &quot;password&quot;: &quot;Trieu1@gmailcom&quot;,
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;
 }</pre>
                                 </div>
                                 <div style="flex: 1;">
@@ -117,11 +114,16 @@
                     </div>
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;otp&quot;: &quot;123456&quot;,
-  &quot;password&quot;: &quot;StrongPass1!&quot;,
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;otp&quot;: &quot;483920&quot;,
+  &quot;password&quot;: &quot;Trieu1@gmailcom&quot;,
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -138,11 +140,16 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
   &quot;otp&quot;: &quot;482917&quot;,
-  &quot;password&quot;: &quot;870Ffb24@742!&quot;,
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;
+  &quot;password&quot;: &quot;4348a396@181!&quot;,
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -159,18 +166,20 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;otp&quot;: &quot;482913&quot;,
-  &quot;password&quot;: &quot;6FC33bb3@600!&quot;,
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;otp&quot;: &quot;483920&quot;,
+  &quot;password&quot;: &quot;3DD2f692@805!&quot;,
+  &quot;email&quot;: &quot;fuzz_dfcc0f@test.com&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;message&quot;: &quot;Invalid OTP! Please try again..&quot;,
-  &quot;status&quot;: 500
-}</pre>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">User was not found for parameters {userEmail=fuzz_dfcc0f@test.com}</pre>
                 </div>
                 
                 <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
@@ -180,11 +189,16 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
   &quot;otp&quot;: &quot;482917&quot;,
-  &quot;password&quot;: &quot;E8E8599b@765!&quot;,
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;
+  &quot;password&quot;: &quot;C0350905@858!&quot;,
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -201,11 +215,16 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
   &quot;otp&quot;: &quot;482917&quot;,
-  &quot;password&quot;: &quot;ED828ff4@366!&quot;,
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;
+  &quot;password&quot;: &quot;F0C67b83@730!&quot;,
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -222,18 +241,20 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;otp&quot;: &quot;482917&quot;,
-  &quot;password&quot;: &quot;C5B9961b@106!&quot;,
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;otp&quot;: &quot;483920&quot;,
+  &quot;password&quot;: &quot;CB4A4f6a@749!&quot;,
+  &quot;email&quot;: &quot;fuzz_6619dd@test.com&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;message&quot;: &quot;Invalid OTP! Please try again..&quot;,
-  &quot;status&quot;: 500
-}</pre>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">User was not found for parameters {userEmail=fuzz_6619dd@test.com}</pre>
                 </div>
                 
                 <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
@@ -243,18 +264,20 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;otp&quot;: &quot;482917&quot;,
-  &quot;password&quot;: &quot;5566e629@651!&quot;,
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;otp&quot;: &quot;483920&quot;,
+  &quot;password&quot;: &quot;17EF2f7f@601!&quot;,
+  &quot;email&quot;: &quot;fuzz_3bfff2@test.com&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;message&quot;: &quot;Invalid OTP! Please try again..&quot;,
-  &quot;status&quot;: 500
-}</pre>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">User was not found for parameters {userEmail=fuzz_3bfff2@test.com}</pre>
                 </div>
                 
                 <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
@@ -264,11 +287,16 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;otp&quot;: &quot;483920&quot;,
-  &quot;password&quot;: &quot;330D5a0c@763!&quot;,
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;otp&quot;: &quot;483921&quot;,
+  &quot;password&quot;: &quot;C6579358@119!&quot;,
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -285,18 +313,20 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;otp&quot;: &quot;482913&quot;,
-  &quot;password&quot;: &quot;038Caabb@200!&quot;,
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;otp&quot;: &quot;483920&quot;,
+  &quot;password&quot;: &quot;2E55e7c9@650!&quot;,
+  &quot;email&quot;: &quot;fuzz_cece6f@test.com&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;message&quot;: &quot;Invalid OTP! Please try again..&quot;,
-  &quot;status&quot;: 500
-}</pre>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">User was not found for parameters {userEmail=fuzz_cece6f@test.com}</pre>
                 </div>
                 
                 <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
@@ -306,11 +336,16 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;otp&quot;: &quot;483920&quot;,
-  &quot;password&quot;: &quot;97909aea@691!&quot;,
-  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;otp&quot;: &quot;493827&quot;,
+  &quot;password&quot;: &quot;C1FAc862@138!&quot;,
+  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -327,11 +362,16 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;otp&quot;: &quot;483921&quot;,
-  &quot;password&quot;: &quot;3B137e80@151!&quot;,
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;otp&quot;: &quot;482913&quot;,
+  &quot;password&quot;: &quot;7A8A94c9@552!&quot;,
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -348,11 +388,16 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;otp&quot;: &quot;482917&quot;,
-  &quot;password&quot;: &quot;DE1Dd234@695!&quot;,
-  &quot;email&quot;: &quot;adam007@example.com&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;otp&quot;: &quot;482913&quot;,
+  &quot;password&quot;: &quot;B6DC8bc6@930!&quot;,
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -369,11 +414,16 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
   &quot;otp&quot;: &quot;482913&quot;,
-  &quot;password&quot;: &quot;4FF29a45@661!&quot;,
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;
+  &quot;password&quot;: &quot;D9795e05@658!&quot;,
+  &quot;email&quot;: &quot;adam007@example.com&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -390,11 +440,39 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;otp&quot;: &quot;483921&quot;,
-  &quot;password&quot;: &quot;EBB06c41@879!&quot;,
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;otp&quot;: &quot;482913&quot;,
+  &quot;password&quot;: &quot;220Bc8ef@523!&quot;,
+  &quot;email&quot;: &quot;fuzz_ce3bc6@test.com&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">User was not found for parameters {userEmail=fuzz_ce3bc6@test.com}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
+                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #15 — POST http://localhost:8888/identity/api/auth/v3/check-otp — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;otp&quot;: &quot;483927&quot;,
+  &quot;password&quot;: &quot;9BF89ac3@513!&quot;,
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -406,16 +484,21 @@
                 
                 <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
                     <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #15 — POST http://localhost:8888/identity/api/auth/v3/check-otp — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                        Lần gọi #16 — POST http://localhost:8888/identity/api/auth/v3/check-otp — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;otp&quot;: &quot;482913&quot;,
-  &quot;password&quot;: &quot;7AF8c161@218!&quot;,
-  &quot;email&quot;: &quot;adam007@example.com&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;otp&quot;: &quot;483921&quot;,
+  &quot;password&quot;: &quot;CB473caa@326!&quot;,
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>

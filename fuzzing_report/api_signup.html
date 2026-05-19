@@ -59,7 +59,7 @@
         <a href="index.html" class="back-btn">&larr; Quay lại Dashboard</a>
         <h1>API: <span style="font-family: 'Fira Code', monospace; color: var(--accent-primary);">signup</span></h1>
         
-        <p>Tổng số lần gọi: <strong>15</strong></p>
+        <p>Tổng số lần gọi: <strong>16</strong></p>
         
         <h2 style="margin-top: 2rem; margin-bottom: 1rem;">Lịch sử các lần Request/Response</h2>
 
@@ -70,12 +70,17 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;fuzz_21cae9@test.com&quot;,
-  &quot;name&quot;: &quot;Fuzzer 3DD1&quot;,
-  &quot;number&quot;: &quot;0950669166&quot;,
-  &quot;password&quot;: &quot;561F1e65@167!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_2ede8d@test.com&quot;,
+  &quot;name&quot;: &quot;Fuzzer C42E&quot;,
+  &quot;number&quot;: &quot;0937802226&quot;,
+  &quot;password&quot;: &quot;4F5F0b6e@164!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -92,8 +97,7 @@
                     
                     
                     <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 0.75rem; margin-bottom: 1rem; font-size: 0.85rem; color: #b45309; border-radius: 0 4px 4px 0;">
-                        <strong>⚠️ Original Error HTTP 500: could not execute statement [ERROR: duplicate key value violates unique constraint &quot;user_login_pkey&quot;
-  Detail: Key (id)=(101) already exists.] [insert into user_login (api_key,code,created_on,email,jwt_token,number,password,role,id) values (?,?,?,?,?,?,?,?,?)]; SQL [insert into user_login (api_key,code,created_on,email,jwt_token,number,password,role,id) values (?,?,?,?,?,?,?,?,?)]; constraint [user_login_pkey]</strong>
+                        <strong>⚠️ Original Error HTTP 403: {&quot;message&quot;:&quot;Number already registered! Number: state[&#x27;number&#x27;]&quot;,&quot;status&quot;:403}</strong>
                         
                         <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
                             <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #1 Failed (HTTP 500)</h5>
@@ -101,16 +105,38 @@
                                 <div style="flex: 1;">
                                     <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
                                     <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
-  &quot;email&quot;: &quot;fuzz_bc0cf8@test.com&quot;,
-  &quot;name&quot;: &quot;Fuzzer 775A&quot;,
-  &quot;number&quot;: &quot;0994645819&quot;,
-  &quot;password&quot;: &quot;C4F6d272@219!&quot;
+  &quot;email&quot;: &quot;fuzz_5d5487@test.com&quot;,
+  &quot;name&quot;: &quot;Fuzzer A6C2&quot;,
+  &quot;number&quot;: &quot;0960310701&quot;,
+  &quot;password&quot;: &quot;BBB0e934@960!&quot;
 }</pre>
                                 </div>
                                 <div style="flex: 1;">
                                     <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
                                     <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">could not execute statement [ERROR: duplicate key value violates unique constraint &quot;user_login_pkey&quot;
-  Detail: Key (id)=(101) already exists.] [insert into user_login (api_key,code,created_on,email,jwt_token,number,password,role,id) values (?,?,?,?,?,?,?,?,?)]; SQL [insert into user_login (api_key,code,created_on,email,jwt_token,number,password,role,id) values (?,?,?,?,?,?,?,?,?)]; constraint [user_login_pkey]</pre>
+  Detail: Key (id)=(135) already exists.] [insert into user_login (api_key,code,created_on,email,jwt_token,number,password,role,id) values (?,?,?,?,?,?,?,?,?)]; SQL [insert into user_login (api_key,code,created_on,email,jwt_token,number,password,role,id) values (?,?,?,?,?,?,?,?,?)]; constraint [user_login_pkey]</pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
+                            <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #2 Failed (HTTP 403)</h5>
+                            <div style="display: flex; gap: 1rem;">
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
+  &quot;email&quot;: &quot;fuzz_a9f3c7e1b24d@test.com&quot;,
+  &quot;name&quot;: &quot;state[&#x27;name&#x27;]&quot;,
+  &quot;number&quot;: &quot;state[&#x27;number&#x27;]&quot;,
+  &quot;password&quot;: &quot;Qx7!mP92@vL&quot;
+}</pre>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">{
+  &quot;message&quot;: &quot;Number already registered! Number: state[&#x27;number&#x27;]&quot;,
+  &quot;status&quot;: 403
+}</pre>
                                 </div>
                             </div>
                         </div>
@@ -118,13 +144,17 @@
                     </div>
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;fuzz_7f3a9c2d@test.com&quot;,
-  &quot;name&quot;: &quot;Maya Hartwell&quot;,
-  &quot;number&quot;: &quot;0718294635&quot;,
-  &quot;password&quot;: &quot;V9m#qL42s!&quot;,
-  &quot;id&quot;: &quot;847392&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_5e9c2a7f1b3d@test.com&quot;,
+  &quot;name&quot;: &quot;state[&#x27;name&#x27;]&quot;,
+  &quot;number&quot;: &quot;+15558362947&quot;,
+  &quot;password&quot;: &quot;Vx9!pL42@rQ&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -141,17 +171,22 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;fuzz_791355@test.com&quot;,
-  &quot;name&quot;: &quot;Fuzzer 5950&quot;,
-  &quot;number&quot;: &quot;0969712464&quot;,
-  &quot;password&quot;: &quot;F34Bf801@856!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_a0cda3@test.com&quot;,
+  &quot;name&quot;: &quot;Fuzzer F453&quot;,
+  &quot;number&quot;: &quot;0933398130&quot;,
+  &quot;password&quot;: &quot;F0538f44@576!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">could not execute statement [ERROR: duplicate key value violates unique constraint &quot;user_login_pkey&quot;
-  Detail: Key (id)=(103) already exists.] [insert into user_login (api_key,code,created_on,email,jwt_token,number,password,role,id) values (?,?,?,?,?,?,?,?,?)]; SQL [insert into user_login (api_key,code,created_on,email,jwt_token,number,password,role,id) values (?,?,?,?,?,?,?,?,?)]; constraint [user_login_pkey]</pre>
+  Detail: Key (id)=(137) already exists.] [insert into user_login (api_key,code,created_on,email,jwt_token,number,password,role,id) values (?,?,?,?,?,?,?,?,?)]; SQL [insert into user_login (api_key,code,created_on,email,jwt_token,number,password,role,id) values (?,?,?,?,?,?,?,?,?)]; constraint [user_login_pkey]</pre>
                 </div>
                 
                 <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
@@ -161,12 +196,17 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;fuzz_5dfe6a@test.com&quot;,
-  &quot;name&quot;: &quot;Fuzzer DDCF&quot;,
-  &quot;number&quot;: &quot;0908994673&quot;,
-  &quot;password&quot;: &quot;E66Bb2a2@7!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_0cf4a3@test.com&quot;,
+  &quot;name&quot;: &quot;Fuzzer 04A4&quot;,
+  &quot;number&quot;: &quot;0998094698&quot;,
+  &quot;password&quot;: &quot;A81C42b1@243!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -183,12 +223,17 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;fuzz_999699@test.com&quot;,
-  &quot;name&quot;: &quot;Fuzzer 5145&quot;,
-  &quot;number&quot;: &quot;0943133369&quot;,
-  &quot;password&quot;: &quot;44C43d4e@645!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_912f28@test.com&quot;,
+  &quot;name&quot;: &quot;Fuzzer F399&quot;,
+  &quot;number&quot;: &quot;0960919812&quot;,
+  &quot;password&quot;: &quot;FD1Ec659@496!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -205,12 +250,17 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;fuzz_b5bab9@test.com&quot;,
-  &quot;name&quot;: &quot;Fuzzer DE16&quot;,
-  &quot;number&quot;: &quot;0930869818&quot;,
-  &quot;password&quot;: &quot;70F85758@627!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_6c10c8@test.com&quot;,
+  &quot;name&quot;: &quot;Fuzzer 9A33&quot;,
+  &quot;number&quot;: &quot;0945200887&quot;,
+  &quot;password&quot;: &quot;DEC0ae13@779!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -227,12 +277,17 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;fuzz_a86ca0@test.com&quot;,
-  &quot;name&quot;: &quot;Fuzzer 11FB&quot;,
-  &quot;number&quot;: &quot;0926269102&quot;,
-  &quot;password&quot;: &quot;E24Ebd66@211!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_4ae2c0@test.com&quot;,
+  &quot;name&quot;: &quot;Fuzzer C218&quot;,
+  &quot;number&quot;: &quot;0933545047&quot;,
+  &quot;password&quot;: &quot;1AEFcbfd@620!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -249,12 +304,17 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;fuzz_3f2f99@test.com&quot;,
-  &quot;name&quot;: &quot;Fuzzer B8D8&quot;,
-  &quot;number&quot;: &quot;0990430516&quot;,
-  &quot;password&quot;: &quot;9D3A14fa@978!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_b61dea@test.com&quot;,
+  &quot;name&quot;: &quot;Fuzzer 9E16&quot;,
+  &quot;number&quot;: &quot;0920171223&quot;,
+  &quot;password&quot;: &quot;AC478bb9@94!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -271,12 +331,17 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;fuzz_dcc214@test.com&quot;,
-  &quot;name&quot;: &quot;Fuzzer AD04&quot;,
-  &quot;number&quot;: &quot;0943082452&quot;,
-  &quot;password&quot;: &quot;66F15c98@64!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_f44280@test.com&quot;,
+  &quot;name&quot;: &quot;Fuzzer 197F&quot;,
+  &quot;number&quot;: &quot;0911298267&quot;,
+  &quot;password&quot;: &quot;3E91b611@180!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -293,12 +358,17 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;fuzz_55b6cb@test.com&quot;,
-  &quot;name&quot;: &quot;Fuzzer 42C9&quot;,
-  &quot;number&quot;: &quot;0925809832&quot;,
-  &quot;password&quot;: &quot;A94E1185@424!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_1fa61c@test.com&quot;,
+  &quot;name&quot;: &quot;Fuzzer A45D&quot;,
+  &quot;number&quot;: &quot;0920608032&quot;,
+  &quot;password&quot;: &quot;2DB65b31@877!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -315,12 +385,17 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;fuzz_423391@test.com&quot;,
-  &quot;name&quot;: &quot;Fuzzer 6BEA&quot;,
-  &quot;number&quot;: &quot;0925597515&quot;,
-  &quot;password&quot;: &quot;97DDbe5c@474!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_327587@test.com&quot;,
+  &quot;name&quot;: &quot;Fuzzer CE9D&quot;,
+  &quot;number&quot;: &quot;0951751395&quot;,
+  &quot;password&quot;: &quot;86F24e94@68!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -330,26 +405,29 @@
 }</pre>
                 </div>
                 
-                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
-                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #12 — POST http://localhost:8888/identity/api/auth/signup — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
+                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #12 — POST http://localhost:8888/identity/api/auth/signup — HTTP 500 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;fuzz_e2ab98@test.com&quot;,
-  &quot;name&quot;: &quot;Fuzzer 52AA&quot;,
-  &quot;number&quot;: &quot;0978058272&quot;,
-  &quot;password&quot;: &quot;E281c073@811!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_1fc532@test.com&quot;,
+  &quot;name&quot;: &quot;Fuzzer EDE0&quot;,
+  &quot;number&quot;: &quot;0961551612&quot;,
+  &quot;password&quot;: &quot;6AE3f5e7@275!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;message&quot;: &quot;User registered successfully! Please Login.&quot;,
-  &quot;status&quot;: 200
-}</pre>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">could not execute statement [ERROR: duplicate key value violates unique constraint &quot;user_login_pkey&quot;
+  Detail: Key (id)=(146) already exists.] [insert into user_login (api_key,code,created_on,email,jwt_token,number,password,role,id) values (?,?,?,?,?,?,?,?,?)]; SQL [insert into user_login (api_key,code,created_on,email,jwt_token,number,password,role,id) values (?,?,?,?,?,?,?,?,?)]; constraint [user_login_pkey]</pre>
                 </div>
                 
                 <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
@@ -359,12 +437,17 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;fuzz_2ed0f8@test.com&quot;,
-  &quot;name&quot;: &quot;Fuzzer 1C56&quot;,
-  &quot;number&quot;: &quot;0956942075&quot;,
-  &quot;password&quot;: &quot;CD559012@942!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_15a6fb@test.com&quot;,
+  &quot;name&quot;: &quot;Fuzzer E845&quot;,
+  &quot;number&quot;: &quot;0920136413&quot;,
+  &quot;password&quot;: &quot;6FC6dbc3@44!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -381,12 +464,17 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;fuzz_c0ac4f@test.com&quot;,
-  &quot;name&quot;: &quot;Fuzzer 6154&quot;,
-  &quot;number&quot;: &quot;0929079339&quot;,
-  &quot;password&quot;: &quot;72DD56a0@8!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_009a8f@test.com&quot;,
+  &quot;name&quot;: &quot;Fuzzer E452&quot;,
+  &quot;number&quot;: &quot;0956091687&quot;,
+  &quot;password&quot;: &quot;3BD5c655@104!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -403,12 +491,44 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;fuzz_483066@test.com&quot;,
-  &quot;name&quot;: &quot;Fuzzer D56B&quot;,
-  &quot;number&quot;: &quot;0917970820&quot;,
-  &quot;password&quot;: &quot;F6B4103e@568!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_a879a1@test.com&quot;,
+  &quot;name&quot;: &quot;Fuzzer CE89&quot;,
+  &quot;number&quot;: &quot;0972942094&quot;,
+  &quot;password&quot;: &quot;9C0C9a84@494!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;message&quot;: &quot;User registered successfully! Please Login.&quot;,
+  &quot;status&quot;: 200
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #16 — POST http://localhost:8888/identity/api/auth/signup — HTTP 200 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_12d1a6@test.com&quot;,
+  &quot;name&quot;: &quot;Fuzzer 2105&quot;,
+  &quot;number&quot;: &quot;0957366403&quot;,
+  &quot;password&quot;: &quot;2A6Abc57@287!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>

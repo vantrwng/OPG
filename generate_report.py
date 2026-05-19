@@ -104,6 +104,7 @@ def generate_html_report(json_file="beam_strategies.json", output_dir="fuzzing_r
                 response_text = req.get("response_text", "")
                 repair_reason = req.get("repair_reason", "")
                 repair_history = req.get("repair_history", [])
+                sent_headers = req.get("sent_headers", {})
                 
                 status_int = int(status_str)
                 if status_int >= 500: color = "var(--danger)"
@@ -111,6 +112,26 @@ def generate_html_report(json_file="beam_strategies.json", output_dir="fuzzing_r
                 else: color = "var(--success)"
 
                 safe_req = html.escape(json.dumps(request_payload, indent=2, ensure_ascii=False))
+                
+                # Format headers for display (hide token value)
+                headers_display = {}
+                for k, v in sent_headers.items():
+                    if k.lower() == "authorization":
+                        # Show prefix only (e.g., "Bearer ****...****")
+                        if isinstance(v, str) and " " in v:
+                            parts = v.split(" ", 1)
+                            prefix = parts[0]
+                            token = parts[1] if len(parts) > 1 else ""
+                            if len(token) > 10:
+                                token_display = token[:5] + "..." + token[-5:]
+                            else:
+                                token_display = "***"
+                            headers_display[k] = f"{prefix} {token_display}"
+                        else:
+                            headers_display[k] = "***HIDDEN***"
+                    else:
+                        headers_display[k] = v
+                safe_headers = html.escape(json.dumps(headers_display, indent=2, ensure_ascii=False))
 
                 safe_resp = html.escape(str(response_text))
                 try:
@@ -173,7 +194,10 @@ def generate_html_report(json_file="beam_strategies.json", output_dir="fuzzing_r
                     
                     {repair_html}
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{safe_headers}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{safe_req}</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>

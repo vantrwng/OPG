@@ -1,0 +1,16 @@
+# Testing dependencies for AI-Driven API Fuzzer
+
+pytest>=7.0.0
+pytest-cov>=4.0.0          # Code coverage reporting
+pytest-mock>=3.10.0        # Enhanced mocking
+pytest-xdist>=3.0.0        # Parallel test execution
+pytest-timeout>=2.1.0      # Test timeout support
+pytest-asyncio>=0.20.0     # Async test support (future use)
+
+# Type checking and validation
+pydantic>=2.0.0            # Data validation using Python type annotations
+jsonschema>=4.17.0         # JSON schema validation
+
+# Mocking and testing utilities
+responses>=0.20.0          # HTTP request mocking
+faker>=15.0.0              # Fake data generation

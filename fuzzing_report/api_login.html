@@ -59,18 +59,18 @@
         <a href="index.html" class="back-btn">&larr; Quay lại Dashboard</a>
         <h1>API: <span style="font-family: 'Fira Code', monospace; color: var(--accent-primary);">login</span></h1>
         
-        <p>Tổng số lần gọi: <strong>14</strong></p>
+        <p>Tổng số lần gọi: <strong>15</strong></p>
         
         <h2 style="margin-top: 2rem; margin-bottom: 1rem;">Lịch sử các lần Request/Response</h2>
 
-                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
-                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #1 — POST http://localhost:8888/identity/api/auth/login — HTTP 401 <span style='background: #f59e0b; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🛠️ LLM Repaired</span>
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #1 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #f59e0b; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🛠️ LLM Repaired</span>
                     </h3>
                     
                     
                     <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 0.75rem; margin-bottom: 1rem; font-size: 0.85rem; color: #b45309; border-radius: 0 4px 4px 0;">
-                        <strong>⚠️ Original Error HTTP 401: {&quot;token&quot;:null,&quot;type&quot;:&quot;&quot;,&quot;message&quot;:&quot;Invalid Credentials&quot;,&quot;mfaRequired&quot;:false}</strong>
+                        <strong>⚠️ Original Error HTTP 401: {&quot;token&quot;:null,&quot;type&quot;:&quot;&quot;,&quot;message&quot;:&quot;Given Email is not registered! &quot;,&quot;mfaRequired&quot;:false}</strong>
                         
                         <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
                             <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #1 Failed (HTTP 401)</h5>
@@ -78,30 +78,8 @@
                                 <div style="flex: 1;">
                                     <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
                                     <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;password&quot;: &quot;CDF97537@135!&quot;
-}</pre>
-                                </div>
-                                <div style="flex: 1;">
-                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
-                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">{
-  &quot;token&quot;: null,
-  &quot;type&quot;: &quot;&quot;,
-  &quot;message&quot;: &quot;Invalid Credentials&quot;,
-  &quot;mfaRequired&quot;: false
-}</pre>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
-                            <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #2 Failed (HTTP 401)</h5>
-                            <div style="display: flex; gap: 1rem;">
-                                <div style="flex: 1;">
-                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
-                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
-  &quot;email&quot;: &quot;fuzz_a7f3c9d2e8b14f6a@test.com&quot;,
-  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
+  &quot;email&quot;: &quot;fuzz_8b6292@test.com&quot;,
+  &quot;password&quot;: &quot;EC7C7240@173!&quot;
 }</pre>
                                 </div>
                                 <div style="flex: 1;">
@@ -110,28 +88,6 @@
   &quot;token&quot;: null,
   &quot;type&quot;: &quot;&quot;,
   &quot;message&quot;: &quot;Given Email is not registered! &quot;,
-  &quot;mfaRequired&quot;: false
-}</pre>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
-                            <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #3 Failed (HTTP 401)</h5>
-                            <div style="display: flex; gap: 1rem;">
-                                <div style="flex: 1;">
-                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
-                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;password&quot;: &quot;SecureP@ssw0rd!&quot;
-}</pre>
-                                </div>
-                                <div style="flex: 1;">
-                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
-                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">{
-  &quot;token&quot;: null,
-  &quot;type&quot;: &quot;&quot;,
-  &quot;message&quot;: &quot;Invalid Credentials&quot;,
   &quot;mfaRequired&quot;: false
 }</pre>
                                 </div>
@@ -141,61 +97,130 @@
                     </div>
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;fuzz_7f3a9c2e1b@test.com&quot;,
-  &quot;password&quot;: &quot;FuzzPass9!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;password&quot;: &quot;Trieu1@gmailcom&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJ0cmlldTdhQGdtYWlsLmNvbSIsImlhdCI6MTc3OTEyMTk3OSwiZXhwIjoxNzc5NzI2Nzc5LCJyb2xlIjoidXNlciJ9.jPZ55UCDpFx-_WRQTohPoLbWI3ghGp8IhkqairmZDwGVkU8XbHrYl9pyMsu8EaB9hequcEH8CayqqEVvyJVmgeK1kUA_L2MDSdjcSWIQjNtJJLBo7qpJOexxyqqAoroJknmuO8u_cXoz4Se2G3AZBf03g7vuydRBN9zYC--GrG2Q7AQ9neyJcCCbSTgg-ooob3Frfs8Rm467wRWVjqDDu8rB8NzS5M83WKEwdOrEllz6cq-vE7Y0lNwwQR_HEEOWEq4CuhZngKA7gjrYhq5IEFD6RJmlzBCmJd6g3KfomjULTsXgDXaBqBJYw5dcU9a-9ZyoDLhKGTEH0Y6BfL_zpg&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #2 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #f59e0b; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🛠️ LLM Repaired</span>
+                    </h3>
+                    
+                    
+                    <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 0.75rem; margin-bottom: 1rem; font-size: 0.85rem; color: #b45309; border-radius: 0 4px 4px 0;">
+                        <strong>⚠️ Original Error HTTP 401: {&quot;token&quot;:null,&quot;type&quot;:&quot;&quot;,&quot;message&quot;:&quot;Given Email is not registered! &quot;,&quot;mfaRequired&quot;:false}</strong>
+                        
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
+                            <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #1 Failed (HTTP 401)</h5>
+                            <div style="display: flex; gap: 1rem;">
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
+  &quot;email&quot;: &quot;fuzz_3f0a7b@test.com&quot;,
+  &quot;password&quot;: &quot;860F760b@763!&quot;
+}</pre>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">{
   &quot;token&quot;: null,
   &quot;type&quot;: &quot;&quot;,
   &quot;message&quot;: &quot;Given Email is not registered! &quot;,
   &quot;mfaRequired&quot;: false
 }</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
-                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #2 — POST http://localhost:8888/identity/api/auth/login — HTTP 401 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
-                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
                     
                     
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;password&quot;: &quot;E6795065@150!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;password&quot;: &quot;Trieu1@gmailcom&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;token&quot;: null,
-  &quot;type&quot;: &quot;&quot;,
-  &quot;message&quot;: &quot;Invalid Credentials&quot;,
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJ0cmlldTdhQGdtYWlsLmNvbSIsImlhdCI6MTc3OTEyMjAxNiwiZXhwIjoxNzc5NzI2ODE2LCJyb2xlIjoidXNlciJ9.VSOJCO9ZbbswiZP5_zlbprYkih-StDEsYCgaTUAEMQ1sB6bCLUD3Q_qE8h0dq0299z_8g5W_4m3WVffS_D_J6veVair79W65o8DFRsWEAftQyonrdIby-96JLcadkB9QyZPzEs3w_5tajN-B53bFtlY1FXQ7wmT1VhMlZK0N5zwCOCdqZmkFEos613dmTQNzcKNVn9UNVpGelYsHgSttLRe3n3FtH_DNGp_rZIKwXrGZD79IokiJE1DASGXlIqAhuHhYdD0EGrM3tIJiT5hGmBq2zteksg8ooR7hyFbXJSLcFr71VrGmW349YKTcdEaIm_KDPbwEUkyulT-t54zZZQ&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
   &quot;mfaRequired&quot;: false
 }</pre>
                 </div>
                 
-                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
-                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #3 — POST http://localhost:8888/identity/api/auth/login — HTTP 401 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #3 — POST http://localhost:8888/identity/api/auth/login — HTTP 200 <span style='background: #f59e0b; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🛠️ LLM Repaired</span>
                     </h3>
                     
                     
+                    <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 0.75rem; margin-bottom: 1rem; font-size: 0.85rem; color: #b45309; border-radius: 0 4px 4px 0;">
+                        <strong>⚠️ Original Error HTTP 401: {&quot;token&quot;:null,&quot;type&quot;:&quot;&quot;,&quot;message&quot;:&quot;Given Email is not registered! &quot;,&quot;mfaRequired&quot;:false}</strong>
+                        
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
+                            <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #1 Failed (HTTP 401)</h5>
+                            <div style="display: flex; gap: 1rem;">
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
+  &quot;email&quot;: &quot;fuzz_131436@test.com&quot;,
+  &quot;password&quot;: &quot;E9C7a0d6@179!&quot;
+}</pre>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">{
+  &quot;token&quot;: null,
+  &quot;type&quot;: &quot;&quot;,
+  &quot;message&quot;: &quot;Given Email is not registered! &quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;password&quot;: &quot;43D5b3cd@476!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;password&quot;: &quot;Trieu1@gmailcom&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;token&quot;: null,
-  &quot;type&quot;: &quot;&quot;,
-  &quot;message&quot;: &quot;Invalid Credentials&quot;,
+  &quot;token&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJ0cmlldTdhQGdtYWlsLmNvbSIsImlhdCI6MTc3OTEyMjA3MCwiZXhwIjoxNzc5NzI2ODcwLCJyb2xlIjoidXNlciJ9.ltKQOMAS9ekYrFAQ6CZngyVaa-YBckW_NaFNP2cT9me4jtQU-QOVd6iwrVpM-VbCn76YHzX2yg5MenZBEC2KV4JjkHXAbzzw3b6gPhQCilVB-9ptk7WG3RHVE5ba8iLkOxZOFH7yYOWcHjPsoX3L63dZRRWMUNY5mtKNQkPGuNcQ8sn4Eo7i5Hp0XvUALzSKY1JtJT0mNsE07mpBkhK08h5oAL5pS7Phg-HKjjlr-f094bmDEA4s8_GREEKH28Im5FUJYS5-oBGZCTQ5FZH6yYevza6WrQxald-um_3hBTCFJ8Abne7q3je2tZ53IelLq9bjmiRD1cIzAgLCLwI1vg&quot;,
+  &quot;type&quot;: &quot;Bearer&quot;,
+  &quot;message&quot;: &quot;Login successful&quot;,
   &quot;mfaRequired&quot;: false
 }</pre>
                 </div>
@@ -207,10 +232,15 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;password&quot;: &quot;654Ee81d@788!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;password&quot;: &quot;9C242988@155!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -229,10 +259,15 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;password&quot;: &quot;32F2647b@193!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;password&quot;: &quot;8CF56bb4@272!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -251,10 +286,15 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;password&quot;: &quot;8D7D151d@307!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;password&quot;: &quot;865263f6@905!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -273,10 +313,15 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;password&quot;: &quot;C6C40d4a@805!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;password&quot;: &quot;8580cb5b@646!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -295,17 +340,22 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;password&quot;: &quot;EF809bcb@153!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_b78824@test.com&quot;,
+  &quot;password&quot;: &quot;F53355a4@32!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;token&quot;: null,
   &quot;type&quot;: &quot;&quot;,
-  &quot;message&quot;: &quot;Invalid Credentials&quot;,
+  &quot;message&quot;: &quot;Given Email is not registered! &quot;,
   &quot;mfaRequired&quot;: false
 }</pre>
                 </div>
@@ -317,17 +367,22 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;password&quot;: &quot;0033ab4a@919!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_a33604@test.com&quot;,
+  &quot;password&quot;: &quot;DA3B11f9@248!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;token&quot;: null,
   &quot;type&quot;: &quot;&quot;,
-  &quot;message&quot;: &quot;Invalid Credentials&quot;,
+  &quot;message&quot;: &quot;Given Email is not registered! &quot;,
   &quot;mfaRequired&quot;: false
 }</pre>
                 </div>
@@ -339,17 +394,22 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;password&quot;: &quot;2156746c@67!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_64bc3d@test.com&quot;,
+  &quot;password&quot;: &quot;36D18be8@831!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;token&quot;: null,
   &quot;type&quot;: &quot;&quot;,
-  &quot;message&quot;: &quot;Invalid Credentials&quot;,
+  &quot;message&quot;: &quot;Given Email is not registered! &quot;,
   &quot;mfaRequired&quot;: false
 }</pre>
                 </div>
@@ -361,10 +421,15 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;password&quot;: &quot;4F0Fcdb6@49!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;password&quot;: &quot;F5C53b11@891!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -383,10 +448,15 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;password&quot;: &quot;470A8372@538!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;password&quot;: &quot;6512b6c1@604!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -405,10 +475,15 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;password&quot;: &quot;DF4C7f56@219!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;password&quot;: &quot;40E4a9cb@708!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -427,10 +502,15 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;password&quot;: &quot;A2394205@2!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;password&quot;: &quot;6BEF950e@912!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -449,10 +529,15 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;password&quot;: &quot;869297d3@380!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;password&quot;: &quot;E5870676@350!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -471,10 +556,15 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;password&quot;: &quot;C4C4be35@821!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;password&quot;: &quot;8B77eb34@636!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -493,17 +583,22 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;password&quot;: &quot;3D327423@245!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_bf928f@test.com&quot;,
+  &quot;password&quot;: &quot;AA1Cb95f@567!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;token&quot;: null,
   &quot;type&quot;: &quot;&quot;,
-  &quot;message&quot;: &quot;Invalid Credentials&quot;,
+  &quot;message&quot;: &quot;Given Email is not registered! &quot;,
   &quot;mfaRequired&quot;: false
 }</pre>
                 </div>
@@ -515,17 +610,22 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;password&quot;: &quot;60B8dd01@223!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_6b79b2@test.com&quot;,
+  &quot;password&quot;: &quot;1E219449@620!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;token&quot;: null,
   &quot;type&quot;: &quot;&quot;,
-  &quot;message&quot;: &quot;Invalid Credentials&quot;,
+  &quot;message&quot;: &quot;Given Email is not registered! &quot;,
   &quot;mfaRequired&quot;: false
 }</pre>
                 </div>
@@ -537,17 +637,22 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;password&quot;: &quot;E042cc6e@714!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_438251@test.com&quot;,
+  &quot;password&quot;: &quot;8BD7e529@951!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;token&quot;: null,
   &quot;type&quot;: &quot;&quot;,
-  &quot;message&quot;: &quot;Invalid Credentials&quot;,
+  &quot;message&quot;: &quot;Given Email is not registered! &quot;,
   &quot;mfaRequired&quot;: false
 }</pre>
                 </div>
@@ -559,17 +664,22 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;password&quot;: &quot;9423ee79@451!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_6fee5b@test.com&quot;,
+  &quot;password&quot;: &quot;7E90f586@853!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;token&quot;: null,
   &quot;type&quot;: &quot;&quot;,
-  &quot;message&quot;: &quot;Invalid Credentials&quot;,
+  &quot;message&quot;: &quot;Given Email is not registered! &quot;,
   &quot;mfaRequired&quot;: false
 }</pre>
                 </div>
@@ -581,17 +691,22 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;password&quot;: &quot;8D6295fa@763!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_aecd42@test.com&quot;,
+  &quot;password&quot;: &quot;C91211b1@941!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;token&quot;: null,
   &quot;type&quot;: &quot;&quot;,
-  &quot;message&quot;: &quot;Invalid Credentials&quot;,
+  &quot;message&quot;: &quot;Given Email is not registered! &quot;,
   &quot;mfaRequired&quot;: false
 }</pre>
                 </div>
@@ -603,17 +718,22 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;password&quot;: &quot;5738364e@577!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_9de74a@test.com&quot;,
+  &quot;password&quot;: &quot;18B82c2a@653!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;token&quot;: null,
   &quot;type&quot;: &quot;&quot;,
-  &quot;message&quot;: &quot;Invalid Credentials&quot;,
+  &quot;message&quot;: &quot;Given Email is not registered! &quot;,
   &quot;mfaRequired&quot;: false
 }</pre>
                 </div>
@@ -625,10 +745,15 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;password&quot;: &quot;FCBA0193@456!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;password&quot;: &quot;68505bfa@334!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -647,10 +772,15 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
-  &quot;password&quot;: &quot;FE676b61@487!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;password&quot;: &quot;13E261c2@639!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -669,10 +799,15 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
-  &quot;password&quot;: &quot;25D7b510@638!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;password&quot;: &quot;BA562d97@7!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -691,17 +826,22 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;fuzzer_297b50be@test.com&quot;,
-  &quot;password&quot;: &quot;C89B4b9c@919!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_e75cf7@test.com&quot;,
+  &quot;password&quot;: &quot;8E7A8076@82!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;token&quot;: null,
   &quot;type&quot;: &quot;&quot;,
-  &quot;message&quot;: &quot;Invalid Credentials&quot;,
+  &quot;message&quot;: &quot;Given Email is not registered! &quot;,
   &quot;mfaRequired&quot;: false
 }</pre>
                 </div>
@@ -713,17 +853,22 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;password&quot;: &quot;B03E05ce@249!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_425cc0@test.com&quot;,
+  &quot;password&quot;: &quot;372A691c@7!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;token&quot;: null,
   &quot;type&quot;: &quot;&quot;,
-  &quot;message&quot;: &quot;Invalid Credentials&quot;,
+  &quot;message&quot;: &quot;Given Email is not registered! &quot;,
   &quot;mfaRequired&quot;: false
 }</pre>
                 </div>
@@ -735,17 +880,22 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;password&quot;: &quot;0512f0c4@652!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_21f742@test.com&quot;,
+  &quot;password&quot;: &quot;020F2876@202!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
   &quot;token&quot;: null,
   &quot;type&quot;: &quot;&quot;,
-  &quot;message&quot;: &quot;Invalid Credentials&quot;,
+  &quot;message&quot;: &quot;Given Email is not registered! &quot;,
   &quot;mfaRequired&quot;: false
 }</pre>
                 </div>
@@ -757,10 +907,15 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
   &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;password&quot;: &quot;9C67eaca@706!&quot;
+  &quot;password&quot;: &quot;24903800@140!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -779,10 +934,15 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;adam007@example.com&quot;,
-  &quot;password&quot;: &quot;C4455c14@446!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
+  &quot;password&quot;: &quot;534B6900@290!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -801,10 +961,15 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;adam007@example.com&quot;,
-  &quot;password&quot;: &quot;6A5A8469@826!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
+  &quot;password&quot;: &quot;77CC0fd3@469!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -823,10 +988,15 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;adam007@example.com&quot;,
-  &quot;password&quot;: &quot;FAFBec4b@375!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;password&quot;: &quot;811243a7@895!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -845,10 +1015,15 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;password&quot;: &quot;10E376cb@126!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;password&quot;: &quot;BBE6bdf6@21!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -867,10 +1042,15 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;password&quot;: &quot;96372efc@551!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;password&quot;: &quot;96D73cd3@369!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -889,10 +1069,15 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;password&quot;: &quot;1371bd71@881!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;password&quot;: &quot;4B907c22@377!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -911,10 +1096,15 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;password&quot;: &quot;3C6Fb331@291!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;password&quot;: &quot;ED48b850@182!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -933,10 +1123,15 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;password&quot;: &quot;B957cf84@13!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;password&quot;: &quot;A7AEa6e7@750!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -955,10 +1150,15 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;password&quot;: &quot;442E7fea@381!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;adam007@example.com&quot;,
+  &quot;password&quot;: &quot;4960ed19@772!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -977,10 +1177,15 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
   &quot;email&quot;: &quot;adam007@example.com&quot;,
-  &quot;password&quot;: &quot;79DAadf1@830!&quot;
+  &quot;password&quot;: &quot;41DFdc6f@974!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -999,10 +1204,123 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;email&quot;: &quot;trieu7a2005@gmail.com&quot;,
-  &quot;password&quot;: &quot;B1D71789@898!&quot;
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;adam007@example.com&quot;,
+  &quot;password&quot;: &quot;3F46f390@734!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: null,
+  &quot;type&quot;: &quot;&quot;,
+  &quot;message&quot;: &quot;Invalid Credentials&quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #41 — POST http://localhost:8888/identity/api/auth/login — HTTP 401 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_d36c28@test.com&quot;,
+  &quot;password&quot;: &quot;79279126@22!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: null,
+  &quot;type&quot;: &quot;&quot;,
+  &quot;message&quot;: &quot;Given Email is not registered! &quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #42 — POST http://localhost:8888/identity/api/auth/login — HTTP 401 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_cf7075@test.com&quot;,
+  &quot;password&quot;: &quot;3783763f@854!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: null,
+  &quot;type&quot;: &quot;&quot;,
+  &quot;message&quot;: &quot;Given Email is not registered! &quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #43 — POST http://localhost:8888/identity/api/auth/login — HTTP 401 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;fuzz_fb5324@test.com&quot;,
+  &quot;password&quot;: &quot;232E7713@626!&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;token&quot;: null,
+  &quot;type&quot;: &quot;&quot;,
+  &quot;message&quot;: &quot;Given Email is not registered! &quot;,
+  &quot;mfaRequired&quot;: false
+}</pre>
+                </div>
+                
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #44 — POST http://localhost:8888/identity/api/auth/login — HTTP 401 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                    </h3>
+                    
+                    
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;email&quot;: &quot;trieu7a@gmail.com&quot;,
+  &quot;password&quot;: &quot;F30Bd655@181!&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>

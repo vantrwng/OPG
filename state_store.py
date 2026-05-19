@@ -26,6 +26,12 @@ class StateStore:
         "phone":         re.compile(r"phone|mobile|contact_?no", re.I),
     }
 
+    # Các key cấu hình không được phép bị ghi đè bởi fallback harvest
+    _PROTECTED_KEYS = frozenset({"auth_header_name", "auth_header_prefix"})
+
+    # Regex để strip tiền tố "Bearer " / "Token " khỏi token trước khi lưu vào state
+    _TOKEN_PREFIX_RE = re.compile(r"^(Bearer|Token)\s+", re.I)
+
     # Pattern nhận diện các ID chung (id, uuid, ref, code)
     _GENERIC_ID_PATTERN = re.compile(r"(_id|Id|uuid|_ref|Ref|_code|Code)$", re.I)
 
@@ -35,6 +41,10 @@ class StateStore:
     # ── Basic CRUD ──────────────────────────────────────────────────────────
 
     def update(self, key: str, value: Any) -> None:
+        # Không cho phép ghi đè các key cấu hình hệ thống một khi đã được khởi tạo
+        if key in self._PROTECTED_KEYS and key in self.memory:
+            log.debug(f"[State] PROTECTED KEY '{key}' bị block ghi đè (giá trị hiện tại: {repr(self.memory[key])[:40]})")
+            return
         self.memory[key] = value
         log.debug(f"\033[96m[State] SET\033[0m {key} = {repr(value)[:80]}")
 
@@ -78,6 +88,9 @@ class StateStore:
             for state_key, pattern in self._HARVEST_PATTERNS.items():
                 if pattern.search(resp_key):
                     if resp_val and resp_val != self.memory.get(state_key):
+                        # Strip tiền tố "Bearer "/"Token " nếu server trả về token đã gắn sẵn prefix
+                        if state_key == "auth_token" and isinstance(resp_val, str):
+                            resp_val = self._TOKEN_PREFIX_RE.sub("", resp_val).strip()
                         self.update(state_key, resp_val)
                         found_new = True
                     matched = True
@@ -120,6 +133,9 @@ class StateStore:
             if not isinstance(k, str) or not isinstance(v, (str, int)):
                 continue
             if not v or v == self.memory.get(k):
+                continue
+            # Không được ghi đè các key cấu hình hệ thống (bảo vệ auth_header_prefix, ...)
+            if k in self._PROTECTED_KEYS:
                 continue
             # Chỉ harvest nếu chưa được lưu bởi bước 1 (pattern harvest)
             if k not in self.memory:

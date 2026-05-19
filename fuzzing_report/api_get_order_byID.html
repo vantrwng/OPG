@@ -63,47 +63,33 @@
         
         <h2 style="margin-top: 2rem; margin-bottom: 1rem;">Lịch sử các lần Request/Response</h2>
 
-                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
-                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #1 — GET http://localhost:8888/workshop/api/shop/orders/1 — HTTP 200 
+                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
+                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #1 — GET http://localhost:8888/workshop/api/shop/orders/319 — HTTP 500 
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;order&quot;: {
-    &quot;id&quot;: 1,
-    &quot;user&quot;: {
-      &quot;email&quot;: &quot;adam007@example.com&quot;,
-      &quot;number&quot;: &quot;9876895423&quot;
-    },
-    &quot;product&quot;: {
-      &quot;id&quot;: 1,
-      &quot;name&quot;: &quot;Seat&quot;,
-      &quot;price&quot;: &quot;10.00&quot;,
-      &quot;image_url&quot;: &quot;images/seat.svg&quot;
-    },
-    &quot;quantity&quot;: 2,
-    &quot;status&quot;: &quot;delivered&quot;,
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;created_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;
-  },
-  &quot;payment&quot;: {
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;order_id&quot;: 1,
-    &quot;amount&quot;: 20,
-    &quot;paid_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;,
-    &quot;card_number&quot;: &quot;XXXXXXXXXXXX9541&quot;,
-    &quot;card_owner_name&quot;: &quot;Adam&quot;,
-    &quot;card_type&quot;: &quot;Visa&quot;,
-    &quot;card_expiry&quot;: &quot;12/2027&quot;,
-    &quot;currency&quot;: &quot;USD&quot;
-  }
-}</pre>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">
+&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;title&gt;Server Error (500)&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Server Error (500)&lt;/h1&gt;&lt;p&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
                 </div>
                 
                 <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
@@ -113,7 +99,12 @@
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
@@ -149,1466 +140,497 @@
 }</pre>
                 </div>
                 
-                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
-                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #3 — GET http://localhost:8888/workshop/api/shop/orders/1 — HTTP 200 
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #3 — GET http://localhost:8888/workshop/api/shop/orders/qSdUyCBbZ4qP4wbxykBCbh — HTTP 404 
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...L_zpg&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;order&quot;: {
-    &quot;id&quot;: 1,
-    &quot;user&quot;: {
-      &quot;email&quot;: &quot;adam007@example.com&quot;,
-      &quot;number&quot;: &quot;9876895423&quot;
-    },
-    &quot;product&quot;: {
-      &quot;id&quot;: 1,
-      &quot;name&quot;: &quot;Seat&quot;,
-      &quot;price&quot;: &quot;10.00&quot;,
-      &quot;image_url&quot;: &quot;images/seat.svg&quot;
-    },
-    &quot;quantity&quot;: 2,
-    &quot;status&quot;: &quot;delivered&quot;,
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;created_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;
-  },
-  &quot;payment&quot;: {
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;order_id&quot;: 1,
-    &quot;amount&quot;: 20,
-    &quot;paid_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;,
-    &quot;card_number&quot;: &quot;XXXXXXXXXXXX9541&quot;,
-    &quot;card_owner_name&quot;: &quot;Adam&quot;,
-    &quot;card_type&quot;: &quot;Visa&quot;,
-    &quot;card_expiry&quot;: &quot;12/2027&quot;,
-    &quot;currency&quot;: &quot;USD&quot;
-  }
-}</pre>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">
+&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;title&gt;Not Found&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Not Found&lt;/h1&gt;&lt;p&gt;The requested resource was not found on this server.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
                 </div>
                 
-                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
-                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #4 — GET http://localhost:8888/workshop/api/shop/orders/1 — HTTP 200 
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #4 — GET http://localhost:8888/workshop/api/shop/orders/armJsKawDPbjHeDMhcVEBK — HTTP 404 
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...wI1vg&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;order&quot;: {
-    &quot;id&quot;: 1,
-    &quot;user&quot;: {
-      &quot;email&quot;: &quot;adam007@example.com&quot;,
-      &quot;number&quot;: &quot;9876895423&quot;
-    },
-    &quot;product&quot;: {
-      &quot;id&quot;: 1,
-      &quot;name&quot;: &quot;Seat&quot;,
-      &quot;price&quot;: &quot;10.00&quot;,
-      &quot;image_url&quot;: &quot;images/seat.svg&quot;
-    },
-    &quot;quantity&quot;: 2,
-    &quot;status&quot;: &quot;delivered&quot;,
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;created_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;
-  },
-  &quot;payment&quot;: {
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;order_id&quot;: 1,
-    &quot;amount&quot;: 20,
-    &quot;paid_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;,
-    &quot;card_number&quot;: &quot;XXXXXXXXXXXX9541&quot;,
-    &quot;card_owner_name&quot;: &quot;Adam&quot;,
-    &quot;card_type&quot;: &quot;Visa&quot;,
-    &quot;card_expiry&quot;: &quot;12/2027&quot;,
-    &quot;currency&quot;: &quot;USD&quot;
-  }
-}</pre>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">
+&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;title&gt;Not Found&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Not Found&lt;/h1&gt;&lt;p&gt;The requested resource was not found on this server.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
                 </div>
                 
-                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
-                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #5 — GET http://localhost:8888/workshop/api/shop/orders/1 — HTTP 200 
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #5 — GET http://localhost:8888/workshop/api/shop/orders/nVeGhGu275antDdsd4RT4e — HTTP 404 
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;order&quot;: {
-    &quot;id&quot;: 1,
-    &quot;user&quot;: {
-      &quot;email&quot;: &quot;adam007@example.com&quot;,
-      &quot;number&quot;: &quot;9876895423&quot;
-    },
-    &quot;product&quot;: {
-      &quot;id&quot;: 1,
-      &quot;name&quot;: &quot;Seat&quot;,
-      &quot;price&quot;: &quot;10.00&quot;,
-      &quot;image_url&quot;: &quot;images/seat.svg&quot;
-    },
-    &quot;quantity&quot;: 2,
-    &quot;status&quot;: &quot;delivered&quot;,
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;created_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;
-  },
-  &quot;payment&quot;: {
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;order_id&quot;: 1,
-    &quot;amount&quot;: 20,
-    &quot;paid_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;,
-    &quot;card_number&quot;: &quot;XXXXXXXXXXXX9541&quot;,
-    &quot;card_owner_name&quot;: &quot;Adam&quot;,
-    &quot;card_type&quot;: &quot;Visa&quot;,
-    &quot;card_expiry&quot;: &quot;12/2027&quot;,
-    &quot;currency&quot;: &quot;USD&quot;
-  }
-}</pre>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">
+&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;title&gt;Not Found&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Not Found&lt;/h1&gt;&lt;p&gt;The requested resource was not found on this server.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
                 </div>
                 
-                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
-                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #6 — GET http://localhost:8888/workshop/api/shop/orders/1 — HTTP 200 
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #6 — GET http://localhost:8888/workshop/api/shop/orders/NyPdUEeyHyxFyMC4r7NX9j — HTTP 404 
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;order&quot;: {
-    &quot;id&quot;: 1,
-    &quot;user&quot;: {
-      &quot;email&quot;: &quot;adam007@example.com&quot;,
-      &quot;number&quot;: &quot;9876895423&quot;
-    },
-    &quot;product&quot;: {
-      &quot;id&quot;: 1,
-      &quot;name&quot;: &quot;Seat&quot;,
-      &quot;price&quot;: &quot;10.00&quot;,
-      &quot;image_url&quot;: &quot;images/seat.svg&quot;
-    },
-    &quot;quantity&quot;: 2,
-    &quot;status&quot;: &quot;delivered&quot;,
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;created_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;
-  },
-  &quot;payment&quot;: {
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;order_id&quot;: 1,
-    &quot;amount&quot;: 20,
-    &quot;paid_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;,
-    &quot;card_number&quot;: &quot;XXXXXXXXXXXX9541&quot;,
-    &quot;card_owner_name&quot;: &quot;Adam&quot;,
-    &quot;card_type&quot;: &quot;Visa&quot;,
-    &quot;card_expiry&quot;: &quot;12/2027&quot;,
-    &quot;currency&quot;: &quot;USD&quot;
-  }
-}</pre>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">
+&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;title&gt;Not Found&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Not Found&lt;/h1&gt;&lt;p&gt;The requested resource was not found on this server.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
                 </div>
                 
-                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
-                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #7 — GET http://localhost:8888/workshop/api/shop/orders/1 — HTTP 200 
+                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
+                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #7 — GET http://localhost:8888/workshop/api/shop/orders/ahDGPkVKfPsedvh4scdx7b — HTTP 404 
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;order&quot;: {
-    &quot;id&quot;: 1,
-    &quot;user&quot;: {
-      &quot;email&quot;: &quot;adam007@example.com&quot;,
-      &quot;number&quot;: &quot;9876895423&quot;
-    },
-    &quot;product&quot;: {
-      &quot;id&quot;: 1,
-      &quot;name&quot;: &quot;Seat&quot;,
-      &quot;price&quot;: &quot;10.00&quot;,
-      &quot;image_url&quot;: &quot;images/seat.svg&quot;
-    },
-    &quot;quantity&quot;: 2,
-    &quot;status&quot;: &quot;delivered&quot;,
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;created_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;
-  },
-  &quot;payment&quot;: {
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;order_id&quot;: 1,
-    &quot;amount&quot;: 20,
-    &quot;paid_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;,
-    &quot;card_number&quot;: &quot;XXXXXXXXXXXX9541&quot;,
-    &quot;card_owner_name&quot;: &quot;Adam&quot;,
-    &quot;card_type&quot;: &quot;Visa&quot;,
-    &quot;card_expiry&quot;: &quot;12/2027&quot;,
-    &quot;currency&quot;: &quot;USD&quot;
-  }
-}</pre>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">
+&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;title&gt;Not Found&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Not Found&lt;/h1&gt;&lt;p&gt;The requested resource was not found on this server.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
                 </div>
                 
-                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
-                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #8 — GET http://localhost:8888/workshop/api/shop/orders/1 — HTTP 200 
+                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
+                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #8 — GET http://localhost:8888/workshop/api/shop/orders/215 — HTTP 500 
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;order&quot;: {
-    &quot;id&quot;: 1,
-    &quot;user&quot;: {
-      &quot;email&quot;: &quot;adam007@example.com&quot;,
-      &quot;number&quot;: &quot;9876895423&quot;
-    },
-    &quot;product&quot;: {
-      &quot;id&quot;: 1,
-      &quot;name&quot;: &quot;Seat&quot;,
-      &quot;price&quot;: &quot;10.00&quot;,
-      &quot;image_url&quot;: &quot;images/seat.svg&quot;
-    },
-    &quot;quantity&quot;: 2,
-    &quot;status&quot;: &quot;delivered&quot;,
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;created_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;
-  },
-  &quot;payment&quot;: {
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;order_id&quot;: 1,
-    &quot;amount&quot;: 20,
-    &quot;paid_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;,
-    &quot;card_number&quot;: &quot;XXXXXXXXXXXX9541&quot;,
-    &quot;card_owner_name&quot;: &quot;Adam&quot;,
-    &quot;card_type&quot;: &quot;Visa&quot;,
-    &quot;card_expiry&quot;: &quot;12/2027&quot;,
-    &quot;currency&quot;: &quot;USD&quot;
-  }
-}</pre>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">
+&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;title&gt;Server Error (500)&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Server Error (500)&lt;/h1&gt;&lt;p&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
                 </div>
                 
-                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
-                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #9 — GET http://localhost:8888/workshop/api/shop/orders/1 — HTTP 200 
+                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
+                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #9 — GET http://localhost:8888/workshop/api/shop/orders/323 — HTTP 500 
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;order&quot;: {
-    &quot;id&quot;: 1,
-    &quot;user&quot;: {
-      &quot;email&quot;: &quot;adam007@example.com&quot;,
-      &quot;number&quot;: &quot;9876895423&quot;
-    },
-    &quot;product&quot;: {
-      &quot;id&quot;: 1,
-      &quot;name&quot;: &quot;Seat&quot;,
-      &quot;price&quot;: &quot;10.00&quot;,
-      &quot;image_url&quot;: &quot;images/seat.svg&quot;
-    },
-    &quot;quantity&quot;: 2,
-    &quot;status&quot;: &quot;delivered&quot;,
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;created_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;
-  },
-  &quot;payment&quot;: {
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;order_id&quot;: 1,
-    &quot;amount&quot;: 20,
-    &quot;paid_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;,
-    &quot;card_number&quot;: &quot;XXXXXXXXXXXX9541&quot;,
-    &quot;card_owner_name&quot;: &quot;Adam&quot;,
-    &quot;card_type&quot;: &quot;Visa&quot;,
-    &quot;card_expiry&quot;: &quot;12/2027&quot;,
-    &quot;currency&quot;: &quot;USD&quot;
-  }
-}</pre>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">
+&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;title&gt;Server Error (500)&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Server Error (500)&lt;/h1&gt;&lt;p&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
                 </div>
                 
-                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
-                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #10 — GET http://localhost:8888/workshop/api/shop/orders/1 — HTTP 200 
+                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
+                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #10 — GET http://localhost:8888/workshop/api/shop/orders/215 — HTTP 500 
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;order&quot;: {
-    &quot;id&quot;: 1,
-    &quot;user&quot;: {
-      &quot;email&quot;: &quot;adam007@example.com&quot;,
-      &quot;number&quot;: &quot;9876895423&quot;
-    },
-    &quot;product&quot;: {
-      &quot;id&quot;: 1,
-      &quot;name&quot;: &quot;Seat&quot;,
-      &quot;price&quot;: &quot;10.00&quot;,
-      &quot;image_url&quot;: &quot;images/seat.svg&quot;
-    },
-    &quot;quantity&quot;: 2,
-    &quot;status&quot;: &quot;delivered&quot;,
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;created_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;
-  },
-  &quot;payment&quot;: {
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;order_id&quot;: 1,
-    &quot;amount&quot;: 20,
-    &quot;paid_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;,
-    &quot;card_number&quot;: &quot;XXXXXXXXXXXX9541&quot;,
-    &quot;card_owner_name&quot;: &quot;Adam&quot;,
-    &quot;card_type&quot;: &quot;Visa&quot;,
-    &quot;card_expiry&quot;: &quot;12/2027&quot;,
-    &quot;currency&quot;: &quot;USD&quot;
-  }
-}</pre>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">
+&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;title&gt;Server Error (500)&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Server Error (500)&lt;/h1&gt;&lt;p&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
                 </div>
                 
-                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
-                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #11 — GET http://localhost:8888/workshop/api/shop/orders/1 — HTTP 200 
+                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
+                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #11 — GET http://localhost:8888/workshop/api/shop/orders/215 — HTTP 500 
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;order&quot;: {
-    &quot;id&quot;: 1,
-    &quot;user&quot;: {
-      &quot;email&quot;: &quot;adam007@example.com&quot;,
-      &quot;number&quot;: &quot;9876895423&quot;
-    },
-    &quot;product&quot;: {
-      &quot;id&quot;: 1,
-      &quot;name&quot;: &quot;Seat&quot;,
-      &quot;price&quot;: &quot;10.00&quot;,
-      &quot;image_url&quot;: &quot;images/seat.svg&quot;
-    },
-    &quot;quantity&quot;: 2,
-    &quot;status&quot;: &quot;delivered&quot;,
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;created_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;
-  },
-  &quot;payment&quot;: {
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;order_id&quot;: 1,
-    &quot;amount&quot;: 20,
-    &quot;paid_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;,
-    &quot;card_number&quot;: &quot;XXXXXXXXXXXX9541&quot;,
-    &quot;card_owner_name&quot;: &quot;Adam&quot;,
-    &quot;card_type&quot;: &quot;Visa&quot;,
-    &quot;card_expiry&quot;: &quot;12/2027&quot;,
-    &quot;currency&quot;: &quot;USD&quot;
-  }
-}</pre>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">
+&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;title&gt;Server Error (500)&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Server Error (500)&lt;/h1&gt;&lt;p&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
                 </div>
                 
-                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
-                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #12 — GET http://localhost:8888/workshop/api/shop/orders/1 — HTTP 200 
+                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
+                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #12 — GET http://localhost:8888/workshop/api/shop/orders/325 — HTTP 500 
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;order&quot;: {
-    &quot;id&quot;: 1,
-    &quot;user&quot;: {
-      &quot;email&quot;: &quot;adam007@example.com&quot;,
-      &quot;number&quot;: &quot;9876895423&quot;
-    },
-    &quot;product&quot;: {
-      &quot;id&quot;: 1,
-      &quot;name&quot;: &quot;Seat&quot;,
-      &quot;price&quot;: &quot;10.00&quot;,
-      &quot;image_url&quot;: &quot;images/seat.svg&quot;
-    },
-    &quot;quantity&quot;: 2,
-    &quot;status&quot;: &quot;delivered&quot;,
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;created_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;
-  },
-  &quot;payment&quot;: {
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;order_id&quot;: 1,
-    &quot;amount&quot;: 20,
-    &quot;paid_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;,
-    &quot;card_number&quot;: &quot;XXXXXXXXXXXX9541&quot;,
-    &quot;card_owner_name&quot;: &quot;Adam&quot;,
-    &quot;card_type&quot;: &quot;Visa&quot;,
-    &quot;card_expiry&quot;: &quot;12/2027&quot;,
-    &quot;currency&quot;: &quot;USD&quot;
-  }
-}</pre>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">
+&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;title&gt;Server Error (500)&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Server Error (500)&lt;/h1&gt;&lt;p&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
                 </div>
                 
-                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
-                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #13 — GET http://localhost:8888/workshop/api/shop/orders/1 — HTTP 200 
+                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
+                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #13 — GET http://localhost:8888/workshop/api/shop/orders/327 — HTTP 500 
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;order&quot;: {
-    &quot;id&quot;: 1,
-    &quot;user&quot;: {
-      &quot;email&quot;: &quot;adam007@example.com&quot;,
-      &quot;number&quot;: &quot;9876895423&quot;
-    },
-    &quot;product&quot;: {
-      &quot;id&quot;: 1,
-      &quot;name&quot;: &quot;Seat&quot;,
-      &quot;price&quot;: &quot;10.00&quot;,
-      &quot;image_url&quot;: &quot;images/seat.svg&quot;
-    },
-    &quot;quantity&quot;: 2,
-    &quot;status&quot;: &quot;delivered&quot;,
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;created_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;
-  },
-  &quot;payment&quot;: {
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;order_id&quot;: 1,
-    &quot;amount&quot;: 20,
-    &quot;paid_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;,
-    &quot;card_number&quot;: &quot;XXXXXXXXXXXX9541&quot;,
-    &quot;card_owner_name&quot;: &quot;Adam&quot;,
-    &quot;card_type&quot;: &quot;Visa&quot;,
-    &quot;card_expiry&quot;: &quot;12/2027&quot;,
-    &quot;currency&quot;: &quot;USD&quot;
-  }
-}</pre>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">
+&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;title&gt;Server Error (500)&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Server Error (500)&lt;/h1&gt;&lt;p&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
                 </div>
                 
-                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
-                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #14 — GET http://localhost:8888/workshop/api/shop/orders/1 — HTTP 200 
+                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
+                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #14 — GET http://localhost:8888/workshop/api/shop/orders/328 — HTTP 500 
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;order&quot;: {
-    &quot;id&quot;: 1,
-    &quot;user&quot;: {
-      &quot;email&quot;: &quot;adam007@example.com&quot;,
-      &quot;number&quot;: &quot;9876895423&quot;
-    },
-    &quot;product&quot;: {
-      &quot;id&quot;: 1,
-      &quot;name&quot;: &quot;Seat&quot;,
-      &quot;price&quot;: &quot;10.00&quot;,
-      &quot;image_url&quot;: &quot;images/seat.svg&quot;
-    },
-    &quot;quantity&quot;: 2,
-    &quot;status&quot;: &quot;delivered&quot;,
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;created_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;
-  },
-  &quot;payment&quot;: {
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;order_id&quot;: 1,
-    &quot;amount&quot;: 20,
-    &quot;paid_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;,
-    &quot;card_number&quot;: &quot;XXXXXXXXXXXX9541&quot;,
-    &quot;card_owner_name&quot;: &quot;Adam&quot;,
-    &quot;card_type&quot;: &quot;Visa&quot;,
-    &quot;card_expiry&quot;: &quot;12/2027&quot;,
-    &quot;currency&quot;: &quot;USD&quot;
-  }
-}</pre>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">
+&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;title&gt;Server Error (500)&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Server Error (500)&lt;/h1&gt;&lt;p&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
                 </div>
                 
-                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
-                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #15 — GET http://localhost:8888/workshop/api/shop/orders/1 — HTTP 200 
+                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
+                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #15 — GET http://localhost:8888/workshop/api/shop/orders/229 — HTTP 500 
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;order&quot;: {
-    &quot;id&quot;: 1,
-    &quot;user&quot;: {
-      &quot;email&quot;: &quot;adam007@example.com&quot;,
-      &quot;number&quot;: &quot;9876895423&quot;
-    },
-    &quot;product&quot;: {
-      &quot;id&quot;: 1,
-      &quot;name&quot;: &quot;Seat&quot;,
-      &quot;price&quot;: &quot;10.00&quot;,
-      &quot;image_url&quot;: &quot;images/seat.svg&quot;
-    },
-    &quot;quantity&quot;: 2,
-    &quot;status&quot;: &quot;delivered&quot;,
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;created_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;
-  },
-  &quot;payment&quot;: {
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;order_id&quot;: 1,
-    &quot;amount&quot;: 20,
-    &quot;paid_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;,
-    &quot;card_number&quot;: &quot;XXXXXXXXXXXX9541&quot;,
-    &quot;card_owner_name&quot;: &quot;Adam&quot;,
-    &quot;card_type&quot;: &quot;Visa&quot;,
-    &quot;card_expiry&quot;: &quot;12/2027&quot;,
-    &quot;currency&quot;: &quot;USD&quot;
-  }
-}</pre>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">
+&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;title&gt;Server Error (500)&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Server Error (500)&lt;/h1&gt;&lt;p&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
                 </div>
                 
-                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
-                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #16 — GET http://localhost:8888/workshop/api/shop/orders/1 — HTTP 200 
+                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
+                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #16 — GET http://localhost:8888/workshop/api/shop/orders/215 — HTTP 500 
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;order&quot;: {
-    &quot;id&quot;: 1,
-    &quot;user&quot;: {
-      &quot;email&quot;: &quot;adam007@example.com&quot;,
-      &quot;number&quot;: &quot;9876895423&quot;
-    },
-    &quot;product&quot;: {
-      &quot;id&quot;: 1,
-      &quot;name&quot;: &quot;Seat&quot;,
-      &quot;price&quot;: &quot;10.00&quot;,
-      &quot;image_url&quot;: &quot;images/seat.svg&quot;
-    },
-    &quot;quantity&quot;: 2,
-    &quot;status&quot;: &quot;delivered&quot;,
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;created_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;
-  },
-  &quot;payment&quot;: {
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;order_id&quot;: 1,
-    &quot;amount&quot;: 20,
-    &quot;paid_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;,
-    &quot;card_number&quot;: &quot;XXXXXXXXXXXX9541&quot;,
-    &quot;card_owner_name&quot;: &quot;Adam&quot;,
-    &quot;card_type&quot;: &quot;Visa&quot;,
-    &quot;card_expiry&quot;: &quot;12/2027&quot;,
-    &quot;currency&quot;: &quot;USD&quot;
-  }
-}</pre>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">
+&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;title&gt;Server Error (500)&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Server Error (500)&lt;/h1&gt;&lt;p&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
                 </div>
                 
-                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
-                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #17 — GET http://localhost:8888/workshop/api/shop/orders/1 — HTTP 200 
+                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
+                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #17 — GET http://localhost:8888/workshop/api/shop/orders/215 — HTTP 500 
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;order&quot;: {
-    &quot;id&quot;: 1,
-    &quot;user&quot;: {
-      &quot;email&quot;: &quot;adam007@example.com&quot;,
-      &quot;number&quot;: &quot;9876895423&quot;
-    },
-    &quot;product&quot;: {
-      &quot;id&quot;: 1,
-      &quot;name&quot;: &quot;Seat&quot;,
-      &quot;price&quot;: &quot;10.00&quot;,
-      &quot;image_url&quot;: &quot;images/seat.svg&quot;
-    },
-    &quot;quantity&quot;: 2,
-    &quot;status&quot;: &quot;delivered&quot;,
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;created_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;
-  },
-  &quot;payment&quot;: {
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;order_id&quot;: 1,
-    &quot;amount&quot;: 20,
-    &quot;paid_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;,
-    &quot;card_number&quot;: &quot;XXXXXXXXXXXX9541&quot;,
-    &quot;card_owner_name&quot;: &quot;Adam&quot;,
-    &quot;card_type&quot;: &quot;Visa&quot;,
-    &quot;card_expiry&quot;: &quot;12/2027&quot;,
-    &quot;currency&quot;: &quot;USD&quot;
-  }
-}</pre>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">
+&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;title&gt;Server Error (500)&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Server Error (500)&lt;/h1&gt;&lt;p&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
                 </div>
                 
-                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
-                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #18 — GET http://localhost:8888/workshop/api/shop/orders/1 — HTTP 200 
+                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
+                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #18 — GET http://localhost:8888/workshop/api/shop/orders/215 — HTTP 500 
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;order&quot;: {
-    &quot;id&quot;: 1,
-    &quot;user&quot;: {
-      &quot;email&quot;: &quot;adam007@example.com&quot;,
-      &quot;number&quot;: &quot;9876895423&quot;
-    },
-    &quot;product&quot;: {
-      &quot;id&quot;: 1,
-      &quot;name&quot;: &quot;Seat&quot;,
-      &quot;price&quot;: &quot;10.00&quot;,
-      &quot;image_url&quot;: &quot;images/seat.svg&quot;
-    },
-    &quot;quantity&quot;: 2,
-    &quot;status&quot;: &quot;delivered&quot;,
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;created_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;
-  },
-  &quot;payment&quot;: {
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;order_id&quot;: 1,
-    &quot;amount&quot;: 20,
-    &quot;paid_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;,
-    &quot;card_number&quot;: &quot;XXXXXXXXXXXX9541&quot;,
-    &quot;card_owner_name&quot;: &quot;Adam&quot;,
-    &quot;card_type&quot;: &quot;Visa&quot;,
-    &quot;card_expiry&quot;: &quot;12/2027&quot;,
-    &quot;currency&quot;: &quot;USD&quot;
-  }
-}</pre>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">
+&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;title&gt;Server Error (500)&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Server Error (500)&lt;/h1&gt;&lt;p&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
                 </div>
                 
-                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
-                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #19 — GET http://localhost:8888/workshop/api/shop/orders/1 — HTTP 200 
+                <div class="status-section" style="border-left: 4px solid var(--danger); margin-bottom: 2rem;">
+                    <h3 style="color: var(--danger); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #19 — GET http://localhost:8888/workshop/api/shop/orders/215 — HTTP 500 
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;Authorization&quot;: &quot;Bearer eyJhb...Y4x9g&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;order&quot;: {
-    &quot;id&quot;: 1,
-    &quot;user&quot;: {
-      &quot;email&quot;: &quot;adam007@example.com&quot;,
-      &quot;number&quot;: &quot;9876895423&quot;
-    },
-    &quot;product&quot;: {
-      &quot;id&quot;: 1,
-      &quot;name&quot;: &quot;Seat&quot;,
-      &quot;price&quot;: &quot;10.00&quot;,
-      &quot;image_url&quot;: &quot;images/seat.svg&quot;
-    },
-    &quot;quantity&quot;: 2,
-    &quot;status&quot;: &quot;delivered&quot;,
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;created_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;
-  },
-  &quot;payment&quot;: {
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;order_id&quot;: 1,
-    &quot;amount&quot;: 20,
-    &quot;paid_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;,
-    &quot;card_number&quot;: &quot;XXXXXXXXXXXX9541&quot;,
-    &quot;card_owner_name&quot;: &quot;Adam&quot;,
-    &quot;card_type&quot;: &quot;Visa&quot;,
-    &quot;card_expiry&quot;: &quot;12/2027&quot;,
-    &quot;currency&quot;: &quot;USD&quot;
-  }
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
-                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #20 — GET http://localhost:8888/workshop/api/shop/orders/1 — HTTP 200 
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;order&quot;: {
-    &quot;id&quot;: 1,
-    &quot;user&quot;: {
-      &quot;email&quot;: &quot;adam007@example.com&quot;,
-      &quot;number&quot;: &quot;9876895423&quot;
-    },
-    &quot;product&quot;: {
-      &quot;id&quot;: 1,
-      &quot;name&quot;: &quot;Seat&quot;,
-      &quot;price&quot;: &quot;10.00&quot;,
-      &quot;image_url&quot;: &quot;images/seat.svg&quot;
-    },
-    &quot;quantity&quot;: 2,
-    &quot;status&quot;: &quot;delivered&quot;,
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;created_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;
-  },
-  &quot;payment&quot;: {
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;order_id&quot;: 1,
-    &quot;amount&quot;: 20,
-    &quot;paid_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;,
-    &quot;card_number&quot;: &quot;XXXXXXXXXXXX9541&quot;,
-    &quot;card_owner_name&quot;: &quot;Adam&quot;,
-    &quot;card_type&quot;: &quot;Visa&quot;,
-    &quot;card_expiry&quot;: &quot;12/2027&quot;,
-    &quot;currency&quot;: &quot;USD&quot;
-  }
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
-                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #21 — GET http://localhost:8888/workshop/api/shop/orders/1 — HTTP 200 
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;order&quot;: {
-    &quot;id&quot;: 1,
-    &quot;user&quot;: {
-      &quot;email&quot;: &quot;adam007@example.com&quot;,
-      &quot;number&quot;: &quot;9876895423&quot;
-    },
-    &quot;product&quot;: {
-      &quot;id&quot;: 1,
-      &quot;name&quot;: &quot;Seat&quot;,
-      &quot;price&quot;: &quot;10.00&quot;,
-      &quot;image_url&quot;: &quot;images/seat.svg&quot;
-    },
-    &quot;quantity&quot;: 2,
-    &quot;status&quot;: &quot;delivered&quot;,
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;created_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;
-  },
-  &quot;payment&quot;: {
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;order_id&quot;: 1,
-    &quot;amount&quot;: 20,
-    &quot;paid_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;,
-    &quot;card_number&quot;: &quot;XXXXXXXXXXXX9541&quot;,
-    &quot;card_owner_name&quot;: &quot;Adam&quot;,
-    &quot;card_type&quot;: &quot;Visa&quot;,
-    &quot;card_expiry&quot;: &quot;12/2027&quot;,
-    &quot;currency&quot;: &quot;USD&quot;
-  }
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
-                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #22 — GET http://localhost:8888/workshop/api/shop/orders/1 — HTTP 200 
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;order&quot;: {
-    &quot;id&quot;: 1,
-    &quot;user&quot;: {
-      &quot;email&quot;: &quot;adam007@example.com&quot;,
-      &quot;number&quot;: &quot;9876895423&quot;
-    },
-    &quot;product&quot;: {
-      &quot;id&quot;: 1,
-      &quot;name&quot;: &quot;Seat&quot;,
-      &quot;price&quot;: &quot;10.00&quot;,
-      &quot;image_url&quot;: &quot;images/seat.svg&quot;
-    },
-    &quot;quantity&quot;: 2,
-    &quot;status&quot;: &quot;delivered&quot;,
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;created_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;
-  },
-  &quot;payment&quot;: {
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;order_id&quot;: 1,
-    &quot;amount&quot;: 20,
-    &quot;paid_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;,
-    &quot;card_number&quot;: &quot;XXXXXXXXXXXX9541&quot;,
-    &quot;card_owner_name&quot;: &quot;Adam&quot;,
-    &quot;card_type&quot;: &quot;Visa&quot;,
-    &quot;card_expiry&quot;: &quot;12/2027&quot;,
-    &quot;currency&quot;: &quot;USD&quot;
-  }
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
-                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #23 — GET http://localhost:8888/workshop/api/shop/orders/1 — HTTP 200 
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;order&quot;: {
-    &quot;id&quot;: 1,
-    &quot;user&quot;: {
-      &quot;email&quot;: &quot;adam007@example.com&quot;,
-      &quot;number&quot;: &quot;9876895423&quot;
-    },
-    &quot;product&quot;: {
-      &quot;id&quot;: 1,
-      &quot;name&quot;: &quot;Seat&quot;,
-      &quot;price&quot;: &quot;10.00&quot;,
-      &quot;image_url&quot;: &quot;images/seat.svg&quot;
-    },
-    &quot;quantity&quot;: 2,
-    &quot;status&quot;: &quot;delivered&quot;,
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;created_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;
-  },
-  &quot;payment&quot;: {
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;order_id&quot;: 1,
-    &quot;amount&quot;: 20,
-    &quot;paid_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;,
-    &quot;card_number&quot;: &quot;XXXXXXXXXXXX9541&quot;,
-    &quot;card_owner_name&quot;: &quot;Adam&quot;,
-    &quot;card_type&quot;: &quot;Visa&quot;,
-    &quot;card_expiry&quot;: &quot;12/2027&quot;,
-    &quot;currency&quot;: &quot;USD&quot;
-  }
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
-                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #24 — GET http://localhost:8888/workshop/api/shop/orders/1 — HTTP 200 
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;order&quot;: {
-    &quot;id&quot;: 1,
-    &quot;user&quot;: {
-      &quot;email&quot;: &quot;adam007@example.com&quot;,
-      &quot;number&quot;: &quot;9876895423&quot;
-    },
-    &quot;product&quot;: {
-      &quot;id&quot;: 1,
-      &quot;name&quot;: &quot;Seat&quot;,
-      &quot;price&quot;: &quot;10.00&quot;,
-      &quot;image_url&quot;: &quot;images/seat.svg&quot;
-    },
-    &quot;quantity&quot;: 2,
-    &quot;status&quot;: &quot;delivered&quot;,
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;created_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;
-  },
-  &quot;payment&quot;: {
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;order_id&quot;: 1,
-    &quot;amount&quot;: 20,
-    &quot;paid_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;,
-    &quot;card_number&quot;: &quot;XXXXXXXXXXXX9541&quot;,
-    &quot;card_owner_name&quot;: &quot;Adam&quot;,
-    &quot;card_type&quot;: &quot;Visa&quot;,
-    &quot;card_expiry&quot;: &quot;12/2027&quot;,
-    &quot;currency&quot;: &quot;USD&quot;
-  }
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
-                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #25 — GET http://localhost:8888/workshop/api/shop/orders/1 — HTTP 200 
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;order&quot;: {
-    &quot;id&quot;: 1,
-    &quot;user&quot;: {
-      &quot;email&quot;: &quot;adam007@example.com&quot;,
-      &quot;number&quot;: &quot;9876895423&quot;
-    },
-    &quot;product&quot;: {
-      &quot;id&quot;: 1,
-      &quot;name&quot;: &quot;Seat&quot;,
-      &quot;price&quot;: &quot;10.00&quot;,
-      &quot;image_url&quot;: &quot;images/seat.svg&quot;
-    },
-    &quot;quantity&quot;: 2,
-    &quot;status&quot;: &quot;delivered&quot;,
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;created_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;
-  },
-  &quot;payment&quot;: {
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;order_id&quot;: 1,
-    &quot;amount&quot;: 20,
-    &quot;paid_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;,
-    &quot;card_number&quot;: &quot;XXXXXXXXXXXX9541&quot;,
-    &quot;card_owner_name&quot;: &quot;Adam&quot;,
-    &quot;card_type&quot;: &quot;Visa&quot;,
-    &quot;card_expiry&quot;: &quot;12/2027&quot;,
-    &quot;currency&quot;: &quot;USD&quot;
-  }
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
-                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #26 — GET http://localhost:8888/workshop/api/shop/orders/1 — HTTP 200 
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;order&quot;: {
-    &quot;id&quot;: 1,
-    &quot;user&quot;: {
-      &quot;email&quot;: &quot;adam007@example.com&quot;,
-      &quot;number&quot;: &quot;9876895423&quot;
-    },
-    &quot;product&quot;: {
-      &quot;id&quot;: 1,
-      &quot;name&quot;: &quot;Seat&quot;,
-      &quot;price&quot;: &quot;10.00&quot;,
-      &quot;image_url&quot;: &quot;images/seat.svg&quot;
-    },
-    &quot;quantity&quot;: 2,
-    &quot;status&quot;: &quot;delivered&quot;,
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;created_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;
-  },
-  &quot;payment&quot;: {
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;order_id&quot;: 1,
-    &quot;amount&quot;: 20,
-    &quot;paid_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;,
-    &quot;card_number&quot;: &quot;XXXXXXXXXXXX9541&quot;,
-    &quot;card_owner_name&quot;: &quot;Adam&quot;,
-    &quot;card_type&quot;: &quot;Visa&quot;,
-    &quot;card_expiry&quot;: &quot;12/2027&quot;,
-    &quot;currency&quot;: &quot;USD&quot;
-  }
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
-                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #27 — GET http://localhost:8888/workshop/api/shop/orders/1 — HTTP 200 
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;order&quot;: {
-    &quot;id&quot;: 1,
-    &quot;user&quot;: {
-      &quot;email&quot;: &quot;adam007@example.com&quot;,
-      &quot;number&quot;: &quot;9876895423&quot;
-    },
-    &quot;product&quot;: {
-      &quot;id&quot;: 1,
-      &quot;name&quot;: &quot;Seat&quot;,
-      &quot;price&quot;: &quot;10.00&quot;,
-      &quot;image_url&quot;: &quot;images/seat.svg&quot;
-    },
-    &quot;quantity&quot;: 2,
-    &quot;status&quot;: &quot;delivered&quot;,
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;created_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;
-  },
-  &quot;payment&quot;: {
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;order_id&quot;: 1,
-    &quot;amount&quot;: 20,
-    &quot;paid_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;,
-    &quot;card_number&quot;: &quot;XXXXXXXXXXXX9541&quot;,
-    &quot;card_owner_name&quot;: &quot;Adam&quot;,
-    &quot;card_type&quot;: &quot;Visa&quot;,
-    &quot;card_expiry&quot;: &quot;12/2027&quot;,
-    &quot;currency&quot;: &quot;USD&quot;
-  }
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
-                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #28 — GET http://localhost:8888/workshop/api/shop/orders/1 — HTTP 200 
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;order&quot;: {
-    &quot;id&quot;: 1,
-    &quot;user&quot;: {
-      &quot;email&quot;: &quot;adam007@example.com&quot;,
-      &quot;number&quot;: &quot;9876895423&quot;
-    },
-    &quot;product&quot;: {
-      &quot;id&quot;: 1,
-      &quot;name&quot;: &quot;Seat&quot;,
-      &quot;price&quot;: &quot;10.00&quot;,
-      &quot;image_url&quot;: &quot;images/seat.svg&quot;
-    },
-    &quot;quantity&quot;: 2,
-    &quot;status&quot;: &quot;delivered&quot;,
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;created_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;
-  },
-  &quot;payment&quot;: {
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;order_id&quot;: 1,
-    &quot;amount&quot;: 20,
-    &quot;paid_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;,
-    &quot;card_number&quot;: &quot;XXXXXXXXXXXX9541&quot;,
-    &quot;card_owner_name&quot;: &quot;Adam&quot;,
-    &quot;card_type&quot;: &quot;Visa&quot;,
-    &quot;card_expiry&quot;: &quot;12/2027&quot;,
-    &quot;currency&quot;: &quot;USD&quot;
-  }
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
-                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #29 — GET http://localhost:8888/workshop/api/shop/orders/1 — HTTP 200 
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;order&quot;: {
-    &quot;id&quot;: 1,
-    &quot;user&quot;: {
-      &quot;email&quot;: &quot;adam007@example.com&quot;,
-      &quot;number&quot;: &quot;9876895423&quot;
-    },
-    &quot;product&quot;: {
-      &quot;id&quot;: 1,
-      &quot;name&quot;: &quot;Seat&quot;,
-      &quot;price&quot;: &quot;10.00&quot;,
-      &quot;image_url&quot;: &quot;images/seat.svg&quot;
-    },
-    &quot;quantity&quot;: 2,
-    &quot;status&quot;: &quot;delivered&quot;,
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;created_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;
-  },
-  &quot;payment&quot;: {
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;order_id&quot;: 1,
-    &quot;amount&quot;: 20,
-    &quot;paid_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;,
-    &quot;card_number&quot;: &quot;XXXXXXXXXXXX9541&quot;,
-    &quot;card_owner_name&quot;: &quot;Adam&quot;,
-    &quot;card_type&quot;: &quot;Visa&quot;,
-    &quot;card_expiry&quot;: &quot;12/2027&quot;,
-    &quot;currency&quot;: &quot;USD&quot;
-  }
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
-                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #30 — GET http://localhost:8888/workshop/api/shop/orders/1 — HTTP 200 
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;order&quot;: {
-    &quot;id&quot;: 1,
-    &quot;user&quot;: {
-      &quot;email&quot;: &quot;adam007@example.com&quot;,
-      &quot;number&quot;: &quot;9876895423&quot;
-    },
-    &quot;product&quot;: {
-      &quot;id&quot;: 1,
-      &quot;name&quot;: &quot;Seat&quot;,
-      &quot;price&quot;: &quot;10.00&quot;,
-      &quot;image_url&quot;: &quot;images/seat.svg&quot;
-    },
-    &quot;quantity&quot;: 2,
-    &quot;status&quot;: &quot;delivered&quot;,
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;created_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;
-  },
-  &quot;payment&quot;: {
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;order_id&quot;: 1,
-    &quot;amount&quot;: 20,
-    &quot;paid_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;,
-    &quot;card_number&quot;: &quot;XXXXXXXXXXXX9541&quot;,
-    &quot;card_owner_name&quot;: &quot;Adam&quot;,
-    &quot;card_type&quot;: &quot;Visa&quot;,
-    &quot;card_expiry&quot;: &quot;12/2027&quot;,
-    &quot;currency&quot;: &quot;USD&quot;
-  }
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
-                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #31 — GET http://localhost:8888/workshop/api/shop/orders/1 — HTTP 200 
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;order&quot;: {
-    &quot;id&quot;: 1,
-    &quot;user&quot;: {
-      &quot;email&quot;: &quot;adam007@example.com&quot;,
-      &quot;number&quot;: &quot;9876895423&quot;
-    },
-    &quot;product&quot;: {
-      &quot;id&quot;: 1,
-      &quot;name&quot;: &quot;Seat&quot;,
-      &quot;price&quot;: &quot;10.00&quot;,
-      &quot;image_url&quot;: &quot;images/seat.svg&quot;
-    },
-    &quot;quantity&quot;: 2,
-    &quot;status&quot;: &quot;delivered&quot;,
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;created_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;
-  },
-  &quot;payment&quot;: {
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;order_id&quot;: 1,
-    &quot;amount&quot;: 20,
-    &quot;paid_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;,
-    &quot;card_number&quot;: &quot;XXXXXXXXXXXX9541&quot;,
-    &quot;card_owner_name&quot;: &quot;Adam&quot;,
-    &quot;card_type&quot;: &quot;Visa&quot;,
-    &quot;card_expiry&quot;: &quot;12/2027&quot;,
-    &quot;currency&quot;: &quot;USD&quot;
-  }
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
-                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #32 — GET http://localhost:8888/workshop/api/shop/orders/1 — HTTP 200 
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;order&quot;: {
-    &quot;id&quot;: 1,
-    &quot;user&quot;: {
-      &quot;email&quot;: &quot;adam007@example.com&quot;,
-      &quot;number&quot;: &quot;9876895423&quot;
-    },
-    &quot;product&quot;: {
-      &quot;id&quot;: 1,
-      &quot;name&quot;: &quot;Seat&quot;,
-      &quot;price&quot;: &quot;10.00&quot;,
-      &quot;image_url&quot;: &quot;images/seat.svg&quot;
-    },
-    &quot;quantity&quot;: 2,
-    &quot;status&quot;: &quot;delivered&quot;,
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;created_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;
-  },
-  &quot;payment&quot;: {
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;order_id&quot;: 1,
-    &quot;amount&quot;: 20,
-    &quot;paid_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;,
-    &quot;card_number&quot;: &quot;XXXXXXXXXXXX9541&quot;,
-    &quot;card_owner_name&quot;: &quot;Adam&quot;,
-    &quot;card_type&quot;: &quot;Visa&quot;,
-    &quot;card_expiry&quot;: &quot;12/2027&quot;,
-    &quot;currency&quot;: &quot;USD&quot;
-  }
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
-                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #33 — GET http://localhost:8888/workshop/api/shop/orders/1 — HTTP 200 
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;order&quot;: {
-    &quot;id&quot;: 1,
-    &quot;user&quot;: {
-      &quot;email&quot;: &quot;adam007@example.com&quot;,
-      &quot;number&quot;: &quot;9876895423&quot;
-    },
-    &quot;product&quot;: {
-      &quot;id&quot;: 1,
-      &quot;name&quot;: &quot;Seat&quot;,
-      &quot;price&quot;: &quot;10.00&quot;,
-      &quot;image_url&quot;: &quot;images/seat.svg&quot;
-    },
-    &quot;quantity&quot;: 2,
-    &quot;status&quot;: &quot;delivered&quot;,
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;created_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;
-  },
-  &quot;payment&quot;: {
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;order_id&quot;: 1,
-    &quot;amount&quot;: 20,
-    &quot;paid_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;,
-    &quot;card_number&quot;: &quot;XXXXXXXXXXXX9541&quot;,
-    &quot;card_owner_name&quot;: &quot;Adam&quot;,
-    &quot;card_type&quot;: &quot;Visa&quot;,
-    &quot;card_expiry&quot;: &quot;12/2027&quot;,
-    &quot;currency&quot;: &quot;USD&quot;
-  }
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
-                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #34 — GET http://localhost:8888/workshop/api/shop/orders/1 — HTTP 200 
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;order&quot;: {
-    &quot;id&quot;: 1,
-    &quot;user&quot;: {
-      &quot;email&quot;: &quot;adam007@example.com&quot;,
-      &quot;number&quot;: &quot;9876895423&quot;
-    },
-    &quot;product&quot;: {
-      &quot;id&quot;: 1,
-      &quot;name&quot;: &quot;Seat&quot;,
-      &quot;price&quot;: &quot;10.00&quot;,
-      &quot;image_url&quot;: &quot;images/seat.svg&quot;
-    },
-    &quot;quantity&quot;: 2,
-    &quot;status&quot;: &quot;delivered&quot;,
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;created_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;
-  },
-  &quot;payment&quot;: {
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;order_id&quot;: 1,
-    &quot;amount&quot;: 20,
-    &quot;paid_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;,
-    &quot;card_number&quot;: &quot;XXXXXXXXXXXX9541&quot;,
-    &quot;card_owner_name&quot;: &quot;Adam&quot;,
-    &quot;card_type&quot;: &quot;Visa&quot;,
-    &quot;card_expiry&quot;: &quot;12/2027&quot;,
-    &quot;currency&quot;: &quot;USD&quot;
-  }
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
-                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #35 — GET http://localhost:8888/workshop/api/shop/orders/1 — HTTP 200 
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;order&quot;: {
-    &quot;id&quot;: 1,
-    &quot;user&quot;: {
-      &quot;email&quot;: &quot;adam007@example.com&quot;,
-      &quot;number&quot;: &quot;9876895423&quot;
-    },
-    &quot;product&quot;: {
-      &quot;id&quot;: 1,
-      &quot;name&quot;: &quot;Seat&quot;,
-      &quot;price&quot;: &quot;10.00&quot;,
-      &quot;image_url&quot;: &quot;images/seat.svg&quot;
-    },
-    &quot;quantity&quot;: 2,
-    &quot;status&quot;: &quot;delivered&quot;,
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;created_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;
-  },
-  &quot;payment&quot;: {
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;order_id&quot;: 1,
-    &quot;amount&quot;: 20,
-    &quot;paid_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;,
-    &quot;card_number&quot;: &quot;XXXXXXXXXXXX9541&quot;,
-    &quot;card_owner_name&quot;: &quot;Adam&quot;,
-    &quot;card_type&quot;: &quot;Visa&quot;,
-    &quot;card_expiry&quot;: &quot;12/2027&quot;,
-    &quot;currency&quot;: &quot;USD&quot;
-  }
-}</pre>
-                </div>
-                
-                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
-                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #36 — GET http://localhost:8888/workshop/api/shop/orders/1 — HTTP 200 
-                    </h3>
-                    
-                    
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
-                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{}</pre>
-                    
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
-                    <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;order&quot;: {
-    &quot;id&quot;: 1,
-    &quot;user&quot;: {
-      &quot;email&quot;: &quot;adam007@example.com&quot;,
-      &quot;number&quot;: &quot;9876895423&quot;
-    },
-    &quot;product&quot;: {
-      &quot;id&quot;: 1,
-      &quot;name&quot;: &quot;Seat&quot;,
-      &quot;price&quot;: &quot;10.00&quot;,
-      &quot;image_url&quot;: &quot;images/seat.svg&quot;
-    },
-    &quot;quantity&quot;: 2,
-    &quot;status&quot;: &quot;delivered&quot;,
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;created_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;
-  },
-  &quot;payment&quot;: {
-    &quot;transaction_id&quot;: &quot;1acaf45b-a5dc-464c-b3ed-be3c4ac6611d&quot;,
-    &quot;order_id&quot;: 1,
-    &quot;amount&quot;: 20,
-    &quot;paid_on&quot;: &quot;2026-05-13T09:36:21.476071&quot;,
-    &quot;card_number&quot;: &quot;XXXXXXXXXXXX9541&quot;,
-    &quot;card_owner_name&quot;: &quot;Adam&quot;,
-    &quot;card_type&quot;: &quot;Visa&quot;,
-    &quot;card_expiry&quot;: &quot;12/2027&quot;,
-    &quot;currency&quot;: &quot;USD&quot;
-  }
-}</pre>
+                    <pre style="border: 1px solid rgba(255,255,255,0.1);">
+&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;title&gt;Server Error (500)&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Server Error (500)&lt;/h1&gt;&lt;p&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
                 </div>
                 
     </div>

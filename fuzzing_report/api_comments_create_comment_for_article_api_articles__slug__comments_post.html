@@ -65,14 +65,19 @@
 
                 <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
                     <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #1 — POST http://localhost:8000/api/articles/getting-started-with-api-fuzzing/comments — HTTP 404 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                        Lần gọi #1 — POST http://localhost:8000/api/articles/introduction-to-api-fuzzing/comments — HTTP 404 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;slug&quot;: &quot;getting-started-with-api-fuzzing&quot;,
+  &quot;Authorization&quot;: &quot;Token eyJ0e...Twuxc&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;slug&quot;: &quot;introduction-to-api-fuzzing&quot;,
   &quot;body&quot;: &quot;This is a thoughtful comment generated for testing the article comments endpoint.&quot;
 }</pre>
                     
@@ -86,14 +91,19 @@
                 
                 <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
                     <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #2 — POST http://localhost:8000/api/articles/getting-started-with-api-fuzzing/comments — HTTP 404 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                        Lần gọi #2 — POST http://localhost:8000/api/articles/introduction-to-api-fuzzing/comments — HTTP 404 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;slug&quot;: &quot;getting-started-with-api-fuzzing&quot;,
+  &quot;Authorization&quot;: &quot;Token eyJ0e...Twuxc&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;slug&quot;: &quot;introduction-to-api-fuzzing&quot;,
   &quot;body&quot;: &quot;This is a thoughtful comment generated for testing the article comments endpoint.&quot;
 }</pre>
                     
@@ -105,38 +115,97 @@
 }</pre>
                 </div>
                 
-                <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
-                    <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #3 — POST http://localhost:8000/api/articles/getting-started-with-api-fuzzing/comments — HTTP 404 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                <div class="status-section" style="border-left: 4px solid var(--success); margin-bottom: 2rem;">
+                    <h3 style="color: var(--success); margin-bottom: 1rem; font-family: monospace;">
+                        Lần gọi #3 — POST http://localhost:8000/api/articles/resilient-api-testing-with-structured-fuzz-cases/comments — HTTP 201 <span style='background: #f59e0b; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🛠️ LLM Repaired</span>
                     </h3>
                     
                     
+                    <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 0.75rem; margin-bottom: 1rem; font-size: 0.85rem; color: #b45309; border-radius: 0 4px 4px 0;">
+                        <strong>⚠️ Original Error HTTP 422: {&quot;errors&quot;:[{&quot;loc&quot;:[&quot;body&quot;,&quot;comment&quot;],&quot;msg&quot;:&quot;field required&quot;,&quot;type&quot;:&quot;value_error.missing&quot;}]}</strong>
+                        
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-left: 3px solid #6b7280; border-radius: 4px;">
+                            <h5 style="color: #9ca3af; margin-bottom: 0.5rem;">🚧 Attempt #1 Failed (HTTP 422)</h5>
+                            <div style="display: flex; gap: 1rem;">
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Sent Payload:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #1f2937; border-radius: 4px;">{
+  &quot;slug&quot;: &quot;resilient-api-testing-with-structured-fuzz-cases&quot;,
+  &quot;body&quot;: &quot;Structured API fuzzing focuses on generating payloads that satisfy basic schema requirements while still exploring edge cases in validation, parsing, and business logic. By using realistic data, varying optional arrays, and preserving required request wrappers, testers can uncover reliability issues without sending completely invalid traffic.&quot;
+}</pre>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Error Response:</div>
+                                    <pre style="margin:0; padding: 0.5rem; font-size: 0.8rem; background: #372f2f; color: #fca5a5; border-radius: 4px;">{
+  &quot;errors&quot;: [
+    {
+      &quot;loc&quot;: [
+        &quot;body&quot;,
+        &quot;comment&quot;
+      ],
+      &quot;msg&quot;: &quot;field required&quot;,
+      &quot;type&quot;: &quot;value_error.missing&quot;
+    }
+  ]
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;slug&quot;: &quot;getting-started-with-api-fuzzing&quot;,
-  &quot;body&quot;: &quot;This is a thoughtful comment generated for testing the article comments endpoint.&quot;
+  &quot;Authorization&quot;: &quot;Token eyJ0e...Twuxc&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;slug&quot;: &quot;resilient-api-testing-with-structured-fuzz-cases&quot;,
+  &quot;comment&quot;: {
+    &quot;body&quot;: &quot;Structured API fuzzing focuses on generating payloads that satisfy basic schema requirements while still exploring edge cases in validation, parsing, and business logic. By using realistic data, varying optional arrays, and preserving required request wrappers, testers can uncover reliability issues without sending completely invalid traffic.&quot;
+  }
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
                     <pre style="border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;errors&quot;: [
-    &quot;article does not exist&quot;
-  ]
+  &quot;comment&quot;: {
+    &quot;createdAt&quot;: &quot;2026-05-19T04:32:15.230671Z&quot;,
+    &quot;updatedAt&quot;: &quot;2026-05-19T04:32:15.230671Z&quot;,
+    &quot;id&quot;: 72,
+    &quot;body&quot;: &quot;Structured API fuzzing focuses on generating payloads that satisfy basic schema requirements while still exploring edge cases in validation, parsing, and business logic. By using realistic data, varying optional arrays, and preserving required request wrappers, testers can uncover reliability issues without sending completely invalid traffic.&quot;,
+    &quot;author&quot;: {
+      &quot;admin&quot;: false,
+      &quot;username&quot;: &quot;trieu10a22005&quot;,
+      &quot;bio&quot;: &quot;API fuzzing profile update for integration testing.&quot;,
+      &quot;image&quot;: &quot;https://cdn.test.com/images/trieu10a22005.png&quot;,
+      &quot;following&quot;: false,
+      &quot;cardName&quot;: null,
+      &quot;cardNumber&quot;: null,
+      &quot;cardCvc&quot;: null,
+      &quot;cardExpiry&quot;: null
+    }
+  }
 }</pre>
                 </div>
                 
                 <div class="status-section" style="border-left: 4px solid var(--warning); margin-bottom: 2rem;">
                     <h3 style="color: var(--warning); margin-bottom: 1rem; font-family: monospace;">
-                        Lần gọi #4 — POST http://localhost:8000/api/articles/getting-started-with-api-fuzzing/comments — HTTP 404 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
+                        Lần gọi #4 — POST http://localhost:8000/api/articles/resilient-api-testing-with-structured-fuzz-cases/comments — HTTP 404 <span style='background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; font-family: Inter;'>🤖 LLM Generated</span>
                     </h3>
                     
                     
                     
-                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📥 Request Payload</h4>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">� Request Headers</h4>
                     <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
-  &quot;slug&quot;: &quot;getting-started-with-api-fuzzing&quot;,
-  &quot;body&quot;: &quot;This is a thoughtful comment generated for testing the article comments endpoint.&quot;
+  &quot;Authorization&quot;: &quot;Token eyJ0e...Twuxc&quot;
+}</pre>
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">�📥 Request Payload</h4>
+                    <pre style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1);">{
+  &quot;slug&quot;: &quot;resilient-api-testing-with-structured-fuzz-cases&quot;,
+  &quot;body&quot;: &quot;Structured API fuzzing focuses on generating payloads that satisfy basic schema requirements while still exploring edge cases in validation, parsing, and business logic. By using realistic data, varying optional arrays, and preserving required request wrappers, testers can uncover reliability issues without sending completely invalid traffic.&quot;
 }</pre>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📤 Response Body</h4>
