@@ -35,17 +35,10 @@ class LLMPlanner:
     _PASSWORD_RE = re.compile(r"pass(word)?|passwd", re.I)
 
     def __init__(self):
-        openai_key     = os.getenv("OPENAI_API_KEY", "")
-        github_token   = os.getenv("GITHUB_TOKEN", "")
+        github_token = os.getenv("GITHUB_TOKEN", "")
 
-        if openai_key:
-            # Dùng OpenAI-compatible API
-            self.endpoint = "https://codex.xirothedev.io.vn/v1"
-            self.model    = "gpt-5.5"
-            api_key       = openai_key
-            log.info("[LLMPlanner] Using Custom OpenAI API — model: gpt-5.5")
-        elif github_token:
-            # Fallback: GitHub Models
+        if github_token:
+            # GitHub Models inference API (OpenAI-compatible)
             self.endpoint = "https://models.github.ai/inference"
             self.model    = "gpt-4o-mini"
             api_key       = github_token
@@ -54,7 +47,7 @@ class LLMPlanner:
             self.endpoint = ""
             self.model    = ""
             api_key       = ""
-            log.warning("[LLMPlanner] No API key found — heuristic fallback only.")
+            log.warning("[LLMPlanner] No GITHUB_TOKEN found — heuristic fallback only.")
 
         self.max_retries = 2
         self._client = OpenAI(
@@ -188,19 +181,6 @@ Rules:
         if method in ("GET", "DELETE"):
             return {}, "NONE"
 
-        # Tính dep_map trước để truyền sang _randomize_volatile_fields
-        # Mục đích: bảo vệ các field đã được resolve từ ODG edge dep khỏi bị randomize mù
-        dep_map: Dict[str, Any] = {}
-        if edge_deps:
-            for dep in edge_deps:
-                prod      = dep.get("producer_field", "")
-                cons      = dep.get("consumer_field", "")
-                prod_norm = self._norm(prod)
-                for sk, sv in state.memory.items():
-                    if self._norm(sk) == prod_norm:
-                        dep_map[self._norm(cons)] = sv
-                        break
-
         source = "LLM"
         payload = self._llm_generate(api_node, state, edge_deps=edge_deps)
         if payload is None:
@@ -209,7 +189,7 @@ Rules:
             
         # Đảm bảo rule cuối cùng được áp dụng cho mọi source
         if payload:
-            payload = self._randomize_volatile_fields(payload, api_node, state, dep_map=dep_map)
+            payload = self._randomize_volatile_fields(payload, api_node, state)
             
         log.info(f"  [{source} Payload] {api_node.get('id')} → {json.dumps(payload, ensure_ascii=False)}")
         return payload, source
@@ -341,7 +321,7 @@ Server Error Response:
 
 YOUR TASK:
 Analyze the error response and FIX the payload to satisfy the server's requirements.
-CRITICAL RULE FOR REPAIR: If the error indicates a duplicate value (e.g., "already exists", "already registered", "duplicate"), you MUST generate a completely NEW, RANDOM, and UNIQUE value for the offending field. DO NOT reuse the value from the Previous Payload or the Available Context.
+CRITICAL RULE FOR REPAIR: If the error indicates a DUPLICATE or CONFLICT value (e.g., "already exists", "already registered", "already taken", "duplicate entry", "duplicate key", "unique constraint", "conflict", "has already been taken", "is already in use"), you MUST generate a completely NEW, RANDOM, and UNIQUE value for ALL fields that could be causing the conflict (email, username, slug, title, phone, etc.). DO NOT reuse ANY value from the Previous Payload or the Available Context for those fields.
 Ensure the output is ONLY a valid JSON object.
 """
         log.warning(f"\033[93m[LLM Repair]\033[0m Attempting to fix payload for {api_node['id']}")
@@ -418,14 +398,8 @@ Ensure the output is ONLY a valid JSON object.
         return payload
 
     @staticmethod
-    def _randomize_volatile_fields(payload: Dict, api_node: Dict, state: StateStore,
-                                   dep_map: Optional[Dict] = None) -> Dict:
-        """Post-process payload thông minh theo Context (API Type).
-        
-        dep_map: các field đã được resolve từ ODG edge dep — KHÔNG được randomize đè lên.
-        """
-        if dep_map is None:
-            dep_map = {}
+    def _randomize_volatile_fields(payload: Dict, api_node: Dict, state: StateStore) -> Dict:
+        """Post-process payload thông minh theo Context (API Type)."""
         hex6 = uuid.uuid4().hex[:6]
         hex4 = uuid.uuid4().hex[:4]
 
@@ -450,23 +424,16 @@ Ensure the output is ONLY a valid JSON object.
         for k, v in payload.items():
             if isinstance(v, dict):
                 # Đệ quy vào các dictionary con (ví dụ: {"user": {"email": ...}})
-                out[k] = LLMPlanner._randomize_volatile_fields(v, api_node, state, dep_map)
+                out[k] = LLMPlanner._randomize_volatile_fields(v, api_node, state)
                 continue
             elif isinstance(v, list):
                 # ✅ Xử lý nested list chứa dicts (ví dụ: {"items": [{"email": ...}, {...}]})
                 out[k] = [
-                    LLMPlanner._randomize_volatile_fields(item, api_node, state, dep_map)
+                    LLMPlanner._randomize_volatile_fields(item, api_node, state)
                     if isinstance(item, dict)
                     else item  # Keep non-dict items as-is
                     for item in v
                 ]
-                continue
-
-            # Nếu field này đã được resolve từ ODG edge dep → giữ nguyên, không randomize
-            k_norm = LLMPlanner._norm(k)
-            if k_norm in dep_map:
-                out[k] = v  # giá trị đã được set đúng từ dep_map, không đụng vào
-                log.debug(f"[Randomize] SKIP '{k}' — protected by edge dep (value from StateStore)")
                 continue
                 
             is_email = LLMPlanner._EMAIL_RE.search(k)

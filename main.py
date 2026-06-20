@@ -63,8 +63,8 @@ def build_system(operations, base_url, beam_width):
 
 def main():
     parser = argparse.ArgumentParser(description="Hybrid Stateful API Fuzzer")
-    parser.add_argument("--spec", type=str, default="capital.json", help="Path to OpenAPI spec file")
-    parser.add_argument("--base-url", type=str, default="http://localhost:8000", help="Target API Base URL")
+    parser.add_argument("--spec", type=str, default="vmAPI.json", help="Path to OpenAPI spec file")
+    parser.add_argument("--base-url", type=str, default="http://localhost:5001", help="Target API Base URL")
     parser.add_argument("--max-depth", type=int, default=5, help="Max depth for path execution")
     parser.add_argument("--beam-width", type=int, default=3, help="Beam search width")
     args = parser.parse_args()

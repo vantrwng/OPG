@@ -12,6 +12,21 @@ from llm_planner import LLMPlanner
 log = logging.getLogger("executor")
 REQUEST_TIMEOUT = 10
 
+# Regex phát hiện mọi biến thể của lỗi "trùng lặp" từ các framework khác nhau
+# Django REST / FastAPI / Express / Spring / Rails / Laravel ...
+DUPLICATE_RE = re.compile(
+    r"already (exists?|registered|taken|used|in use)"
+    r"|duplicate (entry|key|value|field|email|username)"
+    r"|(email|username|phone|slug|title|name).*?(already|already exists|is taken|is used|conflict)"
+    r"|conflict(ing)? (resource|entry|record|key)?"
+    r"|unique.*?(constraint|violation)"
+    r"|this (email|username|phone|account) (is already|already|has been)"
+    r"|has already been taken"
+    r"|UNIQUE constraint failed"
+    r"|Duplicate entry",
+    re.I
+)
+
 class FeedbackAnalyzer:
     _EMAIL_RE = re.compile(r"[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+")
     _PHONE_RE = re.compile(r"\+?\d[\d\s\-]{7,14}\d")
@@ -116,10 +131,12 @@ class RequestExecutor:
                     current_exec["repair_skipped"] = True
                     break
                 
-                # Thay đổi 2: Invalidate schema cache khi gặp "already exists" để LLM sinh payload mới
-                if "already exists" in current_exec.get("response_text", "").lower():
+                # Invalidate schema cache khi phát hiện lỗi trùng lặp (nhiều biến thể)
+                response_text = current_exec.get("response_text", "")
+                if DUPLICATE_RE.search(response_text):
                     self.planner._schema_cache.pop(api_node.get("id"), None)
-                    log.info(f"[Cache Invalidate] Cleared schema cache for {api_id} — duplicate content detected")
+                    self.planner._payload_cache.clear()  # xóa cả payload cache để LLM bắt buộc sinh mới
+                    log.info(f"[Cache Invalidate] Cleared ALL caches for {api_id} — duplicate/conflict detected: {response_text[:80]}")
 
                 # Rule 2: Chống repair trùng lặp cùng một payload trong cùng 1 lần execute_request
                 payload_str = json.dumps(current_payload, sort_keys=True)
