@@ -1,9 +1,24 @@
 import json
 import re
 import math
+import asyncio
+import logging
 from state_store import StateStore
 from runtime_executor import RequestExecutor
 from knowledge_memory import KnowledgeMemory
+from local_mutator import AsyncFuzzEngine
+from attack_store import AttackStore, get_attack_store
+
+# ── Agent imports (optional — graceful fallback if Ollama not available) ─────────
+_AGENTS_AVAILABLE = False
+try:
+    from attacker_agent import AttackerAgent, AttackVariant
+    from auditor_agent import AuditorAgent, AuditResult
+    _AGENTS_AVAILABLE = True
+except ImportError:
+    pass
+
+log = logging.getLogger("strategy_engine")
 
 def jaccard_similarity(list1, list2):
     s1 = set(list1)
@@ -101,6 +116,19 @@ class TestStrategyEngine:
         self.scorer = HeuristicScorer()
         self.beam_width = beam_width
         self.operations_map = {op['id']: op for op in self.operations}
+
+        # ── Attack Store (shared cross-beam) ─────────────────────────────────
+        self.attack_store: AttackStore = get_attack_store()
+
+        # ── Agent instances ─────────────────────────────────────────────────
+        if _AGENTS_AVAILABLE:
+            self._attacker = AttackerAgent(attack_store=self.attack_store)
+            self._auditor  = AuditorAgent()
+            log.info("[Engine] ✅ 3-Agent Pipeline enabled (Attacker + Auditor)")
+        else:
+            self._attacker = None
+            self._auditor  = None
+            log.warning("[Engine] ⚠ Agents not available — running without Attacker/Auditor")
         
         self.incoming_edges = {}
         for api_out, edges in self.adjacency_list.items():
@@ -170,6 +198,10 @@ class TestStrategyEngine:
                 break
 
             # ── Hướng 2: Xây danh sách candidate + sort theo confidence + runtime score ──
+            # FIX: Dùng `provider_tried` riêng cho từng field thay vì dùng chung `visited`.
+            # `visited` chỉ dùng làm recursion-guard (ngăn vòng lặp đệ quy vô tận),
+            # không nên block provider phục vụ các missing_field khác ở cùng level.
+            provider_tried: set = set()
             candidates = []
             for provider in providers:
                 if provider['from'] in visited or provider['from'] in current_chain:
@@ -208,6 +240,11 @@ class TestStrategyEngine:
                 provider_node = self.operations_map.get(provider_id)
                 if not provider_node:
                     continue
+
+                # FIX: Không thử lại cùng provider cho cùng field trong một vòng lặp.
+                if provider_id in provider_tried:
+                    continue
+                provider_tried.add(provider_id)
 
                 indent = '  ' * (recursion_depth + 1)
                 print(f"{indent}[Sub-task] {api_id} thiếu '{missing_field}'. "
@@ -342,6 +379,59 @@ class TestStrategyEngine:
                     sent_headers=exec_result.get("sent_headers", {})
                 )
                 
+                # --- [GIAI ĐOẠN 1] Local Mutator Blasting ---
+                # Chỉ bắn rác khi payload gốc là hợp lệ (status 200, 201, 202, 204)
+                if status in (200, 201, 202, 204) and exec_result.get("sent_payload"):
+                    print(f"[{current_api}] 🚀 Bắt đầu bắn xối xả (Blasting) 50 requests rác để tìm lỗi 500...")
+                    try:
+                        # TestStrategyEngine.run() là sync — asyncio.run() luôn an toàn ở đây.
+                        # KHÔNG dùng loop.run_until_complete() vì sẽ raise RuntimeError
+                        # nếu có running loop (e.g. khi chạy trong Jupyter / async wrapper).
+                        blast_results = asyncio.run(AsyncFuzzEngine.blast_api(
+                            url=exec_result.get("url"),
+                            method=api_node.get("method", "GET").upper(),
+                            headers=exec_result.get("sent_headers", {}),
+                            valid_payload=exec_result.get("sent_payload", {}),
+                            num_requests=50
+                        ))
+                            
+                        for br in blast_results:
+                            b_status = br["status"]
+                            # Ghi nhận request rác vào report
+                            self.memory.record_request(
+                                api_id=current_api,
+                                method=api_node.get("method", "GET").upper(),
+                                path=exec_result.get("url", api_node.get("path", "/")),
+                                status=b_status,
+                                chain=beam['chain'],
+                                response_text=br.get("text", br.get("error", "")),
+                                request_payload=br.get("payload", {}),
+                                payload_source="LOCAL_MUTATOR",
+                                sent_headers=exec_result.get("sent_headers", {})
+                            )
+                            # Nếu ra 500, đánh dấu lỗi
+                            if b_status >= 500:
+                                if not self.memory.is_vulnerability_found(current_api, b_status):
+                                    vulnerabilities.append({
+                                        "api": current_api,
+                                        "status": b_status,
+                                        "details": ["Gây ra lỗi 500 bằng Local Mutator"],
+                                        "type": "Crash/500"
+                                    })
+                                    self.memory.record_vulnerability(current_api, b_status)
+                                    self.memory.record_finding({
+                                        "api": current_api,
+                                        "method": api_node.get("method", "GET").upper(),
+                                        "path": exec_result.get("url", api_node.get("path", "/")),
+                                        "status": b_status,
+                                        "details": ["Gây ra lỗi 500 bằng Local Mutator"],
+                                        "type": "Crash/500",
+                                        "chain": beam['chain']
+                                    })
+                    except Exception as e:
+                        print(f"[{current_api}] ❌ Lỗi khi Blasting: {str(e)}")
+                # --- End Local Mutator ---
+                
                 already_found = self.memory.is_vulnerability_found(current_api, status)
 
                 if exec_result.get('server_error') or exec_result.get('auth_anomaly') or exec_result.get('response_diff'):
@@ -366,6 +456,18 @@ class TestStrategyEngine:
                             "chain": beam['chain']
                         })
 
+                # ── [GIAI ĐOẠN 2] 3-Agent Pipeline: Attacker + Auditor ───────────────
+                # Chạy sau khi request hợp lệ thành công (2xx)
+                agent_score_bonus = 0.0
+                if status in (200, 201, 202) and self._attacker and self._auditor:
+                    agent_score_bonus = self._run_3agent_pipeline(
+                        api_node=api_node,
+                        current_state=current_state,
+                        exec_result=exec_result,
+                        beam_chain=beam['chain'],
+                        vulnerabilities=vulnerabilities,
+                    )
+
                 if len(beam['chain']) >= 2:
                     prev_api = beam['chain'][-2]
                     is_success = not exec_result["edge_failure"]
@@ -380,7 +482,7 @@ class TestStrategyEngine:
                     self.memory.record_edge_feedback(prev_api, current_api, success=is_success)
 
                 base_score = self.scorer.calculate_score(exec_result, depth, visit_count, already_found=already_found)
-                current_score = beam['score'] + base_score
+                current_score = beam['score'] + base_score + agent_score_bonus
 
                 # TÌM CÁC NHÁNH (NEIGHBORS) ĐỂ RẼ NHÁNH CHO DEPTH TIẾP THEO
                 # Lấy toàn bộ neighbor kèm edge_type để có thể penalize fallback
@@ -446,3 +548,153 @@ class TestStrategyEngine:
                 break
 
         return completed_strategies
+
+    # ── 3-Agent Pipeline ──────────────────────────────────────────────────────
+
+    def _run_3agent_pipeline(
+        self,
+        api_node:       dict,
+        current_state:  "StateStore",
+        exec_result:    dict,
+        beam_chain:     list,
+        vulnerabilities: list,
+    ) -> float:
+        """
+        Chạy pipeline 3-agent sau khi request hợp lệ thành công (2xx):
+
+          1. Lưu baseline vào StateStore (step 16 chuẩn bị)
+          2. Harvest resource IDs vào AttackStore (chuẩn bị Reference Forge)
+          3. [Attacker Agent] Sinh attack variants (ID Sub / Param Pollute / Ref Forge)
+          4. Thực thi các attack variants qua RequestExecutor
+          5. [Auditor Agent] Phân tích response → BOLA?
+          6. Nếu BOLA → ghi finding, cộng score bonus
+
+        Returns:
+            float: Tổng score bonus cộng thêm vào beam score
+        """
+        api_id       = api_node.get("id", "unknown")
+        total_bonus  = 0.0
+
+        # ── Bước 1: Lưu baseline ──────────────────────────────────────────────
+        current_state.set_baseline(api_id, exec_result)
+
+        # ── Bước 2: Harvest IDs vào AttackStore ───────────────────────────────
+        raw_response = exec_result.get("raw_response")
+        if raw_response:
+            own_ctx = {
+                "user_id": current_state.get("user_id") or current_state.get("id"),
+                "email":   current_state.get("email"),
+            }
+            n_harvested = self.attack_store.record_from_response(
+                api_id=api_id,
+                response_json=raw_response,
+                endpoint=exec_result.get("url", api_node.get("path", "")),
+                user_context={k: v for k, v in own_ctx.items() if v},
+            )
+            if n_harvested:
+                log.info(f"[AttackStore] Harvested {n_harvested} IDs from {api_id}")
+
+        # ── Bước 3: Attacker Agent sinh variants ──────────────────────────────
+        valid_payload = exec_result.get("sent_payload", {})
+        try:
+            attack_variants = self._attacker.generate_attacks(
+                api_node=api_node,
+                state=current_state,
+                valid_payload=valid_payload,
+                valid_response=raw_response,
+            )
+        except Exception as e:
+            log.error(f"[AttackerAgent] Error generating attacks for {api_id}: {e}")
+            return 0.0
+
+        if not attack_variants:
+            log.info(f"[AttackerAgent] No attack variants generated for {api_id}")
+            return 0.0
+
+        log.info(f"\033[95m[3-Agent]\033[0m Running {len(attack_variants)} attack variants on {api_id}")
+
+        # ── Bước 4 & 5: Thực thi variants + Audit ────────────────────────────
+        baseline_response = current_state.get_baseline(api_id)
+
+        for variant in attack_variants:
+            # Tạo modified api_node với path đã bị biến đổi
+            attack_node = dict(variant.api_node)
+            attack_node["path"] = variant.path
+
+            try:
+                # Thực thi attack request
+                attack_exec = self.executor.execute_request(
+                    api_node=attack_node,
+                    current_state=current_state,
+                    edge_deps=None,
+                )
+
+                # Ghi lại attack request vào memory
+                self.memory.record_request(
+                    api_id=api_id,
+                    method=attack_node.get("method", "GET").upper(),
+                    path=attack_exec.get("url", variant.path),
+                    status=attack_exec["status"],
+                    chain=beam_chain,
+                    response_text=attack_exec.get("response_text", ""),
+                    request_payload=variant.payload,
+                    payload_source=f"ATTACKER_{variant.strategy.upper()}",
+                    sent_headers=attack_exec.get("sent_headers", {}),
+                )
+
+                # ── Auditor Agent: phân tích response ─────────────────────────
+                variant_info = {
+                    "strategy":    variant.strategy,
+                    "description": variant.description,
+                    "extra":       variant.extra,
+                }
+
+                audit_result = self._auditor.audit(
+                    attack_variant_info=variant_info,
+                    attack_response=attack_exec,
+                    baseline_response=baseline_response,
+                    state=current_state,
+                    api_node=api_node,
+                )
+
+                log.info(
+                    f"[AuditorAgent] {variant.strategy}: "
+                    f"bola={audit_result.is_bola} conf={audit_result.confidence:.2f}"
+                )
+
+                # ── Step 18: Tăng điểm nếu BOLA ───────────────────────────────
+                if audit_result.is_bola:
+                    total_bonus += audit_result.score_delta
+
+                    # Ghi Finding vào KnowledgeMemory (step 20)
+                    if audit_result.finding:
+                        finding = dict(audit_result.finding)
+                        finding["chain"] = list(beam_chain)
+                        self.memory.record_finding(finding)
+                        self.memory.record_vulnerability(api_id, attack_exec["status"])
+
+                        vulnerabilities.append({
+                            "api":     api_id,
+                            "status":  attack_exec["status"],
+                            "details": audit_result.evidence,
+                            "type":    f"BOLA/{audit_result.bola_type.upper()}",
+                            "strategy": variant.strategy,
+                        })
+
+                        print(
+                            f"\033[91m[!!!] BOLA FOUND\033[0m api={api_id} "
+                            f"strategy={variant.strategy} conf={audit_result.confidence:.2f} "
+                            f"score+={audit_result.score_delta:.0f}"
+                        )
+
+                # Ghi finding phụ nếu Auditor phát hiện crash từ attack
+                elif audit_result.finding and audit_result.finding.get("type", "").startswith("Crash"):
+                    finding = dict(audit_result.finding)
+                    finding["chain"] = list(beam_chain)
+                    self.memory.record_finding(finding)
+
+            except Exception as e:
+                log.error(f"[3-Agent] Error running variant {variant.strategy} on {api_id}: {e}")
+                continue
+
+        return total_bonus

@@ -220,6 +220,16 @@ class RequestExecutor:
                 response_json,
                 schema=api_node.get("outputs", {})
             )
+            # ✨ Lưu credentials từ request payload sau khi signup thành công
+            # (Server không trả về password trong response, nên phải lưu từ payload gửi đi)
+            import re as _re
+            _combined = path + " " + api_id.lower()
+            _is_create = bool(_re.search(r"signup|register|create|add", _combined))
+            if _is_create and sent_payload:
+                for _field in ("email", "password", "phone", "mobile", "number"):
+                    if _field in sent_payload and sent_payload[_field]:
+                        current_state.update(_field, sent_payload[_field])
+                        log.debug(f"[State] CREDENTIAL-SAVE from request: {_field} = {repr(sent_payload[_field])[:60]}")
 
         edge_failure = (status == 400)
 
@@ -269,7 +279,10 @@ class RequestExecutor:
                         log.debug(f"[URL] Partial match {{{param}}} ← state['{k}'] = {repr(str(v))[:40]}")
                         return str(v)
             
-            log.debug(f"[URL] No match for {{{param}}} — using sentinel '1'")
+            log.warning(
+                f"[URL] ⚠️ Không resolve được path param {{{param}}} — "
+                f"dùng sentinel '1'. Có thể gây false positive nếu resource ID=1 tồn tại!"
+            )
             return "1"
 
         resolved = re.sub(r"\{([^}]+)\}", _replace, path)
@@ -281,7 +294,7 @@ class RequestExecutor:
         if token:
             header_name   = state.get("auth_header_name", "Authorization")
             header_prefix = state.get("auth_header_prefix") or "Token"  # Mặc định Token, không đoán mò
-            log.warning(f"[DEBUG] prefix={repr(header_prefix)} token[:10]={repr(str(token)[:10])}")
+            log.debug(f"[Header] prefix={repr(header_prefix)} token[:10]={repr(str(token)[:10])}")
             # Luôn tôn trọng cấu hình prefix — không còn heuristic Bearer/Token dựa vào format token
             headers[header_name] = f"{header_prefix.rstrip()} {token}"
         return headers

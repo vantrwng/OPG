@@ -6,9 +6,26 @@ import uuid
 import logging
 import hashlib
 from typing import Any, Dict, Optional, List, Tuple
-from openai import OpenAI, RateLimitError, APIError
 from dotenv import load_dotenv
 from pydantic import ValidationError
+
+# ── OpenAI / GitHub Models (fallback) ─────────────────────────────────────────
+try:
+    from openai import OpenAI, RateLimitError, APIError
+    _OPENAI_AVAILABLE = True
+except ImportError:
+    _OPENAI_AVAILABLE = False
+    OpenAI = None
+    RateLimitError = Exception
+    APIError = Exception
+
+# ── Ollama (primary backend) ───────────────────────────────────────────────────
+try:
+    from ollama_client import OllamaClient, get_ollama_client, OLLAMA_ENABLED
+    _OLLAMA_AVAILABLE = True
+except ImportError:
+    _OLLAMA_AVAILABLE = False
+    OLLAMA_ENABLED = False
 from state_store import StateStore
 from llm_schemas import (
     SemanticClassificationResponse,
@@ -35,25 +52,33 @@ class LLMPlanner:
     _PASSWORD_RE = re.compile(r"pass(word)?|passwd", re.I)
 
     def __init__(self):
-        github_token = os.getenv("GITHUB_TOKEN", "")
+        # ── Ollama (Architect Agent — Llama 3.1 8B) ───────────────────────────
+        self._ollama: Optional[OllamaClient] = None
+        if _OLLAMA_AVAILABLE and OLLAMA_ENABLED:
+            self._ollama = get_ollama_client()
+            if self._ollama.ping():
+                log.info("[LLMPlanner] ✅ Ollama connected — using Architect Agent (llama3.1:8b)")
+            else:
+                log.warning("[LLMPlanner] ⚠ Ollama not reachable — falling back to GitHub Models")
+                self._ollama = None
 
-        if github_token:
-            # GitHub Models inference API (OpenAI-compatible)
+        # ── GitHub Models (fallback) ───────────────────────────────────────────
+        github_token = os.getenv("GITHUB_TOKEN", "")
+        if github_token and _OPENAI_AVAILABLE:
             self.endpoint = "https://models.github.ai/inference"
             self.model    = "gpt-4o-mini"
             api_key       = github_token
-            log.info("[LLMPlanner] Using GitHub Models — model: gpt-4o-mini")
+            log.info("[LLMPlanner] GitHub Models available as fallback — model: gpt-4o-mini")
         else:
             self.endpoint = ""
             self.model    = ""
             api_key       = ""
-            log.warning("[LLMPlanner] No GITHUB_TOKEN found — heuristic fallback only.")
+            if not self._ollama:
+                log.warning("[LLMPlanner] No LLM backend available — heuristic only.")
 
         self.max_retries = 2
-        self._client = OpenAI(
-            base_url=self.endpoint,
-            api_key=api_key,
-        ) if api_key else None
+        self._client = (OpenAI(base_url=self.endpoint, api_key=api_key)
+                        if api_key and _OPENAI_AVAILABLE else None)
 
         self._llm_cache = {}
         self._identity_cluster_map = {}
@@ -181,13 +206,26 @@ Rules:
         if method in ("GET", "DELETE"):
             return {}, "NONE"
 
-        source = "LLM"
-        payload = self._llm_generate(api_node, state, edge_deps=edge_deps)
+        payload = None
+        source  = "HEURISTIC"
+
+        # ── Ưu tiên 1: Ollama Architect Agent ────────────────────────────────
+        if self._ollama:
+            payload = self._ollama_generate(api_node, state, edge_deps=edge_deps)
+            if payload is not None:
+                source = "OLLAMA_ARCHITECT"
+
+        # ── Ưu tiên 2: GitHub Models (fallback) ──────────────────────────────
+        if payload is None and self._client:
+            payload = self._llm_generate(api_node, state, edge_deps=edge_deps)
+            if payload is not None:
+                source = "GITHUB_LLM"
+
+        # ── Ưu tiên 3: Heuristic ─────────────────────────────────────────────
         if payload is None:
-            source = "HEURISTIC"
             payload = self._heuristic_generate(api_node, state, edge_deps=edge_deps)
-            
-        # Đảm bảo rule cuối cùng được áp dụng cho mọi source
+
+        # Post-process: randomize volatile fields
         if payload:
             payload = self._randomize_volatile_fields(payload, api_node, state)
             
@@ -215,8 +253,11 @@ Rules:
 
         SKIP_KEYS = {"auth_token", "token_type", "user_role"}
         if is_create:
-            # Ép sinh mới hoàn toàn
+            # Ép sinh mới hoàn toàn — CHỈ skip khi là signup/register/create
             SKIP_KEYS.update({"email", "password", "name", "number", "phone", "mobile"})
+
+        # Phát hiện xem đây có phải API đăng nhập không
+        is_login = bool(re.search(r"login|signin|sign_in|authenticate", combined))
 
         context_lines = []
         for k, v in state.memory.items():
@@ -224,6 +265,17 @@ Rules:
                 continue
             context_lines.append(f"  - {k}: \"{v}\"")
         context_block = "\n".join(context_lines) if context_lines else "  (empty — no prior state)"
+
+        # Gợi ý rõ ràng cho LLM biết đây là login → phải dùng credentials đã có
+        login_hint = ""
+        if is_login and state.has("email") and state.has("password"):
+            login_hint = f"""
+⚠️  IMPORTANT — This is a LOGIN endpoint.
+The user has already REGISTERED with these credentials in a previous step:
+  - email: "{state.get('email')}"
+  - password: "{state.get('password')}"
+You MUST use EXACTLY these values. Do NOT generate new random credentials.
+"""
 
         dep_lines = []
         if edge_deps:
@@ -239,11 +291,11 @@ Rules:
 
         prompt = f"""You are an expert API Fuzzer. Generate a valid JSON payload for this HTTP request.
 Endpoint: {method} {path}
-
+{login_hint}
 1. Schema Requirements (Fields to include):
 {fields_block}
 
-2. Available Context (Prior API outputs):
+2. Available Context (Prior API outputs — USE THESE VALUES when relevant):
 {context_block}
 
 3. Strict Dependencies (ODG mappings - YOU MUST OBEY THESE):
@@ -252,9 +304,9 @@ Endpoint: {method} {path}
 RULES:
 - Respond ONLY with a valid JSON object. No markdown tags, no explanations.
 - Map fields exactly as required by the Strict Dependencies.
-- For other fields, if a matching context variable exists, use its value.
-- For email fields: generate a UNIQUE, RANDOM email like fuzz_{{random_hex}}@test.com. NEVER use john.doe@example.com or any example.com address.
-- For password fields: use a valid password with uppercase, number, and symbol.
+- If a field value is available in the Context above, YOU MUST use that exact value.
+- For email fields on NON-LOGIN endpoints: generate a UNIQUE, RANDOM email like fuzz_{{random_hex}}@test.com. NEVER use john.doe@example.com.
+- For password fields on NON-LOGIN endpoints: use a valid password with uppercase, number, and symbol.
 - For other missing fields, generate realistic synthetic data.
 """
         return prompt
@@ -304,8 +356,42 @@ RULES:
                 return None
         return None
 
+    def _ollama_generate(self, api_node: Dict, state: StateStore, edge_deps: Optional[list] = None) -> Optional[Dict]:
+        """Sinh payload dùng Ollama Architect Agent (llama3.1:8b)."""
+        if not self._ollama:
+            return None
+
+        prompt = self._build_prompt(api_node, state, edge_deps)
+        prompt_hash = hashlib.md5(prompt.encode('utf-8')).hexdigest()
+
+        if prompt_hash in self._payload_cache:
+            log.info(f"  [Ollama Architect] CACHE HIT for {api_node['id']}")
+            return self._payload_cache[prompt_hash].copy()
+
+        try:
+            result = self._ollama.architect(
+                prompt=prompt,
+                system="You are an expert API Fuzzer. Generate valid JSON payloads for REST API testing.",
+                temperature=0.4,
+            )
+            if result and isinstance(result, dict):
+                self._payload_cache[prompt_hash] = result
+                log.info(f"  [Ollama Architect] Generated {len(result)} fields for {api_node.get('id')}")
+                return result.copy()
+            log.warning(f"  [Ollama Architect] Invalid response format for {api_node.get('id')}")
+            return None
+        except Exception as e:
+            log.error(f"  [Ollama Architect] Error: {e}")
+            return None
+
     def repair_payload(self, api_node: Dict, state: StateStore, bad_payload: Dict, error_response: str, edge_deps: Optional[list] = None) -> Optional[Dict]:
-        """Gửi payload bị lỗi và server response cho LLM để fix tự động."""
+        """Gửi payload bị lỗi và server response cho LLM để fix tự động (Self-Healing)."""
+        # ── Ưu tiên Ollama Self-Healing ───────────────────────────────────────
+        if self._ollama:
+            repaired = self._ollama_repair(api_node, state, bad_payload, error_response, edge_deps)
+            if repaired:
+                return repaired
+
         if not self._client:
             return None
             
@@ -324,7 +410,7 @@ Analyze the error response and FIX the payload to satisfy the server's requireme
 CRITICAL RULE FOR REPAIR: If the error indicates a DUPLICATE or CONFLICT value (e.g., "already exists", "already registered", "already taken", "duplicate entry", "duplicate key", "unique constraint", "conflict", "has already been taken", "is already in use"), you MUST generate a completely NEW, RANDOM, and UNIQUE value for ALL fields that could be causing the conflict (email, username, slug, title, phone, etc.). DO NOT reuse ANY value from the Previous Payload or the Available Context for those fields.
 Ensure the output is ONLY a valid JSON object.
 """
-        log.warning(f"\033[93m[LLM Repair]\033[0m Attempting to fix payload for {api_node['id']}")
+        log.warning(f"\033[93m[GitHub Models Repair]\033[0m Attempting to fix payload for {api_node['id']}")
         
         for attempt in range(self.max_retries):
             try:
@@ -356,6 +442,33 @@ Ensure the output is ONLY a valid JSON object.
                 log.error(f"[LLM Repair] Error: {e}")
                 
         return None
+
+    def _ollama_repair(self, api_node: Dict, state: StateStore, bad_payload: Dict, error_response: str, edge_deps: Optional[list] = None) -> Optional[Dict]:
+        """Self-Healing bằng Ollama (llama3.1:8b)."""
+        if not self._ollama:
+            return None
+
+        base_prompt = self._build_prompt(api_node, state, edge_deps)
+        repair_prompt = (
+            base_prompt + "\n\nCRITICAL ERROR — The previous payload caused an HTTP Error!\n"
+            f"Previous Payload:\n{json.dumps(bad_payload, indent=2, ensure_ascii=False)}\n"
+            f"Server Error:\n{error_response[:500]}\n\n"
+            "YOUR TASK: Fix the payload. If the error is DUPLICATE/CONFLICT, generate completely "
+            "NEW random values for conflicting fields. Respond ONLY with valid JSON."
+        )
+        try:
+            result = self._ollama.architect(
+                prompt=repair_prompt,
+                system="You are an expert API Fuzzer. Fix broken payloads based on server error messages.",
+                temperature=0.6,
+            )
+            if result and isinstance(result, dict):
+                log.info(f"[Ollama Repair] Fixed payload with {len(result)} fields")
+                return result
+            return None
+        except Exception as e:
+            log.error(f"[Ollama Repair] Error: {e}")
+            return None
 
     def _heuristic_generate(self, api_node: Dict, state: StateStore, edge_deps: Optional[list] = None) -> Dict:
         dep_map: Dict[str, Any] = {}

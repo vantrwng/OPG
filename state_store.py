@@ -24,6 +24,7 @@ class StateStore:
         "refresh_token": re.compile(r"refresh_token", re.I),
         "email":         re.compile(r"^email$", re.I),
         "phone":         re.compile(r"phone|mobile|contact_?no", re.I),
+        "user_role":     re.compile(r"^(role|userRole|user_role|accountType)$", re.I),
     }
 
     # Các key cấu hình không được phép bị ghi đè bởi fallback harvest
@@ -37,6 +38,8 @@ class StateStore:
 
     def __init__(self, initial_state: Optional[Dict[str, Any]] = None):
         self.memory: Dict[str, Any] = initial_state if initial_state else {}
+        # Lưu baseline response (response hợp lệ) cho mỗi API, dùng bởi Auditor Agent
+        self._baseline_responses: Dict[str, Any] = {}
 
     # ── Basic CRUD ──────────────────────────────────────────────────────────
 
@@ -56,7 +59,24 @@ class StateStore:
 
     def clone(self) -> "StateStore":
         """Deep copy — dùng khi Beam Search tạo nhánh mới."""
-        return StateStore(copy.deepcopy(self.memory))
+        new_store = StateStore(copy.deepcopy(self.memory))
+        new_store._baseline_responses = copy.deepcopy(self._baseline_responses)
+        return new_store
+
+    # ── Baseline Storage (dùng bởi Auditor Agent) ───────────────────────────
+
+    def set_baseline(self, api_id: str, exec_result: Any) -> None:
+        """
+        Lưu exec_result của request hợp lệ làm baseline để Auditor so sánh.
+        Chỉ lưu nếu chưa có baseline cho api_id này (baseline = lần đầu thành công).
+        """
+        if api_id not in self._baseline_responses:
+            self._baseline_responses[api_id] = exec_result
+            log.debug(f"[State] BASELINE SET for {api_id}")
+
+    def get_baseline(self, api_id: str) -> Optional[Any]:
+        """Lấy baseline exec_result cho api_id. Trả về None nếu chưa có."""
+        return self._baseline_responses.get(api_id)
 
     # ── Smart Extraction ────────────────────────────────────────────────────
 

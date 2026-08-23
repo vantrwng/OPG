@@ -51,6 +51,7 @@ def generate_html_report(json_file="beam_strategies.json", output_dir="fuzzing_r
                 repair_reason = req.get("repair_reason", "")
                 repair_history = req.get("repair_history", [])
                 sent_headers = req.get("sent_headers", {})
+                req_chain = req.get("chain", [])
                 
                 status_int = int(status_str)
                 if status_int >= 500: color = "var(--danger)"
@@ -138,6 +139,17 @@ def generate_html_report(json_file="beam_strategies.json", output_dir="fuzzing_r
                     </h3>
                     
                     {repair_html}
+                    
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📍 Đường đi (Attack Chain)</h4>
+                    <div style="background: rgba(0,0,0,0.3); border-radius: 6px; padding: 0.75rem; margin-bottom: 1rem; font-family: 'Fira Code', monospace; font-size: 0.85rem; color: #94a3b8; display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem;">
+                        {
+                            "".join([
+                                f'<span style="color: #e2e8f0;">{html.escape(node)}</span>' + 
+                                ('<span style="color: var(--accent-secondary); font-weight: bold;">➔</span>' if idx < len(req_chain)-1 else '')
+                                for idx, node in enumerate(req_chain)
+                            ]) if req_chain else "<em>Không có dữ liệu đường đi</em>"
+                        }
+                    </div>
                     
                     <h4 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 0.9rem;">📋 Request Headers</h4>
                     <pre class="code-block">{safe_headers}</pre>
@@ -261,6 +273,10 @@ def generate_html_report(json_file="beam_strategies.json", output_dir="fuzzing_r
             </header>
 
             <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-number">{total_requests}</div>
+                    <div class="stat-label">Total Requests Sent</div>
+                </div>
                 <div class="stat-card">
                     <div class="stat-number">{total_strategies}</div>
                     <div class="stat-label">Total Attack Chains Discovered</div>

@@ -1,18 +1,23 @@
 import json
 import time
+from collections import deque
 
 class KnowledgeMemory:
     """
     Lưu trữ kiến thức trong thời gian chạy (Runtime state), 
     thu thập thống kê chi tiết, và xuất báo cáo.
     """
+    # Giới hạn tối đa để tránh OOM khi chạy lâu trên API lớn
+    _MAX_HISTORY       = 10_000  # Tổng request history giữ lại
+    _MAX_PER_ENDPOINT  = 200     # Tối đa request/endpoint trong endpoint_stats
+
     def __init__(self):
         self.found_vulnerabilities = set() # Set cho fast lookup f"{api_id}:{status}"
         self.node_visit_count = {}
         self.top_strategies = []
         
         # Thống kê mở rộng
-        self.request_history = []
+        self.request_history: deque = deque(maxlen=self._MAX_HISTORY)  # bounded
         self.findings = []
         self.endpoint_stats = {}
         self.edge_feedback = {}
@@ -36,6 +41,10 @@ class KnowledgeMemory:
         status_str = str(status)
         stats[status_str] = stats.get(status_str, 0) + 1
         
+        # Giới hạn số lượng request lưu trữ per-endpoint để tránh OOM
+        if len(all_requests) >= self._MAX_PER_ENDPOINT:
+            all_requests.pop(0)  # Xóa record cũ nhất
+        
         all_requests.append({
             "method": method,
             "path": path,
@@ -45,7 +54,8 @@ class KnowledgeMemory:
             "payload_source": payload_source,
             "repair_reason": repair_reason,
             "repair_history": repair_history if repair_history is not None else [],
-            "sent_headers": sent_headers if sent_headers is not None else {}
+            "sent_headers": sent_headers if sent_headers is not None else {},
+            "chain": chain if chain is not None else []
         })
         
         self.request_history.append({
