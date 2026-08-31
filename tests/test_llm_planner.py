@@ -1,564 +1,440 @@
 """
-Unit tests cho LLMPlanner class
+tests/test_llm_planner.py
+=========================
+Unit tests cho LLMPlanner (Ollama-only backend).
+Không còn OpenAI/GitHub Models — tất cả mock qua OllamaClient.
 """
-import pytest
 import json
-import os
-from unittest.mock import MagicMock, patch, Mock
+import pytest
+from unittest.mock import MagicMock, patch, PropertyMock
 from llm_planner import LLMPlanner
 from state_store import StateStore
 
 
-class TestLLMPlannerInit:
-    """Test LLMPlanner initialization"""
-    
-    def test_init_with_openai_key(self):
-        """Test initialization với OpenAI API key"""
-        with patch.dict(os.environ, {"OPENAI_API_KEY": "test-key-123"}):
-            planner = LLMPlanner()
-            assert planner.model == "gpt-5.5"
-            assert planner.endpoint == "https://codex.xirothedev.io.vn/v1"
-            assert planner._client is not None
-    
-    def test_init_with_github_token(self):
-        """Test initialization với GitHub token fallback"""
-        with patch.dict(os.environ, {"GITHUB_TOKEN": "ghp-test-123"}, clear=True):
-            with patch.dict(os.environ, {"OPENAI_API_KEY": ""}, clear=False):
-                planner = LLMPlanner()
-                assert planner.model == "gpt-4o-mini"
-                assert planner.endpoint == "https://models.github.ai/inference"
-    
-    def test_init_without_api_key(self):
-        """Test initialization mà không có API key"""
-        with patch.dict(os.environ, {}, clear=True):
-            with patch("llm_planner.load_dotenv"):
-                planner = LLMPlanner()
-                assert planner._client is None
-                assert planner.endpoint == ""
-                assert planner.model == ""
+# ── Fixture helper ─────────────────────────────────────────────────────────────
 
+def make_planner_no_ollama() -> LLMPlanner:
+    """Tạo LLMPlanner mà không kết nối Ollama (heuristic-only)."""
+    with patch("llm_planner.OLLAMA_ENABLED", False):
+        return LLMPlanner()
+
+
+def make_planner_with_mock_ollama() -> tuple:
+    """Tạo LLMPlanner với OllamaClient đã mock. Returns (planner, mock_client)."""
+    mock_client = MagicMock()
+    mock_client.ping.return_value = True
+    with (
+        patch("llm_planner.OLLAMA_ENABLED", True),
+        patch("llm_planner.get_ollama_client", return_value=mock_client),
+    ):
+        planner = LLMPlanner()
+    planner._ollama = mock_client
+    return planner, mock_client
+
+
+# ── TestInit ───────────────────────────────────────────────────────────────────
+
+class TestLLMPlannerInit:
+
+    def test_init_heuristic_only_when_ollama_disabled(self):
+        """Khi OLLAMA_ENABLED=false → _ollama là None."""
+        planner = make_planner_no_ollama()
+        assert planner._ollama is None
+
+    def test_init_with_ollama_connected(self):
+        """Khi Ollama ping OK → _ollama được gán."""
+        planner, mock_client = make_planner_with_mock_ollama()
+        assert planner._ollama is mock_client
+
+    def test_init_ollama_not_reachable(self):
+        """Khi Ollama ping FAIL → _ollama là None, fallback heuristic."""
+        mock_client = MagicMock()
+        mock_client.ping.return_value = False
+        with (
+            patch("llm_planner.OLLAMA_ENABLED", True),
+            patch("llm_planner.get_ollama_client", return_value=mock_client),
+        ):
+            planner = LLMPlanner()
+        assert planner._ollama is None
+
+
+# ── TestClassifyUnknownFields ──────────────────────────────────────────────────
 
 class TestClassifyUnknownFields:
-    """Test LLM field classification"""
-    
-    def test_classify_unknown_fields_success(self):
-        """Test phân loại field thành công"""
-        planner = LLMPlanner()
-        
-        # Mock LLM response
-        mock_response = MagicMock()
-        mock_response.choices[0].message.content = json.dumps({
-            "user_id": "identity",
-            "balance": "finance",
-            "session_token": "auth/workflow",
-            "metadata": "unknown"
-        })
-        
-        with patch.object(planner, '_client') as mock_client:
-            mock_client.chat.completions.create.return_value = mock_response
-            planner._client = mock_client
-            
-            result = planner.classify_unknown_fields(
-                ["user_id", "balance", "session_token", "metadata"]
-            )
-            
-            assert result["user_id"] == "identity"
-            assert result["balance"] == "finance"
-            assert result["session_token"] == "auth/workflow"
-            # Check cache
-            assert planner._llm_cache["user_id"] == "identity"
-    
-    def test_classify_unknown_fields_empty_list(self):
-        """Test với empty list"""
-        planner = LLMPlanner()
-        result = planner.classify_unknown_fields([])
-        assert result == {}
-    
-    def test_classify_unknown_fields_no_client(self):
-        """Test khi không có LLM client"""
-        planner = LLMPlanner()
-        planner._client = None
+
+    def test_classify_success(self):
+        planner, mock_ollama = make_planner_with_mock_ollama()
+        mock_ollama.architect.return_value = {
+            "user_id":      "identity",
+            "balance":      "finance",
+            "session_key":  "auth/workflow",
+            "metadata":     "unknown",
+        }
+
+        result = planner.classify_unknown_fields(
+            ["user_id", "balance", "session_key", "metadata"]
+        )
+
+        assert result["user_id"]     == "identity"
+        assert result["balance"]     == "finance"
+        assert result["session_key"] == "auth/workflow"
+        # Cache phải được cập nhật (trừ "unknown")
+        assert planner._llm_cache["user_id"]    == "identity"
+        assert "metadata" not in planner._llm_cache
+
+    def test_classify_empty_list(self):
+        planner = make_planner_no_ollama()
+        assert planner.classify_unknown_fields([]) == {}
+
+    def test_classify_no_ollama(self):
+        planner = make_planner_no_ollama()
+        assert planner.classify_unknown_fields(["user_id"]) == {}
+
+    def test_classify_ollama_error_graceful(self):
+        planner, mock_ollama = make_planner_with_mock_ollama()
+        mock_ollama.architect.side_effect = Exception("Timeout")
         result = planner.classify_unknown_fields(["user_id"])
         assert result == {}
-    
-    def test_classify_unknown_fields_rate_limit(self):
-        """Test xử lý rate limit gracefully"""
-        planner = LLMPlanner()
-        
-        with patch.object(planner, '_client') as mock_client:
-            mock_client.chat.completions.create.side_effect = Exception("429 rate limit")
-            planner._client = mock_client
-            
-            result = planner.classify_unknown_fields(["user_id"])
-            # Phải fallback, không crash
-            assert isinstance(result, dict)
 
+    def test_classify_filters_invalid_categories(self):
+        """LLM trả về category không hợp lệ phải bị lọc bỏ."""
+        planner, mock_ollama = make_planner_with_mock_ollama()
+        mock_ollama.architect.return_value = {
+            "user_id": "identity",
+            "foo":     "invalid_category",  # ← không hợp lệ
+        }
+        result = planner.classify_unknown_fields(["user_id", "foo"])
+        assert "user_id" in result
+        assert "foo" not in result
+
+
+# ── TestClusterIdentities ──────────────────────────────────────────────────────
 
 class TestClusterIdentities:
-    """Test identity clustering"""
-    
-    def test_cluster_identities_success(self):
-        """Test gom nhóm identity field thành công"""
-        planner = LLMPlanner()
-        
-        mock_response = MagicMock()
-        mock_response.choices[0].message.content = json.dumps({
+
+    def test_cluster_success(self):
+        planner, mock_ollama = make_planner_with_mock_ollama()
+        mock_ollama.architect.return_value = {
             "clusters": [
                 ["user_id", "userId", "account_id"],
-                ["vehicle_id", "car_id"],
-                ["order_id", "order_no"]
+                ["vehicle_id"],
+                ["order_id"],
             ]
-        })
-        
-        with patch.object(planner, '_client') as mock_client:
-            mock_client.chat.completions.create.return_value = mock_response
-            planner._client = mock_client
-            
-            result = planner.cluster_identities(
-                ["user_id", "userId", "vehicle_id", "order_id"]
-            )
-            
-            # Verify clusters
-            assert planner._identity_cluster_map["user_id"] == 0
-            assert planner._identity_cluster_map["userid"] == 0  # normalized
-            assert planner._identity_cluster_map["vehicle_id"] == 1
-    
-    def test_cluster_identities_no_client(self):
-        """Test clustering khi không có LLM client"""
-        planner = LLMPlanner()
-        planner._client = None
-        
-        result = planner.cluster_identities(["user_id", "vehicle_id"])
-        assert result == {}
+        }
 
+        result = planner.cluster_identities(
+            ["user_id", "userId", "vehicle_id", "order_id"]
+        )
+
+        assert planner._identity_cluster_map["user_id"]    == 0
+        assert planner._identity_cluster_map["userId"]     == 0
+        assert planner._identity_cluster_map["vehicle_id"] == 1
+
+    def test_cluster_no_ollama_fallback(self):
+        """Khi không có Ollama → mỗi field thành 1 cluster riêng."""
+        planner = make_planner_no_ollama()
+        result = planner.cluster_identities(["user_id", "vehicle_id"])
+        assert len(result) == 2
+        assert result["user_id"] != result["vehicle_id"]
+
+    def test_cluster_invalid_response_fallback(self):
+        """LLM trả về dict không có 'clusters' → fallback 1-field."""
+        planner, mock_ollama = make_planner_with_mock_ollama()
+        mock_ollama.architect.return_value = {"wrong_key": []}
+        result = planner.cluster_identities(["user_id", "vehicle_id"])
+        assert len(result) == 2
+
+
+# ── TestGeneratePayload ────────────────────────────────────────────────────────
 
 class TestGeneratePayload:
-    """Test payload generation"""
-    
-    def test_generate_payload_get_method_returns_empty(self):
-        """Test GET/DELETE method trả về empty payload"""
-        planner = LLMPlanner()
-        
-        api_node = {
-            "id": "get_user",
-            "method": "GET",
-            "path": "/users/{user_id}",
-            "inputs": {"user_id": {"type": "string"}}
-        }
-        state = StateStore()
-        
-        payload, source = planner.generate_payload(api_node, state)
+
+    def test_get_method_returns_empty(self):
+        planner = make_planner_no_ollama()
+        api_node = {"id": "getUser", "method": "GET", "path": "/users/{id}", "inputs": {}}
+        payload, source = planner.generate_payload(api_node, StateStore())
         assert payload == {}
         assert source == "NONE"
-    
-    def test_generate_payload_post_with_llm(self):
-        """Test POST method với LLM generation"""
-        planner = LLMPlanner()
-        
+
+    def test_delete_method_returns_empty(self):
+        planner = make_planner_no_ollama()
+        api_node = {"id": "deleteUser", "method": "DELETE", "path": "/users/{id}", "inputs": {}}
+        payload, source = planner.generate_payload(api_node, StateStore())
+        assert payload == {}
+        assert source == "NONE"
+
+    def test_post_with_ollama(self):
+        planner, mock_ollama = make_planner_with_mock_ollama()
+        mock_ollama.architect.return_value = {
+            "email":    "fuzz_abc123@test.com",
+            "password": "Fuzz@Test1!",
+            "name":     "Fuzzer Test",
+        }
+
         api_node = {
-            "id": "create_user",
+            "id": "signupUser",
             "method": "POST",
-            "path": "/users",
+            "path": "/identity/api/auth/signup",
             "inputs": {
-                "email": {"type": "string"},
-                "name": {"type": "string"},
-                "password": {"type": "string"}
-            }
-        }
-        state = StateStore()
-        
-        # Mock LLM response
-        expected_payload = {"email": "test@example.com", "name": "John", "password": "Pass123!"}
-        mock_response = MagicMock()
-        mock_response.choices[0].message.content = json.dumps(expected_payload)
-        
-        with patch.object(planner, '_client') as mock_client:
-            mock_client.chat.completions.create.return_value = mock_response
-            planner._client = mock_client
-            
-            payload, source = planner.generate_payload(api_node, state)
-            
-            assert source == "LLM"
-            assert "email" in payload
-            # Email should be randomized to avoid duplicates
-            assert payload["email"] != "test@example.com"
-    
-    def test_generate_payload_fallback_to_heuristic(self):
-        """Test fallback to heuristic khi LLM fail"""
-        planner = LLMPlanner()
-        planner._client = None  # Simulate no API key
-        
-        api_node = {
-            "id": "create_user",
-            "method": "POST",
-            "path": "/users",
-            "inputs": {
-                "email": {"type": "string"},
-                "name": {"type": "string"}
-            }
-        }
-        state = StateStore()
-        
-        payload, source = planner.generate_payload(api_node, state)
-        
-        assert source == "HEURISTIC"
-        assert payload is not None
-        assert "email" in payload
-        assert "name" in payload
-        assert "@" in payload["email"]  # Valid email format
-
-
-class TestHeuristicGenerate:
-    """Test heuristic payload generation"""
-    
-    def test_heuristic_generate_with_edge_deps(self):
-        """Test heuristic generation với edge dependencies"""
-        planner = LLMPlanner()
-        
-        api_node = {
-            "id": "update_vehicle",
-            "method": "PUT",
-            "inputs": {
-                "vehicle_id": {"type": "string"},
-                "name": {"type": "string"}
-            }
-        }
-        
-        state = StateStore()
-        state.update("vehicle_id", "veh_123")
-        
-        edge_deps = [
-            {
-                "producer_field": "vehicle_id",
-                "consumer_field": "vehicle_id"
-            }
-        ]
-        
-        payload = planner._heuristic_generate(api_node, state, edge_deps)
-        
-        assert payload["vehicle_id"] == "veh_123"  # From state via edge dep
-        assert "name" in payload
-    
-    def test_heuristic_generate_without_deps(self):
-        """Test heuristic generation mà không có dependencies"""
-        planner = LLMPlanner()
-        
-        api_node = {
-            "id": "create_product",
-            "method": "POST",
-            "inputs": {
-                "title": {"type": "string"},
-                "price": {"type": "number"}
-            }
-        }
-        
-        state = StateStore()
-        payload = planner._heuristic_generate(api_node, state)
-        
-        assert "title" in payload
-        assert "price" in payload
-
-
-class TestRandomizeVolatileFields:
-    """Test volatile field randomization"""
-    
-    def test_randomize_volatile_fields_create_api(self):
-        """Test CREATE API - luôn sinh mới"""
-        api_node = {
-            "id": "register_user",
-            "path": "/auth/register",
-            "method": "POST"
-        }
-        state = StateStore()
-        state.update("email", "old_email@example.com")
-        
-        payload = {
-            "email": "test@example.com",
-            "password": "Pass123!",
-            "name": "John Doe"
-        }
-        
-        result = LLMPlanner._randomize_volatile_fields(payload, api_node, state)
-        
-        # CREATE API should generate new email, không reuse
-        assert result["email"] != "old_email@example.com"
-        assert result["email"] != "test@example.com"
-        assert "fuzz_" in result["email"]
-    
-    def test_randomize_volatile_fields_auth_api(self):
-        """Test AUTH API - ưu tiên reuse từ state"""
-        api_node = {
-            "id": "login_user",
-            "path": "/auth/login",
-            "method": "POST"
-        }
-        state = StateStore()
-        state.update("email", "user@example.com")
-        state.update("password", "SecurePass123!")
-        
-        payload = {
-            "email": "fake@example.com",
-            "password": "FakePass123!"
-        }
-        
-        result = LLMPlanner._randomize_volatile_fields(payload, api_node, state)
-        
-        # AUTH API should reuse từ state
-        assert result["email"] == "user@example.com"
-        assert result["password"] == "SecurePass123!"
-    
-    def test_randomize_volatile_fields_nested_dict(self):
-        """Test xử lý nested dictionary"""
-        api_node = {
-            "id": "create_order",
-            "path": "/orders",
-            "method": "POST"
-        }
-        state = StateStore()
-        
-        payload = {
-            "customer": {
-                "email": "test@example.com",
-                "phone": "0987654321"
+                "email":    {"type": "string"},
+                "password": {"type": "string"},
+                "name":     {"type": "string"},
             },
-            "items": [
-                {"name": "Item 1"},
-                {"name": "Item 2"}
-            ]
         }
-        
-        result = LLMPlanner._randomize_volatile_fields(payload, api_node, state)
-        
-        assert isinstance(result["customer"], dict)
-        assert "email" in result["customer"]
-        assert "fuzz_" in result["customer"]["email"]
-    
-    def test_randomize_volatile_fields_nested_list_of_objects(self):
-        """✅ Test xử lý nested list chứa objects với email"""
+        payload, source = planner.generate_payload(api_node, StateStore())
+
+        assert source == "OLLAMA_ARCHITECT"
+        assert "email" in payload
+        assert "password" in payload
+        # CREATE endpoint → email phải được randomize bởi _randomize_volatile_fields
+        assert "fuzz_" in payload["email"]
+
+    def test_post_fallback_heuristic(self):
+        planner = make_planner_no_ollama()
         api_node = {
-            "id": "create_order",
-            "path": "/orders",
-            "method": "POST"
+            "id": "createUser",
+            "method": "POST",
+            "path": "/users",
+            "inputs": {
+                "email": {"type": "string"},
+                "name":  {"type": "string"},
+            },
+        }
+        payload, source = planner.generate_payload(api_node, StateStore())
+        assert source == "HEURISTIC"
+        assert "email" in payload
+        assert "@" in payload["email"]
+
+    def test_ollama_fail_falls_to_heuristic(self):
+        planner, mock_ollama = make_planner_with_mock_ollama()
+        mock_ollama.architect.return_value = None  # Ollama fails
+
+        api_node = {
+            "id": "createItem",
+            "method": "POST",
+            "path": "/items",
+            "inputs": {"title": {"type": "string"}},
+        }
+        payload, source = planner.generate_payload(api_node, StateStore())
+        assert source == "HEURISTIC"
+        assert "title" in payload
+
+    def test_payload_cache_hit(self):
+        """Cùng prompt → CACHE HIT, Ollama không được gọi lại."""
+        planner, mock_ollama = make_planner_with_mock_ollama()
+        mock_ollama.architect.return_value = {"email": "fuzz_abc@test.com"}
+
+        api_node = {
+            "id": "createUser",
+            "method": "POST",
+            "path": "/users",
+            "inputs": {"email": {"type": "string"}},
         }
         state = StateStore()
-        
-        payload = {
-            "items": [
-                {"email": "test@example.com", "quantity": 2},
-                {"email": "test2@example.com", "quantity": 3}
-            ],
-            "shipping": {
-                "email": "ship@example.com"
-            }
-        }
-        
-        result = LLMPlanner._randomize_volatile_fields(payload, api_node, state)
-        
-        # Verify nested list is processed
-        assert isinstance(result["items"], list)
-        assert len(result["items"]) == 2
-        
-        # Email trong list phải được randomize
-        for item in result["items"]:
-            assert isinstance(item, dict)
-            assert "email" in item
-            assert "fuzz_" in item["email"]  # ← KEY: Email được randomize!
-            assert item["email"] != "test@example.com"
-            assert item["email"] != "test2@example.com"
-        
-        # Shipping email cũng được randomize
-        assert "fuzz_" in result["shipping"]["email"]
+
+        planner.generate_payload(api_node, state)
+        planner.generate_payload(api_node, state)  # 2nd call
+
+        # Ollama chỉ được gọi 1 lần (lần 2 dùng cache)
+        assert mock_ollama.architect.call_count == 1
 
 
+# ── TestRepairPayload ──────────────────────────────────────────────────────────
 
 class TestRepairPayload:
-    """Test payload repair functionality"""
-    
-    def test_repair_payload_duplicate_error(self):
-        """Test fix payload khi server trả về duplicate error"""
-        planner = LLMPlanner()
-        
+
+    def test_repair_success(self):
+        planner, mock_ollama = make_planner_with_mock_ollama()
+        mock_ollama.architect.return_value = {"email": "new_unique@test.com"}
+
         api_node = {
-            "id": "create_user",
+            "id": "createUser",
             "method": "POST",
             "path": "/users",
-            "inputs": {"email": {"type": "string"}}
+            "inputs": {"email": {"type": "string"}},
         }
-        state = StateStore()
-        
-        bad_payload = {"email": "user@example.com"}
-        error_response = "Error: Email already registered"
-        
-        mock_response = MagicMock()
-        mock_response.choices[0].message.content = json.dumps({
-            "email": "new_unique@example.com"
-        })
-        
-        with patch.object(planner, '_client') as mock_client:
-            mock_client.chat.completions.create.return_value = mock_response
-            planner._client = mock_client
-            
-            fixed = planner.repair_payload(api_node, state, bad_payload, error_response)
-            
-            assert fixed is not None
-            assert fixed["email"] == "new_unique@example.com"
-    
-    def test_repair_payload_no_client(self):
-        """Test repair khi không có LLM client"""
-        planner = LLMPlanner()
-        planner._client = None
-        
-        api_node = {"id": "test", "method": "POST", "inputs": {}}
-        state = StateStore()
-        
-        result = planner.repair_payload(api_node, state, {}, "error")
+        result = planner.repair_payload(
+            api_node, StateStore(),
+            bad_payload={"email": "old@test.com"},
+            error_response="Email already registered",
+        )
+
+        assert result is not None
+        assert result["email"] == "new_unique@test.com"
+
+    def test_repair_no_ollama_returns_none(self):
+        planner = make_planner_no_ollama()
+        result = planner.repair_payload(
+            {"id": "x", "method": "POST", "inputs": {}},
+            StateStore(), {}, "error"
+        )
+        assert result is None
+
+    def test_repair_ollama_returns_none_graceful(self):
+        planner, mock_ollama = make_planner_with_mock_ollama()
+        mock_ollama.architect.return_value = None
+        result = planner.repair_payload(
+            {"id": "x", "method": "POST", "inputs": {}},
+            StateStore(), {}, "error"
+        )
         assert result is None
 
 
-class TestNormFunction:
-    """Test _norm() field normalization"""
-    
-    def test_norm_underscore_case(self):
-        """Test normalization của underscore_case"""
-        assert LLMPlanner._norm("user_id") == "userid"
-        assert LLMPlanner._norm("vehicle_id") == "vehicleid"
-    
-    def test_norm_lowercase_already(self):
-        """Test normalization của lowercase"""
-        assert LLMPlanner._norm("email") == "email"
-        assert LLMPlanner._norm("password") == "password"
-    
-    def test_norm_camel_case(self):
-        """Test normalization của camelCase"""
-        # Note: Current implementation might have issues with this
-        # This test documents the expected behavior
-        result = LLMPlanner._norm("userId")
-        # After fix, should be same as user_id
-        assert "userid" in result.lower()
-    
-    def test_norm_dot_notation(self):
-        """Test normalization của dot.notation"""
-        assert LLMPlanner._norm("user.id") == "userid"
-        assert LLMPlanner._norm("auth.token") == "authtoken"
+# ── TestHeuristicGenerate ──────────────────────────────────────────────────────
 
+class TestHeuristicGenerate:
 
-class TestGetSemanticCache:
-    """Test semantic cache lookup"""
-    
-    def test_get_semantic_cache_hit(self):
-        """Test cache hit"""
-        planner = LLMPlanner()
-        planner._llm_cache["user_id"] = "identity"
-        
-        result = planner.get_semantic_cache("user_id")
-        assert result == "identity"
-    
-    def test_get_semantic_cache_miss(self):
-        """Test cache miss"""
-        planner = LLMPlanner()
-        result = planner.get_semantic_cache("unknown_field")
-        assert result is None
-
-
-class TestGetClusterMap:
-    """Test identity cluster map retrieval"""
-    
-    def test_get_cluster_map_empty(self):
-        """Test empty cluster map"""
-        planner = LLMPlanner()
-        result = planner.get_cluster_map()
-        assert result == {}
-    
-    def test_get_cluster_map_with_data(self):
-        """Test cluster map with data"""
-        planner = LLMPlanner()
-        planner._identity_cluster_map = {
-            "user_id": 0,
-            "userid": 0,
-            "vehicle_id": 1
-        }
-        
-        result = planner.get_cluster_map()
-        assert result["user_id"] == 0
-        assert result["vehicle_id"] == 1
-
-
-class TestBuildPrompt:
-    """Test prompt building"""
-    
-    def test_build_prompt_basic(self):
-        """Test building basic prompt"""
-        planner = LLMPlanner()
-        
+    def test_edge_deps_resolved(self):
+        planner = make_planner_no_ollama()
         api_node = {
-            "id": "create_user",
-            "path": "/users",
-            "method": "POST",
-            "inputs": {
-                "email": {"type": "string", "format": "email"},
-                "name": {"type": "string"}
-            }
-        }
-        state = StateStore()
-        
-        prompt = planner._build_prompt(api_node, state)
-        
-        assert "POST" in prompt
-        assert "/users" in prompt
-        assert "email" in prompt
-        assert "string" in prompt
-    
-    def test_build_prompt_with_context(self):
-        """Test prompt building với state context"""
-        planner = LLMPlanner()
-        
-        api_node = {
-            "id": "update_vehicle",
-            "path": "/vehicles/{vehicle_id}",
+            "id": "updateVehicle",
             "method": "PUT",
+            "path": "/vehicles/{vehicleId}",
             "inputs": {
-                "vehicle_id": {"type": "string"},
-                "name": {"type": "string"}
-            }
+                "vehicleId": {"type": "string", "original": "vehicleId"},
+                "name":      {"type": "string", "original": "name"},
+            },
         }
         state = StateStore()
-        state.update("vehicle_id", "veh_123")
-        state.update("auth_token", "token_xyz")
-        
-        prompt = planner._build_prompt(api_node, state)
-        
-        assert "veh_123" in prompt
-        assert "token_xyz" in prompt
+        state.update("vehicleId", "veh_abc123")
 
+        edge_deps = [{"producer_field": "vehicleId", "consumer_field": "vehicleId"}]
+        payload = planner._heuristic_generate(api_node, state, edge_deps)
+
+        assert payload["vehicleId"] == "veh_abc123"
+        assert "name" in payload
+
+    def test_state_match(self):
+        planner = make_planner_no_ollama()
+        api_node = {
+            "id": "getOrders",
+            "method": "POST",
+            "path": "/orders",
+            "inputs": {"userId": {"type": "string", "original": "userId"}},
+        }
+        state = StateStore()
+        state.update("userId", "usr_42")
+
+        payload = planner._heuristic_generate(api_node, state)
+        assert payload["userId"] == "usr_42"
+
+    def test_default_values(self):
+        planner = make_planner_no_ollama()
+        api_node = {
+            "id": "createProduct",
+            "method": "POST",
+            "path": "/products",
+            "inputs": {
+                "price":  {"type": "number", "original": "price"},
+                "active": {"type": "boolean", "original": "active"},
+                "count":  {"type": "integer", "original": "count"},
+            },
+        }
+        payload = planner._heuristic_generate(api_node, StateStore())
+        assert payload["price"]  == 0.01
+        assert payload["active"] is True
+        assert payload["count"]  == 1
+
+
+# ── TestRandomizeVolatileFields ────────────────────────────────────────────────
+
+class TestRandomizeVolatileFields:
+
+    def _make_node(self, path: str, op_id: str) -> dict:
+        return {"id": op_id, "path": path, "method": "POST"}
+
+    def test_create_always_fresh_email(self):
+        node  = self._make_node("/auth/signup", "signupUser")
+        state = StateStore()
+        state.update("email", "old@example.com")
+        payload = {"email": "any@example.com", "password": "Pass123!"}
+
+        result = LLMPlanner._randomize_volatile_fields(payload, node, state)
+        assert "fuzz_" in result["email"]
+        assert result["email"] != "old@example.com"
+
+    def test_auth_reuses_state_email(self):
+        node  = self._make_node("/auth/login", "loginUser")
+        state = StateStore()
+        state.update("email", "user@example.com")
+        state.update("password", "SecurePass!")
+        payload = {"email": "wrong@example.com", "password": "wrong"}
+
+        result = LLMPlanner._randomize_volatile_fields(payload, node, state)
+        assert result["email"]    == "user@example.com"
+        assert result["password"] == "SecurePass!"
+
+    def test_nested_dict(self):
+        node  = self._make_node("/orders", "createOrder")
+        state = StateStore()
+        payload = {"customer": {"email": "test@example.com"}}
+
+        result = LLMPlanner._randomize_volatile_fields(payload, node, state)
+        assert "fuzz_" in result["customer"]["email"]
+
+    def test_nested_list_of_objects(self):
+        node  = self._make_node("/bulk", "createBulk")
+        state = StateStore()
+        payload = {
+            "items": [
+                {"email": "a@example.com", "qty": 1},
+                {"email": "b@example.com", "qty": 2},
+            ]
+        }
+        result = LLMPlanner._randomize_volatile_fields(payload, node, state)
+        for item in result["items"]:
+            assert "fuzz_" in item["email"]
+            assert item["qty"] in (1, 2)  # non-volatile giữ nguyên
+
+    def test_non_volatile_fields_unchanged(self):
+        node  = self._make_node("/items", "createItem")
+        state = StateStore()
+        payload = {"title": "My Product", "price": 9.99, "stock": 100}
+        result = LLMPlanner._randomize_volatile_fields(payload, node, state)
+        assert result["title"] == "My Product"
+        assert result["price"] == 9.99
+        assert result["stock"] == 100
+
+
+# ── TestDefaultFuzzValue ───────────────────────────────────────────────────────
 
 class TestDefaultFuzzValue:
-    """Test default fuzz value generation"""
-    
-    def test_default_fuzz_value_integer(self):
-        """Test integer default"""
-        result = LLMPlanner._default_fuzz_value("integer", "count")
-        assert result == 1
-    
-    def test_default_fuzz_value_number(self):
-        """Test number default"""
-        result = LLMPlanner._default_fuzz_value("number", "price")
-        assert result == 0.01
-    
-    def test_default_fuzz_value_boolean(self):
-        """Test boolean default"""
-        result = LLMPlanner._default_fuzz_value("boolean", "active")
-        assert result is True
-    
-    def test_default_fuzz_value_email(self):
-        """Test email field"""
-        result = LLMPlanner._default_fuzz_value("string", "email_address")
-        assert "@" in result
-        assert "test.com" in result
-    
-    def test_default_fuzz_value_password(self):
-        """Test password field"""
-        result = LLMPlanner._default_fuzz_value("string", "password")
-        assert "Fuzz" in result or "@" in result
+
+    def test_integer(self):
+        assert LLMPlanner._default_fuzz_value("integer", "count") == 1
+
+    def test_number(self):
+        assert LLMPlanner._default_fuzz_value("number", "price") == 0.01
+
+    def test_boolean(self):
+        assert LLMPlanner._default_fuzz_value("boolean", "active") is True
+
+    def test_email_field(self):
+        v = LLMPlanner._default_fuzz_value("string", "email_address")
+        assert "@" in v and "test.com" in v
+
+    def test_password_field(self):
+        v = LLMPlanner._default_fuzz_value("string", "password")
+        assert "Fuzz" in v or "@" in v
+
+    def test_generic_string(self):
+        assert LLMPlanner._default_fuzz_value("string", "title") == "fuzz_test_value"
+
+
+# ── TestNorm ───────────────────────────────────────────────────────────────────
+
+class TestNorm:
+    def test_underscore(self):
+        assert LLMPlanner._norm("user_id") == "userid"
+
+    def test_camel_case(self):
+        assert LLMPlanner._norm("userId") == "userid"
+
+    def test_dot_notation(self):
+        assert LLMPlanner._norm("auth.token") == "authtoken"
+
+    def test_lowercase(self):
+        assert LLMPlanner._norm("email") == "email"
 
 
 if __name__ == "__main__":

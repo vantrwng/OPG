@@ -33,22 +33,26 @@ class AuditResult:
     def __init__(
         self,
         is_bola:         bool,
-        confidence:      float,          # 0.0 – 1.0
-        bola_type:       str  = "",      # "data_exposure" | "auth_bypass" | "privilege_escalation"
+        classification:  str  = "INCONCLUSIVE",  # "CONFIRMED" | "SUSPECTED" | "INCONCLUSIVE"
+        confidence:      float = 0.0,            # 0.0 – 1.0
+        bola_type:       str  = "",              # "data_exposure" | "auth_bypass" | "privilege_escalation"
         evidence:        List[str] = None,
-        score_delta:     float = 0.0,    # Điểm cộng thêm vào beam score
+        reasoning:       str  = "",
+        score_delta:     float = 0.0,            # Điểm cộng thêm vào beam score
         finding:         Optional[Dict] = None,
     ):
-        self.is_bola     = is_bola
-        self.confidence  = confidence
-        self.bola_type   = bola_type
-        self.evidence    = evidence or []
-        self.score_delta = score_delta
-        self.finding     = finding
+        self.is_bola        = is_bola
+        self.classification = classification
+        self.confidence     = confidence
+        self.bola_type      = bola_type
+        self.evidence       = evidence or []
+        self.reasoning      = reasoning
+        self.score_delta    = score_delta
+        self.finding        = finding
 
     def __repr__(self):
         return (
-            f"AuditResult(bola={self.is_bola}, conf={self.confidence:.2f}, "
+            f"AuditResult(bola={self.is_bola}, cls={self.classification}, conf={self.confidence:.2f}, "
             f"type={self.bola_type}, score_delta={self.score_delta:+.1f})"
         )
 
@@ -73,6 +77,7 @@ class AuditorAgent:
     STRONG_BOLA_BONUS = 200.0
 
     def __init__(self, client: Optional[OllamaClient] = None):
+        self._llm_enabled = client is not None or OLLAMA_ENABLED
         self.client = client or get_ollama_client()
 
     # ── Entry point chính ─────────────────────────────────────────────────────
@@ -98,9 +103,6 @@ class AuditorAgent:
         Returns:
             AuditResult
         """
-        if not OLLAMA_ENABLED:
-            return AuditResult(is_bola=False, confidence=0.0)
-
         attack_status = attack_response.get("status", 0)
         strategy      = attack_variant_info.get("strategy", "unknown")
         description   = attack_variant_info.get("description", "")
@@ -113,7 +115,13 @@ class AuditorAgent:
         # Nếu attack trả về lỗi (4xx/5xx) → không phải BOLA (nhưng ghi nhận 500)
         if attack_status == 0 or attack_status >= 400:
             # 500 từ attacker request là crash, không phải BOLA
-            result = AuditResult(is_bola=False, confidence=0.0)
+            classification = "REJECTED" if attack_status in (401, 403, 404) else "INCONCLUSIVE"
+            result = AuditResult(
+                is_bola=False,
+                classification=classification,
+                confidence=1.0 if classification == "REJECTED" else 0.0,
+                evidence=[f"Authorization boundary returned HTTP {attack_status}"],
+            )
             if attack_status >= 500:
                 result.finding = {
                     "type":     "Crash/500 (Attacker)",
@@ -130,6 +138,31 @@ class AuditorAgent:
             state=state,
         )
 
+        deterministic_result = self._deterministic_authorization_analysis(
+            attack_variant_info=attack_variant_info,
+            attack_response=attack_response,
+            baseline_response=baseline_response,
+            state=state,
+        )
+
+        if deterministic_result["classification"] == "CONFIRMED":
+            return self._decide(
+                baseline_result=baseline_result,
+                semantic_result=deterministic_result,
+                attack_variant_info=attack_variant_info,
+                attack_status=attack_status,
+                api_node=api_node,
+            )
+
+        if not self._llm_enabled:
+            return self._decide(
+                baseline_result=baseline_result,
+                semantic_result=deterministic_result,
+                attack_variant_info=attack_variant_info,
+                attack_status=attack_status,
+                api_node=api_node,
+            )
+
         # ── Step 17: Phân tích ngữ nghĩa JSON ─────────────────────────────────
         semantic_result = self._semantic_json_analysis(
             attack_response=attack_response,
@@ -138,6 +171,9 @@ class AuditorAgent:
             api_node=api_node,
             strategy=strategy,
         )
+        if (semantic_result.get("classification") == "INCONCLUSIVE"
+                and deterministic_result.get("classification") == "SUSPECTED"):
+            semantic_result = deterministic_result
 
         # ── Decision: vi phạm BOLA? ────────────────────────────────────────────
         return self._decide(
@@ -147,6 +183,101 @@ class AuditorAgent:
             attack_status=attack_status,
             api_node=api_node,
         )
+
+    def _deterministic_authorization_analysis(
+        self,
+        attack_variant_info: Dict,
+        attack_response: Dict,
+        baseline_response: Optional[Dict],
+        state: StateStore,
+    ) -> Dict[str, Any]:
+        """Conservative, replayable authorization oracle independent of an LLM."""
+        body = attack_response.get("raw_response") or {}
+        flat = self._flatten_json(body)
+        current_id = state.get("user_id") or state.get("id")
+        current_email = state.get("email")
+        evidence: List[str] = []
+        extra = attack_variant_info.get("extra", {}) or {}
+        strategy = attack_variant_info.get("strategy", "")
+        owner_actor_id = extra.get("owner_actor_id")
+        attacker_actor_id = extra.get("attacker_actor_id") or state.get("actor_id")
+        has_cross_actor_proof = bool(
+            owner_actor_id and attacker_actor_id
+            and str(owner_actor_id) != str(attacker_actor_id)
+        )
+        baseline_success = bool(
+            baseline_response and baseline_response.get("status") in (200, 201, 202, 204)
+        )
+
+        ownership_key = re.compile(
+            r"(^|\.)(owner|user|account|created_by|customer)(_?id|email)?$",
+            re.I,
+        )
+        for key, value in flat.items():
+            if not ownership_key.search(str(key)):
+                continue
+            value_text = str(value).lower()
+            differs_from_id = current_id is not None and value_text != str(current_id).lower()
+            differs_from_email = current_email is not None and value_text != str(current_email).lower()
+            if ("email" in str(key).lower() and differs_from_email) or (
+                    "email" not in str(key).lower() and differs_from_id):
+                evidence.append(
+                    f"Response ownership field {key}={value!r} differs from current actor"
+                )
+
+        if (evidence and baseline_success and has_cross_actor_proof
+                and strategy in ("id_substitution", "reference_forge")):
+            return {
+                "classification": "CONFIRMED",
+                "confidence": 0.95,
+                "vulnerability_type": "BOLA",
+                "evidence": evidence,
+                "reasoning": "A successful attack response explicitly identifies a different owner.",
+            }
+
+        owner_ctx = extra.get("owner_ctx", {}) or {}
+        foreign_actor = owner_ctx.get("actor_id")
+        current_actor = state.get("actor_id")
+        is_cross_actor = bool(
+            foreign_actor and current_actor and str(foreign_actor) != str(current_actor)
+        )
+        if evidence:
+            return {
+                "classification": "SUSPECTED",
+                "confidence": 0.7,
+                "vulnerability_type": "BOLA",
+                "evidence": evidence,
+                "reasoning": "Foreign ownership is visible, but cross-actor policy proof is incomplete.",
+            }
+        if is_cross_actor and strategy in ("id_substitution", "reference_forge"):
+            return {
+                "classification": "SUSPECTED",
+                "confidence": 0.65,
+                "vulnerability_type": "BOLA",
+                "evidence": [
+                    f"Actor {current_actor} received 2xx for a resource attributed to {foreign_actor}"
+                ],
+                "reasoning": "Foreign provenance exists, but the response lacks explicit ownership proof.",
+            }
+
+        technique = str(extra.get("technique", ""))
+        if strategy == "param_pollution" and technique in (
+                "mass_assignment", "privilege_escalation"):
+            return {
+                "classification": "SUSPECTED",
+                "confidence": 0.45,
+                "vulnerability_type": "BOPLA",
+                "evidence": ["Server accepted a privilege-related mutation with a 2xx response"],
+                "reasoning": "A verification read is required before confirming the privilege change.",
+            }
+
+        return {
+            "classification": "INCONCLUSIVE",
+            "confidence": 0.0,
+            "vulnerability_type": "NONE",
+            "evidence": [],
+            "reasoning": "No deterministic ownership or authorization evidence was found.",
+        }
 
     # ── Step 16: So sánh với Baseline ─────────────────────────────────────────
 
@@ -285,72 +416,71 @@ class AuditorAgent:
         strategy:          str,
     ) -> Dict[str, Any]:
         """
-        Dùng Llama 3.1 8B để phân tích ngữ nghĩa của response.
-        Hỏi: "Response này có chứa data của người khác không?"
+        Dùng Llama để phân tích ngữ nghĩa response với model 3-state classification.
+        Không kết luận vội vàng, yêu cầu Evidence mạnh (Ownership).
         """
         attack_body = attack_response.get("raw_response") or {}
         if not attack_body:
-            return {"is_bola": False, "confidence": 0.0, "reasoning": "Empty response body"}
+            return {"classification": "INCONCLUSIVE", "confidence": 0.0, "reasoning": "Empty response body"}
 
         # Build context cho LLM
         own_context = {
             "user_id":  state.get("user_id") or state.get("id"),
             "email":    state.get("email"),
             "username": state.get("username") or state.get("name"),
+            "role":     state.get("role") or state.get("user_role") or "normal",
         }
-        # Lọc None
         own_context = {k: v for k, v in own_context.items() if v}
 
-        baseline_body = {}
-        if baseline_response:
-            baseline_body = baseline_response.get("raw_response") or {}
+        # Giới hạn kích thước body (tránh token limit)
+        attack_body_str   = json.dumps(attack_body,   ensure_ascii=False)[:2000]
 
-        # Giới hạn kích thước body để không quá dài
-        attack_body_str   = json.dumps(attack_body,   ensure_ascii=False)[:1500]
-        baseline_body_str = json.dumps(baseline_body, ensure_ascii=False)[:800]
-
-        prompt = f"""You are auditing an API for BOLA (Broken Object Level Authorization) vulnerabilities.
+        prompt = f"""You are auditing an API for BOLA/IDOR/BFLA vulnerabilities.
 
 API Endpoint: {api_node.get('method')} {api_node.get('path')}
-Attack Strategy: {strategy}
+Attack Strategy used: {strategy}
 
-Current User Context (the legitimate user who owns the token):
+Current Authenticated User Context:
 {json.dumps(own_context, indent=2)}
 
-Baseline Response (legitimate user's own data):
-{baseline_body_str if baseline_body_str != '{{}}' else "(not available)"}
-
-Attack Response (potentially accessing another user's data):
+Attack Response (Server replied to the attacker):
 {attack_body_str}
 
-Analyze whether the Attack Response contains data belonging to a DIFFERENT user than the Current User.
+YOUR TASK:
+Determine if the Attack Response proves a vulnerability (BOLA/BFLA).
+CRITICAL RULES for BOLA:
+- Do NOT assume BOLA just because HTTP is 200.
+- Do NOT assume BOLA just because there is no 'user_id' in the response.
+- BOLA is CONFIRMED *only* if there is STRONG EVIDENCE that the returned object/resource belongs to a DIFFERENT user than the Current User.
+- If there is NO ownership information available, classification MUST BE 'INCONCLUSIVE'.
 
-Consider:
-1. Do the IDs, emails, names, or other PII in the response match the Current User's context?
-2. Is sensitive data exposed that shouldn't be accessible?
-3. Does the response structure suggest unauthorized data access?
+CRITICAL RULES for BFLA:
+- Do NOT assume BFLA just because the attacker sent 'isAdmin=true'.
+- BFLA is CONFIRMED *only* if the server actually performed an administrative action for a normal user.
 
-Respond with JSON:
+Respond ONLY with a JSON object in this exact format:
 {{
-  "is_bola": true/false,
-  "confidence": 0.0-1.0,
-  "bola_type": "data_exposure" | "auth_bypass" | "privilege_escalation" | "none",
-  "evidence": ["list of specific evidence strings"],
-  "reasoning": "brief explanation"
+  "classification": "CONFIRMED", // or "SUSPECTED", or "INCONCLUSIVE"
+  "vulnerability_type": "BOLA", // or BFLA, BROKEN_ACCESS_CONTROL, MASS_ASSIGNMENT, PRIVILEGE_ESCALATION, NONE, UNKNOWN
+  "confidence": 0.0, // Float 0.0 to 1.0
+  "evidence": ["list of explicit evidence strings found in the response"],
+  "reason": "Detailed explanation of why it is CONFIRMED, SUSPECTED, or INCONCLUSIVE."
 }}"""
 
-        result = self.client.auditor(prompt, system=self.SYSTEM_PROMPT, temperature=0.05)
+        result = self.client.auditor(prompt, system=self.SYSTEM_PROMPT, temperature=0.1)
 
         if not result:
-            log.warning("[AuditorAgent] LLM semantic analysis returned None — using heuristic")
-            return {"is_bola": False, "confidence": 0.0, "reasoning": "LLM unavailable"}
+            log.warning("[AuditorAgent] LLM semantic analysis returned None")
+            return {"classification": "INCONCLUSIVE", "confidence": 0.0, "reasoning": "LLM unavailable"}
+
+        log.info(f"\033[94m[SECURITY ANALYSIS]\033[0m Class: {result.get('classification')}, VulnType: {result.get('vulnerability_type')}")
 
         return {
-            "is_bola":    bool(result.get("is_bola", False)),
-            "confidence": float(result.get("confidence", 0.0)),
-            "bola_type":  result.get("bola_type", "none"),
-            "evidence":   result.get("evidence", []),
-            "reasoning":  result.get("reasoning", ""),
+            "classification": result.get("classification", "INCONCLUSIVE"),
+            "confidence":     float(result.get("confidence", 0.0)),
+            "vulnerability_type": result.get("vulnerability_type", "NONE"),
+            "evidence":       result.get("evidence", []),
+            "reasoning":      result.get("reason", ""),
         }
 
     # ── Decision ───────────────────────────────────────────────────────────────
@@ -364,95 +494,77 @@ Respond with JSON:
         api_node:            Dict,
     ) -> AuditResult:
         """
-        Tổng hợp kết quả từ baseline diff + semantic analysis.
-        Ra quyết định cuối cùng: BOLA hay không.
-
-        Rule:
-          - semantic confidence >= 0.7  → IS BOLA (strong)
-          - semantic confidence >= 0.5 AND baseline hint → IS BOLA (medium)
-          - Else → NOT BOLA
+        Tổng hợp kết quả từ LLM semantic classification + baseline diff.
+        Tuân thủ 3-state classification.
         """
-        sem_conf   = semantic_result.get("confidence", 0.0)
-        sem_bola   = semantic_result.get("is_bola", False)
-        base_hint  = baseline_result.get("foreign_data_hint", False)
-        base_conf  = baseline_result.get("confidence", 0.0)
-        bola_type  = semantic_result.get("bola_type", "none")
-        evidence   = (
+        classification = semantic_result.get("classification", "INCONCLUSIVE")
+        confidence     = semantic_result.get("confidence", 0.0)
+        bola_type      = semantic_result.get("vulnerability_type", "NONE")
+        reasoning      = semantic_result.get("reasoning", "")
+        evidence       = (
             semantic_result.get("evidence", []) +
             baseline_result.get("details", [])
         )
-
-        # ── Strong BOLA ────────────────────────────────────────────────────────
-        if sem_bola and sem_conf >= 0.7:
+        
+        # Only CONFIRMED results become vulnerabilities. SUSPECTED is retained
+        # for reporting/triage but must not bias beam scoring as a finding.
+        is_bola = classification == "CONFIRMED"
+        
+        if classification == "CONFIRMED":
             score_delta = self.STRONG_BOLA_BONUS
+            severity = "HIGH"
+        else:
+            score_delta = 0.0
+            severity = "INFO"
+
+        if is_bola:
             finding = self._build_finding(
                 bola_type=bola_type,
-                confidence=sem_conf,
+                confidence=confidence,
                 evidence=evidence,
+                reasoning=reasoning,
                 attack_variant_info=attack_variant_info,
                 api_node=api_node,
                 attack_status=attack_status,
-                severity="HIGH",
+                severity=severity,
             )
             log.warning(
-                f"\033[91m[AuditorAgent] BOLA DETECTED (HIGH)\033[0m "
-                f"type={bola_type} conf={sem_conf:.2f}"
+                f"\033[91m[FINAL CLASSIFICATION]\033[0m VULNERABILITY {classification} "
+                f"type={bola_type} conf={confidence:.2f}"
             )
             return AuditResult(
                 is_bola=True,
-                confidence=sem_conf,
+                classification=classification,
+                confidence=confidence,
                 bola_type=bola_type,
                 evidence=evidence,
+                reasoning=reasoning,
                 score_delta=score_delta,
                 finding=finding,
             )
 
-        # ── Medium BOLA ────────────────────────────────────────────────────────
-        combined_conf = 0.6 * sem_conf + 0.4 * base_conf
-        if sem_bola and combined_conf >= 0.5 and base_hint:
-            score_delta = self.BOLA_SCORE_BONUS
-            finding = self._build_finding(
-                bola_type=bola_type,
-                confidence=combined_conf,
-                evidence=evidence,
-                attack_variant_info=attack_variant_info,
-                api_node=api_node,
-                attack_status=attack_status,
-                severity="MEDIUM",
-            )
-            log.warning(
-                f"\033[93m[AuditorAgent] BOLA DETECTED (MEDIUM)\033[0m "
-                f"type={bola_type} combined_conf={combined_conf:.2f}"
-            )
-            return AuditResult(
-                is_bola=True,
-                confidence=combined_conf,
-                bola_type=bola_type,
-                evidence=evidence,
-                score_delta=score_delta,
-                finding=finding,
-            )
-
-        # ── Not BOLA ──────────────────────────────────────────────────────────
-        log.info(
-            f"[AuditorAgent] No BOLA detected "
-            f"(sem_conf={sem_conf:.2f}, base_hint={base_hint})"
-        )
-        return AuditResult(is_bola=False, confidence=sem_conf)
+        # ── Not BOLA / Inconclusive ───────────────────────────────────────────
+        log.info(f"\033[92m[FINAL CLASSIFICATION]\033[0m {classification} (conf={confidence:.2f})")
+        return AuditResult(is_bola=False, classification=classification, confidence=confidence)
 
     @staticmethod
     def _build_finding(
         bola_type:           str,
         confidence:          float,
         evidence:            List[str],
+        reasoning:           str,
         attack_variant_info: Dict,
         api_node:            Dict,
         attack_status:       int,
         severity:            str = "HIGH",
     ) -> Dict:
         """Tạo finding dict để ghi vào KnowledgeMemory."""
+        normalized_type = bola_type.upper()
+        finding_type = normalized_type if normalized_type in {
+            "BOLA", "BFLA", "BOPLA", "BROKEN_ACCESS_CONTROL"
+        } else f"BOLA/{normalized_type}"
         return {
-            "type":        f"BOLA/{bola_type.upper()}",
+            "type":        finding_type,
             "severity":    severity,
             "confidence":  round(confidence, 2),
             "api":         api_node.get("id", ""),
@@ -462,6 +574,7 @@ Respond with JSON:
             "strategy":    attack_variant_info.get("strategy", ""),
             "description": attack_variant_info.get("description", ""),
             "evidence":    evidence[:10],   # Giới hạn 10 evidence items
+            "reasoning":   reasoning,
             "extra":       attack_variant_info.get("extra", {}),
         }
 

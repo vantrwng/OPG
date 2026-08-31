@@ -19,6 +19,7 @@ class KnowledgeMemory:
         # Thống kê mở rộng
         self.request_history: deque = deque(maxlen=self._MAX_HISTORY)  # bounded
         self.findings = []
+        self.security_observations = []
         self.endpoint_stats = {}
         self.edge_feedback = {}
 
@@ -69,6 +70,10 @@ class KnowledgeMemory:
 
     def record_finding(self, finding: dict):
         self.findings.append(finding)
+
+    def record_security_observation(self, observation: dict):
+        """Store suspected/inconclusive authorization evidence separately."""
+        self.security_observations.append(observation)
         
     def record_edge_feedback(self, from_api: str, to_api: str, success: bool):
         key = f"{from_api}->{to_api}"
@@ -103,11 +108,13 @@ class KnowledgeMemory:
                 "server_errors_500": server_errors,
                 "auth_anomalies": auth_anomalies,
                 "total_strategies_found": len(self.top_strategies),
-                "total_findings": len(self.findings)
+                "total_findings": len(self.findings),
+                "security_observations": len(self.security_observations),
             },
             "endpoint_stats": self.endpoint_stats,
             "edge_feedback": self.edge_feedback,
             "findings": self.findings,
+            "security_observations": self.security_observations,
             "top_strategies": self.top_strategies
         }
         with open(output_file, 'w', encoding='utf-8') as f:

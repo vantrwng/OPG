@@ -52,6 +52,8 @@ class AttackStore:
         resource_id: Any,
         endpoint:    str = "",
         user_context: Optional[Dict] = None,
+        owner_actor_id: str = "",
+        confidence: float = 0.5,
     ) -> None:
         """
         Lưu một resource ID vào store.
@@ -67,11 +69,16 @@ class AttackStore:
         if resource_id is None or resource_id == "":
             return
 
+        context = user_context or {}
+        inferred_actor = owner_actor_id or str(context.get("actor_id", ""))
         entry = {
             "resource_id":  str(resource_id),
             "field_name":   field_name,
             "endpoint":     endpoint,
-            "user_context": user_context or {},
+            "producer_api": api_id,
+            "owner_actor_id": inferred_actor,
+            "ownership_confidence": max(0.0, min(float(confidence), 1.0)),
+            "user_context": context,
             "timestamp":    time.time(),
         }
 
@@ -102,6 +109,8 @@ class AttackStore:
         endpoint:     str = "",
         user_context: Optional[Dict] = None,
         id_fields:    Optional[List[str]] = None,
+        owner_actor_id: str = "",
+        confidence: float = 0.5,
     ) -> int:
         """
         Tự động harvest các field ID từ response JSON và lưu vào store.
@@ -128,7 +137,11 @@ class AttackStore:
                             or (not id_fields and _ID_PATTERN.search(k))
                         )
                         if should_record:
-                            self.record(api_id, k, v, endpoint, user_context)
+                            self.record(
+                                api_id, k, v, endpoint, user_context,
+                                owner_actor_id=owner_actor_id,
+                                confidence=confidence,
+                            )
                             count += 1
                     elif isinstance(v, dict):
                         count = _harvest(v, count)
@@ -172,6 +185,7 @@ class AttackStore:
         results = []
         own_user_id  = str(own_context.get("user_id", "")) if own_context else ""
         own_email    = str(own_context.get("email", "")).lower() if own_context else ""
+        own_actor_id = str(own_context.get("actor_id", "")) if own_context else ""
 
         for entry in reversed(bucket):  # Ưu tiên entry mới nhất
             # Lọc theo field_name nếu có
@@ -180,9 +194,20 @@ class AttackStore:
 
             # Loại bỏ ID của chính mình
             ctx = entry.get("user_context", {})
+            entry_actor_id = str(entry.get("owner_actor_id", ""))
+            if own_actor_id and entry_actor_id == own_actor_id:
+                continue
             if own_user_id and str(ctx.get("user_id", "")) == own_user_id:
                 continue
             if own_email and str(ctx.get("email", "")).lower() == own_email:
+                continue
+
+            # With an identified current actor, unknown ownership is not proof
+            # of a foreign resource. Keep it out of high-confidence BOLA tests.
+            has_owner_evidence = bool(
+                entry_actor_id or ctx.get("user_id") or ctx.get("email")
+            )
+            if own_actor_id and not has_owner_evidence:
                 continue
 
             results.append(entry)

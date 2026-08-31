@@ -8,6 +8,7 @@ from runtime_executor import RequestExecutor
 from knowledge_memory import KnowledgeMemory
 from local_mutator import AsyncFuzzEngine
 from attack_store import AttackStore, get_attack_store
+from state_store import MultiActorContextStore
 
 # ── Agent imports (optional — graceful fallback if Ollama not available) ─────────
 _AGENTS_AVAILABLE = False
@@ -106,6 +107,8 @@ class CoverageBucketManager:
         return all_beams
 
 class TestStrategyEngine:
+    __test__ = False
+
     def __init__(self, operations, adjacency_list, request_executor, graph_builder, knowledge_memory, beam_width=5):
         self.operations = operations
         self.adjacency_list = adjacency_list
@@ -115,6 +118,7 @@ class TestStrategyEngine:
         
         self.scorer = HeuristicScorer()
         self.beam_width = beam_width
+        self.actor_contexts = MultiActorContextStore()
         self.operations_map = {op['id']: op for op in self.operations}
 
         # ── Attack Store (shared cross-beam) ─────────────────────────────────
@@ -305,11 +309,11 @@ class TestStrategyEngine:
         return best_edge
 
     def calculate_adaptive_bfs_threshold(self):
-        # Ép BFS Threshold = 1 để ngay từ Depth 2 trở đi, 
-        # BucketManager sẽ gọt số lượng beam xuống beam_width=3 cho mỗi API.
+        # Ép BFS Threshold = 0 để ngay từ Depth 1 trở đi, 
+        # BucketManager sẽ gọt số lượng beam xuống beam_width (VD: 3) x 4 buckets = tối đa 12 beams.
         # Điều này giúp ngăn chặn bùng nổ tổ hợp (combinatorial explosion)
-        # khiến Fuzzer bị kẹt không bao giờ chạy xong.
-        return 1
+        # khiến Fuzzer bị kẹt 4-5 tiếng không bao giờ chạy xong.
+        return 0
 
     def run(self, max_depth=5, initial_state=None):
         if initial_state is None:
@@ -457,16 +461,41 @@ class TestStrategyEngine:
                         })
 
                 # ── [GIAI ĐOẠN 2] 3-Agent Pipeline: Attacker + Auditor ───────────────
-                # Chạy sau khi request hợp lệ thành công (2xx)
+                # Depth 1 = "Warm-up round": chỉ lưu baseline + harvest IDs vào AttackStore
+                #   → StateStore chưa đủ context (token, ID) để sinh attack có nghĩa
+                # Depth >= 2: đã có baseline + IDs → chạy đầy đủ Attacker + Auditor
                 agent_score_bonus = 0.0
                 if status in (200, 201, 202) and self._attacker and self._auditor:
-                    agent_score_bonus = self._run_3agent_pipeline(
-                        api_node=api_node,
-                        current_state=current_state,
-                        exec_result=exec_result,
-                        beam_chain=beam['chain'],
-                        vulnerabilities=vulnerabilities,
-                    )
+                    if depth == 1:
+                        # ── Warm-up: chỉ lưu baseline + harvest IDs ──────────────
+                        print(f"[{current_api}] 🔥 Depth 1 warm-up — lưu baseline & harvest IDs...")
+                        current_state.set_baseline(current_api, exec_result)
+                        raw_resp = exec_result.get("raw_response")
+                        if raw_resp:
+                            own_ctx = {
+                                "actor_id": current_state.get("actor_id", "default"),
+                                "user_id": current_state.get("user_id") or current_state.get("id"),
+                                "email":   current_state.get("email"),
+                            }
+                            n = self.attack_store.record_from_response(
+                                api_id=current_api,
+                                response_json=raw_resp,
+                                endpoint=exec_result.get("url", api_node.get("path", "")),
+                                user_context={k: v for k, v in own_ctx.items() if v},
+                                owner_actor_id=own_ctx["actor_id"],
+                                confidence=0.9,
+                            )
+                            if n:
+                                print(f"[{current_api}] 📦 Harvested {n} resource IDs → AttackStore")
+                    else:
+                        # ── Depth >= 2: Chạy đầy đủ pipeline ────────────────────
+                        agent_score_bonus = self._run_3agent_pipeline(
+                            api_node=api_node,
+                            current_state=current_state,
+                            exec_result=exec_result,
+                            beam_chain=beam['chain'],
+                            vulnerabilities=vulnerabilities,
+                        )
 
                 if len(beam['chain']) >= 2:
                     prev_api = beam['chain'][-2]
@@ -582,6 +611,7 @@ class TestStrategyEngine:
         raw_response = exec_result.get("raw_response")
         if raw_response:
             own_ctx = {
+                "actor_id": current_state.get("actor_id", "default"),
                 "user_id": current_state.get("user_id") or current_state.get("id"),
                 "email":   current_state.get("email"),
             }
@@ -590,16 +620,22 @@ class TestStrategyEngine:
                 response_json=raw_response,
                 endpoint=exec_result.get("url", api_node.get("path", "")),
                 user_context={k: v for k, v in own_ctx.items() if v},
+                owner_actor_id=own_ctx["actor_id"],
+                confidence=0.9,
             )
             if n_harvested:
                 log.info(f"[AttackStore] Harvested {n_harvested} IDs from {api_id}")
+
+        # Prefer a distinct principal for authorization tests. The owner state
+        # remains the baseline; the selected state supplies the attack token.
+        attack_state = self._select_attack_state(current_state)
 
         # ── Bước 3: Attacker Agent sinh variants ──────────────────────────────
         valid_payload = exec_result.get("sent_payload", {})
         try:
             attack_variants = self._attacker.generate_attacks(
                 api_node=api_node,
-                state=current_state,
+                state=attack_state,
                 valid_payload=valid_payload,
                 valid_response=raw_response,
             )
@@ -625,8 +661,13 @@ class TestStrategyEngine:
                 # Thực thi attack request
                 attack_exec = self.executor.execute_request(
                     api_node=attack_node,
-                    current_state=current_state,
+                    current_state=attack_state,
                     edge_deps=None,
+                    payload_override=variant.payload,
+                    payload_source_override=f"ATTACKER_{variant.strategy.upper()}",
+                    # A 401/403 is an expected authorization outcome. Repairing
+                    # an attack may also undo its security mutation.
+                    allow_repair=False,
                 )
 
                 # Ghi lại attack request vào memory
@@ -637,7 +678,7 @@ class TestStrategyEngine:
                     status=attack_exec["status"],
                     chain=beam_chain,
                     response_text=attack_exec.get("response_text", ""),
-                    request_payload=variant.payload,
+                    request_payload=attack_exec.get("sent_payload", variant.payload),
                     payload_source=f"ATTACKER_{variant.strategy.upper()}",
                     sent_headers=attack_exec.get("sent_headers", {}),
                 )
@@ -646,16 +687,36 @@ class TestStrategyEngine:
                 variant_info = {
                     "strategy":    variant.strategy,
                     "description": variant.description,
-                    "extra":       variant.extra,
+                    "extra":       {
+                        **variant.extra,
+                        "attacker_actor_id": attack_state.get("actor_id", "default"),
+                        "owner_actor_id": current_state.get("actor_id", "default"),
+                    },
                 }
 
                 audit_result = self._auditor.audit(
                     attack_variant_info=variant_info,
                     attack_response=attack_exec,
                     baseline_response=baseline_response,
-                    state=current_state,
+                    state=attack_state,
                     api_node=api_node,
                 )
+
+                if audit_result.classification == "SUSPECTED":
+                    self.memory.record_security_observation({
+                        "classification": "SUSPECTED",
+                        "type": audit_result.bola_type or "BROKEN_ACCESS_CONTROL",
+                        "api": api_id,
+                        "method": attack_node.get("method", "GET").upper(),
+                        "path": attack_exec.get("url", variant.path),
+                        "strategy": variant.strategy,
+                        "owner_actor_id": current_state.get("actor_id", "default"),
+                        "attacker_actor_id": attack_state.get("actor_id", "default"),
+                        "confidence": audit_result.confidence,
+                        "evidence": audit_result.evidence,
+                        "reasoning": audit_result.reasoning,
+                        "chain": list(beam_chain),
+                    })
 
                 log.info(
                     f"[AuditorAgent] {variant.strategy}: "
@@ -670,6 +731,20 @@ class TestStrategyEngine:
                     if audit_result.finding:
                         finding = dict(audit_result.finding)
                         finding["chain"] = list(beam_chain)
+                        finding["owner_actor_id"] = current_state.get("actor_id", "default")
+                        finding["attacker_actor_id"] = attack_state.get("actor_id", "default")
+                        finding["baseline"] = {
+                            "status": baseline_response.get("status") if baseline_response else None,
+                            "url": baseline_response.get("url") if baseline_response else None,
+                            "response": baseline_response.get("raw_response") if baseline_response else None,
+                        }
+                        finding["attack"] = {
+                            "status": attack_exec.get("status"),
+                            "url": attack_exec.get("url"),
+                            "payload": attack_exec.get("sent_payload", {}),
+                            "query": attack_exec.get("sent_query", {}),
+                            "response": attack_exec.get("raw_response"),
+                        }
                         self.memory.record_finding(finding)
                         self.memory.record_vulnerability(api_id, attack_exec["status"])
 
@@ -698,3 +773,15 @@ class TestStrategyEngine:
                 continue
 
         return total_bonus
+
+    def _select_attack_state(self, owner_state):
+        owner_actor_id = owner_state.get("actor_id", "default")
+        for actor in self.actor_contexts.all():
+            if actor.actor_id == owner_actor_id:
+                continue
+            base = {
+                "auth_header_name": owner_state.get("auth_header_name", "Authorization"),
+                "auth_header_prefix": owner_state.get("auth_header_prefix", "Bearer"),
+            }
+            return actor.to_state_store(base=base)
+        return owner_state

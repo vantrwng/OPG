@@ -95,10 +95,6 @@ class AttackerAgent:
         Returns:
             List[AttackVariant] — tất cả variants để thực thi
         """
-        if not OLLAMA_ENABLED:
-            log.info("[AttackerAgent] OLLAMA_ENABLED=false — bỏ qua Attacker.")
-            return []
-
         api_id = api_node.get("id", "unknown")
         log.info(f"\033[95m[AttackerAgent]\033[0m Generating attacks for {api_id}")
 
@@ -169,6 +165,7 @@ class AttackerAgent:
 
         # Lấy own_id từ StateStore
         own_context = {
+            "actor_id": state.get("actor_id", "default"),
             "user_id": state.get("user_id") or state.get("id"),
             "email":   state.get("email"),
         }
@@ -217,6 +214,8 @@ class AttackerAgent:
 
     def _llm_identify_id_fields(self, api_node: Dict, known_fields: List[str]) -> List[str]:
         """Dùng Qwen để phát hiện thêm field ID không rõ ràng."""
+        if not OLLAMA_ENABLED:
+            return []
         schema = {
             k: (v if isinstance(v, dict) else {"type": "unknown"})
             for k, v in api_node.get("inputs", {}).items()
@@ -341,6 +340,8 @@ Respond with JSON: {{"id_fields": ["field1", "field2"]}}"""
 
     def _llm_generate_privilege_fields(self, api_node: Dict, payload: Dict) -> Dict:
         """Dùng Qwen để sinh privilege escalation fields phù hợp với context."""
+        if not OLLAMA_ENABLED:
+            return {"role": "admin", "isAdmin": True}
         prompt = f"""API: {api_node.get('method')} {api_node.get('path')}
 Current payload fields: {list(payload.keys())}
 
@@ -376,6 +377,7 @@ Respond with JSON: {{"privilege_fields": {{"field_name": "value"}}}}"""
         variants = []
 
         own_context = {
+            "actor_id": state.get("actor_id", "default"),
             "user_id": state.get("user_id") or state.get("id"),
             "email":   state.get("email"),
         }
@@ -442,6 +444,13 @@ Respond with JSON: {{"privilege_fields": {{"field_name": "value"}}}}"""
     def _llm_forge_ids(self, api_node: Dict, state: StateStore) -> List[str]:
         """Dùng Qwen để sinh các ID mồi khi AttackStore trống."""
         own_id = state.get("user_id") or state.get("id") or "1"
+
+        if not OLLAMA_ENABLED:
+            try:
+                oid = int(own_id)
+                return [str(oid + 1), str(max(1, oid - 1)), "1", "2"]
+            except (ValueError, TypeError):
+                return ["1", "2", "admin"]
 
         prompt = f"""API endpoint: {api_node.get('method')} {api_node.get('path')}
 Own user ID: {own_id}

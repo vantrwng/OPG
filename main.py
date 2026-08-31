@@ -21,10 +21,11 @@ from graph_builder import DependencyGraphBuilder
 from test_strategy_engine import TestStrategyEngine
 from runtime_executor import RequestExecutor
 from llm_planner import LLMPlanner
-from state_store import StateStore
+from state_store import ActorContext, MultiActorContextStore, StateStore
 from rule_inference_layer import RuleInferenceLayer
 from knowledge_memory import KnowledgeMemory
 from generate_report import generate_html_report
+from actor_bootstrapper import ActorBootstrapper
 
 import argparse
 
@@ -61,12 +62,48 @@ def build_system(operations, base_url, beam_width):
 
     return strategy_engine, knowledge_memory
 
+
+def build_actor_contexts() -> MultiActorContextStore:
+    """Load optional foreign/admin principals used by authorization tests."""
+    actors = MultiActorContextStore()
+    attacker_token = os.getenv("ATTACKER_AUTH_TOKEN", "")
+    if attacker_token:
+        actors.add(ActorContext(
+            actor_id=os.getenv("ATTACKER_ACTOR_ID", "user_b"),
+            role=os.getenv("ATTACKER_ROLE", "user"),
+            auth_token=attacker_token,
+            credentials={
+                k: v for k, v in {
+                    "user_id": os.getenv("ATTACKER_USER_ID", ""),
+                    "email": os.getenv("ATTACKER_EMAIL", ""),
+                }.items() if v
+            },
+        ))
+
+    admin_token = os.getenv("ADMIN_AUTH_TOKEN", "")
+    if admin_token:
+        actors.add(ActorContext(
+            actor_id=os.getenv("ADMIN_ACTOR_ID", "admin"),
+            role="admin",
+            auth_token=admin_token,
+        ))
+
+    # Anonymous is always useful for detecting missing authentication.
+    actors.add(ActorContext(actor_id="anonymous", role="anonymous"))
+    return actors
+
 def main():
     parser = argparse.ArgumentParser(description="Hybrid Stateful API Fuzzer")
-    parser.add_argument("--spec", type=str, default="crapi-openapi-spec.json", help="Path to OpenAPI spec file")
-    parser.add_argument("--base-url", type=str, default="http://localhost:8888", help="Target API Base URL")
+    parser.add_argument("--spec", type=str, default="vmAPI.json", help="Path to OpenAPI spec file")
+    parser.add_argument("--base-url", type=str, default="http://127.0.0.1:5001", help="Target API Base URL")
     parser.add_argument("--max-depth", type=int, default=5, help="Max depth for path execution")
     parser.add_argument("--beam-width", type=int, default=3, help="Beam search width")
+    parser.add_argument(
+        "--bootstrap-actors",
+        choices=("auto", "manual", "off"),
+        default="auto",
+        help="Provision two test users automatically, use .env tokens, or disable provisioning",
+    )
     args = parser.parse_args()
 
     print("=== Hệ thống Phân tích và Xây dựng Chiến lược Kiểm thử API (Component-Based DI) ===")
@@ -91,6 +128,8 @@ def main():
     auth_header_prefix = os.getenv("AUTH_HEADER_PREFIX", "")
 
     initial_state_data = {}
+    initial_state_data["actor_id"] = os.getenv("ACTOR_ID", "owner_a")
+    initial_state_data["actor_role"] = os.getenv("ACTOR_ROLE", "user")
 
     # Luôn nạp cấu hình Header từ .env
     initial_state_data["auth_header_name"] = auth_header_name
@@ -115,6 +154,30 @@ def main():
         print(f"[Phase 0] ✓ Đã nạp {seed_count} biến mồi (Seed) bổ sung vào StateStore.")
         
     initial_state = StateStore(initial_state_data)
+    actor_contexts = build_actor_contexts()
+
+    if args.bootstrap_actors == "auto":
+        print("[Phase 0] Đang tự động tạo owner_a và user_b từ signup/login trong OpenAPI...")
+        bootstrap_result = ActorBootstrapper(
+            operations=operations,
+            executor=strategy_engine.executor,
+        ).bootstrap(base_state=initial_state_data)
+        if bootstrap_result.success:
+            initial_state = bootstrap_result.owner_state
+            actor_contexts = bootstrap_result.actors
+            print(
+                "[Phase 0] ✓ Bootstrap thành công: "
+                f"signup={bootstrap_result.signup_api_id}, login={bootstrap_result.login_api_id}"
+            )
+        else:
+            print("[Phase 0] ⚠ Bootstrap tự động thất bại; chuyển sang token thủ công trong .env")
+            for error in bootstrap_result.errors:
+                print(f"  - {error}")
+    elif args.bootstrap_actors == "off":
+        actor_contexts = MultiActorContextStore()
+        actor_contexts.add(ActorContext(actor_id="anonymous", role="anonymous"))
+
+    strategy_engine.actor_contexts = actor_contexts
 
     # ── Phase 3: Khởi chạy Fuzzer (Live HTTP) ────────────────────────────────
     print(f"\n[Phase 3] Khởi chạy Test Strategy Engine → {args.base_url}")
