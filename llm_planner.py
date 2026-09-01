@@ -20,6 +20,8 @@ from dotenv import load_dotenv
 
 from ollama_client import OllamaClient, get_ollama_client, OLLAMA_ENABLED
 from state_store import StateStore
+from response_outcome import evaluate_response
+from field_semantics import is_reference_field, value_matches_openapi_type
 
 load_dotenv()
 log = logging.getLogger("llm_planner")
@@ -196,6 +198,8 @@ Rules:
         if payload is None:
             payload = self._heuristic_generate(api_node, state, edge_deps=edge_deps)
 
+        payload = self._apply_context_bindings(payload or {}, api_node, state, edge_deps)
+
         # Post-process: randomize volatile fields (email, phone, name, password)
         if payload:
             payload = self._randomize_volatile_fields(payload, api_node, state)
@@ -205,6 +209,88 @@ Rules:
             f"{json.dumps(payload, ensure_ascii=False)[:120]}"
         )
         return payload, source
+
+    def _apply_context_bindings(
+        self,
+        payload: Dict[str, Any],
+        api_node: Dict,
+        state: StateStore,
+        edge_deps: Optional[list] = None,
+    ) -> Dict[str, Any]:
+        """Deterministically bind downstream inputs to producer/state values."""
+        out = dict(payload)
+        dependency_values: Dict[str, Any] = {}
+        for dep in edge_deps or []:
+            producer = dep.get("producer_field", "")
+            consumer = dep.get("consumer_field", "")
+            producer_norm = self._norm(producer)
+            for state_key, state_value in state.memory.items():
+                if self._norm(state_key) == producer_norm:
+                    dependency_values[self._norm(consumer)] = state_value
+                    break
+
+        method = api_node.get("method", "GET").upper()
+        endpoint_text = " ".join((
+            str(api_node.get("id", "")), str(api_node.get("path", ""))
+        ))
+        is_login = bool(re.search(
+            r"login|log[_-]?in|signin|sign[_-]?in|authenticate|issue[_-]?token",
+            endpoint_text, re.I,
+        ))
+
+        for field_name, meta in (api_node.get("inputs", {}) or {}).items():
+            meta = meta if isinstance(meta, dict) else {}
+            original = meta.get("original", field_name)
+            location = str(meta.get("in", "body")).lower()
+            field_norm = self._norm(field_name)
+            original_norm = self._norm(original)
+            bound = dependency_values.get(original_norm, dependency_values.get(field_norm))
+
+            # A reference already produced inside this actor/beam is stronger
+            # evidence than an LLM guess or a fuzzy ODG edge. This also covers
+            # optional POST-body references omitted from OpenAPI `required`.
+            if is_reference_field(field_name, meta):
+                for state_key, state_value in state.memory.items():
+                    if self._norm(state_key) not in (field_norm, original_norm):
+                        continue
+                    if value_matches_openapi_type(state_value, meta):
+                        bound = state_value
+                        break
+
+            # Login credentials are an atomic actor snapshot. Never combine a
+            # frozen username with a password overwritten by another signup
+            # branch in the mutable workflow state.
+            if bound is None and is_login and location == "body":
+                bound = state.get_actor_credential(original)
+                if bound is None:
+                    bound = state.get_actor_credential(field_name)
+
+            # During valid workflow generation, authenticated identity path
+            # parameters must match the token principal. Attack variants bypass
+            # this planner by using an explicit payload/path override.
+            principal_value = None
+            if location == "path" and state.has("auth_token"):
+                principal_value = state.get_actor_identity(original)
+                if principal_value is None:
+                    principal_value = state.get_actor_identity(field_name)
+            if principal_value is not None:
+                bound = principal_value
+
+            # Non-reference POST body values are generated fresh unless an ODG
+            # dependency explicitly binds them. Other locations/methods consume
+            # existing state deterministically.
+            may_consume_state = method != "POST" or location != "body"
+            if bound is None and may_consume_state:
+                for state_key, state_value in state.memory.items():
+                    state_norm = self._norm(state_key)
+                    if state_norm in (field_norm, original_norm):
+                        bound = state_value
+                        break
+
+            if bound is not None:
+                target_key = original if original in out or field_name not in out else field_name
+                out[target_key] = bound
+        return out
 
     def _build_prompt(
         self,
@@ -224,7 +310,15 @@ Rules:
                 ftype = meta.get("type", "string")
                 ffmt  = meta.get("format", "")
                 forig = meta.get("original", field_name)
-                field_lines.append(f"  - {forig} (type: {ftype}, format: {ffmt})")
+                constraints = []
+                if meta.get("enum"):
+                    constraints.append(f"allowed: {meta['enum']}")
+                if meta.get("default") is not None:
+                    constraints.append(f"default: {meta['default']!r}")
+                constraint_text = f", {', '.join(constraints)}" if constraints else ""
+                field_lines.append(
+                    f"  - {forig} (type: {ftype}, format: {ffmt}{constraint_text})"
+                )
             else:
                 field_lines.append(f"  - {field_name}")
         fields_block = "\n".join(field_lines) if field_lines else "  (no explicit schema)"
@@ -372,7 +466,13 @@ RULES:
             # Tìm request thành công gần nhất (status 200/201/202)
             for req in reversed(all_requests):
                 req_status = str(req.get("status", ""))
-                if req_status in ("200", "201", "202"):
+                req_successful = req.get("successful")
+                if req_successful is None:
+                    req_successful = evaluate_response(
+                        req_status,
+                        response_text=req.get("response_text", ""),
+                    ).successful
+                if req_successful:
                     resp_text = req.get("response_text", "")[:500]
                     req_payload = json.dumps(req.get("request_payload", {}), ensure_ascii=False)[:300]
                     recent_success_block = (
@@ -503,14 +603,22 @@ RULES:
         for field_name, meta in api_node.get("inputs", {}).items():
             original  = meta.get("original", field_name) if isinstance(meta, dict) else field_name
             ftype     = meta.get("type", "string")       if isinstance(meta, dict) else "string"
+            enum      = list(meta.get("enum", []) or []) if isinstance(meta, dict) else []
+            default   = meta.get("default")              if isinstance(meta, dict) else None
             orig_norm = self._norm(original)
             fld_norm  = self._norm(field_name)
 
+            if isinstance(meta, dict) and meta.get("is_file"):
+                payload[original] = {"$artifact": "builtin_valid_fixture"}
             # 1. Edge dependency
-            if orig_norm in dep_map:
+            elif orig_norm in dep_map:
                 payload[original] = dep_map[orig_norm]
             elif fld_norm in dep_map:
                 payload[original] = dep_map[fld_norm]
+            elif default is not None:
+                payload[original] = default
+            elif enum:
+                payload[original] = enum[0]
             else:
                 # 2. StateStore match (không tự động kéo email cũ)
                 matched_val = None
@@ -579,14 +687,31 @@ RULES:
                 out[k] = v
                 continue
 
+            input_meta = None
+            for field_name, meta in (api_node.get("inputs", {}) or {}).items():
+                meta = meta if isinstance(meta, dict) else {}
+                if k in (field_name, meta.get("original", field_name)):
+                    input_meta = meta
+                    break
+            if input_meta and input_meta.get("in") == "path" and state.has("auth_token"):
+                principal_value = state.get_actor_identity(k)
+                if principal_value is not None:
+                    out[k] = principal_value
+                    continue
+
             # CREATE must establish a fresh identity. AUTH and OTHER requests
             # reuse the actor's stored credentials to preserve session flow.
             matched = None
             if api_type != "CREATE":
-                if is_email:  matched = state.get("email")
-                elif is_pass:  matched = state.get("password")
-                elif is_phone: matched = state.get("number") or state.get("phone") or state.get("mobile")
-                elif is_name:  matched = state.get("name") or state.get("username")
+                if api_type == "AUTH" and (is_email or is_name or is_pass or is_phone):
+                    matched = state.get_actor_credential(k)
+                if matched is None and api_type == "AUTH" and (is_email or is_name):
+                    matched = state.get_actor_identity(k)
+                if matched is None:
+                    if is_email:  matched = state.get("email")
+                    elif is_pass:  matched = state.get("password")
+                    elif is_phone: matched = state.get("number") or state.get("phone") or state.get("mobile")
+                    elif is_name:  matched = state.get("name") or state.get("username")
 
             if matched is not None:
                 out[k] = matched

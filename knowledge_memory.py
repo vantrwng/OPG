@@ -1,6 +1,7 @@
 import json
 import time
 from collections import deque
+from response_outcome import evaluate_response
 
 class KnowledgeMemory:
     """
@@ -22,6 +23,8 @@ class KnowledgeMemory:
         self.security_observations = []
         self.endpoint_stats = {}
         self.edge_feedback = {}
+        self.pipeline_summary = {}
+        self.auth_bootstrap = []
 
     def record_visit(self, api_id: str):
         if api_id not in self.node_visit_count:
@@ -33,7 +36,29 @@ class KnowledgeMemory:
     def get_visit_count(self, api_id: str) -> int:
         return self.node_visit_count.get(api_id, 0)
 
-    def record_request(self, api_id: str, method: str, path: str, status: int, chain: list = None, response_text: str = None, request_payload: dict = None, payload_source: str = "NONE", repair_reason: str = "", repair_history: list = None, sent_headers: dict = None):
+    def record_request(
+        self,
+        api_id: str,
+        method: str,
+        path: str,
+        status: int,
+        chain: list = None,
+        response_text: str = None,
+        request_payload: dict = None,
+        payload_source: str = "NONE",
+        repair_reason: str = "",
+        repair_history: list = None,
+        sent_headers: dict = None,
+        sent_query: dict = None,
+        sent_cookies: dict = None,
+        actor_id: str = "",
+        attack_metadata: dict = None,
+        successful: bool = None,
+        outcome_reason: str = "",
+        auth_recovery: dict = None,
+        auth_context: dict = None,
+        sent_files: dict = None,
+    ):
         if api_id not in self.endpoint_stats:
             self.endpoint_stats[api_id] = {"visits": 0, "status_counts": {}, "all_requests": []}
         
@@ -46,6 +71,15 @@ class KnowledgeMemory:
         if len(all_requests) >= self._MAX_PER_ENDPOINT:
             all_requests.pop(0)  # Xóa record cũ nhất
         
+        outcome = evaluate_response(status, response_text=response_text or "")
+        effective_success = outcome.successful if successful is None else bool(successful)
+        effective_reason = outcome_reason or outcome.reason
+
+        try:
+            is_http_2xx = 200 <= int(status) < 300
+        except (TypeError, ValueError):
+            is_http_2xx = False
+
         all_requests.append({
             "method": method,
             "path": path,
@@ -56,6 +90,16 @@ class KnowledgeMemory:
             "repair_reason": repair_reason,
             "repair_history": repair_history if repair_history is not None else [],
             "sent_headers": sent_headers if sent_headers is not None else {},
+            "sent_query": sent_query if sent_query is not None else {},
+            "sent_cookies": sent_cookies if sent_cookies is not None else {},
+            "actor_id": actor_id,
+            "attack_metadata": attack_metadata if attack_metadata is not None else {},
+            "successful": effective_success,
+            "semantic_failure": is_http_2xx and not effective_success,
+            "outcome_reason": effective_reason,
+            "auth_recovery": auth_recovery if auth_recovery is not None else {},
+            "auth_context": auth_context if auth_context is not None else {},
+            "sent_files": sent_files if sent_files is not None else {},
             "chain": chain if chain is not None else []
         })
         
@@ -96,6 +140,13 @@ class KnowledgeMemory:
     def set_top_strategies(self, strategies: list):
         self.top_strategies = strategies
 
+    def set_pipeline_summary(self, summary: dict):
+        self.pipeline_summary = dict(summary or {})
+
+    def set_auth_bootstrap(self, events: list):
+        """Store setup evidence separately from fuzzing requests/findings."""
+        self.auth_bootstrap = [dict(event) for event in (events or [])]
+
     def export(self, output_file: str):
         # Tổng hợp thống kê
         total_requests = len(self.request_history)
@@ -110,12 +161,15 @@ class KnowledgeMemory:
                 "total_strategies_found": len(self.top_strategies),
                 "total_findings": len(self.findings),
                 "security_observations": len(self.security_observations),
+                "auth_bootstrap_requests": len(self.auth_bootstrap),
             },
             "endpoint_stats": self.endpoint_stats,
             "edge_feedback": self.edge_feedback,
             "findings": self.findings,
             "security_observations": self.security_observations,
-            "top_strategies": self.top_strategies
+            "top_strategies": self.top_strategies,
+            "pipeline_summary": self.pipeline_summary,
+            "auth_bootstrap": self.auth_bootstrap,
         }
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(output_data, f, indent=4, ensure_ascii=False)

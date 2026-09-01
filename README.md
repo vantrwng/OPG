@@ -2,6 +2,41 @@
 
 ## Authorization testing configuration
 
+The default runtime mode is now **workflow validation**. It generates valid
+OpenAPI requests, resolves prerequisites, keeps each authenticated principal in
+an isolated state, and records successful sequences. It does not run the local
+mutator or Attacker/Auditor pipeline:
+
+```bash
+python main.py --mode workflow --bootstrap-actors auto
+```
+
+Security variants are opt-in and should only be enabled after valid workflows
+have been established:
+
+```bash
+python main.py --mode security --bootstrap-actors auto
+```
+
+`--mode security` is still a single command. Internally it enforces a phase
+barrier:
+
+1. **Phase 1 — Valid workflow discovery:** run Beam Search for every isolated
+   authenticated actor, resolve prerequisites, self-heal business failures, and
+   freeze one replayable baseline per actor/endpoint. No mutator or attacker is
+   called in this phase.
+2. **Phase 2 — Security validation:** after all Beam Search runs finish, consume
+   only the frozen successful baselines, skip login/register lifecycle APIs,
+   then run local mutation and Attacker/Auditor analysis. Attack responses never
+   affect the valid-workflow success rate.
+
+Authenticated state is validated independently from request payloads. If a
+decoded token points to an identity that no longer exists, the runtime marks an
+`auth-state mismatch`, attempts re-login, recreates the actor when necessary,
+updates the token/principal context, and retries the original request before
+payload self-healing. A recovered intermediate 500 is not counted as a valid
+workflow failure or a generic server-crash finding.
+
 The runtime supports separate principals for differential BOLA/Broken Access
 Control testing. Copy `.env.example` to `.env` and configure only systems you
 are authorized to test.

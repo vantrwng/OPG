@@ -8,8 +8,10 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, Optional
 from urllib.parse import parse_qsl, urlsplit, urlunsplit
 
-from state_store import StateStore
+from state_store import AuthTransport, StateStore
 from llm_planner import LLMPlanner
+from response_outcome import evaluate_response, is_auth_state_mismatch
+from file_artifacts import FileArtifactProvider
 
 log = logging.getLogger("executor")
 REQUEST_TIMEOUT = 10
@@ -32,6 +34,8 @@ class PreparedRequest:
     json_body: Optional[Dict[str, Any]] = None
     form_body: Optional[Dict[str, Any]] = None
     files: Optional[Dict[str, Any]] = None
+    file_metadata: Dict[str, Dict[str, Any]] = field(default_factory=dict)
+    raw_body: Optional[bytes] = None
     payload_source: str = "NONE"
 
     @property
@@ -105,13 +109,16 @@ class FeedbackAnalyzer:
 
 
 class RequestExecutor:
-    def __init__(self, base_url: str, planner: LLMPlanner, knowledge_memory=None):
+    def __init__(self, base_url: str, planner: LLMPlanner, knowledge_memory=None,
+                 artifact_provider=None):
         self.base_url        = base_url.rstrip("/")
         self.planner         = planner
         self.analyzer        = FeedbackAnalyzer()
         self.memory          = knowledge_memory # Có thể dùng để ghi log requests
+        self.artifact_provider = artifact_provider or FileArtifactProvider()
         self._session        = requests.Session()
         self._session.headers.update({"Accept": "application/json, */*"})
+        self.auth_recovery_handler = None
         
         # State tracking cho Repair để tránh gọi LLM vô tận
         self._repair_budget = {}  # key: f"{api_id}:{status}", value: int
@@ -121,7 +128,9 @@ class RequestExecutor:
                         edge_deps: Optional[list] = None,
                         payload_override: Optional[Dict[str, Any]] = None,
                         payload_source_override: Optional[str] = None,
-                        allow_repair: bool = True) -> Dict[str, Any]:
+                        payload_patch: Optional[Dict[str, Any]] = None,
+                        allow_repair: bool = True,
+                        allow_auth_recovery: bool = True) -> Dict[str, Any]:
         api_id  = api_node.get("id", "unknown_api")
         method  = api_node.get("method", "GET").upper()
 
@@ -132,13 +141,78 @@ class RequestExecutor:
         else:
             sent_payload = dict(payload_override)
             payload_source = payload_source_override or "EXPLICIT_OVERRIDE"
+        if payload_patch:
+            # Bootstrap and other orchestration layers may constrain individual
+            # OpenAPI fields without replacing the planner-generated payload.
+            sent_payload.update(payload_patch)
+            payload_source = f"{payload_source}+CONSTRAINT"
         
         # 1. Thực thi lần đầu
         exec_result = self._do_execute(api_node, current_state, sent_payload, payload_source)
+
+        # Auth-state recovery is separate from payload self-healing. A token
+        # whose subject no longer exists cannot be repaired by randomizing the
+        # endpoint payload.
+        if allow_auth_recovery and is_auth_state_mismatch(exec_result, current_state):
+            current_state.mark_auth_identity(False, "token subject missing from target database")
+            exec_result["auth_state_mismatch"] = True
+            exec_result["outcome_reason"] = "Auth-state mismatch: token subject does not exist"
+            exec_result["server_error"] = False
+            exec_result["response_diff"] = False
+            exec_result["anomaly_details"] = [exec_result["outcome_reason"]]
+            recovery_event = {
+                "status": exec_result.get("status"),
+                "reason": exec_result["outcome_reason"],
+                "response": exec_result.get("response_text", "")[:1000],
+            }
+
+            recovered = False
+            recovery_reason = "No auth recovery handler is configured"
+            if callable(self.auth_recovery_handler):
+                try:
+                    handler_result = self.auth_recovery_handler(
+                        current_state, api_node, exec_result
+                    )
+                    if isinstance(handler_result, tuple):
+                        recovered = bool(handler_result[0])
+                        recovery_reason = (
+                            str(handler_result[1]) if len(handler_result) > 1 else ""
+                        )
+                    else:
+                        recovered = bool(handler_result)
+                        recovery_reason = (
+                            "Auth context recovered"
+                            if recovered else "Auth recovery handler returned false"
+                        )
+                except Exception as exc:
+                    recovery_reason = str(exc)
+                    log.error(f"[Auth Recovery] Handler failed for {api_id}: {exc}")
+
+            if recovered:
+                retry_result = self._do_execute(
+                    api_node, current_state, sent_payload, payload_source
+                )
+                retry_result["auth_recovery"] = {
+                    "attempted": True,
+                    "recovered": retry_result.get("successful", False),
+                    "events": [recovery_event],
+                    "reason": recovery_reason,
+                    "auth_context": current_state.get_auth_context(),
+                }
+                return retry_result
+
+            exec_result["auth_recovery"] = {
+                "attempted": True,
+                "recovered": False,
+                "events": [recovery_event],
+                "reason": recovery_reason,
+                "auth_context": current_state.get_auth_context(),
+            }
+            return exec_result
         
         # 2. Vòng lặp Self-Healing (Tự phục hồi lỗi)
         # Chỉ áp dụng nếu lỗi >= 400 và method cho phép thay đổi body payload
-        if (allow_repair and exec_result["status"] >= 400
+        if (allow_repair and not exec_result["successful"]
                 and exec_result["status"] not in (401, 403)
                 and method in ("POST", "PUT", "PATCH")
                 and exec_result["response_text"]):
@@ -202,7 +276,7 @@ class RequestExecutor:
                     if not any("[Original 500]" in d for d in exec_result_new["anomaly_details"]):
                         exec_result_new["anomaly_details"].insert(0, f"[Original 500] {exec_result['response_text'][:100]}")
                 
-                if exec_result_new["status"] < 400:
+                if exec_result_new["successful"]:
                     log.info(f"\033[92m[Repair SUCCESS]\033[0m {api_id} fixed from {exec_result['status']} to {exec_result_new['status']}")
                     exec_result_new["repair_history"] = repair_history
                     return exec_result_new
@@ -221,6 +295,13 @@ class RequestExecutor:
         api_id  = api_node.get("id", "unknown_api")
         method  = api_node.get("method", "GET").upper()
         path    = api_node.get("path", "/")
+
+        sent_payload = self._bind_principal_identity(
+            api_node,
+            current_state,
+            sent_payload,
+            payload_source,
+        )
 
         prepared = self.prepare_request(
             api_node=api_node,
@@ -250,6 +331,18 @@ class RequestExecutor:
         except (ValueError, requests.exceptions.JSONDecodeError):
             response_json = None
 
+        outcome = evaluate_response(
+            status,
+            response_json,
+            response.text,
+            expected_statuses=api_node.get("expected_success_statuses"),
+        )
+        if outcome.semantic_failure:
+            log.warning(
+                f"\033[93m[APPLICATION FAIL]\033[0m HTTP {status} {api_id}: "
+                f"{outcome.reason}"
+            )
+
         anomaly = self.analyzer.analyze(response, current_state, sent_payload)
 
         response_cookies = getattr(response, "cookies", None)
@@ -257,36 +350,53 @@ class RequestExecutor:
             cookie_dict = response_cookies.get_dict()
             if isinstance(cookie_dict, dict) and cookie_dict:
                 current_state.update("auth_cookies", cookie_dict)
+                for cookie_name, cookie_value in cookie_dict.items():
+                    current_state.set_auth_transport(AuthTransport(
+                        kind="cookie",
+                        name=str(cookie_name),
+                        value=cookie_value,
+                        source="SET_COOKIE",
+                        verified=True,
+                    ))
 
         state_transition = False
-        if response_json and status in (200, 201, 202):
+        if response_json and outcome.successful:
             state_transition = current_state.extract_from_response(
                 response_json,
                 schema=api_node.get("outputs", {}),
                 api_id=api_id
             )
+            token = current_state.get("auth_token")
+            if token:
+                current_state.set_auth_transport(AuthTransport(
+                    kind="header",
+                    name=current_state.get("auth_header_name", "Authorization"),
+                    value=token,
+                    prefix=current_state.get("auth_header_prefix", "") or "Token",
+                    source="RESPONSE_TOKEN",
+                    verified=False,
+                ))
 
-        # Preserve credentials from any successful signup response, including
-        # HTTP 204 where there is no JSON body to harvest.
-        if status in (200, 201, 202, 204):
-            import re as _re
-            _combined = path + " " + api_id.lower()
-            _is_create = bool(_re.search(r"signup|register|create|add", _combined))
-            if _is_create and sent_payload:
-                for _field in (
-                    "email", "username", "name", "password", "phone", "mobile", "number"
-                ):
-                    if _field in sent_payload and sent_payload[_field]:
-                        current_state.update(_field, sent_payload[_field])
-                        log.debug(f"[State] CREDENTIAL-SAVE from request: {_field} = {repr(sent_payload[_field])[:60]}")
+        # A successful write establishes request values as valid downstream
+        # context, including HTTP 204 with no response body.
+        if outcome.successful:
+            if method in ("POST", "PUT", "PATCH"):
+                request_transition = current_state.capture_successful_request(
+                    sent_payload,
+                    api_node.get("inputs", {}),
+                )
+                state_transition = state_transition or request_transition
 
-        edge_failure = (status == 400)
+        edge_failure = not outcome.successful
 
         if edge_failure:
             log.warning(f"\033[93m[EDGE FAIL]\033[0m 400 on {api_id} — penalizing ODG edge (bad schema/FK)")
 
         return {
             "status":          status,
+            "successful":      outcome.successful,
+            "semantic_failure": outcome.semantic_failure,
+            "outcome_reason":  outcome.reason,
             "server_error":    anomaly.get("server_error", False),
             "auth_anomaly":    False,  # Bỏ heuristic cứng, dời sang LLM Auditor
             "pii_leakage":     len(anomaly.get("extracted_emails", [])) > 0 or len(anomaly.get("extracted_phones", [])) > 0,
@@ -300,10 +410,33 @@ class RequestExecutor:
             "sent_headers":    headers,
             "sent_query":      prepared.query_params,
             "sent_cookies":    prepared.cookies,
+            "sent_files":      prepared.file_metadata,
             "actor_id":        current_state.get("actor_id", "default"),
+            "auth_context":     current_state.get_auth_context(),
             "payload_source":  payload_source,
             "url":             url,
         }
+
+    @staticmethod
+    def _bind_principal_identity(api_node: Dict, state: StateStore,
+                                 payload: Dict[str, Any], payload_source: str) -> Dict[str, Any]:
+        """Keep valid/repair requests aligned with the authenticated principal."""
+        if str(payload_source).upper().startswith("ATTACKER_") or not state.has("auth_token"):
+            return dict(payload)
+
+        bound_payload = dict(payload)
+        for field_name, meta in (api_node.get("inputs", {}) or {}).items():
+            meta = meta if isinstance(meta, dict) else {}
+            if str(meta.get("in", "body")).lower() != "path":
+                continue
+            original = meta.get("original", field_name)
+            principal = state.get_actor_identity(original)
+            if principal is None:
+                principal = state.get_actor_identity(field_name)
+            if principal is not None:
+                target = original if original in bound_payload or field_name not in bound_payload else field_name
+                bound_payload[target] = principal
+        return bound_payload
 
     def prepare_request(self, api_node: Dict, current_state: StateStore,
                         payload: Dict[str, Any], payload_source: str = "NONE") -> PreparedRequest:
@@ -312,10 +445,11 @@ class RequestExecutor:
         method = api_node.get("method", "GET").upper()
         path = api_node.get("path", "/")
         content_type = api_node.get("content_type", "application/json")
-        headers = self._build_headers(current_state)
+        headers: Dict[str, str] = {}
         query_params: Dict[str, Any] = {}
         stored_cookies = current_state.get("auth_cookies", {})
         cookies: Dict[str, Any] = dict(stored_cookies) if isinstance(stored_cookies, dict) else {}
+        self._apply_auth_transports(api_node, current_state, headers, query_params, cookies)
         body: Dict[str, Any] = {}
 
         inputs = api_node.get("inputs", {}) or {}
@@ -368,7 +502,27 @@ class RequestExecutor:
             if content_type == "application/x-www-form-urlencoded":
                 prepared.form_body = body
             elif content_type == "multipart/form-data":
-                prepared.files = {k: (None, str(v)) for k, v in body.items()}
+                prepared.form_body = {}
+                prepared.files = {}
+                for field_name, value in body.items():
+                    meta = _meta_for(field_name)
+                    if meta.get("is_file"):
+                        artifact = self.artifact_provider.resolve(field_name, meta, value)
+                        prepared.files[field_name] = (
+                            artifact.filename, artifact.content, artifact.content_type
+                        )
+                        prepared.file_metadata[field_name] = artifact.metadata()
+                    else:
+                        prepared.form_body[field_name] = value
+            elif any(_meta_for(k).get("is_file") for k in body):
+                field_name, value = next(
+                    (k, v) for k, v in body.items() if _meta_for(k).get("is_file")
+                )
+                meta = _meta_for(field_name)
+                artifact = self.artifact_provider.resolve(field_name, meta, value)
+                prepared.raw_body = artifact.content
+                prepared.file_metadata[field_name] = artifact.metadata()
+                prepared.headers["Content-Type"] = content_type
             else:
                 prepared.json_body = body
         return prepared
@@ -382,13 +536,14 @@ class RequestExecutor:
             param      = m.group(1)
             param_norm = _norm(param)
             
-            # 1. Exact norm match trong StateStore
-            for k, v in state.memory.items():
+            # 1. Exact norm match trong payload đã được canonicalize. Đây là
+            # nguồn cuối cùng sau principal binding / dependency resolution.
+            for k, v in payload.items():
                 if _norm(k) == param_norm:
                     return str(v)
-            
-            # 2. Exact norm match trong payload
-            for k, v in payload.items():
+
+            # 2. Fallback sang StateStore khi payload không chứa path param.
+            for k, v in state.memory.items():
                 if _norm(k) == param_norm:
                     return str(v)
             
@@ -451,6 +606,40 @@ class RequestExecutor:
             headers[header_name] = f"{header_prefix.rstrip()} {token}"
         return headers
 
+    def _apply_auth_transports(self, api_node: Dict, state: StateStore,
+                               headers: Dict, query: Dict, cookies: Dict) -> None:
+        """Apply actor-scoped auth without assumptions about JWT/Bearer."""
+        applied = set()
+        for transport in state.get_auth_transports():
+            key = (transport.kind, transport.name)
+            applied.add(key)
+            value = transport.value
+            if transport.kind == "cookie":
+                cookies[transport.name] = value
+            elif transport.kind == "query":
+                query[transport.name] = value
+            elif transport.kind == "header":
+                headers[transport.name] = (
+                    f"{transport.prefix.rstrip()} {value}".strip()
+                    if transport.prefix else str(value)
+                )
+
+        # An OpenAPI apiKey scheme may name a state value directly (including
+        # legacy query credentials such as openId). Only declared schemes are
+        # eligible; arbitrary response fields are never appended to URLs.
+        for declared in api_node.get("declared_auth_transports", []) or []:
+            kind = str(declared.get("kind", "")).lower()
+            name = str(declared.get("name", ""))
+            if not name or (kind, name) in applied:
+                continue
+            value = state.get(name)
+            if value is None:
+                continue
+            prefix = str(declared.get("prefix", ""))
+            if kind == "cookie": cookies[name] = value
+            elif kind == "query": query[name] = value
+            elif kind == "header": headers[name] = f"{prefix} {value}".strip()
+
     def _fire_request(self, method: str, url: str, headers: Dict,
                       payload: Dict, content_type: str = "application/json") -> Optional[requests.Response]:
         """Backward-compatible wrapper for callers/tests using the old API."""
@@ -486,13 +675,23 @@ class RequestExecutor:
             if prepared.cookies:
                 req_kwargs["cookies"] = prepared.cookies
             if prepared.files is not None:
+                # requests must generate the multipart boundary itself.
+                req_kwargs["headers"].pop("Content-Type", None)
                 req_kwargs["files"] = prepared.files
+                if prepared.form_body:
+                    req_kwargs["data"] = prepared.form_body
+            elif prepared.raw_body is not None:
+                req_kwargs["data"] = prepared.raw_body
             elif prepared.form_body is not None:
                 req_kwargs["data"] = prepared.form_body
             elif prepared.json_body is not None:
                 req_kwargs["json"] = prepared.json_body
 
+            # StateStore is the only cookie source. A shared Session cookie jar
+            # would leak owner_a's session into user_b requests.
+            self._session.cookies.clear()
             resp = self._session.request(**req_kwargs)
+            self._session.cookies.clear()
             return resp
         except requests.exceptions.Timeout:
             log.error(f"[HTTP] Timeout after {REQUEST_TIMEOUT}s — {prepared.url}")
@@ -506,6 +705,9 @@ class RequestExecutor:
     def _failure_result(api_id: str, edge_failure: bool) -> Dict:
         return {
             "status":           0,
+            "successful":       False,
+            "semantic_failure": False,
+            "outcome_reason":   "Network request failed",
             "server_error":     False,
             "auth_anomaly":     False,
             "pii_leakage":      False,

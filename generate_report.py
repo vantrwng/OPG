@@ -9,6 +9,8 @@ import json
 import os
 import html
 from datetime import datetime
+from urllib.parse import urlsplit
+from response_outcome import evaluate_response
 
 
 # ── Hàm hỗ trợ ───────────────────────────────────────────────────────────────
@@ -55,6 +57,192 @@ def _source_badge(payload_source: str) -> str:
             "border-radius:4px;font-size:0.78rem;margin-left:8px'>🤖 LLM</span>"
         )
     return ""
+
+
+_ATTACK_LABELS = {
+    "id_substitution": "Thay thế định danh (BOLA/IDOR)",
+    "param_pollution": "Chèn / làm nhiễu tham số",
+    "reference_forge": "Giả mạo tham chiếu tài nguyên",
+}
+
+_SENSITIVE_KEYS = (
+    "authorization", "token", "secret", "password", "passwd", "cookie",
+    "api_key", "apikey", "session", "credential",
+)
+
+
+def _redact_sensitive(value, key: str = ""):
+    """Che thông tin xác thực nhưng giữ hình dạng request để có thể phân tích."""
+    key_lower = str(key).lower()
+    if any(marker in key_lower for marker in _SENSITIVE_KEYS):
+        text = str(value)
+        if len(text) <= 8:
+            return "***"
+        return f"{text[:4]}...{text[-4:]}"
+    if isinstance(value, dict):
+        return {k: _redact_sensitive(v, str(k)) for k, v in value.items()}
+    if isinstance(value, list):
+        return [_redact_sensitive(v, key) for v in value]
+    return value
+
+
+def _flatten_values(value, prefix: str) -> dict:
+    """Trải phẳng JSON để so sánh request hợp lệ và request tấn công."""
+    if not isinstance(value, dict):
+        return {prefix: value}
+    flattened = {}
+    for key, child in value.items():
+        child_path = f"{prefix}.{key}" if prefix else str(key)
+        if isinstance(child, dict):
+            flattened.update(_flatten_values(child, child_path))
+        else:
+            flattened[child_path] = child
+    return flattened
+
+
+def _group_apis_by_outcome(endpoint_stats: dict) -> tuple[list, list]:
+    """Ưu tiên 2xx: từng lỗi 5xx vẫn là thành công nếu có ít nhất một 2xx."""
+    success_apis = []
+    failed_apis = []
+    for api, stats in endpoint_stats.items():
+        status_counts = stats.get("status_counts", {})
+        requests = stats.get("all_requests", [])
+        baseline_requests = [
+            request for request in requests
+            if not _is_security_probe(request)
+        ]
+        measured_requests = baseline_requests or requests
+        if measured_requests:
+            request_outcomes = []
+            for request in measured_requests:
+                if "successful" in request:
+                    request_outcomes.append(request.get("successful") is True)
+                else:
+                    request_outcomes.append(evaluate_response(
+                        request.get("status", 0),
+                        response_text=request.get("response_text", ""),
+                    ).successful)
+            has_success = any(request_outcomes)
+        else:
+            has_success = any(str(status).startswith("2") for status in status_counts)
+        target = (
+            success_apis
+            if has_success
+            else failed_apis
+        )
+        target.append(api)
+    return success_apis, failed_apis
+
+
+def _is_security_probe(request: dict) -> bool:
+    source = str(request.get("payload_source", "")).upper()
+    return source.startswith("ATTACKER_") or source == "LOCAL_MUTATOR"
+
+
+def _request_succeeded(request: dict) -> bool:
+    if "successful" in request:
+        return request.get("successful") is True
+    return evaluate_response(
+        request.get("status", 0),
+        response_text=request.get("response_text", ""),
+    ).successful
+
+
+def _build_attack_explanation(method: str, metadata: dict, sent_query: dict,
+                              sent_cookies: dict, sent_body: dict) -> str:
+    if not metadata:
+        return ""
+
+    strategy = str(metadata.get("strategy", "unknown"))
+    technique = str(metadata.get("technique", strategy)).replace("_", " ")
+    strategy_label = _ATTACK_LABELS.get(strategy, strategy.replace("_", " ").title())
+    description = metadata.get("description") or "Biến đổi request hợp lệ để kiểm tra kiểm soát truy cập."
+    owner = metadata.get("owner_actor_id", "không xác định")
+    attacker = metadata.get("attacker_actor_id", "không xác định")
+    baseline = metadata.get("baseline", {}) if isinstance(metadata.get("baseline"), dict) else {}
+    attack = metadata.get("attack", {}) if isinstance(metadata.get("attack"), dict) else {}
+    baseline_path = baseline.get("path", "")
+    attack_path = attack.get("path", "")
+
+    before = {}
+    before.update(_flatten_values(baseline.get("body", {}), "body"))
+    before.update(_flatten_values(baseline.get("query", {}), "query"))
+    after = {}
+    after.update(_flatten_values(attack.get("body", sent_body), "body"))
+    after.update(_flatten_values(attack.get("query", sent_query), "query"))
+
+    changes = []
+    if baseline_path and baseline_path != attack_path:
+        changes.append(("path", baseline_path, attack_path))
+    for field in sorted(set(before) | set(after)):
+        old_value = before.get(field, "<không có>")
+        new_value = after.get(field, "<đã xóa>")
+        if old_value != new_value:
+            changes.append((field, old_value, new_value))
+
+    if changes:
+        change_rows = "".join(
+            "<tr>"
+            f"<td style='padding:6px;color:#fbbf24;font-family:monospace'>{_esc(field)}</td>"
+            f"<td style='padding:6px;color:#94a3b8;font-family:monospace;word-break:break-all'>{_esc(json.dumps(_redact_sensitive(old, field), ensure_ascii=False))}</td>"
+            f"<td style='padding:6px;color:#fca5a5;font-family:monospace;word-break:break-all'>{_esc(json.dumps(_redact_sensitive(new, field), ensure_ascii=False))}</td>"
+            "</tr>"
+            for field, old, new in changes
+        )
+    else:
+        change_rows = (
+            "<tr><td colspan='3' style='padding:6px;color:#94a3b8'>"
+            "Không phát hiện khác biệt cấu trúc; kỹ thuật có thể nằm ở danh tính/phiên xác thực.</td></tr>"
+        )
+
+    safe_query = _esc(json.dumps(_redact_sensitive(sent_query), indent=2, ensure_ascii=False))
+    safe_cookies = _esc(json.dumps(_redact_sensitive(sent_cookies), indent=2, ensure_ascii=False))
+    safe_body = _esc(json.dumps(_redact_sensitive(sent_body), indent=2, ensure_ascii=False))
+
+    transport_blocks = []
+    if sent_query:
+        transport_blocks.append(
+            f"<div><div style='color:#94a3b8;font-size:0.78rem;margin-bottom:3px'>Query thực gửi</div><pre class='code-block'>{safe_query}</pre></div>"
+        )
+    if sent_body:
+        transport_blocks.append(
+            f"<div><div style='color:#94a3b8;font-size:0.78rem;margin-bottom:3px'>JSON / body thực gửi</div><pre class='code-block'>{safe_body}</pre></div>"
+        )
+    if sent_cookies:
+        transport_blocks.append(
+            f"<div><div style='color:#94a3b8;font-size:0.78rem;margin-bottom:3px'>Cookie thực gửi (đã che)</div><pre class='code-block'>{safe_cookies}</pre></div>"
+        )
+    if not transport_blocks:
+        transport_blocks.append(
+            "<div style='color:#94a3b8'>Request không có body/query; biến đổi nằm ở URL hoặc danh tính gửi request.</div>"
+        )
+
+    return f"""
+<section style="background:rgba(127,29,29,0.18);border:1px solid rgba(248,113,113,0.45);
+         border-radius:8px;padding:1rem;margin-bottom:0.9rem">
+  <div style="color:#fca5a5;font-weight:800;font-size:1rem;margin-bottom:0.65rem">🎯 Cách tấn công</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:0.5rem;margin-bottom:0.75rem">
+    <div><span style="color:#94a3b8">Chiến lược:</span> <strong>{_esc(strategy_label)}</strong></div>
+    <div><span style="color:#94a3b8">Kỹ thuật:</span> <code>{_esc(technique)}</code></div>
+    <div><span style="color:#94a3b8">Luồng actor:</span> <code>{_esc(owner)} → {_esc(attacker)}</code></div>
+  </div>
+  <div style="margin-bottom:0.75rem;color:#e2e8f0"><strong>Mục đích:</strong> {_esc(description)}</div>
+  <div style="margin-bottom:0.75rem">
+    <div style="color:#94a3b8;font-size:0.78rem;margin-bottom:3px">Request tấn công thực tế</div>
+    <code style="color:#fbbf24;word-break:break-all">{_esc(method.upper())} {_esc(attack_path)}</code>
+  </div>
+  <div style="color:#e2e8f0;font-weight:700;margin-bottom:0.35rem">Thay đổi so với request hợp lệ</div>
+  <div style="overflow-x:auto;margin-bottom:0.75rem">
+    <table style="width:100%;border-collapse:collapse;font-size:0.8rem">
+      <thead><tr style="text-align:left;color:#94a3b8;border-bottom:1px solid rgba(255,255,255,0.12)">
+        <th style="padding:6px">Vị trí</th><th style="padding:6px">Trước</th><th style="padding:6px">Sau</th>
+      </tr></thead><tbody>{change_rows}</tbody>
+    </table>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:0.75rem">
+    {''.join(transport_blocks)}
+  </div>
+</section>"""
 
 
 def _severity_vi(severity: str) -> str:
@@ -109,6 +297,123 @@ def _strategy_vi(strategy: str) -> str:
     if "reference_forge"  in s: return "Giả mạo tham chiếu"
     if "mass_assignment"  in s: return "Mass Assignment"
     return strategy
+
+
+def _aggregate_findings(findings: list) -> list:
+    """Group report rows by API + method + type, retaining every raw variant."""
+    grouped = {}
+    for raw in findings or []:
+        finding = dict(raw)
+        method = str(finding.get("method") or "GET").strip().upper()
+        finding_type = str(
+            finding.get("finding_type") or finding.get("type") or "unknown"
+        ).strip()
+
+        # `api` is the stable OpenAPI operation identifier in this output. It
+        # prevents concrete attack URLs (/users/1, /users/2) being counted as
+        # different APIs. Fall back to the route/path for older report files.
+        endpoint = str(
+            finding.get("endpoint") or finding.get("api")
+            or finding.get("api_id") or finding.get("path") or "/"
+        ).strip()
+        if endpoint.startswith(("http://", "https://")):
+            endpoint = urlsplit(endpoint).path
+        endpoint = endpoint.split("?", 1)[0] or "/"
+
+        key = (endpoint, method, finding_type.casefold())
+        aggregate = grouped.get(key)
+        if aggregate is None:
+            aggregate = dict(finding)
+            aggregate["endpoint"] = endpoint
+            aggregate["method"] = method
+            aggregate["finding_type"] = finding_type
+            aggregate["variants"] = []
+            grouped[key] = aggregate
+
+        aggregate["variants"].append(finding)
+        aggregate["variant_count"] = len(aggregate["variants"])
+
+    return list(grouped.values())
+
+
+def _build_auth_bootstrap_section(events: list) -> str:
+    """Render authentication setup evidence without treating it as a finding."""
+    if not events:
+        return (
+            "<div style='background:rgba(148,163,184,.08);border:1px solid #475569;"
+            "border-radius:10px;padding:1.25rem;color:#94a3b8'>"
+            "Không có bootstrap tự động hoặc bootstrap đã được tắt.</div>"
+        )
+
+    cards = []
+    for event in events:
+        successful = event.get("successful") is True
+        color = "#10b981" if successful else "#ef4444"
+        label = "THÀNH CÔNG" if successful else "THẤT BẠI"
+        status = event.get("status", 0)
+        performed_by = event.get("performed_by") or event.get("actor_id", "")
+        requested_role = event.get("requested_role")
+        effective_role = event.get("effective_role")
+        role_mismatch = (
+            requested_role not in (None, "")
+            and effective_role not in (None, "")
+            and str(requested_role).casefold() != str(effective_role).casefold()
+        )
+        role_note = ""
+        if role_mismatch:
+            role_note = (
+                "<div style='margin-top:.6rem;background:rgba(245,158,11,.1);"
+                "border-left:3px solid #f59e0b;padding:.55rem .7rem;color:#fbbf24'>"
+                "Role server trả về khác role đã yêu cầu; report dùng role hiệu lực từ server."
+                "</div>"
+            )
+        transports = event.get("auth_transports", []) or []
+        transport_text = ", ".join(
+            f"{item.get('kind')}:{item.get('name')}"
+            for item in transports if isinstance(item, dict)
+        ) or "không ghi nhận"
+        request_json = _esc(json.dumps(
+            _redact_sensitive(event.get("request_payload", {})),
+            indent=2,
+            ensure_ascii=False,
+        ))
+        response_json = _esc(json.dumps(
+            _redact_sensitive(event.get("response_body")),
+            indent=2,
+            ensure_ascii=False,
+        ))
+        cards.append(f"""
+<div style="background:rgba(30,41,59,.8);border:1px solid rgba(255,255,255,.08);
+     border-left:4px solid {color};border-radius:10px;padding:1.1rem;margin-bottom:1rem">
+  <div style="display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap">
+    <div>
+      <strong style="color:{color}">{_esc(str(event.get('stage', 'auth')).upper())} · {label}</strong>
+      <div style="font-family:'Fira Code',monospace;color:#cbd5e1;margin-top:.35rem">
+        {_esc(event.get('method', 'POST'))} {_esc(event.get('path', ''))}
+      </div>
+    </div>
+    <div style="text-align:right;color:#94a3b8;font-size:.84rem">
+      actor: <strong style="color:#e2e8f0">{_esc(event.get('actor_id', ''))}</strong><br>
+      thực thi bởi: <strong style="color:#e2e8f0">{_esc(performed_by)}</strong><br>
+      HTTP {_esc(status)}
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.6rem;
+       margin-top:.8rem;color:#94a3b8;font-size:.84rem">
+    <div>Role yêu cầu: <strong style="color:#cbd5e1">{_esc(requested_role or 'không khai báo')}</strong></div>
+    <div>Role hiệu lực: <strong style="color:#cbd5e1">{_esc(effective_role or 'không xác định')}</strong></div>
+    <div>Auth transport: <strong style="color:#cbd5e1">{_esc(transport_text)}</strong></div>
+  </div>
+  {role_note}
+  <details style="margin-top:.75rem">
+    <summary style="cursor:pointer;color:#60a5fa;font-size:.84rem">Request/response bootstrap đã che bí mật</summary>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:.75rem;margin-top:.6rem">
+      <div><div style="color:#94a3b8;font-size:.78rem">REQUEST</div><pre class="code-block">{request_json}</pre></div>
+      <div><div style="color:#94a3b8;font-size:.78rem">RESPONSE</div><pre class="code-block">{response_json}</pre></div>
+    </div>
+  </details>
+</div>""")
+    return "".join(cards)
 
 
 # ── Bảng tóm tắt lỗ hổng ──────────────────────────────────────────────────────
@@ -233,6 +538,8 @@ def _build_findings_section(findings: list) -> str:
         reasoning  = f.get("reasoning", "")
         evidence   = f.get("evidence", f.get("details", []))
         chain      = f.get("chain", [])
+        variants   = f.get("variants", [f])
+        variant_count = len(variants)
 
         sev_col  = _severity_color(severity)
         icon     = _finding_icon(f.get("type", ""))
@@ -272,6 +579,27 @@ def _build_findings_section(findings: list) -> str:
                 f"Chiến lược: {_esc(strategy)}</span>"
             )
 
+        variant_badge = (
+            f"<span style='background:rgba(59,130,246,0.16);color:#93c5fd;"
+            f"padding:2px 8px;border-radius:4px;font-size:0.78rem;margin-left:8px'>"
+            f"{variant_count} biến thể</span>"
+        )
+        variant_items = "".join(
+            f"<li style='margin-bottom:5px;color:#cbd5e1'>"
+            f"<strong>{_esc(v.get('strategy', 'variant'))}</strong> — "
+            f"HTTP {_esc(v.get('status', 'N/A'))}: "
+            f"{_esc(v.get('description') or '; '.join(map(str, v.get('evidence', v.get('details', []))[:2])) or 'Không có mô tả')}"
+            f"</li>"
+            for v in variants
+        )
+        variants_html = (
+            f"<details style='margin-top:0.75rem'>"
+            f"<summary style='cursor:pointer;color:#93c5fd;font-size:0.85rem'>"
+            f"Các biến thể/evidence ({variant_count})</summary>"
+            f"<ol style='margin-top:0.5rem;padding-left:1.3rem;font-size:0.82rem'>{variant_items}</ol>"
+            f"</details>"
+        )
+
         conf_bar = (
             f"<div style='margin-top:0.5rem;background:rgba(255,255,255,0.1);"
             f"border-radius:4px;height:4px;width:100%'>"
@@ -290,6 +618,7 @@ def _build_findings_section(findings: list) -> str:
       <span style="background:rgba(255,255,255,0.1);color:{sev_col};padding:2px 8px;
             border-radius:4px;font-size:0.75rem;margin-left:8px;font-weight:700">Mức độ: {_esc(sev_vi)}</span>
       {strat_badge}
+      {variant_badge}
     </div>
     <span style="color:{_status_color(int(status) if str(status).isdigit() else 0)};
           font-family:monospace;font-size:0.9rem;font-weight:700">HTTP {status}</span>
@@ -312,6 +641,7 @@ def _build_findings_section(findings: list) -> str:
     </summary>
     <ul style="margin-top:0.5rem;padding-left:1.2rem;font-size:0.82rem">{ev_items}</ul>
   </details>
+  {variants_html}
   {chain_html}
 </div>"""
 
@@ -367,6 +697,13 @@ def _build_api_detail(api: str, stats: dict) -> str:
     all_requests  = stats.get("all_requests", [])
     visits        = stats.get("visits", 0)
     status_counts = stats.get("status_counts", {})
+    baseline_requests = [req for req in all_requests if not _is_security_probe(req)]
+    security_probes = [req for req in all_requests if _is_security_probe(req)]
+    baseline_successes = sum(1 for req in baseline_requests if _request_succeeded(req))
+    baseline_rate = (
+        round(100 * baseline_successes / len(baseline_requests), 1)
+        if baseline_requests else 0
+    )
 
     status_pills = " ".join(
         f"<span style='background:{_status_color(int(k) if k.isdigit() else 0)}22;"
@@ -390,12 +727,74 @@ def _build_api_detail(api: str, stats: dict) -> str:
             payload    = req.get("request_payload", {})
             resp_text  = req.get("response_text", "")
             headers    = req.get("sent_headers", {})
+            query      = req.get("sent_query", {})
+            cookies    = req.get("sent_cookies", {})
+            sent_files = req.get("sent_files", {})
+            attack_meta= req.get("attack_metadata", {})
+            successful = req.get("successful")
+            semantic_failure = req.get("semantic_failure", False)
+            outcome_reason = req.get("outcome_reason", "")
+            auth_recovery = req.get("auth_recovery", {})
             chain      = req.get("chain", [])
             repair_rsn = req.get("repair_reason", "")
             repair_hist= req.get("repair_history", [])
 
-            scolor = _status_color(status_int)
+            if successful is None:
+                legacy_outcome = evaluate_response(
+                    status_int,
+                    response_text=resp_text,
+                )
+                successful = legacy_outcome.successful
+                semantic_failure = legacy_outcome.semantic_failure
+                outcome_reason = legacy_outcome.reason
+
+            scolor = "#f59e0b" if semantic_failure else _status_color(status_int)
             badge  = _source_badge(src)
+
+            outcome_badge = ""
+            if semantic_failure or successful is False and 200 <= status_int < 300:
+                outcome_badge = (
+                    "<span style='background:rgba(245,158,11,0.18);color:#fbbf24;"
+                    "border:1px solid #f59e0b;padding:2px 8px;border-radius:4px;"
+                    "font-size:0.78rem;margin-left:8px;font-weight:700' "
+                    f"title='{_esc(outcome_reason)}'>NGHIỆP VỤ THẤT BẠI</span>"
+                )
+
+            auth_recovery_html = ""
+            if auth_recovery.get("attempted"):
+                recovered = bool(auth_recovery.get("recovered"))
+                recovery_color = "#10b981" if recovered else "#ef4444"
+                recovery_label = "Đã khôi phục auth context" if recovered else "Khôi phục auth context thất bại"
+                events = auth_recovery.get("events", [])
+                reasons = "; ".join(
+                    str(event.get("reason", "")) for event in events if event.get("reason")
+                )
+                recovery_reason = str(auth_recovery.get("reason", ""))
+                details = "; ".join(part for part in (reasons, recovery_reason) if part)
+                auth_recovery_html = (
+                    f"<div style='background:{recovery_color}18;border-left:4px solid {recovery_color};"
+                    f"padding:0.75rem;margin-bottom:0.75rem;border-radius:0 6px 6px 0'>"
+                    f"<strong style='color:{recovery_color}'>🔄 {_esc(recovery_label)}</strong>"
+                    f"<div style='color:#94a3b8;font-size:0.8rem;margin-top:4px'>"
+                    f"{_esc(details or 'Token/session đã được làm mới trước khi retry request.')}</div></div>"
+                )
+                outcome_badge += (
+                    "<span style='background:rgba(139,92,246,0.18);color:#c4b5fd;"
+                    "border:1px solid #8b5cf6;padding:2px 8px;border-radius:4px;"
+                    "font-size:0.78rem;margin-left:8px;font-weight:700'>AUTH-STATE RECOVERY</span>"
+                )
+
+            # Báo cáo cũ chưa có attack_metadata vẫn hiển thị được request
+            # thực gửi. Báo cáo mới có thêm baseline để dựng bảng before/after.
+            if src.startswith("ATTACKER_") and not attack_meta:
+                legacy_strategy = src[len("ATTACKER_"):].lower()
+                attack_meta = {
+                    "strategy": legacy_strategy,
+                    "technique": legacy_strategy,
+                    "description": "Request biến đổi dùng để kiểm tra BOLA / broken access control.",
+                    "attacker_actor_id": req.get("actor_id") or "không xác định",
+                    "attack": {"path": path, "body": payload, "query": query},
+                }
 
             # Ẩn token
             headers_display = {}
@@ -409,9 +808,24 @@ def _build_api_detail(api: str, stats: dict) -> str:
                     )
                 else:
                     headers_display[k] = v
-            safe_headers = _esc(json.dumps(headers_display, indent=2, ensure_ascii=False))
+            safe_headers = _esc(json.dumps(
+                _redact_sensitive(headers_display), indent=2, ensure_ascii=False
+            ))
 
-            safe_payload = _esc(json.dumps(payload, indent=2, ensure_ascii=False))
+            safe_payload = _esc(json.dumps(
+                _redact_sensitive(payload), indent=2, ensure_ascii=False
+            ))
+            safe_files = _esc(json.dumps(
+                _redact_sensitive(sent_files), indent=2, ensure_ascii=False
+            ))
+            upload_html = ""
+            if sent_files:
+                upload_html = f"""<details open>
+    <summary style="cursor:pointer;color:#60a5fa;font-size:0.83rem;margin-bottom:0.5rem;user-select:none">
+      📎 File upload ({len(sent_files)})
+    </summary>
+    <pre class="code-block">{safe_files}</pre>
+  </details>"""
             try:
                 safe_resp = _esc(json.dumps(json.loads(resp_text), indent=2, ensure_ascii=False))
             except Exception:
@@ -464,12 +878,19 @@ def _build_api_detail(api: str, stats: dict) -> str:
             # Nhãn request tấn công
             attack_badge = ""
             if src.startswith("ATTACKER_"):
-                if status_int < 400:
-                    attack_badge = (
-                        "<span style='background:rgba(239,68,68,0.2);color:#fca5a5;"
-                        "border:1px solid #ef4444;padding:2px 8px;border-radius:4px;"
-                        "font-size:0.78rem;margin-left:8px;font-weight:700'>⚠️ REQUEST TẤN CÔNG</span>"
-                    )
+                attack_badge = (
+                    "<span style='background:rgba(239,68,68,0.2);color:#fca5a5;"
+                    "border:1px solid #ef4444;padding:2px 8px;border-radius:4px;"
+                    "font-size:0.78rem;margin-left:8px;font-weight:700'>⚠️ REQUEST TẤN CÔNG</span>"
+                )
+
+            attack_explanation = _build_attack_explanation(
+                method=method,
+                metadata=attack_meta,
+                sent_query=query,
+                sent_cookies=cookies,
+                sent_body=payload,
+            )
 
             requests_html += f"""
 <div style="background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.06);
@@ -480,9 +901,11 @@ def _build_api_detail(api: str, stats: dict) -> str:
       Lần #{i+1} &nbsp; {_esc(method)} {_esc(path)}
       <span style="background:{scolor}22;color:{scolor};padding:2px 8px;border-radius:4px;
             margin-left:8px">HTTP {status_str}</span>
-      {badge}{attack_badge}
+      {badge}{attack_badge}{outcome_badge}
     </h4>
   </div>
+  {attack_explanation}
+  {auth_recovery_html}
   {chain_display}
   {repair_html}
   <details>
@@ -497,6 +920,7 @@ def _build_api_detail(api: str, stats: dict) -> str:
     </summary>
     <pre class="code-block">{safe_payload}</pre>
   </details>
+  {upload_html}
   <details open>
     <summary style="cursor:pointer;color:#60a5fa;font-size:0.83rem;margin-bottom:0.5rem;user-select:none">
       📤 Phản hồi từ server
@@ -517,6 +941,16 @@ def _build_api_detail(api: str, stats: dict) -> str:
   <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.5rem;flex-wrap:wrap">
     <span style="color:#94a3b8;font-size:0.9rem">Đã gọi {visits} lần</span>
     {status_pills}
+  </div>
+  <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-bottom:1.25rem">
+    <span style="background:rgba(16,185,129,.1);border:1px solid #10b981;color:#6ee7b7;
+          padding:5px 10px;border-radius:6px;font-size:0.82rem">
+      Valid workflow: {baseline_successes}/{len(baseline_requests)} ({baseline_rate}%)
+    </span>
+    <span style="background:rgba(139,92,246,.1);border:1px solid #8b5cf6;color:#c4b5fd;
+          padding:5px 10px;border-radius:6px;font-size:0.82rem">
+      Security probes (không tính vào tỷ lệ): {len(security_probes)}
+    </span>
   </div>
   <h3 style="font-size:1.1rem;margin-bottom:1rem;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:0.5rem">
     Lịch sử Request / Phản hồi
@@ -540,19 +974,55 @@ def generate_html_report(json_file="beam_strategies.json", output_dir="fuzzing_r
 
     summary          = data.get("summary", {})
     total_requests   = summary.get("total_requests", 0)
-    server_errors    = summary.get("server_errors_500", 0)
-    auth_anomalies   = summary.get("auth_anomalies", 0)
     total_strategies = summary.get("total_strategies_found", 0)
     top_strategies   = data.get("top_strategies", [])
-    findings         = data.get("findings", [])
+    raw_findings     = data.get("findings", [])
+    findings         = _aggregate_findings(raw_findings)
     endpoint_stats   = data.get("endpoint_stats", {})
+    pipeline_summary = data.get("pipeline_summary", {})
+    auth_bootstrap   = data.get("auth_bootstrap", [])
 
     bola_count     = sum(
         1 for f in findings
         if "BOLA" in str(f.get("type","")).upper() or "IDOR" in str(f.get("type","")).upper()
     )
+    server_errors = sum(
+        1 for f in findings
+        if "CRASH" in str(f.get("type", "")).upper()
+        or "500" in str(f.get("type", "")).upper()
+    )
+    auth_anomalies = sum(
+        1 for f in findings
+        if str(f.get("type", "")).strip().casefold() == "auth anomaly".casefold()
+    )
     total_findings = len(findings)
     generated_at   = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+
+    phase0 = pipeline_summary.get("phase_0", {})
+    phase1 = pipeline_summary.get("phase_1", {})
+    phase2 = pipeline_summary.get("phase_2", {})
+    pipeline_html = ""
+    if pipeline_summary:
+        phase2_state = (
+            f"Đã kiểm thử {phase2.get('tested_endpoints', 0)} endpoint"
+            if phase2.get("enabled") and phase2.get("completed")
+            else "Đã tắt" if not phase2.get("enabled") else "Chưa hoàn tất"
+        )
+        pipeline_html = f"""
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin-bottom:1.5rem">
+      <div style="background:rgba(59,130,246,.08);border:1px solid #3b82f6;border-radius:10px;padding:1rem">
+        <div style="color:#93c5fd;font-weight:700">PHASE 0 — Authentication bootstrap</div>
+        <div style="color:#cbd5e1;margin-top:5px">{_esc(phase0.get('events', len(auth_bootstrap)))} sự kiện · {'Hoàn tất' if phase0.get('completed', True) else 'Thất bại'}</div>
+      </div>
+      <div style="background:rgba(16,185,129,.08);border:1px solid #10b981;border-radius:10px;padding:1rem">
+        <div style="color:#6ee7b7;font-weight:700">PHASE 1 — Valid workflow</div>
+        <div style="color:#cbd5e1;margin-top:5px">Hoàn tất · {_esc(phase1.get('valid_actor_endpoint_baselines', 0))} baseline hợp lệ</div>
+      </div>
+      <div style="background:rgba(139,92,246,.08);border:1px solid #8b5cf6;border-radius:10px;padding:1rem">
+        <div style="color:#c4b5fd;font-weight:700">PHASE 2 — Security validation</div>
+        <div style="color:#cbd5e1;margin-top:5px">{_esc(phase2_state)}</div>
+      </div>
+    </div>"""
 
     # Các section HTML
     all_apis_html = "".join(
@@ -560,16 +1030,9 @@ def generate_html_report(json_file="beam_strategies.json", output_dir="fuzzing_r
         for api, stats in endpoint_stats.items()
     )
 
-    # Phân nhóm API theo trạng thái
-    success_apis, failed_apis, error_500_apis = [], [], []
-    for api, stats in endpoint_stats.items():
-        sc = stats.get("status_counts", {})
-        if any(str(c).startswith("5") for c in sc):
-            error_500_apis.append(api)
-        elif any(str(c).startswith("2") for c in sc):
-            success_apis.append(api)
-        else:
-            failed_apis.append(api)
+    # Phân nhóm độc quyền theo kết quả cuối: có bất kỳ 2xx => thành công;
+    # không có 2xx => thất bại, kể cả endpoint từng/trực tiếp trả 5xx.
+    success_apis, failed_apis = _group_apis_by_outcome(endpoint_stats)
 
     def _badges(api_list, bg):
         if not api_list:
@@ -584,7 +1047,6 @@ def generate_html_report(json_file="beam_strategies.json", output_dir="fuzzing_r
 
     success_badges   = _badges(success_apis,   "#10b981")
     failed_badges    = _badges(failed_apis,    "#f59e0b")
-    error_500_badges = _badges(error_500_apis, "#ef4444")
 
     # Tóm tắt lỗ hổng — bảng
     vuln_summary_table = _build_vuln_summary_table(findings)
@@ -674,6 +1136,7 @@ def generate_html_report(json_file="beam_strategies.json", output_dir="fuzzing_r
         strategies_html = "<p style='color:#64748b;text-align:center'>Chưa có chiến lược nào.</p>"
 
     findings_section = _build_findings_section(findings)
+    auth_bootstrap_section = _build_auth_bootstrap_section(auth_bootstrap)
 
     # ── Lắp ráp HTML ─────────────────────────────────────────────────────────
     html_content = f"""<!DOCTYPE html>
@@ -783,6 +1246,8 @@ def generate_html_report(json_file="beam_strategies.json", output_dir="fuzzing_r
       <p class="meta">Thời điểm tạo: {generated_at}</p>
     </header>
 
+    {pipeline_html}
+
     <!-- Thống kê tổng quan -->
     <div class="stats-row">
       <div class="stat-card">
@@ -819,6 +1284,9 @@ def generate_html_report(json_file="beam_strategies.json", output_dir="fuzzing_r
       <button class="tab-btn" onclick="switchTab('api_status', this)">
         📊 Phạm vi kiểm thử API
       </button>
+      <button class="tab-btn" onclick="switchTab('auth_bootstrap', this)">
+        🔐 Authentication Bootstrap ({len(auth_bootstrap)})
+      </button>
       <button class="tab-btn" onclick="switchTab('strategies', this)">
         ⚔️ Chuỗi tấn công tốt nhất
       </button>
@@ -846,17 +1314,20 @@ def generate_html_report(json_file="beam_strategies.json", output_dir="fuzzing_r
         </div>
         <div style="background:rgba(245,158,11,.08);border:1px solid var(--orange);border-radius:12px;padding:1.25rem">
           <h3 style="color:var(--orange);margin-bottom:0.75rem;display:flex;justify-content:space-between">
-            <span>⚠️ Thất bại (4xx)</span><span>{len(failed_apis)} API</span>
+            <span>⚠️ Thất bại (không có 2xx)</span><span>{len(failed_apis)} API</span>
           </h3>
           <div style="display:flex;flex-wrap:wrap;gap:0.4rem">{failed_badges}</div>
         </div>
-        <div style="background:rgba(239,68,68,.08);border:1px solid var(--red);border-radius:12px;padding:1.25rem">
-          <h3 style="color:var(--red);margin-bottom:0.75rem;display:flex;justify-content:space-between">
-            <span>💥 Lỗi server (5xx)</span><span>{len(error_500_apis)} API</span>
-          </h3>
-          <div style="display:flex;flex-wrap:wrap;gap:0.4rem">{error_500_badges}</div>
-        </div>
       </div>
+    </div>
+
+    <!-- Tab: Authentication bootstrap -->
+    <div id="tab_auth_bootstrap" class="tab-panel">
+      <h2 class="section-title">Authentication Bootstrap</h2>
+      <p style="color:#94a3b8;margin-bottom:1rem">
+        Các request setup được lưu để truy vết nhưng không được tính là finding hoặc security variant.
+      </p>
+      {auth_bootstrap_section}
     </div>
 
     <!-- Tab: Chuỗi tấn công -->

@@ -9,6 +9,8 @@ from knowledge_memory import KnowledgeMemory
 from local_mutator import AsyncFuzzEngine
 from attack_store import AttackStore, get_attack_store
 from state_store import MultiActorContextStore
+from response_outcome import result_succeeded
+from field_semantics import is_reference_field, normalize_field_name
 
 # ── Agent imports (optional — graceful fallback if Ollama not available) ─────────
 _AGENTS_AVAILABLE = False
@@ -46,6 +48,10 @@ class HeuristicScorer:
             score += 20
         if response_mock.get('response_diff', False):
             score += 10
+        if not result_succeeded(response_mock):
+            score -= 15
+        if response_mock.get("auth_state_mismatch"):
+            score -= 30
 
         score += min(depth, 10) * 2
 
@@ -109,7 +115,8 @@ class CoverageBucketManager:
 class TestStrategyEngine:
     __test__ = False
 
-    def __init__(self, operations, adjacency_list, request_executor, graph_builder, knowledge_memory, beam_width=5):
+    def __init__(self, operations, adjacency_list, request_executor, graph_builder,
+                 knowledge_memory, beam_width=5, enable_security_testing=False):
         self.operations = operations
         self.adjacency_list = adjacency_list
         self.executor = request_executor
@@ -118,6 +125,11 @@ class TestStrategyEngine:
         
         self.scorer = HeuristicScorer()
         self.beam_width = beam_width
+        self.enable_security_testing = enable_security_testing
+        self._pipeline_phase = "workflow"
+        # One confirmed baseline per (actor, endpoint). Tokens remain in-memory
+        # only and are never exported through KnowledgeMemory.
+        self._valid_workflows = {}
         self.actor_contexts = MultiActorContextStore()
         self.operations_map = {op['id']: op for op in self.operations}
 
@@ -125,14 +137,14 @@ class TestStrategyEngine:
         self.attack_store: AttackStore = get_attack_store()
 
         # ── Agent instances ─────────────────────────────────────────────────
-        if _AGENTS_AVAILABLE:
+        if _AGENTS_AVAILABLE and self.enable_security_testing:
             self._attacker = AttackerAgent(attack_store=self.attack_store)
             self._auditor  = AuditorAgent()
-            log.info("[Engine] ✅ 3-Agent Pipeline enabled (Attacker + Auditor)")
+            log.info("[Engine] ✅ Security mode: Attacker + Auditor enabled")
         else:
             self._attacker = None
             self._auditor  = None
-            log.warning("[Engine] ⚠ Agents not available — running without Attacker/Auditor")
+            log.info("[Engine] Workflow mode: valid requests only; attacker disabled")
         
         self.incoming_edges = {}
         for api_out, edges in self.adjacency_list.items():
@@ -168,11 +180,15 @@ class TestStrategyEngine:
             return
 
         def _norm(name):
-            return re.sub(r'[_\-\.\s]', '', str(name)).lower()
+            return normalize_field_name(name)
 
-        # ── Hướng 1: Chỉ xét field required hoặc path parameter ──────────────
+        # Required/path inputs are dependencies as before.  Optional reference
+        # fields in write bodies are dependencies too: many real-world specs
+        # forget to include foreign keys in `required`.
         missing_fields = []
+        missing_field_meta = {}
         state_keys_norm = set(_norm(k) for k in state.memory.keys())
+        method = str(api_node.get("method", "GET")).upper()
 
         for field_name, meta in inputs_schema.items():
             if not isinstance(meta, dict):
@@ -181,8 +197,12 @@ class TestStrategyEngine:
             is_required = meta.get("required", False)
             location    = meta.get("in", "body")
 
-            # Bỏ qua nếu optional và không phải path param
-            if not is_required and location != "path":
+            is_write_body_reference = (
+                method in {"POST", "PUT", "PATCH"}
+                and str(location).lower() == "body"
+                and is_reference_field(field_name, meta)
+            )
+            if not is_required and location != "path" and not is_write_body_reference:
                 continue
 
             original = meta.get("original", field_name)
@@ -191,6 +211,7 @@ class TestStrategyEngine:
 
             if orig_norm not in state_keys_norm and fld_norm not in state_keys_norm:
                 missing_fields.append(orig_norm)
+                missing_field_meta[orig_norm] = meta
 
         if not missing_fields:
             return
@@ -225,6 +246,31 @@ class TestStrategyEngine:
                     runtime_score = (s + 1) / (s + f + 2)  # Laplace smoothing
                     combined = 0.7 * static_conf + 0.3 * runtime_score
 
+                    # Exact field handoff outranks a higher-confidence fuzzy
+                    # relation (e.g. resourceList -> resourceId). This remains
+                    # domain-neutral and uses only graph/schema semantics.
+                    producer_field = dep.get('producer_field', '')
+                    exact_match = _norm(producer_field) == missing_field
+                    if exact_match:
+                        combined += 0.35
+
+                    provider_node = self.operations_map.get(provider_id, {})
+                    output_meta = None
+                    for output_name, candidate_meta in (provider_node.get("outputs", {}) or {}).items():
+                        candidate_meta = candidate_meta if isinstance(candidate_meta, dict) else {}
+                        candidate_names = (
+                            output_name,
+                            candidate_meta.get("original", output_name),
+                            candidate_meta.get("contextual_name", output_name),
+                        )
+                        if any(_norm(name) == _norm(producer_field) for name in candidate_names):
+                            output_meta = candidate_meta
+                            break
+                    consumer_type = str(missing_field_meta.get(missing_field, {}).get("type", "")).lower()
+                    producer_type = str((output_meta or {}).get("type", "")).lower()
+                    if consumer_type and producer_type:
+                        combined += 0.10 if consumer_type == producer_type else -0.25
+
                     candidates.append({
                         'provider_id': provider_id,
                         'dep':         dep,
@@ -243,6 +289,8 @@ class TestStrategyEngine:
                 dep           = cand['dep']
                 provider_node = self.operations_map.get(provider_id)
                 if not provider_node:
+                    continue
+                if self._has_authenticated_actor(state) and self._is_registration_api(provider_node):
                     continue
 
                 # FIX: Không thử lại cùng provider cho cùng field trong một vòng lặp.
@@ -282,15 +330,39 @@ class TestStrategyEngine:
                     payload_source=exec_result.get("payload_source", "NONE"),
                     repair_reason=exec_result.get("repair_reason", ""),
                     repair_history=exec_result.get("repair_history", []),
-                    sent_headers=exec_result.get("sent_headers", {})
+                    sent_headers=exec_result.get("sent_headers", {}),
+                    sent_query=exec_result.get("sent_query", {}),
+                    sent_cookies=exec_result.get("sent_cookies", {}),
+                    actor_id=exec_result.get("actor_id", state.get("actor_id", "default")),
+                    successful=exec_result.get("successful"),
+                    outcome_reason=exec_result.get("outcome_reason", ""),
+                    auth_recovery=exec_result.get("auth_recovery", {}),
+                    auth_context=exec_result.get("auth_context", {}),
+                    sent_files=exec_result.get("sent_files", {}),
                 )
 
-                current_chain.append(provider_id)
-
-                if exec_result["status"] in (200, 201, 202):
-                    resolved = True
-                    print(f"{indent}[+] Resolve '{missing_field}' thành công via '{provider_id}'!")
-                    break
+                if result_succeeded(exec_result):
+                    provider_chain = list(current_chain)
+                    provider_chain.insert(max(0, len(provider_chain) - 1), provider_id)
+                    self._capture_valid_workflow(
+                        api_node=provider_node,
+                        state=state,
+                        exec_result=exec_result,
+                        chain=provider_chain,
+                    )
+                    refreshed_state_keys = {_norm(k) for k in state.memory.keys()}
+                    if missing_field in refreshed_state_keys:
+                        # Provider executes before the current consumer, so keep
+                        # the reported chain in actual execution order.
+                        insert_at = max(0, len(current_chain) - 1)
+                        current_chain.insert(insert_at, provider_id)
+                        resolved = True
+                        print(f"{indent}[+] Resolve '{missing_field}' thành công via '{provider_id}'!")
+                        break
+                    print(
+                        f"{indent}[-] Provider '{provider_id}' trả 2xx nhưng không sinh "
+                        f"giá trị '{missing_field}'. Thử provider tiếp theo..."
+                    )
                 else:
                     print(f"{indent}[-] Provider '{provider_id}' thất bại "
                           f"(HTTP {exec_result['status']}). Thử provider tiếp theo...")
@@ -324,6 +396,8 @@ class TestStrategyEngine:
 
         beams = []
         for op in self.operations:
+            if self._has_authenticated_actor(initial_state) and self._is_registration_api(op):
+                continue
             beams.append({
                 'chain': [op['id']],
                 'score': 0,
@@ -380,61 +454,18 @@ class TestStrategyEngine:
                     payload_source=exec_result.get("payload_source", "NONE"),
                     repair_reason=exec_result.get("repair_reason", ""),
                     repair_history=exec_result.get("repair_history", []),
-                    sent_headers=exec_result.get("sent_headers", {})
+                    sent_headers=exec_result.get("sent_headers", {}),
+                    sent_query=exec_result.get("sent_query", {}),
+                    sent_cookies=exec_result.get("sent_cookies", {}),
+                    actor_id=exec_result.get(
+                        "actor_id", current_state.get("actor_id", "default")
+                    ),
+                    successful=exec_result.get("successful"),
+                    outcome_reason=exec_result.get("outcome_reason", ""),
+                    auth_recovery=exec_result.get("auth_recovery", {}),
+                    auth_context=exec_result.get("auth_context", {}),
+                    sent_files=exec_result.get("sent_files", {}),
                 )
-                
-                # --- [GIAI ĐOẠN 1] Local Mutator Blasting ---
-                # Chỉ bắn rác khi payload gốc là hợp lệ (status 200, 201, 202, 204)
-                if status in (200, 201, 202, 204) and exec_result.get("sent_payload"):
-                    print(f"[{current_api}] 🚀 Bắt đầu bắn xối xả (Blasting) 50 requests rác để tìm lỗi 500...")
-                    try:
-                        # TestStrategyEngine.run() là sync — asyncio.run() luôn an toàn ở đây.
-                        # KHÔNG dùng loop.run_until_complete() vì sẽ raise RuntimeError
-                        # nếu có running loop (e.g. khi chạy trong Jupyter / async wrapper).
-                        blast_results = asyncio.run(AsyncFuzzEngine.blast_api(
-                            url=exec_result.get("url"),
-                            method=api_node.get("method", "GET").upper(),
-                            headers=exec_result.get("sent_headers", {}),
-                            valid_payload=exec_result.get("sent_payload", {}),
-                            num_requests=50
-                        ))
-                            
-                        for br in blast_results:
-                            b_status = br["status"]
-                            # Ghi nhận request rác vào report
-                            self.memory.record_request(
-                                api_id=current_api,
-                                method=api_node.get("method", "GET").upper(),
-                                path=exec_result.get("url", api_node.get("path", "/")),
-                                status=b_status,
-                                chain=beam['chain'],
-                                response_text=br.get("text", br.get("error", "")),
-                                request_payload=br.get("payload", {}),
-                                payload_source="LOCAL_MUTATOR",
-                                sent_headers=exec_result.get("sent_headers", {})
-                            )
-                            # Nếu ra 500, đánh dấu lỗi
-                            if b_status >= 500:
-                                if not self.memory.is_vulnerability_found(current_api, b_status):
-                                    vulnerabilities.append({
-                                        "api": current_api,
-                                        "status": b_status,
-                                        "details": ["Gây ra lỗi 500 bằng Local Mutator"],
-                                        "type": "Crash/500"
-                                    })
-                                    self.memory.record_vulnerability(current_api, b_status)
-                                    self.memory.record_finding({
-                                        "api": current_api,
-                                        "method": api_node.get("method", "GET").upper(),
-                                        "path": exec_result.get("url", api_node.get("path", "/")),
-                                        "status": b_status,
-                                        "details": ["Gây ra lỗi 500 bằng Local Mutator"],
-                                        "type": "Crash/500",
-                                        "chain": beam['chain']
-                                    })
-                    except Exception as e:
-                        print(f"[{current_api}] ❌ Lỗi khi Blasting: {str(e)}")
-                # --- End Local Mutator ---
                 
                 already_found = self.memory.is_vulnerability_found(current_api, status)
 
@@ -460,50 +491,27 @@ class TestStrategyEngine:
                             "chain": beam['chain']
                         })
 
-                # ── [GIAI ĐOẠN 2] 3-Agent Pipeline: Attacker + Auditor ───────────────
-                # Depth 1 = "Warm-up round": chỉ lưu baseline + harvest IDs vào AttackStore
-                #   → StateStore chưa đủ context (token, ID) để sinh attack có nghĩa
-                # Depth >= 2: đã có baseline + IDs → chạy đầy đủ Attacker + Auditor
+                # Phase 1 never mutates a valid baseline. Security scoring is
+                # added only by run_security_phase() after Beam Search ends.
                 agent_score_bonus = 0.0
-                if status in (200, 201, 202) and self._attacker and self._auditor:
-                    if depth == 1:
-                        # ── Warm-up: chỉ lưu baseline + harvest IDs ──────────────
-                        print(f"[{current_api}] 🔥 Depth 1 warm-up — lưu baseline & harvest IDs...")
-                        current_state.set_baseline(current_api, exec_result)
-                        raw_resp = exec_result.get("raw_response")
-                        if raw_resp:
-                            own_ctx = {
-                                "actor_id": current_state.get("actor_id", "default"),
-                                "user_id": current_state.get("user_id") or current_state.get("id"),
-                                "email":   current_state.get("email"),
-                            }
-                            n = self.attack_store.record_from_response(
-                                api_id=current_api,
-                                response_json=raw_resp,
-                                endpoint=exec_result.get("url", api_node.get("path", "")),
-                                user_context={k: v for k, v in own_ctx.items() if v},
-                                owner_actor_id=own_ctx["actor_id"],
-                                confidence=0.9,
-                            )
-                            if n:
-                                print(f"[{current_api}] 📦 Harvested {n} resource IDs → AttackStore")
-                    else:
-                        # ── Depth >= 2: Chạy đầy đủ pipeline ────────────────────
-                        agent_score_bonus = self._run_3agent_pipeline(
-                            api_node=api_node,
-                            current_state=current_state,
-                            exec_result=exec_result,
-                            beam_chain=beam['chain'],
-                            vulnerabilities=vulnerabilities,
-                        )
+
+                # Phase 1 only records confirmed baselines. Security mutations
+                # are deferred until every actor has finished Beam Search.
+                if result_succeeded(exec_result):
+                    self._capture_valid_workflow(
+                        api_node=api_node,
+                        state=current_state,
+                        exec_result=exec_result,
+                        chain=list(beam["chain"]),
+                    )
 
                 if len(beam['chain']) >= 2:
                     prev_api = beam['chain'][-2]
-                    is_success = not exec_result["edge_failure"]
+                    is_success = result_succeeded(exec_result)
                     
                     if not is_success and exec_result.get("repair_skipped"):
-                        stats = self.memory.endpoint_stats.get(current_api, {}).get("status_counts", {})
-                        has_prior_success = any(int(st) in (200, 201, 202) for st in stats.keys())
+                        requests = self.memory.endpoint_stats.get(current_api, {}).get("all_requests", [])
+                        has_prior_success = any(req.get("successful") is True for req in requests)
                         if has_prior_success:
                             is_success = True
                             
@@ -519,6 +527,10 @@ class TestStrategyEngine:
                 neighbor_edges = [
                     edge for edge in outgoing_edges
                     if edge.get('max_confidence', 0) > 0 and edge['to'] not in beam['chain']
+                    and not (
+                        self._has_authenticated_actor(current_state)
+                        and self._is_registration_api(self.operations_map.get(edge['to'], {}))
+                    )
                 ]
 
                 has_valid_branch = False
@@ -577,6 +589,225 @@ class TestStrategyEngine:
                 break
 
         return completed_strategies
+
+    # ── Explicit two-phase pipeline ─────────────────────────────────────────
+
+    @staticmethod
+    def _has_authenticated_actor(state: StateStore) -> bool:
+        return bool(state.get("auth_token") or state.get("auth_cookies"))
+
+    @staticmethod
+    def _is_registration_api(api_node: dict) -> bool:
+        text = " ".join((str(api_node.get("id", "")), str(api_node.get("path", ""))))
+        return bool(re.search(r"signup|sign[_-]?up|register|registration", text, re.I))
+
+    @staticmethod
+    def _is_auth_lifecycle_api(api_node: dict) -> bool:
+        text = " ".join((
+            str(api_node.get("id", "")),
+            str(api_node.get("path", "")),
+        ))
+        return bool(re.search(
+            r"login|signin|signup|register|logout|refresh|forgot|reset|otp|captcha",
+            text,
+            re.I,
+        ))
+
+    def _capture_valid_workflow(self, api_node: dict, state: StateStore,
+                                exec_result: dict, chain: list) -> None:
+        """Persist a replayable in-memory baseline after semantic success."""
+        api_id = api_node.get("id", "unknown")
+        actor_id = state.get("actor_id", "default")
+        key = (actor_id, api_id)
+        candidate = {
+            "api_node": dict(api_node),
+            "state": state.clone(),
+            "exec_result": dict(exec_result),
+            "chain": list(chain),
+        }
+        existing = self._valid_workflows.get(key)
+        if existing is None or len(chain) < len(existing["chain"]):
+            self._valid_workflows[key] = candidate
+
+        state.set_baseline(api_id, exec_result)
+        raw_response = exec_result.get("raw_response")
+        if raw_response:
+            owner_context = {
+                "actor_id": actor_id,
+                "user_id": state.get("user_id") or state.get("id"),
+                "email": state.get("email"),
+            }
+            self.attack_store.record_from_response(
+                api_id=api_id,
+                response_json=raw_response,
+                endpoint=exec_result.get("url", api_node.get("path", "")),
+                user_context={k: v for k, v in owner_context.items() if v},
+                owner_actor_id=actor_id,
+                confidence=0.9,
+            )
+
+    def run_security_phase(self) -> dict:
+        """Phase 2: test only endpoints that Phase 1 proved replayable.
+
+        This method never participates in Beam Search. It consumes frozen
+        baseline state, executes security variants, and records findings.
+        """
+        summary = {
+            "baselines": len(self._valid_workflows),
+            "tested_endpoints": 0,
+            "skipped_auth_lifecycle": 0,
+            "baseline_replay_failures": 0,
+            "errors": 0,
+        }
+        if not self.enable_security_testing:
+            log.info("[Phase 2] Security testing disabled")
+            return summary
+        if not self._attacker or not self._auditor:
+            log.warning("[Phase 2] Attacker/Auditor unavailable")
+            return summary
+
+        self._pipeline_phase = "security"
+        print(
+            f"\n=== PHASE 2: SECURITY VALIDATION "
+            f"({len(self._valid_workflows)} valid actor-endpoint baselines) ==="
+        )
+        try:
+            ordered_cases = sorted(
+                self._valid_workflows.values(),
+                key=lambda case: (len(case["chain"]), case["api_node"].get("id", "")),
+            )
+            for case in ordered_cases:
+                api_node = case["api_node"]
+                api_id = api_node.get("id", "unknown")
+                if self._is_auth_lifecycle_api(api_node):
+                    summary["skipped_auth_lifecycle"] += 1
+                    continue
+
+                state = case["state"].clone()
+                baseline = dict(case["exec_result"])
+                chain = list(case["chain"])
+                vulnerabilities = []
+                print(
+                    f"[Phase 2] Testing api={api_id} "
+                    f"actor={state.get('actor_id', 'default')}"
+                )
+                try:
+                    # Revalidate the frozen case against current target state.
+                    # This catches expired tokens/deleted resources before any
+                    # mutation is generated.
+                    replay = self.executor.execute_request(
+                        api_node=api_node,
+                        current_state=state,
+                        payload_override=baseline.get("sent_payload", {}),
+                        payload_source_override="BASELINE_REPLAY",
+                        allow_repair=True,
+                        allow_auth_recovery=True,
+                    )
+                    self.memory.record_request(
+                        api_id=api_id,
+                        method=api_node.get("method", "GET").upper(),
+                        path=replay.get("url", api_node.get("path", "/")),
+                        status=replay.get("status", 0),
+                        chain=chain,
+                        response_text=replay.get("response_text", ""),
+                        request_payload=replay.get("sent_payload", {}),
+                        payload_source="BASELINE_REPLAY",
+                        repair_reason=replay.get("repair_reason", ""),
+                        repair_history=replay.get("repair_history", []),
+                        sent_headers=replay.get("sent_headers", {}),
+                        sent_query=replay.get("sent_query", {}),
+                        sent_cookies=replay.get("sent_cookies", {}),
+                        actor_id=replay.get("actor_id", state.get("actor_id", "default")),
+                        successful=replay.get("successful"),
+                        outcome_reason=replay.get("outcome_reason", ""),
+                        auth_recovery=replay.get("auth_recovery", {}),
+                        auth_context=replay.get("auth_context", {}),
+                        sent_files=replay.get("sent_files", {}),
+                    )
+                    if not result_succeeded(replay):
+                        summary["baseline_replay_failures"] += 1
+                        log.warning(
+                            f"[Phase 2] Skip {api_id}: baseline replay failed "
+                            f"HTTP {replay.get('status')} {replay.get('outcome_reason', '')}"
+                        )
+                        continue
+                    baseline = replay
+
+                    self._run_local_mutator_security_case(
+                        api_node, state, baseline, chain, vulnerabilities
+                    )
+                    self._run_3agent_pipeline(
+                        api_node=api_node,
+                        current_state=state,
+                        exec_result=baseline,
+                        beam_chain=chain,
+                        vulnerabilities=vulnerabilities,
+                    )
+                    summary["tested_endpoints"] += 1
+                except Exception as exc:
+                    summary["errors"] += 1
+                    log.exception(f"[Phase 2] Failed security case {api_id}: {exc}")
+        finally:
+            self._pipeline_phase = "complete"
+
+        print(
+            "[Phase 2] Complete: "
+            f"tested={summary['tested_endpoints']}, "
+            f"replay_failed={summary['baseline_replay_failures']}, "
+            f"skipped_auth={summary['skipped_auth_lifecycle']}, "
+            f"errors={summary['errors']}"
+        )
+        return summary
+
+    def get_valid_workflow_count(self) -> int:
+        return len(self._valid_workflows)
+
+    def _run_local_mutator_security_case(self, api_node: dict, state: StateStore,
+                                         baseline: dict, chain: list,
+                                         vulnerabilities: list) -> None:
+        valid_payload = baseline.get("sent_payload", {})
+        if not valid_payload:
+            return
+        api_id = api_node.get("id", "unknown")
+        blast_results = asyncio.run(AsyncFuzzEngine.blast_api(
+            url=baseline.get("url"),
+            method=api_node.get("method", "GET").upper(),
+            headers=baseline.get("sent_headers", {}),
+            query=baseline.get("sent_query", {}),
+            cookies=baseline.get("sent_cookies", {}),
+            valid_payload=valid_payload,
+            num_requests=50,
+        ))
+        for result in blast_results:
+            status = result.get("status", 0)
+            self.memory.record_request(
+                api_id=api_id,
+                method=api_node.get("method", "GET").upper(),
+                path=baseline.get("url", api_node.get("path", "/")),
+                status=status,
+                chain=chain,
+                response_text=result.get("text", result.get("error", "")),
+                request_payload=result.get("payload", {}),
+                payload_source="LOCAL_MUTATOR",
+                sent_headers=baseline.get("sent_headers", {}),
+                sent_query=baseline.get("sent_query", {}),
+                sent_cookies=baseline.get("sent_cookies", {}),
+                actor_id=state.get("actor_id", "default"),
+                auth_context=baseline.get("auth_context", state.get_auth_context()),
+            )
+            if status >= 500 and not self.memory.is_vulnerability_found(api_id, status):
+                finding = {
+                    "api": api_id,
+                    "method": api_node.get("method", "GET").upper(),
+                    "path": baseline.get("url", api_node.get("path", "/")),
+                    "status": status,
+                    "details": ["Gây ra lỗi 500 bằng Local Mutator sau valid baseline"],
+                    "type": "Crash/500",
+                    "chain": chain,
+                }
+                vulnerabilities.append(finding)
+                self.memory.record_vulnerability(api_id, status)
+                self.memory.record_finding(finding)
 
     # ── 3-Agent Pipeline ──────────────────────────────────────────────────────
 
@@ -681,6 +912,32 @@ class TestStrategyEngine:
                     request_payload=attack_exec.get("sent_payload", variant.payload),
                     payload_source=f"ATTACKER_{variant.strategy.upper()}",
                     sent_headers=attack_exec.get("sent_headers", {}),
+                    sent_query=attack_exec.get("sent_query", {}),
+                    sent_cookies=attack_exec.get("sent_cookies", {}),
+                    sent_files=attack_exec.get("sent_files", {}),
+                    actor_id=attack_exec.get(
+                        "actor_id", attack_state.get("actor_id", "default")
+                    ),
+                    attack_metadata={
+                        "strategy": variant.strategy,
+                        "technique": variant.extra.get("technique", variant.strategy),
+                        "description": variant.description,
+                        "owner_actor_id": current_state.get("actor_id", "default"),
+                        "attacker_actor_id": attack_state.get("actor_id", "default"),
+                        "baseline": {
+                            "path": exec_result.get("url", api_node.get("path", "")),
+                            "body": exec_result.get("sent_payload", {}),
+                            "query": exec_result.get("sent_query", {}),
+                        },
+                        "attack": {
+                            "path": attack_exec.get("url", variant.path),
+                            "body": attack_exec.get("sent_payload", variant.payload),
+                            "query": attack_exec.get("sent_query", {}),
+                        },
+                        "mutation": dict(variant.extra),
+                    },
+                    auth_recovery=attack_exec.get("auth_recovery", {}),
+                    auth_context=attack_exec.get("auth_context", {}),
                 )
 
                 # ── Auditor Agent: phân tích response ─────────────────────────

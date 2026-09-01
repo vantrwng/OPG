@@ -88,8 +88,14 @@ class AttackStore:
 
             bucket = self._store[api_id]
 
-            # Dedup: không lưu cùng resource_id hai lần cho cùng api
-            if any(e["resource_id"] == str(resource_id) for e in bucket):
+            # Preserve provenance when the same value appears under different
+            # selectors or actors. Authorization evidence is actor-relative.
+            if any(
+                e["resource_id"] == str(resource_id)
+                and e.get("field_name") == field_name
+                and e.get("owner_actor_id", "") == inferred_actor
+                for e in bucket
+            ):
                 return
 
             # Giới hạn kích thước
@@ -116,8 +122,9 @@ class AttackStore:
         Tự động harvest các field ID từ response JSON và lưu vào store.
 
         Args:
-            id_fields: Whitelist field names cần harvest.
-                       Nếu None → dùng auto-detection (tên chứa "id", "uuid", "ref").
+            id_fields: Resource-selector whitelist derived from OpenAPI. It may
+                       contain natural keys such as username, title or slug.
+                       If None, fall back to conventional ID detection.
 
         Returns:
             Số lượng entry mới được lưu

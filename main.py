@@ -29,7 +29,7 @@ from actor_bootstrapper import ActorBootstrapper
 
 import argparse
 
-def build_system(operations, base_url, beam_width):
+def build_system(operations, base_url, beam_width, enable_security_testing=False):
     # DI Containers
     planner = LLMPlanner()
     rule_layer = RuleInferenceLayer(planner, operations)
@@ -57,7 +57,8 @@ def build_system(operations, base_url, beam_width):
         request_executor=request_executor,
         graph_builder=graph_builder,
         knowledge_memory=knowledge_memory,
-        beam_width=beam_width
+        beam_width=beam_width,
+        enable_security_testing=enable_security_testing,
     )
 
     return strategy_engine, knowledge_memory
@@ -94,10 +95,16 @@ def build_actor_contexts() -> MultiActorContextStore:
 
 def main():
     parser = argparse.ArgumentParser(description="Hybrid Stateful API Fuzzer")
-    parser.add_argument("--spec", type=str, default="vmAPI.json", help="Path to OpenAPI spec file")
-    parser.add_argument("--base-url", type=str, default="http://127.0.0.1:5001", help="Target API Base URL")
+    parser.add_argument("--spec", type=str, default="memo_openapi.json", help="Path to OpenAPI spec file")
+    parser.add_argument("--base-url", type=str, default="http://localhost:5230/api", help="Target API Base URL")
     parser.add_argument("--max-depth", type=int, default=5, help="Max depth for path execution")
     parser.add_argument("--beam-width", type=int, default=3, help="Beam search width")
+    parser.add_argument(
+        "--mode",
+        choices=("workflow", "security"),
+        default="workflow",
+        help="workflow validates successful API sequences; security additionally enables attack variants",
+    )
     parser.add_argument(
         "--bootstrap-actors",
         choices=("auto", "manual", "off"),
@@ -119,7 +126,12 @@ def main():
 
     # ── Phase 2: Khởi tạo Hệ Thống qua Dependency Injection ──────────────────
     print("\n[Phase 2] Khởi tạo các module hệ thống (DI)...")
-    strategy_engine, knowledge_memory = build_system(operations, args.base_url, args.beam_width)
+    strategy_engine, knowledge_memory = build_system(
+        operations,
+        args.base_url,
+        args.beam_width,
+        enable_security_testing=args.mode == "security",
+    )
 
     # ── Phase 0: Cấu hình State Store từ biến môi trường ─────────────────────
     print(f"\n[Phase 0] Khởi tạo StateStore với cấu hình người dùng...")
@@ -155,13 +167,15 @@ def main():
         
     initial_state = StateStore(initial_state_data)
     actor_contexts = build_actor_contexts()
+    actor_bootstrapper = ActorBootstrapper(
+        operations=operations,
+        executor=strategy_engine.executor,
+    )
 
     if args.bootstrap_actors == "auto":
         print("[Phase 0] Đang tự động tạo owner_a và user_b từ signup/login trong OpenAPI...")
-        bootstrap_result = ActorBootstrapper(
-            operations=operations,
-            executor=strategy_engine.executor,
-        ).bootstrap(base_state=initial_state_data)
+        bootstrap_result = actor_bootstrapper.bootstrap(base_state=initial_state_data)
+        knowledge_memory.set_auth_bootstrap(bootstrap_result.events)
         if bootstrap_result.success:
             initial_state = bootstrap_result.owner_state
             actor_contexts = bootstrap_result.actors
@@ -170,21 +184,111 @@ def main():
                 f"signup={bootstrap_result.signup_api_id}, login={bootstrap_result.login_api_id}"
             )
         else:
-            print("[Phase 0] ⚠ Bootstrap tự động thất bại; chuyển sang token thủ công trong .env")
+            print(
+                "[Phase 0] ✗ Bootstrap tự động thất bại: signup/signin "
+                "không tạo được phiên xác thực hợp lệ."
+            )
             for error in bootstrap_result.errors:
                 print(f"  - {error}")
+            print(
+                "[STOP] Dừng chương trình trước Workflow Discovery để tránh "
+                "chạy fuzzing bằng credential không hợp lệ."
+            )
+            knowledge_memory.set_pipeline_summary({
+                "mode": args.mode,
+                "phase_0": {
+                    "name": "authentication_bootstrap",
+                    "completed": False,
+                    "events": len(bootstrap_result.events),
+                    "errors": list(bootstrap_result.errors),
+                },
+            })
+            knowledge_memory.export("beam_strategies.json")
+            generate_html_report("beam_strategies.json", "fuzzing_report")
+            return
     elif args.bootstrap_actors == "off":
         actor_contexts = MultiActorContextStore()
         actor_contexts.add(ActorContext(actor_id="anonymous", role="anonymous"))
 
     strategy_engine.actor_contexts = actor_contexts
 
+    if args.bootstrap_actors != "off":
+        def _recover_auth_context(state, _api_node, _failed_result):
+            recovered, reason = actor_bootstrapper.recover_actor(state)
+            if recovered:
+                actor_contexts.add(actor_bootstrapper._actor_from_state(state))
+                print(
+                    f"[Auth Recovery] ✓ actor={state.get('actor_id', 'default')}: {reason}"
+                )
+            else:
+                print(
+                    f"[Auth Recovery] ✗ actor={state.get('actor_id', 'default')}: {reason}"
+                )
+            return recovered, reason
+
+        strategy_engine.executor.auth_recovery_handler = _recover_auth_context
+
     # ── Phase 3: Khởi chạy Fuzzer (Live HTTP) ────────────────────────────────
     print(f"\n[Phase 3] Khởi chạy Test Strategy Engine → {args.base_url}")
-    best_chains = strategy_engine.run(max_depth=args.max_depth, initial_state=initial_state)
+    # PHASE 1 always completes first, for every authenticated actor. Security
+    # mode changes only what happens after these valid baselines are frozen.
+    workflow_states = [initial_state]
+    seen_actors = {initial_state.get("actor_id", "owner_a")}
+    base_headers = {
+        "auth_header_name": initial_state.get("auth_header_name", "Authorization"),
+        "auth_header_prefix": initial_state.get("auth_header_prefix", "Bearer"),
+    }
+    for actor in actor_contexts.all():
+        if actor.actor_id in seen_actors or actor.role == "anonymous":
+            continue
+        if not actor.auth_token and not actor.cookies:
+            continue
+        workflow_states.append(actor.to_state_store(base=base_headers))
+        seen_actors.add(actor.actor_id)
+
+    print("\n=== PHASE 1: VALID WORKFLOW DISCOVERY ===")
+    best_chains = []
+    for workflow_state in workflow_states:
+        verified, verification_reason = actor_bootstrapper.validate_actor(workflow_state)
+        if verified is False:
+            print(
+                f"[Auth Preflight] ⚠ actor={workflow_state.get('actor_id', 'default')}: "
+                f"{verification_reason}"
+            )
+        print(
+            f"[Phase 1] Validating actor="
+            f"{workflow_state.get('actor_id', 'default')}"
+        )
+        best_chains.extend(strategy_engine.run(
+            max_depth=args.max_depth,
+            initial_state=workflow_state,
+        ))
+
+    security_summary = None
+    if args.mode == "security":
+        security_summary = strategy_engine.run_security_phase()
 
     # ── Xuất kết quả ─────────────────────────────────────────────────────────
     # Lưu vào format tương thích với generate_html_report
+    knowledge_memory.set_pipeline_summary({
+        "mode": args.mode,
+        "phase_0": {
+            "name": "authentication_bootstrap",
+            "completed": args.bootstrap_actors != "auto" or bootstrap_result.success,
+            "events": len(knowledge_memory.auth_bootstrap),
+        },
+        "phase_1": {
+            "name": "valid_workflow_discovery",
+            "valid_actor_endpoint_baselines": strategy_engine.get_valid_workflow_count(),
+            "completed": True,
+        },
+        "phase_2": {
+            "name": "security_validation",
+            "enabled": args.mode == "security",
+            "completed": security_summary is not None,
+            **(security_summary or {}),
+        },
+    })
     knowledge_memory.set_top_strategies(best_chains)
     knowledge_memory.export("beam_strategies.json")
     

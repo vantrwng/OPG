@@ -15,6 +15,88 @@ class SpecParser:
             print(f"[SpecParser] Warning: cannot load spec file: {e}")
             return {}
 
+    def _security_metadata(self, raw_security, source="none"):
+        """Normalize OpenAPI security without interpreting absence as a defect."""
+        schemes = []
+        entries = raw_security if isinstance(raw_security, list) else [raw_security]
+        for entry in entries:
+            if isinstance(entry, dict):
+                schemes.extend(str(name) for name in entry)
+        definitions = (
+            self.spec.get("components", {}).get("securitySchemes", {})
+            or self.spec.get("securityDefinitions", {})
+        )
+        transports = []
+        for scheme_name in sorted(set(schemes)):
+            definition = definitions.get(scheme_name, {})
+            scheme_type = str(definition.get("type", "")).lower()
+            location = str(definition.get("in", "")).lower()
+            if scheme_type == "apikey" and location in {"cookie", "header", "query"}:
+                transports.append({
+                    "scheme_name": scheme_name,
+                    "kind": location,
+                    "name": definition.get("name", scheme_name),
+                    "prefix": "",
+                    "source": "openapi",
+                })
+            elif scheme_type == "http" and str(definition.get("scheme", "")).lower() == "bearer":
+                transports.append({
+                    "scheme_name": scheme_name,
+                    "kind": "header",
+                    "name": "Authorization",
+                    "prefix": "Bearer",
+                    "source": "openapi",
+                })
+        return {
+            "security_required": bool(raw_security),
+            "security_schemes": sorted(set(schemes)),
+            "security_source": source,
+            "declared_auth_transports": transports,
+        }
+
+    @staticmethod
+    def _semantic_features(op_id, method, path, inputs, outputs, details):
+        """Extract generic defensive-classification features from an operation."""
+        selector_fields = []
+        for name, meta in (inputs or {}).items():
+            if not isinstance(meta, dict) or meta.get("in") != "path":
+                continue
+            selector_fields.append(meta.get("original", name))
+
+        sensitive_re = re.compile(
+            r"password|passwd|secret|token|credential|api[_-]?key|ssn|email|"
+            r"phone|admin|permission|role|private|balance|credit",
+            re.I,
+        )
+        sensitive_fields = sorted({
+            str(meta.get("original", name) if isinstance(meta, dict) else name)
+            for name, meta in (outputs or {}).items()
+            if sensitive_re.search(str(meta.get("original", name) if isinstance(meta, dict) else name))
+        })
+
+        text = " ".join((
+            str(op_id), str(path), str(details.get("summary", "")),
+            str(details.get("description", "")),
+            " ".join(str(tag) for tag in details.get("tags", [])),
+        )).lower()
+        privileged_re = re.compile(
+            r"(^|[^a-z])(admin|debug|internal|system|database|db|maintenance|"
+            r"populate|seed|initialize|migrate|reset|purge|drop)([^a-z]|$)",
+            re.I,
+        )
+        destructive_re = re.compile(
+            r"(^|[^a-z])(populate|seed|initialize|migrate|reset|purge|drop|"
+            r"truncate|rebuild|createdb)([^a-z]|$)",
+            re.I,
+        )
+        return {
+            "resource_selectors": selector_fields,
+            "sensitive_response_fields": sensitive_fields,
+            "privileged_function_hint": bool(privileged_re.search(text)),
+            "potentially_destructive": bool(destructive_re.search(text)),
+            "state_changing_get": method.upper() == "GET" and bool(destructive_re.search(text)),
+        }
+
     def resolve_ref(self, ref_str):
         try:
             parts = ref_str.lstrip('#/').split('/')
@@ -131,6 +213,7 @@ class SpecParser:
                         v, k, op_name, required_fields, field_path, root
                     ))
                 else:
+                    field_format = v.get('format', 'unknown')
                     props[final_name] = {
                         'original':        k,
                         'contextual_name': contextual_name,
@@ -138,7 +221,11 @@ class SpecParser:
                         'parent':          parent_schema or '',
                         'root':            root,
                         'type':            v.get('type', 'unknown'),
-                        'format':          v.get('format', 'unknown'),
+                        'format':          field_format,
+                        'enum':            list(v.get('enum', []) or []),
+                        'default':         v.get('default'),
+                        'is_file':         field_format in ('binary', 'byte'),
+                        'content_media_type': v.get('contentMediaType', ''),
                         'required':        is_required,
                         'in':              'body',
                     }
@@ -228,6 +315,11 @@ class SpecParser:
                 op_id = details.get('operationId', f"{method.upper()}_{path.replace('/', '_')}")
                 inputs, outputs = {}, {}
                 req_content_type = "application/json"
+                expected_success_statuses = []
+                for response_code in (details.get('responses', {}) or {}):
+                    code_text = str(response_code).upper()
+                    if (code_text.isdigit() and 200 <= int(code_text) < 300) or code_text == '2XX':
+                        expected_success_statuses.append(code_text)
 
                 # Trích xuất Inputs
                 if 'parameters' in details:
@@ -242,6 +334,8 @@ class SpecParser:
                             'original': name,
                             'type': param_schema.get('type', 'unknown'),
                             'format': param_schema.get('format', 'unknown'),
+                            'enum': list(param_schema.get('enum', []) or []),
+                            'default': param_schema.get('default'),
                             'required': is_required,
                             'in': location
                         }
@@ -257,6 +351,9 @@ class SpecParser:
                                 schema = content[ct].get('schema')
                                 req_content_type = ct
                                 break
+                        if schema is None and content:
+                            req_content_type, media = next(iter(content.items()))
+                            schema = media.get('schema')
                                 
                         if schema:
                             top_required = set()
@@ -265,7 +362,22 @@ class SpecParser:
                                 top_required = set(resolved.get('required', []))
                             else:
                                 top_required = set(schema.get('required', []))
-                            inputs.update(self.extract_props(schema, op_name=op_id, required_fields=top_required))
+                            if schema.get('type') == 'string' and schema.get('format') in ('binary', 'byte'):
+                                inputs['body'] = {
+                                    'original': 'body', 'type': 'string',
+                                    'format': schema.get('format'), 'required': rb.get('required', False),
+                                    'in': 'body', 'is_file': True,
+                                    'content_type': req_content_type,
+                                }
+                            else:
+                                inputs.update(self.extract_props(schema, op_name=op_id, required_fields=top_required))
+                                encoding = content.get(req_content_type, {}).get('encoding', {})
+                                for field_name, meta in inputs.items():
+                                    if not isinstance(meta, dict) or not meta.get('is_file'):
+                                        continue
+                                    original = meta.get('original', field_name)
+                                    encoded = encoding.get(original, {}) if isinstance(encoding, dict) else {}
+                                    meta['content_type'] = encoded.get('contentType') or meta.get('content_media_type', '')
                     except Exception as e:
                         print(f"[SpecParser] Warning: cannot parse requestBody for {op_id}: {e}")
 
@@ -316,6 +428,35 @@ class SpecParser:
                                 '_passthrough':    True
                             }
 
+                # A successful create/add API may return only status/message.
+                # Its request fields are nevertheless valid post-conditions and
+                # can provide dependencies to downstream read/update/delete APIs.
+                noise_outputs = {'status', 'message', 'success', 'error', 'detail'}
+                meaningful_outputs = {
+                    re.sub(r'[-_.\s]', '', name).lower()
+                    for name in outputs
+                    if re.sub(r'[-_.\s]', '', name).lower() not in noise_outputs
+                }
+                mutation_like = method.upper() in ('POST', 'PUT', 'PATCH')
+                if mutation_like and not meaningful_outputs:
+                    for field_name, meta in inputs.items():
+                        if not isinstance(meta, dict):
+                            continue
+                        location = meta.get('in', 'body')
+                        if location not in ('body', 'path', 'query'):
+                            continue
+                        orig = meta.get('original', field_name)
+                        outputs.setdefault(field_name, {
+                            'original':        orig,
+                            'contextual_name': orig,
+                            'json_path':       orig,
+                            'parent':          '',
+                            'root':            orig,
+                            'type':            meta.get('type', 'unknown'),
+                            'format':          meta.get('format', 'unknown'),
+                            '_request_passthrough': True,
+                        })
+
                 # ── Fix 2: Resource Object Expansion (generic — tự học từ spec) ────────
                 # Khi output là field tên resource noun nhưng không có sub-properties,
                 # suy ra implied ID field. Resource nouns được tự suy ra từ operationId.
@@ -341,13 +482,34 @@ class SpecParser:
                             }
                 outputs.update(expanded)
 
+                if 'security' in details:
+                    security_meta = self._security_metadata(
+                        details.get('security'), source='operation'
+                    )
+                elif 'security' in self.spec:
+                    security_meta = self._security_metadata(
+                        self.spec.get('security'), source='global'
+                    )
+                else:
+                    security_meta = self._security_metadata(None, source='none')
+
+                semantic_meta = self._semantic_features(
+                    op_id, method, path, inputs, outputs, details
+                )
+
                 self.operations.append({
                     'id': op_id, 
                     'method': method.upper(), 
                     'path': path, 
                     'inputs': inputs, 
                     'outputs': outputs,
-                    'content_type': req_content_type
+                    'content_type': req_content_type,
+                    'expected_success_statuses': expected_success_statuses,
+                    'tags': list(details.get('tags', []) or []),
+                    'summary': details.get('summary', ''),
+                    'description': details.get('description', ''),
+                    **security_meta,
+                    **semantic_meta,
                 })
 
         

@@ -147,8 +147,10 @@ class AttackerAgent:
         method  = api_node.get("method", "GET").upper()
         variants = []
 
-        # Phát hiện path params (vd: {vehicleId}, {id}, {userId})
-        path_params = re.findall(r"\{([^}]+)\}", path)
+        # Every OpenAPI path selector can identify an object, including natural
+        # keys such as username/title/slug (not only fields ending in "id").
+        path_params = list(api_node.get("resource_selectors", []) or [])
+        path_params.extend(re.findall(r"\{([^}]+)\}", path))
 
         # Tập hợp tất cả các ID field cần thay
         id_fields = set()

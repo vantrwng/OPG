@@ -43,7 +43,8 @@ class FuzzDictionary:
 
 class AsyncFuzzEngine:
     @staticmethod
-    async def blast_api(url, method, headers, valid_payload, num_requests=50):
+    async def blast_api(url, method, headers, valid_payload, num_requests=50,
+                        query=None, cookies=None):
         """
         Gửi hàng loạt request bất đồng bộ để tìm lỗi 500.
         """
@@ -55,7 +56,11 @@ class AsyncFuzzEngine:
         async with aiohttp.ClientSession() as session:
             tasks = []
             for p in payloads:
-                tasks.append(AsyncFuzzEngine._send_request(session, url, method, headers, p))
+                tasks.append(AsyncFuzzEngine._send_request(
+                    session, url, method, headers, p,
+                    query=dict(query or {}),
+                    cookies=dict(cookies or {}),
+                ))
             
             responses = await asyncio.gather(*tasks, return_exceptions=True)
             for i, res in enumerate(responses):
@@ -66,30 +71,29 @@ class AsyncFuzzEngine:
         return results
 
     @staticmethod
-    async def _send_request(session, url, method, headers, payload):
+    async def _send_request(session, url, method, headers, payload,
+                            query=None, cookies=None):
         try:
             # Xóa Content-Length để aiohttp tự tính lại
             if headers and "Content-Length" in headers:
                 headers = dict(headers)
                 del headers["Content-Length"]
 
-            if method.upper() == "POST":
-                async with session.post(url, headers=headers, json=payload, timeout=5) as response:
-                    text = await response.text()
-                    return {"status": response.status, "text": text}
-            elif method.upper() == "PUT":
-                async with session.put(url, headers=headers, json=payload, timeout=5) as response:
-                    text = await response.text()
-                    return {"status": response.status, "text": text}
-            elif method.upper() == "PATCH":
-                async with session.patch(url, headers=headers, json=payload, timeout=5) as response:
-                    text = await response.text()
-                    return {"status": response.status, "text": text}
-            elif method.upper() == "DELETE":
-                async with session.delete(url, headers=headers, json=payload, timeout=5) as response:
-                    text = await response.text()
-                    return {"status": response.status, "text": text}
-            else:
+            method_name = method.upper()
+            if method_name not in {"POST", "PUT", "PATCH", "DELETE"}:
                 return {"status": 0, "text": "Unsupported method for body mutation"}
+            # Credentials are copied from one confirmed baseline. Passing them
+            # per request avoids sharing a cookie jar between different actors.
+            async with session.request(
+                method_name,
+                url,
+                headers=dict(headers or {}),
+                params=dict(query or {}),
+                cookies=dict(cookies or {}),
+                json=payload,
+                timeout=5,
+            ) as response:
+                text = await response.text()
+                return {"status": response.status, "text": text}
         except Exception as e:
             raise e

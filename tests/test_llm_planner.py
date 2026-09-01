@@ -364,6 +364,33 @@ class TestRandomizeVolatileFields:
         assert result["email"]    == "user@example.com"
         assert result["password"] == "SecurePass!"
 
+    def test_signin_uses_one_frozen_credential_snapshot(self):
+        planner = make_planner_no_ollama()
+        state = StateStore({
+            "username": "registered-user",
+            "password": "RegisteredPass!",
+        })
+        # A later signup branch may write fresh values into mutable memory, but
+        # it must not corrupt credentials belonging to the authenticated actor.
+        state.update("username", "different-signup-user")
+        state.update("password", "DifferentSignupPass!")
+        node = {
+            "id": "POST__auth_signin",
+            "path": "/auth/signin",
+            "method": "POST",
+            "inputs": {
+                "username": {"original": "username", "in": "body", "type": "string"},
+                "password": {"original": "password", "in": "body", "type": "string"},
+            },
+        }
+
+        payload, _ = planner.generate_payload(node, state)
+
+        assert payload == {
+            "username": "registered-user",
+            "password": "RegisteredPass!",
+        }
+
     def test_nested_dict(self):
         node  = self._make_node("/orders", "createOrder")
         state = StateStore()
@@ -394,6 +421,31 @@ class TestRandomizeVolatileFields:
         assert result["title"] == "My Product"
         assert result["price"] == 9.99
         assert result["stock"] == 100
+
+    def test_authenticated_identity_path_uses_token_principal(self):
+        planner = make_planner_no_ollama()
+        state = StateStore({
+            "actor_id": "owner-a",
+            "auth_token": "token-a",
+            "username": "owner-a-name",
+        })
+        # A public lookup may observe another username, but it must not change
+        # the identity bound to token-a.
+        state.update("username", "other-user-name")
+        node = {
+            "id": "updateUserEmail",
+            "method": "PUT",
+            "path": "/users/{username}/email",
+            "inputs": {
+                "username": {"original": "username", "in": "path", "type": "string"},
+                "email": {"original": "email", "in": "body", "type": "string"},
+            },
+        }
+
+        payload, _ = planner.generate_payload(node, state)
+
+        assert payload["username"] == "owner-a-name"
+        assert payload["email"] != "owner-a-name"
 
 
 # ── TestDefaultFuzzValue ───────────────────────────────────────────────────────

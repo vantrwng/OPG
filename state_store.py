@@ -1,10 +1,24 @@
 import re
 import copy
 import logging
+import time
 from dataclasses import dataclass, field
 from typing import Any, Dict, Optional
 
 log = logging.getLogger("executor")
+
+
+@dataclass(frozen=True)
+class AuthTransport:
+    """A verified or explicitly declared way to carry actor authentication."""
+
+    kind: str                 # cookie | header | query
+    name: str
+    value: Any
+    prefix: str = ""
+    source: str = ""
+    verified: bool = False
+    scheme_name: str = ""
 
 
 @dataclass
@@ -18,6 +32,7 @@ class ActorContext:
     credentials: Dict[str, Any] = field(default_factory=dict)
     cookies: Dict[str, Any] = field(default_factory=dict)
     owned_resources: Dict[str, set] = field(default_factory=dict)
+    auth_transports: list = field(default_factory=list)
 
     def remember_resource(self, resource_type: str, resource_id: Any) -> None:
         self.owned_resources.setdefault(resource_type, set()).add(str(resource_id))
@@ -33,7 +48,13 @@ class ActorContext:
             data["refresh_token"] = self.refresh_token
         if self.cookies:
             data["auth_cookies"] = copy.deepcopy(self.cookies)
-        return StateStore(data)
+        state = StateStore(data)
+        for transport in self.auth_transports:
+            if isinstance(transport, AuthTransport):
+                state.set_auth_transport(transport)
+            elif isinstance(transport, dict):
+                state.set_auth_transport(AuthTransport(**transport))
+        return state
 
 
 class MultiActorContextStore:
@@ -91,8 +112,31 @@ class StateStore:
     # Pattern nhận diện các ID chung (id, uuid, ref, code)
     _GENERIC_ID_PATTERN = re.compile(r"(_id|Id|uuid|_ref|Ref|_code|Code)$", re.I)
 
+    _ACTOR_IDENTITY_ALIASES = {
+        "username": {"username", "user_name", "login", "login_name"},
+        "email": {"email", "email_address"},
+        "user_id": {"user_id", "userid", "uid"},
+        "account_id": {"account_id", "accountid"},
+    }
+    _CREDENTIAL_FIELDS = frozenset({
+        "username", "user_name", "login", "login_name", "name",
+        "email", "email_address", "password", "pass", "passwd",
+        "phone", "mobile", "number",
+    })
+
     def __init__(self, initial_state: Optional[Dict[str, Any]] = None):
         self.memory: Dict[str, Any] = initial_state if initial_state else {}
+        self._actor_identity: Dict[str, Any] = {}
+        self._actor_credentials: Dict[str, Any] = {}
+        self._auth_transports: Dict[tuple, AuthTransport] = {}
+        self._auth_identity_state: Dict[str, Any] = {
+            "exists": None,
+            "verified_at": None,
+            "reason": "not verified",
+        }
+        self.freeze_actor_identity()
+        self.freeze_actor_credentials()
+        self._load_legacy_auth_transports()
         # Lưu baseline response (response hợp lệ) cho mỗi API, dùng bởi Auditor Agent
         self._baseline_responses: Dict[str, Any] = {}
 
@@ -115,16 +159,133 @@ class StateStore:
     def clone(self) -> "StateStore":
         """Deep copy — dùng khi Beam Search tạo nhánh mới."""
         new_store = StateStore(copy.deepcopy(self.memory))
+        new_store._actor_identity = copy.deepcopy(self._actor_identity)
+        new_store._actor_credentials = copy.deepcopy(self._actor_credentials)
+        new_store._auth_transports = copy.deepcopy(self._auth_transports)
+        new_store._auth_identity_state = copy.deepcopy(self._auth_identity_state)
         new_store._baseline_responses = copy.deepcopy(self._baseline_responses)
         return new_store
+
+    @staticmethod
+    def _identity_group(field_name: str) -> Optional[str]:
+        normalized = re.sub(r"[-_.\s]", "", str(field_name)).lower()
+        for group, aliases in StateStore._ACTOR_IDENTITY_ALIASES.items():
+            if normalized in {
+                re.sub(r"[-_.\s]", "", alias).lower() for alias in aliases
+            }:
+                return group
+        return None
+
+    def freeze_actor_identity(self) -> None:
+        """Snapshot the authenticated principal separately from observed data."""
+        for key, value in self.memory.items():
+            group = self._identity_group(key)
+            if group and value not in (None, ""):
+                self._actor_identity[group] = value
+
+    def get_actor_identity(self, field_name: str, default: Any = None) -> Any:
+        group = self._identity_group(field_name)
+        return self._actor_identity.get(group, default) if group else default
+
+    @staticmethod
+    def _credential_name(field_name: str) -> str:
+        normalized = re.sub(r"[-_.\s]", "", str(field_name)).lower()
+        aliases = {
+            "username": "username", "user_name": "username", "login": "username",
+            "login_name": "username", "name": "name",
+            "email": "email", "email_address": "email",
+            "password": "password", "pass": "password", "passwd": "password",
+            "phone": "phone", "mobile": "phone", "number": "phone",
+        }
+        for alias, canonical in aliases.items():
+            if re.sub(r"[-_.\s]", "", alias).lower() == normalized:
+                return canonical
+        return ""
+
+    def freeze_actor_credentials(self) -> None:
+        """Atomically snapshot credentials that belong to the current actor."""
+        snapshot = {}
+        for key, value in self.memory.items():
+            canonical = self._credential_name(key)
+            if canonical and value not in (None, ""):
+                snapshot[canonical] = value
+        if snapshot:
+            self._actor_credentials = snapshot
+
+    def get_actor_credential(self, field_name: str, default: Any = None) -> Any:
+        canonical = self._credential_name(field_name)
+        return self._actor_credentials.get(canonical, default) if canonical else default
+
+    def _load_legacy_auth_transports(self) -> None:
+        cookies = self.memory.get("auth_cookies", {})
+        if isinstance(cookies, dict):
+            for name, value in cookies.items():
+                self.set_auth_transport(AuthTransport(
+                    kind="cookie", name=str(name), value=value,
+                    source="STATE_COOKIE", verified=True,
+                ))
+        token = self.memory.get("auth_token")
+        if token:
+            self.set_auth_transport(AuthTransport(
+                kind="header",
+                name=str(self.memory.get("auth_header_name", "Authorization")),
+                value=token,
+                prefix=str(self.memory.get("auth_header_prefix", "") or "Token"),
+                source="STATE_TOKEN",
+                verified=True,
+            ))
+
+    def set_auth_transport(self, transport: AuthTransport) -> None:
+        kind = str(transport.kind).lower()
+        if kind not in {"cookie", "header", "query"} or not transport.name:
+            raise ValueError("Invalid authentication transport")
+        self._auth_transports[(kind, transport.name)] = transport
+
+    def get_auth_transports(self):
+        return list(self._auth_transports.values())
+
+    def mark_auth_identity(self, exists: bool, reason: str = "") -> None:
+        self._auth_identity_state = {
+            "exists": bool(exists),
+            "verified_at": time.time(),
+            "reason": reason or ("verified" if exists else "invalid"),
+        }
+
+    def get_auth_context(self) -> Dict[str, Any]:
+        transports = self.get_auth_transports()
+        return {
+            "actor_id": self.get("actor_id", "default"),
+            "username": self.get_actor_identity("username"),
+            "user_id": self.get_actor_identity("user_id"),
+            "email": self.get_actor_identity("email"),
+            "token_present": bool(self.get("auth_token") or self.get("auth_cookies")),
+            "transport_kinds": sorted({transport.kind for transport in transports}),
+            "transport_sources": sorted({transport.source for transport in transports if transport.source}),
+            **self._auth_identity_state,
+        }
+
+    def replace_auth_context_from(self, other: "StateStore") -> None:
+        """Replace credentials/session after re-login or actor recreation."""
+        preserved = {
+            key: value for key, value in self.memory.items()
+            if key in self._PROTECTED_KEYS
+        }
+        self.memory.clear()
+        self.memory.update(copy.deepcopy(other.memory))
+        for key, value in preserved.items():
+            self.memory.setdefault(key, value)
+        self._actor_identity = copy.deepcopy(other._actor_identity)
+        self._actor_credentials = copy.deepcopy(other._actor_credentials)
+        self._auth_transports = copy.deepcopy(other._auth_transports)
+        self._auth_identity_state = copy.deepcopy(other._auth_identity_state)
 
     def capture_successful_request(self, payload: Dict[str, Any],
                                    inputs_schema: Optional[Dict] = None) -> bool:
         """Persist request values that became valid state after a successful write.
 
-        Some create APIs only return ``status/message``. In that case the
-        resource key (for example ``book_title``) exists only in the successful
-        request and still has to be available to downstream GET/PUT/DELETE APIs.
+        Some write APIs only return protocol metadata. In that case useful
+        post-condition values exist only in the successful request and still
+        have to be available to downstream consumers.
         """
         if not isinstance(payload, dict) or not payload:
             return False
