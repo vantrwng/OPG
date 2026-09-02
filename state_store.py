@@ -139,6 +139,7 @@ class StateStore:
         self._load_legacy_auth_transports()
         # Lưu baseline response (response hợp lệ) cho mỗi API, dùng bởi Auditor Agent
         self._baseline_responses: Dict[str, Any] = {}
+        self._deleted_references: set = set()
 
     # ── Basic CRUD ──────────────────────────────────────────────────────────
 
@@ -164,7 +165,30 @@ class StateStore:
         new_store._auth_transports = copy.deepcopy(self._auth_transports)
         new_store._auth_identity_state = copy.deepcopy(self._auth_identity_state)
         new_store._baseline_responses = copy.deepcopy(self._baseline_responses)
+        new_store._deleted_references = copy.deepcopy(self._deleted_references)
         return new_store
+
+    @staticmethod
+    def _reference_name(field_name: str) -> str:
+        return re.sub(r"[-_.\s]", "", str(field_name or "")).casefold()
+
+    def is_deleted_reference(self, field_name: str, value: Any) -> bool:
+        return (self._reference_name(field_name), str(value)) in self._deleted_references
+
+    def invalidate_deleted_reference(self, field_name: str, value: Any) -> list:
+        """Tombstone a successfully deleted selector and remove its state aliases."""
+        if not field_name or value in (None, ""):
+            return []
+        canonical = self._reference_name(field_name)
+        value_text = str(value)
+        self._deleted_references.add((canonical, value_text))
+        removed = []
+        for key, current in list(self.memory.items()):
+            if self._reference_name(key) == canonical and str(current) == value_text:
+                removed.append(key)
+                self.memory.pop(key, None)
+        log.info(f"[State] TOMBSTONE {field_name}={value_text}; removed aliases={removed}")
+        return removed
 
     @staticmethod
     def _identity_group(field_name: str) -> Optional[str]:
@@ -192,9 +216,10 @@ class StateStore:
         normalized = re.sub(r"[-_.\s]", "", str(field_name)).lower()
         aliases = {
             "username": "username", "user_name": "username", "login": "username",
-            "login_name": "username", "name": "name",
+            "login_name": "username", "loginname": "username", "name": "name",
             "email": "email", "email_address": "email",
             "password": "password", "pass": "password", "passwd": "password",
+            "passphrase": "password",
             "phone": "phone", "mobile": "phone", "number": "phone",
         }
         for alias, canonical in aliases.items():
@@ -215,6 +240,10 @@ class StateStore:
     def get_actor_credential(self, field_name: str, default: Any = None) -> Any:
         canonical = self._credential_name(field_name)
         return self._actor_credentials.get(canonical, default) if canonical else default
+
+    def get_actor_credentials(self) -> Dict[str, Any]:
+        """Return a detached credential snapshot for actor context transfer."""
+        return copy.deepcopy(self._actor_credentials)
 
     def _load_legacy_auth_transports(self) -> None:
         cookies = self.memory.get("auth_cookies", {})
@@ -243,6 +272,12 @@ class StateStore:
 
     def get_auth_transports(self):
         return list(self._auth_transports.values())
+
+    def has_authentication(self) -> bool:
+        return bool(
+            self.get("auth_token") or self.get("auth_cookies")
+            or self.get_auth_transports()
+        )
 
     def mark_auth_identity(self, exists: bool, reason: str = "") -> None:
         self._auth_identity_state = {

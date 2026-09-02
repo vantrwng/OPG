@@ -2,8 +2,13 @@ import json
 import re
 
 class SpecParser:
+    _HTTP_METHODS = {
+        'get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'
+    }
+
     def __init__(self, file_path):
         self.file_path = file_path
+        self.parse_errors = []
         self.spec = self._load_spec()
         self.operations = []
 
@@ -12,6 +17,10 @@ class SpecParser:
             with open(self.file_path, 'r', encoding='utf-8') as f:
                 return json.load(f)
         except Exception as e:
+            self.parse_errors.append({
+                "stage": "generation_failed", "scope": "spec",
+                "reason": f"{type(e).__name__}: {e}",
+            })
             print(f"[SpecParser] Warning: cannot load spec file: {e}")
             return {}
 
@@ -105,6 +114,10 @@ class SpecParser:
             for p in parts: curr = curr[p]
             return curr, schema_name
         except Exception as e:
+            self.parse_errors.append({
+                "stage": "generation_failed", "scope": str(ref_str),
+                "reason": f"{type(e).__name__}: {e}",
+            })
             print(f"[SpecParser] Warning: cannot resolve ref {ref_str}: {e}")
             return {}, ""
 
@@ -174,7 +187,10 @@ class SpecParser:
         if '$ref' in schema:
             resolved, ref_name = self.resolve_ref(schema['$ref'])
             resolved_required = set(resolved.get('required', []))
-            ref_path = f"{_json_path}.{ref_name}" if _json_path else ref_name
+            # A component name describes the schema; it is not a key in the
+            # serialized JSON document.  For example, `data: $ref: Memo`
+            # produces `data.id` on the wire, not `data.Memo.id`.
+            ref_path = _json_path
             root = _root or ref_name
             props.update(self.extract_props(
                 resolved, ref_name, op_name, resolved_required, ref_path, root
@@ -221,6 +237,7 @@ class SpecParser:
                         'parent':          parent_schema or '',
                         'root':            root,
                         'type':            v.get('type', 'unknown'),
+                        'items':           dict(v.get('items', {})) if isinstance(v.get('items'), dict) else {},
                         'format':          field_format,
                         'enum':            list(v.get('enum', []) or []),
                         'default':         v.get('default'),
@@ -228,6 +245,14 @@ class SpecParser:
                         'content_media_type': v.get('contentMediaType', ''),
                         'required':        is_required,
                         'in':              'body',
+                        **{
+                            key: v[key] for key in (
+                                'minimum', 'maximum', 'exclusiveMinimum',
+                                'exclusiveMaximum', 'multipleOf', 'minLength',
+                                'maxLength', 'pattern', 'minItems', 'maxItems',
+                                'uniqueItems', 'nullable', 'readOnly', 'writeOnly',
+                            ) if key in v
+                        },
                     }
 
         elif schema.get('type') == 'array' and 'items' in schema:
@@ -288,7 +313,7 @@ class SpecParser:
 
         for path, methods in self.spec['paths'].items():
             for method, details in methods.items():
-                if not isinstance(details, dict):
+                if method.lower() not in self._HTTP_METHODS or not isinstance(details, dict):
                     continue
                 op_id = details.get('operationId', '')
                 # Tách operationId theo snake_case và camelCase
@@ -311,9 +336,12 @@ class SpecParser:
         self._resource_nouns = self._infer_resource_nouns()
         for path, methods in self.spec['paths'].items():
             for method, details in methods.items():
-                if not isinstance(details, dict): continue
+                if method.lower() not in self._HTTP_METHODS or not isinstance(details, dict):
+                    continue
                 op_id = details.get('operationId', f"{method.upper()}_{path.replace('/', '_')}")
                 inputs, outputs = {}, {}
+                response_content_types = set()
+                response_body_statuses = set()
                 req_content_type = "application/json"
                 expected_success_statuses = []
                 for response_code in (details.get('responses', {}) or {}):
@@ -321,9 +349,19 @@ class SpecParser:
                     if (code_text.isdigit() and 200 <= int(code_text) < 300) or code_text == '2XX':
                         expected_success_statuses.append(code_text)
 
-                # Trích xuất Inputs
-                if 'parameters' in details:
-                    for p in details['parameters']:
+                # Path-item parameters apply to every operation. Operation-level
+                # entries override a path-level parameter with the same (name, in).
+                merged_parameters = {}
+                for parameter in list(methods.get('parameters', []) or []) + list(details.get('parameters', []) or []):
+                    p = parameter
+                    if isinstance(p, dict) and '$ref' in p:
+                        p, _ = self.resolve_ref(p['$ref'])
+                    if not isinstance(p, dict):
+                        continue
+                    identity = (str(p.get('name', '')), str(p.get('in', 'query')))
+                    merged_parameters[identity] = p
+                if merged_parameters:
+                    for p in merged_parameters.values():
                         name = p.get('name', '')
                         location = p.get('in', 'query')  # 'path', 'query', 'header'
                         norm_name = self.normalize_word(self.apply_id_completion(name, "", op_id))
@@ -337,7 +375,15 @@ class SpecParser:
                             'enum': list(param_schema.get('enum', []) or []),
                             'default': param_schema.get('default'),
                             'required': is_required,
-                            'in': location
+                            'in': location,
+                            **{
+                                key: param_schema[key] for key in (
+                                    'minimum', 'maximum', 'exclusiveMinimum',
+                                    'exclusiveMaximum', 'multipleOf', 'minLength',
+                                    'maxLength', 'pattern', 'minItems', 'maxItems',
+                                    'uniqueItems', 'nullable',
+                                ) if key in param_schema
+                            },
                         }
                 if 'requestBody' in details:
                     try:
@@ -379,15 +425,29 @@ class SpecParser:
                                     encoded = encoding.get(original, {}) if isinstance(encoding, dict) else {}
                                     meta['content_type'] = encoded.get('contentType') or meta.get('content_media_type', '')
                     except Exception as e:
+                        self.parse_errors.append({
+                            "stage": "generation_failed", "scope": op_id,
+                            "reason": f"requestBody: {type(e).__name__}: {e}",
+                        })
                         print(f"[SpecParser] Warning: cannot parse requestBody for {op_id}: {e}")
 
-                # Trích xuất Outputs: hợp nhất tất cả 2xx response schemas
-                # (200=GET, 201=POST create, 202=accepted) để không bỏ sót API tạo mới
+                # Merge every declared 2xx response schema, including wildcard 2XX.
                 if 'responses' in details:
-                    for code in ['200', '201', '202']:
-                        if code in details['responses']:
+                    for code, response_details in (details['responses'] or {}).items():
+                        code_text = str(code).upper()
+                        is_success = (
+                            (code_text.isdigit() and 200 <= int(code_text) < 300)
+                            or code_text == '2XX'
+                        )
+                        if is_success:
                             try:
-                                content = details['responses'][code].get('content', {})
+                                if isinstance(response_details, dict) and '$ref' in response_details:
+                                    response_details, _ = self.resolve_ref(response_details['$ref'])
+                                response_details = response_details if isinstance(response_details, dict) else {}
+                                content = response_details.get('content', {}) or {}
+                                if content:
+                                    response_body_statuses.add(code_text)
+                                response_content_types.update(str(ct) for ct in content)
                                 resp_schema = None
                                 for ct in ['application/json', '*/*']:
                                     if ct in content:
@@ -406,7 +466,11 @@ class SpecParser:
                                         op_name=op_id
                                     ))
                             except Exception as e:
-                                print(f"[SpecParser] Warning: cannot parse response {code} for {op_id}: {e}")
+                                self.parse_errors.append({
+                                    "stage": "generation_failed", "scope": op_id,
+                                    "reason": f"response {code_text}: {type(e).__name__}: {e}",
+                                })
+                                print(f"[SpecParser] Warning: cannot parse response {code_text} for {op_id}: {e}")
 
                 # ── Fix 1: Passthrough outputs cho API có output rỗng ─────────────────
                 # API trả về binary/non-JSON → phản chiếu path/query param làm output.
@@ -505,6 +569,8 @@ class SpecParser:
                     'outputs': outputs,
                     'content_type': req_content_type,
                     'expected_success_statuses': expected_success_statuses,
+                    'response_content_types': sorted(response_content_types),
+                    'response_body_statuses': sorted(response_body_statuses),
                     'tags': list(details.get('tags', []) or []),
                     'summary': details.get('summary', ''),
                     'description': details.get('description', ''),

@@ -47,6 +47,7 @@ def test_attack_transport_and_metadata_are_exported(tmp_path):
             "filename": "sample.mp4", "content_type": "video/mp4",
             "size": 32, "sha256": "abc123", "source": "BUILTIN_FIXTURE",
         }},
+        elapsed_ms=123.45,
     )
 
     output_file = tmp_path / "beam.json"
@@ -56,18 +57,60 @@ def test_attack_transport_and_metadata_are_exported(tmp_path):
     ]["all_requests"][0]
 
     assert request["sent_query"] == {"expand": "details"}
-    assert request["sent_cookies"] == {"session": "private-session"}
+    assert request["sent_cookies"] == {"session": "***REDACTED***"}
+    assert request["sent_headers"]["Authorization"] == "***REDACTED***"
     assert request["actor_id"] == "attacker-b"
     assert request["attack_metadata"]["baseline"]["body"]["orderId"] == "order-a"
     assert request["attack_metadata"]["attack"]["body"]["orderId"] == "order-b"
     assert request["sent_files"]["video"]["filename"] == "sample.mp4"
+    assert request["elapsed_ms"] == 123.45
+    assert json.loads(output_file.read_text(encoding="utf-8"))["summary"]["run_elapsed_ms"] >= 0
+    assert json.loads(output_file.read_text(encoding="utf-8"))["summary"]["average_http_elapsed_ms"] == 123.45
+    serialized = output_file.read_text(encoding="utf-8")
+    assert "very-secret-token" not in serialized
+    assert "private-session" not in serialized
+
+
+def test_pipeline_timer_uses_process_start_and_freezes_at_finish(tmp_path, monkeypatch):
+    memory = KnowledgeMemory(started_at_monotonic=100.0, started_at_epoch=1_700_000_000)
+    monkeypatch.setattr("knowledge_memory.time.perf_counter", lambda: 3700.0)
+    monkeypatch.setattr("knowledge_memory.time.time", lambda: 1_700_003_600)
+    memory.finish_timer()
+    # A later export must retain the frozen one-hour pipeline duration.
+    monkeypatch.setattr("knowledge_memory.time.perf_counter", lambda: 9999.0)
+    output_file = tmp_path / "timing.json"
+    memory.export(str(output_file))
+    summary = json.loads(output_file.read_text(encoding="utf-8"))["summary"]
+    assert summary["run_elapsed_ms"] == 3_600_000
+    assert summary["run_started_at"]
+    assert summary["run_finished_at"]
+
+
+def test_replay_recipe_exports_only_structural_relationship(tmp_path):
+    memory = KnowledgeMemory()
+    memory.record_replay_recipe({
+        "endpoint_relationship": {"create": "createMemo", "target": "getMemo"},
+        "resource_type": "memo", "selector_field": "memoId",
+        "operation": "GET", "actor_relationship": "same_role_distinct_principals",
+        "token": "must-not-export", "resource_id": "runtime-id",
+    })
+    output_file = tmp_path / "beam.json"
+    memory.export(str(output_file))
+    recipe = json.loads(output_file.read_text(encoding="utf-8"))["replay_recipes"][0]
+    assert recipe["resource_type"] == "memo"
+    assert "token" not in recipe
+    assert "resource_id" not in recipe
 
 
 def test_html_report_explains_attack_and_redacts_secrets(tmp_path):
     input_file = tmp_path / "beam.json"
     output_dir = tmp_path / "report"
     data = {
-        "summary": {"total_requests": 1},
+        "summary": {
+            "total_requests": 1,
+            "run_elapsed_ms": 62500,
+            "average_http_elapsed_ms": 123.45,
+        },
         "findings": [],
         "top_strategies": [],
         "endpoint_stats": {
@@ -90,6 +133,7 @@ def test_html_report_explains_attack_and_redacts_secrets(tmp_path):
                     "actor_id": "attacker-b",
                     "attack_metadata": _attack_metadata(),
                     "chain": ["listOrders", "getOrder"],
+                    "elapsed_ms": 123.45,
                 }],
             }
         },
@@ -108,6 +152,10 @@ def test_html_report_explains_attack_and_redacts_secrets(tmp_path):
     assert "very-secret-token" not in report
     assert "owner-secret-value" not in report
     assert "private-session" not in report
+    assert "Tổng thời gian chạy" in report
+    assert "1 phút 2.5 giây" in report
+    assert "HTTP trung bình" in report
+    assert "123 ms" in report
 
 
 def test_api_grouping_prioritizes_any_2xx_over_5xx():
@@ -224,3 +272,55 @@ def test_report_renders_bootstrap_separately_and_keeps_secrets_redacted(tmp_path
     assert "effective-tier" in report
     assert "cookie:session_id" in report
     assert "never-display-this" not in report
+
+
+def test_export_redacts_response_repair_history_and_captured_state(tmp_path):
+    memory = KnowledgeMemory()
+    memory.record_request(
+        api_id="login",
+        method="POST",
+        path="https://target.test/login",
+        status=200,
+        request_payload={"password": "request-password"},
+        response_text=json.dumps({"access_token": "response-token"}),
+        repair_history=[{
+            "payload": {"passphrase": "repair-password"},
+            "response": json.dumps({"session": "repair-session"}),
+        }],
+    )
+    memory.set_top_strategies([{
+        "chain": ["login"],
+        "captured_state": {"refresh_token": "captured-token"},
+    }])
+
+    output_file = tmp_path / "beam.json"
+    memory.export(str(output_file))
+    serialized = output_file.read_text(encoding="utf-8")
+
+    for secret in (
+        "request-password", "response-token", "repair-password",
+        "repair-session", "captured-token",
+    ):
+        assert secret not in serialized
+
+
+def test_report_does_not_embed_operation_id_in_inline_javascript(tmp_path):
+    malicious_id = "x');alert('stored-xss')//"
+    input_file = tmp_path / "beam.json"
+    output_dir = tmp_path / "report"
+    input_file.write_text(json.dumps({
+        "summary": {"total_requests": 0},
+        "endpoint_stats": {
+            malicious_id: {"visits": 0, "status_counts": {}, "all_requests": []},
+        },
+        "findings": [{"api": malicious_id, "type": "BOLA", "status": 200}],
+        "top_strategies": [{"chain": [malicious_id], "score": 1}],
+    }), encoding="utf-8")
+
+    generate_html_report(str(input_file), str(output_dir))
+    report = (output_dir / "index.html").read_text(encoding="utf-8")
+
+    assert "onclick=\"showApi(" not in report
+    assert "onclick='showApi(" not in report
+    assert "class=\"api-link\"" in report or "class='api-link'" in report
+    assert "data-api-id=" in report

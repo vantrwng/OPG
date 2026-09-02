@@ -101,6 +101,7 @@ _MISSING_AUTH_IDENTITY_PATTERNS = (
     re.compile(r"none.?type.{0,80}(username|email|user_id|userid)", re.I | re.S),
     re.compile(r"(authenticated |token )?(user|identity|principal).{0,40}not found", re.I | re.S),
     re.compile(r"no (user|identity|principal).{0,40}(token|subject|sub)", re.I | re.S),
+    re.compile(r"missing (user|identity|principal) in session", re.I | re.S),
 )
 
 
@@ -109,7 +110,7 @@ def is_auth_state_mismatch(result: dict, state) -> bool:
     if not state.get("auth_token") and not state.get("auth_cookies"):
         return False
     status = int(result.get("status", 0) or 0)
-    if status not in (200, 400, 404, 500):
+    if status not in (200, 400, 401, 404, 500):
         return False
     evidence = " ".join((
         str(result.get("response_text", "")),
@@ -129,6 +130,10 @@ def is_auth_state_mismatch(result: dict, state) -> bool:
     # recreating the actor merely because an unrelated resource is absent.
     if status == 500 and re.search(
         r"none.?type.{0,80}(username|email|user_id|userid)", evidence, re.I | re.S
+    ):
+        return True
+    if status == 401 and re.search(
+        r"missing (user|identity|principal) in session", evidence, re.I | re.S
     ):
         return True
 

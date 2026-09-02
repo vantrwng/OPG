@@ -22,6 +22,7 @@ from ollama_client import OllamaClient, get_ollama_client, OLLAMA_ENABLED
 from state_store import StateStore
 from response_outcome import evaluate_response
 from field_semantics import is_reference_field, value_matches_openapi_type
+from knowledge_memory import sanitize_sensitive
 
 load_dotenv()
 log = logging.getLogger("llm_planner")
@@ -182,14 +183,26 @@ Rules:
             source_label: "OLLAMA_ARCHITECT" | "HEURISTIC" | "NONE"
         """
         method = api_node.get("method", "GET").upper()
-        if method in ("GET", "DELETE") and not api_node.get("inputs"):
+        # No declared parameters/body means an empty request payload for every
+        # method. Never ask the LLM to copy arbitrary actor context into an
+        # endpoint such as POST /system/vacuum with no requestBody schema.
+        if not api_node.get("inputs"):
             return {}, "NONE"
 
         payload = None
         source  = "HEURISTIC"
 
+        inputs = api_node.get("inputs", {}) or {}
+        if inputs and all(
+            str((meta if isinstance(meta, dict) else {}).get("in", "body")).lower()
+            in ("path", "query", "header", "cookie")
+            for meta in inputs.values()
+        ) and self._all_required_references_available(api_node, state):
+            payload = self._heuristic_generate(api_node, state, edge_deps=edge_deps)
+            source = "STATE_BINDING"
+
         # ── Ưu tiên 1: Ollama Architect ──────────────────────────────────────
-        if self._ollama:
+        if payload is None and self._ollama:
             payload = self._ollama_generate(api_node, state, edge_deps=edge_deps)
             if payload is not None:
                 source = "OLLAMA_ARCHITECT"
@@ -203,12 +216,30 @@ Rules:
         # Post-process: randomize volatile fields (email, phone, name, password)
         if payload:
             payload = self._randomize_volatile_fields(payload, api_node, state)
+            payload = self._conform_payload_to_schema(payload, api_node)
 
         log.info(
             f"  [{source}] {api_node.get('id')} → "
             f"{json.dumps(payload, ensure_ascii=False)[:120]}"
         )
         return payload, source
+
+    def _all_required_references_available(self, api_node: Dict, state: StateStore) -> bool:
+        for field_name, raw_meta in (api_node.get("inputs", {}) or {}).items():
+            meta = raw_meta if isinstance(raw_meta, dict) else {}
+            if not meta.get("required", False):
+                continue
+            original = meta.get("original", field_name)
+            wanted = {self._norm(field_name), self._norm(original)}
+            found = any(
+                self._norm(key) in wanted
+                and not state.is_deleted_reference(original, value)
+                and not state.is_deleted_reference(field_name, value)
+                for key, value in state.memory.items()
+            )
+            if not found:
+                return False
+        return True
 
     def _apply_context_bindings(
         self,
@@ -226,6 +257,8 @@ Rules:
             producer_norm = self._norm(producer)
             for state_key, state_value in state.memory.items():
                 if self._norm(state_key) == producer_norm:
+                    if state.is_deleted_reference(consumer, state_value):
+                        continue
                     dependency_values[self._norm(consumer)] = state_value
                     break
 
@@ -253,6 +286,9 @@ Rules:
                 for state_key, state_value in state.memory.items():
                     if self._norm(state_key) not in (field_norm, original_norm):
                         continue
+                    if state.is_deleted_reference(original, state_value) \
+                            or state.is_deleted_reference(field_name, state_value):
+                        continue
                     if value_matches_openapi_type(state_value, meta):
                         bound = state_value
                         break
@@ -269,7 +305,7 @@ Rules:
             # parameters must match the token principal. Attack variants bypass
             # this planner by using an explicit payload/path override.
             principal_value = None
-            if location == "path" and state.has("auth_token"):
+            if location == "path" and state.has_authentication():
                 principal_value = state.get_actor_identity(original)
                 if principal_value is None:
                     principal_value = state.get_actor_identity(field_name)
@@ -284,6 +320,9 @@ Rules:
                 for state_key, state_value in state.memory.items():
                     state_norm = self._norm(state_key)
                     if state_norm in (field_norm, original_norm):
+                        if state.is_deleted_reference(original, state_value) \
+                                or state.is_deleted_reference(field_name, state_value):
+                            continue
                         bound = state_value
                         break
 
@@ -315,6 +354,8 @@ Rules:
                     constraints.append(f"allowed: {meta['enum']}")
                 if meta.get("default") is not None:
                     constraints.append(f"default: {meta['default']!r}")
+                if ftype == "array" and isinstance(meta.get("items"), dict):
+                    constraints.append(f"items: {meta['items'].get('type', 'unknown')}")
                 constraint_text = f", {', '.join(constraints)}" if constraints else ""
                 field_lines.append(
                     f"  - {forig} (type: {ftype}, format: {ffmt}{constraint_text})"
@@ -490,8 +531,8 @@ RULES:
             + f"\n\nCURRENT STATE STORE (all available values right now):\n{state_block}\n"
             + recent_success_block
             + "\n\nCRITICAL ERROR — The previous payload caused an HTTP Error!\n"
-            f"Previous Payload:\n{json.dumps(bad_payload, indent=2, ensure_ascii=False)}\n"
-            f"Server Error (RAW RESPONSE):\n{error_resp_str}\n\n"
+            f"Previous Payload:\n{json.dumps(sanitize_sensitive(bad_payload), indent=2, ensure_ascii=False)}\n"
+            f"Server Error (SANITIZED RESPONSE):\n{sanitize_sensitive(error_resp_str)}\n\n"
             "YOUR TASK:\n"
             "1. Read the Server Error carefully.\n"
             "2. Identify explicit constraints (e.g., max length, minimum value, required format, duplicate record).\n"
@@ -569,8 +610,8 @@ RULES:
                     curr[parts[-1]] = v
                 else:
                     repaired_payload[k] = v
-                    
-            return repaired_payload
+
+            return self._conform_payload_to_schema(repaired_payload, api_node)
 
         except Exception as e:
             log.error(f"[Self-Healing] Error during analysis: {e}")
@@ -596,6 +637,8 @@ RULES:
                 prod_norm = self._norm(prod)
                 for sk, sv in state.memory.items():
                     if self._norm(sk) == prod_norm:
+                        if state.is_deleted_reference(cons, sv):
+                            continue
                         dep_map[self._norm(cons)] = sv
                         break
 
@@ -626,11 +669,14 @@ RULES:
                     for sk, sv in state.memory.items():
                         sk_norm = self._norm(sk)
                         if sk_norm == orig_norm or sk_norm == fld_norm:
+                            if state.is_deleted_reference(original, sv) \
+                                    or state.is_deleted_reference(field_name, sv):
+                                continue
                             matched_val = sv
                             break
 
                 payload[original] = matched_val if matched_val is not None \
-                    else self._default_fuzz_value(ftype, original)
+                    else self._default_fuzz_value(ftype, original, meta)
 
         return payload
 
@@ -693,7 +739,7 @@ RULES:
                 if k in (field_name, meta.get("original", field_name)):
                     input_meta = meta
                     break
-            if input_meta and input_meta.get("in") == "path" and state.has("auth_token"):
+            if input_meta and input_meta.get("in") == "path" and state.has_authentication():
                 principal_value = state.get_actor_identity(k)
                 if principal_value is not None:
                     out[k] = principal_value
@@ -726,7 +772,12 @@ RULES:
         return out
 
     @staticmethod
-    def _default_fuzz_value(ftype: str, field_name: str) -> Any:
+    def _default_fuzz_value(ftype: str, field_name: str, meta: Optional[Dict] = None) -> Any:
+        meta = meta or {}
+        if ftype == "array":
+            item_schema = meta.get("items", {}) if isinstance(meta.get("items"), dict) else {}
+            item_type = item_schema.get("type", "string")
+            return [LLMPlanner._default_fuzz_value(item_type, field_name, item_schema)]
         if ftype == "integer": return 1
         if ftype == "number":  return 0.01
         if ftype == "boolean": return True
@@ -734,3 +785,51 @@ RULES:
         if re.search(r"phone|mobile|number", field_name, re.I): return "+84900000000"
         if re.search(r"password|pass",  field_name, re.I): return "Fuzz@12345!"
         return "fuzz_test_value"
+
+    @classmethod
+    def _conform_payload_to_schema(cls, payload: Dict[str, Any], api_node: Dict) -> Dict[str, Any]:
+        """Normalize architect/heuristic values to the declared OpenAPI types."""
+        result = dict(payload)
+        for field_name, meta in (api_node.get("inputs", {}) or {}).items():
+            if not isinstance(meta, dict):
+                continue
+            original = meta.get("original", field_name)
+            key = original if original in result else field_name if field_name in result else None
+            if key is None:
+                continue
+            result[key] = cls._coerce_schema_value(result[key], meta)
+        return result
+
+    @classmethod
+    def _coerce_schema_value(cls, value: Any, schema: Dict[str, Any]) -> Any:
+        if value is None:
+            return None
+        expected = str(schema.get("type", "")).casefold()
+        if expected == "array":
+            items = schema.get("items", {}) if isinstance(schema.get("items"), dict) else {}
+            values = value if isinstance(value, list) else [value]
+            return [cls._coerce_schema_value(item, items) for item in values]
+        if expected == "object" and isinstance(value, dict):
+            properties = schema.get("properties", {}) if isinstance(schema.get("properties"), dict) else {}
+            return {
+                key: cls._coerce_schema_value(child, properties.get(key, {}))
+                for key, child in value.items()
+            }
+        try:
+            if expected == "integer" and not isinstance(value, bool):
+                return int(value)
+            if expected == "number" and not isinstance(value, bool):
+                return float(value)
+            if expected == "boolean" and isinstance(value, str):
+                normalized = value.strip().casefold()
+                if normalized in ("true", "1", "yes"):
+                    return True
+                if normalized in ("false", "0", "no"):
+                    return False
+            if expected == "string" and not isinstance(value, (dict, list)):
+                return str(value)
+        except (TypeError, ValueError):
+            # Preserve the invalid value so the normal repair loop can use the
+            # server/schema error instead of silently inventing data.
+            return value
+        return value

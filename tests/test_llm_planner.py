@@ -9,6 +9,7 @@ import pytest
 from unittest.mock import MagicMock, patch, PropertyMock
 from llm_planner import LLMPlanner
 from state_store import StateStore
+from spec_parser import SpecParser
 
 
 # ── Fixture helper ─────────────────────────────────────────────────────────────
@@ -162,6 +163,20 @@ class TestGeneratePayload:
         payload, source = planner.generate_payload(api_node, StateStore())
         assert payload == {}
         assert source == "NONE"
+
+    def test_post_without_request_schema_never_copies_context(self):
+        planner, mock_ollama = make_planner_with_mock_ollama()
+        state = StateStore({
+            "actor_id": "owner-a", "password": "secret",
+            "auth_cookies": {"session": "private"},
+        })
+        payload, source = planner.generate_payload({
+            "id": "POST__system_vacuum", "method": "POST",
+            "path": "/system/vacuum", "inputs": {},
+        }, state)
+        assert payload == {}
+        assert source == "NONE"
+        mock_ollama.architect.assert_not_called()
 
     def test_post_with_ollama(self):
         planner, mock_ollama = make_planner_with_mock_ollama()
@@ -471,6 +486,83 @@ class TestDefaultFuzzValue:
 
     def test_generic_string(self):
         assert LLMPlanner._default_fuzz_value("string", "title") == "fuzz_test_value"
+
+    def test_array_of_integer_uses_integer_items(self):
+        value = LLMPlanner._default_fuzz_value(
+            "array", "resourceIdList", {"items": {"type": "integer"}}
+        )
+        assert value == [1]
+        assert all(isinstance(item, int) for item in value)
+
+
+def test_memo_schema_preserves_array_item_type():
+    operations = SpecParser("memo_openapi.json").extract_operations()
+    create_memo = next(op for op in operations if op["id"] == "POST__memo")
+    meta = next(
+        value for value in create_memo["inputs"].values()
+        if value.get("original") == "resourceIdList"
+    )
+    assert meta["type"] == "array"
+    assert meta["items"]["type"] == "integer"
+
+
+def test_generated_payload_conforms_llm_array_items_to_openapi_integer():
+    planner, mock_ollama = make_planner_with_mock_ollama()
+    mock_ollama.architect.return_value = {
+        "content": "memo", "resourceIdList": ["12345", "67890"]
+    }
+    node = {
+        "id": "POST__memo", "method": "POST", "path": "/memo",
+        "inputs": {
+            "content": {"original": "content", "type": "string", "in": "body"},
+            "resourceidlist": {
+                "original": "resourceIdList", "type": "array", "in": "body",
+                "items": {"type": "integer"},
+            },
+        },
+    }
+    payload, source = planner.generate_payload(node, StateStore())
+    assert source == "OLLAMA_ARCHITECT"
+    assert payload["resourceIdList"] == [12345, 67890]
+
+
+def test_planner_does_not_rebind_tombstoned_reference():
+    planner = make_planner_no_ollama()
+    state = StateStore({"resourceId": 3})
+    state.invalidate_deleted_reference("resourceId", 3)
+    node = {
+        "id": "PATCH__resource_{resourceId}", "method": "PATCH",
+        "path": "/resource/{resourceId}",
+        "inputs": {
+            "resourceid": {
+                "original": "resourceId", "type": "integer", "in": "path",
+            },
+        },
+    }
+    payload, _ = planner.generate_payload(node, state)
+    assert payload["resourceId"] != 3
+
+
+def test_path_only_consumer_uses_state_binding_without_llm():
+    planner, mock_ollama = make_planner_with_mock_ollama()
+    node = {
+        "id": "GET__resource_{resourceId}_blob", "method": "GET",
+        "path": "/resource/{resourceId}/blob",
+        "inputs": {"resourceid": {
+            "original": "resourceId", "type": "integer",
+            "required": True, "in": "path",
+        }},
+    }
+    payload, source = planner.generate_payload(node, StateStore({"resourceId": 7}))
+    assert payload == {"resourceId": 7}
+    assert source == "STATE_BINDING"
+    mock_ollama.architect.assert_not_called()
+
+
+def test_blob_openapi_preserves_response_media_type():
+    operations = SpecParser("memo_openapi.json").extract_operations()
+    blob = next(op for op in operations if op["id"] == "GET__resource_{resourceId}_blob")
+    assert blob["response_content_types"] == ["application/octet-stream"]
 
 
 # ── TestNorm ───────────────────────────────────────────────────────────────────

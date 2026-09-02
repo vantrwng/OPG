@@ -20,11 +20,11 @@ graph TD
 
     %% ============ PHASE 2: FUZZING ENGINE ============
     subgraph P2 ["🔍  Phase 2 · Fuzzing Engine"]
-        HBF["hybrid_fuzzer.py\n──────────────────\nHybridBeamFuzzer\n• calculate_adaptive_bfs_threshold()\n• run_fuzzer(max_depth=10)\n• export_results()"]
+        HBF["test_strategy_engine.py\n──────────────────\nTestStrategyEngine\n• run(max_depth=10)\n• run_security_phase()"]
 
         CBM["CoverageBucketManager\n• buckets: auth / admin / crud / other\n• Top-K per bucket\n• Jaccard Diversity Penalty"]
 
-        HS["HeuristicScorer\n• 500 → +100 pts\n• auth_anomaly → +80 pts\n• state_transition → +40 pts\n• MCTS Exploration Bonus"]
+        HS["HeuristicScorer\n• 500 → +100 pts\n• auth_anomaly → +80 pts\n• state_transition → +40 pts\n• Visit-count exploration heuristic"]
     end
 
     %% ============ PHASE 3: RUNTIME EXECUTION ============
@@ -42,7 +42,7 @@ graph TD
     GB -->|"adjacency_list"| HBF
     GB -->|"render"| DOT
 
-    HBF -->|"Adaptive BFS → Beam Search"| CBM
+    HBF -->|"Beam Search từ depth 1"| CBM
     CBM -->|"score chain"| HS
     HS -->|"ranked chains"| HBF
 
@@ -63,22 +63,19 @@ graph TD
 |------|-------------|---------|
 | `spec_parser.py` | `SpecParser` | Đọc OpenAPI JSON, chuẩn hóa tên field (Id Completion, Stemming), trả về `operations[]` |
 | `graph_builder.py` | `DependencyGraphBuilder` | Xây dựng Sparse Weighted ODG bằng Inverted Semantic Index, Stopword Penalty, Directionality Scoring |
-| `hybrid_fuzzer.py` | `HybridBeamFuzzer` | Điều phối Adaptive BFS + Beam Search, chấm điểm MCTS, xuất kết quả |
-| `runtime_executor.py` | `RequestExecutor` | Thực thi request (hiện mock), rẽ nhánh StateStore, phát hiện anomaly |
+| `test_strategy_engine.py` | `TestStrategyEngine` | Điều phối Beam Search, coverage bucket và pha kiểm thử bảo mật |
+| `runtime_executor.py` | `RequestExecutor` | Gửi HTTP thật, rẽ nhánh StateStore, phân tích response |
 
 ## Các cơ chế cốt lõi
 
 ### 1. Inverted Semantic Index (O(K log K))
 Thay vì duyệt O(N² × F²), `DependencyGraphBuilder` **băm field vào semantic bucket** (`identity`, `auth/workflow`, `finance`) trước. Chỉ các field trong cùng bucket mới được so sánh chéo.
 
-### 2. Adaptive BFS → Beam Search
-`HybridBeamFuzzer.calculate_adaptive_bfs_threshold()` đo **Branching Factor** của đồ thị:
-- BF > 5 → bật Beam ngay từ độ sâu 2 (đồ thị dày)  
-- BF < 2 → chạy BFS tới độ sâu 4 (đồ thị thưa)
-- BF ∈ [2,5] → threshold = 3
+### 2. Beam Search từ độ sâu đầu tiên
+`TestStrategyEngine.calculate_adaptive_bfs_threshold()` hiện trả về cố định `0`. Vì vậy coverage bucket và giới hạn beam được áp dụng ngay từ depth 1 để khống chế bùng nổ tổ hợp.
 
-### 3. MCTS Exploration Bonus
-Mỗi node được gắn `visit_count`. Score của node = `base_score + 50 / √visit_count`. Node ít được thăm → điểm thưởng cao → Beam tự nhiên phân tán thay vì cày nát một nhánh.
+### 3. Visit-count Exploration Heuristic
+Mỗi node được gắn `visit_count`. Score của node = `base_score + 50 / √visit_count`. Đây là heuristic ưu tiên node ít được thăm, không phải triển khai đầy đủ MCTS/UCT.
 
 ### 4. Stateful Beam Branching
 Khi Beam rẽ nhánh sang API tiếp theo, `StateStore.clone()` tạo ra **bản sao bộ nhớ độc lập** cho nhánh đó. Các token/ID không bị lẫn lộn giữa các chuỗi tấn công song song.

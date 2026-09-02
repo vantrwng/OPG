@@ -11,6 +11,7 @@ import html
 from datetime import datetime
 from urllib.parse import urlsplit
 from response_outcome import evaluate_response
+from knowledge_memory import sanitize_sensitive
 
 
 # ── Hàm hỗ trợ ───────────────────────────────────────────────────────────────
@@ -24,6 +25,19 @@ def _status_color(status: int) -> str:
     if status >= 400: return "#f59e0b"
     if status >= 200: return "#10b981"
     return "#94a3b8"
+
+
+def _format_duration(milliseconds) -> str:
+    """Render a duration compactly while accepting reports without timing data."""
+    if not isinstance(milliseconds, (int, float)) or milliseconds < 0:
+        return "Không có dữ liệu"
+    if milliseconds < 1000:
+        return f"{milliseconds:.0f} ms"
+    seconds = milliseconds / 1000
+    if seconds < 60:
+        return f"{seconds:.2f} giây"
+    minutes, remaining = divmod(seconds, 60)
+    return f"{int(minutes)} phút {remaining:.1f} giây"
 
 
 def _source_badge(payload_source: str) -> str:
@@ -72,18 +86,8 @@ _SENSITIVE_KEYS = (
 
 
 def _redact_sensitive(value, key: str = ""):
-    """Che thông tin xác thực nhưng giữ hình dạng request để có thể phân tích."""
-    key_lower = str(key).lower()
-    if any(marker in key_lower for marker in _SENSITIVE_KEYS):
-        text = str(value)
-        if len(text) <= 8:
-            return "***"
-        return f"{text[:4]}...{text[-4:]}"
-    if isinstance(value, dict):
-        return {k: _redact_sensitive(v, str(k)) for k, v in value.items()}
-    if isinstance(value, list):
-        return [_redact_sensitive(v, key) for v in value]
-    return value
+    """Redact with the same policy used before JSON persistence."""
+    return sanitize_sensitive(value, key)
 
 
 def _flatten_values(value, prefix: str) -> dict:
@@ -460,7 +464,7 @@ def _build_vuln_summary_table(findings: list) -> str:
     {strat_badge}
   </td>
   <td style="padding:0.75rem 0.5rem;font-family:'Fira Code',monospace;font-size:0.82rem;color:#e2e8f0">
-    <a href="javascript:void(0)" onclick="showApi('{_esc(api)}')"
+    <a href="#" class="api-link" data-api-id="{_esc(api)}"
        style="color:#60a5fa;text-decoration:none;border-bottom:1px dashed #3b82f6">
       {_esc(api)}
     </a><br>
@@ -626,7 +630,7 @@ def _build_findings_section(findings: list) -> str:
 
   <div style="font-family:'Fira Code',monospace;font-size:0.88rem;color:#e2e8f0;margin-bottom:0.5rem">
     <span style="color:#64748b">{_esc(method)}</span>
-    &nbsp;<a href="javascript:void(0)" onclick="showApi('{_esc(api)}')"
+    &nbsp;<a href="#" class="api-link" data-api-id="{_esc(api)}"
        style="color:#60a5fa;text-decoration:none;border-bottom:1px dashed #3b82f6">{_esc(api)}</a>
     {"&nbsp;— " + _esc(path) if path else ""}
   </div>
@@ -738,6 +742,14 @@ def _build_api_detail(api: str, stats: dict) -> str:
             chain      = req.get("chain", [])
             repair_rsn = req.get("repair_reason", "")
             repair_hist= req.get("repair_history", [])
+            elapsed_label = _format_duration(req.get("elapsed_ms"))
+            timing_badge = ""
+            if req.get("elapsed_ms") is not None:
+                timing_badge = (
+                    "<span style='background:rgba(59,130,246,0.15);color:#93c5fd;"
+                    "border:1px solid #3b82f6;padding:2px 8px;border-radius:4px;"
+                    f"font-size:0.78rem;margin-left:8px'>⏱ {_esc(elapsed_label)}</span>"
+                )
 
             if successful is None:
                 legacy_outcome = evaluate_response(
@@ -827,9 +839,13 @@ def _build_api_detail(api: str, stats: dict) -> str:
     <pre class="code-block">{safe_files}</pre>
   </details>"""
             try:
-                safe_resp = _esc(json.dumps(json.loads(resp_text), indent=2, ensure_ascii=False))
+                safe_resp = _esc(json.dumps(
+                    _redact_sensitive(json.loads(resp_text)),
+                    indent=2,
+                    ensure_ascii=False,
+                ))
             except Exception:
-                safe_resp = _esc(str(resp_text))
+                safe_resp = _esc(str(_redact_sensitive(resp_text)))
 
             # Chuỗi tấn công
             chain_display = ""
@@ -848,13 +864,19 @@ def _build_api_detail(api: str, stats: dict) -> str:
             if repair_rsn:
                 hist_items = ""
                 for h in repair_hist:
-                    h_payload = _esc(json.dumps(h.get("payload", {}), indent=2, ensure_ascii=False))
+                    h_payload = _esc(json.dumps(
+                        _redact_sensitive(h.get("payload", {})),
+                        indent=2,
+                        ensure_ascii=False,
+                    ))
                     try:
                         h_resp = _esc(json.dumps(
-                            json.loads(str(h.get("response", ""))), indent=2, ensure_ascii=False
+                            _redact_sensitive(json.loads(str(h.get("response", "")))),
+                            indent=2,
+                            ensure_ascii=False,
                         ))
                     except Exception:
-                        h_resp = _esc(str(h.get("response", "")))
+                        h_resp = _esc(str(_redact_sensitive(h.get("response", ""))))
                     hist_items += (
                         f"<div style='margin-top:0.75rem;padding:0.75rem;background:rgba(0,0,0,0.2);"
                         f"border-left:3px solid #6b7280;border-radius:4px'>"
@@ -901,7 +923,7 @@ def _build_api_detail(api: str, stats: dict) -> str:
       Lần #{i+1} &nbsp; {_esc(method)} {_esc(path)}
       <span style="background:{scolor}22;color:{scolor};padding:2px 8px;border-radius:4px;
             margin-left:8px">HTTP {status_str}</span>
-      {badge}{attack_badge}{outcome_badge}
+      {badge}{attack_badge}{outcome_badge}{timing_badge}
     </h4>
   </div>
   {attack_explanation}
@@ -974,6 +996,10 @@ def generate_html_report(json_file="beam_strategies.json", output_dir="fuzzing_r
 
     summary          = data.get("summary", {})
     total_requests   = summary.get("total_requests", 0)
+    run_elapsed_label = _format_duration(summary.get("run_elapsed_ms"))
+    average_http_elapsed_label = _format_duration(summary.get("average_http_elapsed_ms"))
+    run_started_at = summary.get("run_started_at", "Không có dữ liệu")
+    run_finished_at = summary.get("run_finished_at", "Không có dữ liệu")
     total_strategies = summary.get("total_strategies_found", 0)
     top_strategies   = data.get("top_strategies", [])
     raw_findings     = data.get("findings", [])
@@ -1038,7 +1064,7 @@ def generate_html_report(json_file="beam_strategies.json", output_dir="fuzzing_r
         if not api_list:
             return "<span style='color:#64748b;font-size:0.85rem'>Không có</span>"
         return " ".join(
-            f"<a href='javascript:void(0)' onclick='showApi(\"{_esc(a)}\")' "
+            f"<a href='#' class='api-link' data-api-id='{_esc(a)}' "
             f"style='background:{bg};color:#fff;padding:3px 8px;border-radius:4px;"
             f"font-size:0.78rem;font-family:monospace;text-decoration:none;"
             f"display:inline-block;margin-bottom:4px'>{_esc(a)}</a>"
@@ -1069,7 +1095,7 @@ def generate_html_report(json_file="beam_strategies.json", output_dir="fuzzing_r
             chain_parts.append(
                 f"<div style='display:flex;align-items:center;margin-bottom:0.4rem'>"
                 f"<span style='color:#64748b;width:24px;font-size:0.8rem'>{i+1}.</span>"
-                f"<a href='javascript:void(0)' onclick='showApi(\"{_esc(n)}\")'  "
+                f"<a href='#' class='api-link' data-api-id='{_esc(n)}'  "
                 f"style='font-family:monospace;font-size:0.83rem;color:#e2e8f0;text-decoration:none;"
                 f"border-bottom:1px dashed #475569'>{_esc(n)}</a>{arrow}</div>"
             )
@@ -1077,7 +1103,9 @@ def generate_html_report(json_file="beam_strategies.json", output_dir="fuzzing_r
 
         state_html = ""
         if state:
-            safe_state = _esc(json.dumps(state, indent=2, ensure_ascii=False))
+            safe_state = _esc(json.dumps(
+                _redact_sensitive(state), indent=2, ensure_ascii=False
+            ))
             state_html = (
                 f"<details style='margin-top:0.75rem'>"
                 f"<summary style='cursor:pointer;color:#10b981;font-size:0.82rem;user-select:none'>"
@@ -1244,6 +1272,7 @@ def generate_html_report(json_file="beam_strategies.json", output_dir="fuzzing_r
       <h1>OPG — Báo cáo Bảo mật API</h1>
       <p class="subtitle">Hệ thống kiểm thử BOLA/IDOR đa tác nhân — Tìm kiếm chùm tia có trạng thái</p>
       <p class="meta">Thời điểm tạo: {generated_at}</p>
+      <p class="meta">Bắt đầu chạy: {_esc(run_started_at)} · Kết thúc pipeline: {_esc(run_finished_at)}</p>
     </header>
 
     {pipeline_html}
@@ -1273,6 +1302,14 @@ def generate_html_report(json_file="beam_strategies.json", output_dir="fuzzing_r
       <div class="stat-card">
         <div class="stat-num" style="color:var(--muted)">{total_strategies}</div>
         <div class="stat-label">Chuỗi tấn công</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="color:var(--blue);font-size:1.35rem">{run_elapsed_label}</div>
+        <div class="stat-label">Tổng thời gian chạy</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="color:var(--green);font-size:1.35rem">{average_http_elapsed_label}</div>
+        <div class="stat-label">HTTP trung bình</div>
       </div>
     </div>
 
@@ -1361,6 +1398,12 @@ def generate_html_report(json_file="beam_strategies.json", output_dir="fuzzing_r
     if (el) {{ el.style.display = 'block'; window.scrollTo(0, 0); }}
     else {{ alert('Khong co du lieu cho: ' + apiId); showDashboard(); }}
   }}
+  document.addEventListener('click', function(event) {{
+    var link = event.target.closest('.api-link');
+    if (!link) return;
+    event.preventDefault();
+    showApi(link.dataset.apiId || '');
+  }});
 </script>
 </body>
 </html>"""

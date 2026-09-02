@@ -4,19 +4,10 @@ Pytest configuration và fixtures
 import pytest
 import os
 import sys
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 # Add parent directory to path để import modules
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-
-@pytest.fixture
-def mock_openai_client():
-    """Mock OpenAI client fixture"""
-    with patch('llm_planner.OpenAI') as mock:
-        client = MagicMock()
-        mock.return_value = client
-        yield client
 
 
 @pytest.fixture

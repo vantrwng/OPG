@@ -434,11 +434,54 @@ class ActorBootstrapper:
                 return result
             states.append(state)
 
+        # BOLA requires two distinct principals with the same effective role.
+        # A common bootstrap policy creates the first account as HOST and only
+        # lets that HOST provision USER accounts. In that case create a third
+        # principal matching the non-privileged actor instead of pairing HOST
+        # with USER (which belongs to BFLA, not BOLA).
+        role_groups = {}
+        for state in states:
+            role = str(state.get("actor_role", "")).strip().casefold()
+            if role and role not in {"unknown", "anonymous", "none", "null"}:
+                role_groups.setdefault(role, []).append(state)
+        same_role_pair = next(
+            (group[:2] for group in role_groups.values() if len(group) >= 2),
+            None,
+        )
+        desired_role = str(states[-1].get("actor_role", "")).strip() if states else ""
+        desired_role_known = desired_role.casefold() not in {
+            "", "unknown", "anonymous", "none", "null"
+        }
+        if same_role_pair is None and len(states) >= 2 and desired_role_known:
+            requested_role = (
+                requested_roles[-1] if requested_roles else next(
+                    (value for value in declared_roles
+                     if str(value).casefold() == str(desired_role).casefold()),
+                    desired_role,
+                )
+            )
+            extra_state, extra_error = self._bootstrap_actor(
+                "user_c", signup, login, base_state or {},
+                role_field=role_field, requested_role=requested_role,
+            )
+            if extra_state is None:
+                extra_state, extra_error = self._provision_actor(
+                    "user_c", creator_state=states[0], signup=signup, login=login,
+                    base_state=base_state or {}, requested_role=requested_role,
+                )
+            if extra_state is not None:
+                states.append(extra_state)
+                if str(extra_state.get("actor_role", "")).casefold() == \
+                        str(desired_role).casefold():
+                    same_role_pair = [states[-2], extra_state]
+            elif extra_error:
+                log.warning(f"[Bootstrap] Same-role BOLA pair unavailable: {extra_error}")
+
         for state in states:
             actor = self._actor_from_state(state)
             result.actors.add(actor)
         result.actors.add(ActorContext(actor_id="anonymous", role="anonymous"))
-        result.owner_state = states[0]
+        result.owner_state = same_role_pair[0] if same_role_pair else states[0]
         result.success = True
         result.events = list(self.audit_events)
         return result
@@ -549,14 +592,16 @@ class ActorBootstrapper:
 
     @staticmethod
     def _has_auth_session(state: StateStore) -> bool:
-        return bool(state.get("auth_token") or state.get("auth_cookies"))
+        return state.has_authentication()
 
     @staticmethod
     def _actor_from_state(state: StateStore) -> ActorContext:
-        credential_keys = (
-            "email", "username", "name", "password", "phone", "mobile", "number", "user_id"
-        )
-        credentials = {key: state.get(key) for key in credential_keys if state.get(key) is not None}
+        credentials = {
+            str(key): value for key, value in state.memory.items()
+            if ActorBootstrapper._credential_group(key) and value not in (None, "")
+        }
+        for key, value in state.get_actor_credentials().items():
+            credentials.setdefault(key, value)
         return ActorContext(
             actor_id=state.get("actor_id"),
             role=state.get("actor_role") or "unknown",

@@ -8,8 +8,14 @@ from state_store import StateStore
 def _response(status=200, body=None):
     response = MagicMock()
     response.status_code = status
-    response.text = "{}" if body is None else __import__("json").dumps(body)
-    response.json.return_value = {} if body is None else body
+    response.headers = {}
+    response.cookies = RequestsCookieJar()
+    if body is None:
+        response.text = ""
+        response.json.side_effect = ValueError("empty response body")
+    else:
+        response.text = __import__("json").dumps(body)
+        response.json.return_value = body
     return response
 
 
@@ -59,6 +65,142 @@ def test_get_query_inputs_are_sent_as_params():
     kwargs = executor._session.request.call_args.kwargs
     assert kwargs["params"] == {"ownerId": "user-b"}
     assert result["sent_query"] == {"ownerId": "user-b"}
+
+
+def test_binary_200_matching_openapi_media_type_is_successful():
+    planner = MagicMock()
+    planner.generate_payload.return_value = ({"resourceId": 7}, "STATE_BINDING")
+    executor = RequestExecutor("https://target.test", planner=planner)
+    response = MagicMock()
+    response.status_code = 200
+    response.text = "OPG_BINARY_FIXTURE"
+    response.headers = {"Content-Type": "application/octet-stream"}
+    response.cookies.get_dict.return_value = {}
+    response.json.side_effect = ValueError("binary response")
+    executor._session.request = MagicMock(return_value=response)
+
+    result = executor.execute_request({
+        "id": "GET__resource_{resourceId}_blob", "method": "GET",
+        "path": "/resource/{resourceId}/blob",
+        "inputs": {"resourceid": {
+            "original": "resourceId", "type": "integer", "required": True, "in": "path",
+        }},
+        "outputs": {"resourceid": {"original": "resourceId", "_passthrough": True}},
+        "response_content_types": ["application/octet-stream"],
+        "expected_success_statuses": ["200"],
+    }, StateStore({"resourceId": 7}), allow_repair=False)
+
+    assert result["status"] == 200
+    assert result["successful"] is True
+    assert result["semantic_failure"] is False
+    assert result["schema_valid"] is True
+
+
+def test_declared_json_body_must_parse_even_without_flattened_outputs():
+    valid, errors = RequestExecutor._validate_response_contract(
+        response_json=None,
+        response_text="not-json",
+        content_type="application/json",
+        outputs={},
+        status=200,
+        expected_content_types=["application/json"],
+        response_body_statuses=["200"],
+    )
+
+    assert valid is False
+    assert errors == ["OpenAPI declares a response body but JSON parsing failed"]
+
+
+def test_successful_delete_tombstones_terminal_path_resource():
+    planner = MagicMock()
+    planner.generate_payload.return_value = (
+        {"memoId": 10, "resourceId": 3}, "HEURISTIC"
+    )
+    executor = RequestExecutor("https://target.test", planner=planner)
+    executor._session.request = MagicMock(return_value=_response(204, None))
+    state = StateStore({"memoId": 10, "resourceId": 3})
+    result = executor.execute_request({
+        "id": "DELETE__memo_{memoId}_resource_{resourceId}",
+        "method": "DELETE", "path": "/memo/{memoId}/resource/{resourceId}",
+        "expected_success_statuses": ["204"],
+        "inputs": {
+            "memoid": {"original": "memoId", "in": "path", "type": "integer"},
+            "resourceid": {"original": "resourceId", "in": "path", "type": "integer"},
+        },
+    }, state)
+
+    assert result["successful"] is True
+    assert state.get("memoId") == 10
+    assert state.get("resourceId") is None
+    assert state.is_deleted_reference("resource_id", 3)
+    assert result["deleted_references"][0]["resource_id"] == "3"
+
+
+def test_204_without_declared_body_accepts_passthrough_outputs():
+    planner = MagicMock()
+    planner.generate_payload.return_value = ({"resourceId": 7}, "STATE_BINDING")
+    executor = RequestExecutor("https://target.test", planner=planner)
+    executor._session.request = MagicMock(return_value=_response(204))
+
+    result = executor.execute_request({
+        "id": "archiveResource",
+        "method": "DELETE",
+        "path": "/resources/{resourceId}",
+        "inputs": {"resourceid": {
+            "original": "resourceId", "in": "path", "type": "integer",
+        }},
+        "outputs": {"resourceid": {
+            "original": "resourceId", "_passthrough": True,
+        }},
+        "expected_success_statuses": ["204"],
+        "response_content_types": [],
+        "response_body_statuses": [],
+    }, StateStore({"resourceId": 7}), allow_repair=False)
+
+    assert result["successful"] is True
+    assert result["schema_valid"] is True
+
+
+def test_transport_follows_same_origin_redirect_and_preserves_auth():
+    executor = RequestExecutor("https://target.test", planner=MagicMock())
+    redirect = _response(307)
+    redirect.headers = {"Location": "/v2/resources"}
+    executor._session.request = MagicMock(side_effect=[redirect, _response(200, {})])
+    prepared = executor.prepare_request(
+        {"id": "resource", "method": "GET", "path": "/v1/resources"},
+        StateStore({"auth_token": "secret", "auth_header_prefix": "Bearer"}),
+        {}, "TEST",
+    )
+
+    response = executor._fire_prepared_request(prepared)
+
+    assert response.status_code == 200
+    assert executor._session.request.call_count == 2
+    followup = executor._session.request.call_args.kwargs
+    assert followup["url"] == "https://target.test/v2/resources"
+    assert followup["headers"]["Authorization"] == "Bearer secret"
+    assert followup["allow_redirects"] is False
+
+
+def test_transport_refuses_cross_origin_redirect_with_auth():
+    executor = RequestExecutor("https://target.test", planner=MagicMock())
+    redirect = _response(302)
+    redirect.headers = {"Location": "https://attacker.test/collect"}
+    executor._session.request = MagicMock(return_value=redirect)
+    prepared = executor.prepare_request(
+        {"id": "resource", "method": "GET", "path": "/resources"},
+        StateStore({
+            "auth_token": "secret",
+            "auth_header_prefix": "Bearer",
+            "auth_cookies": {"session": "private"},
+        }),
+        {}, "TEST",
+    )
+
+    response = executor._fire_prepared_request(prepared)
+
+    assert response.status_code == 302
+    assert executor._session.request.call_count == 1
 
 
 def test_payload_patch_constrains_one_field_without_replacing_generated_payload():
@@ -290,6 +432,27 @@ def test_http_200_with_fail_body_is_application_failure():
     assert state.get("username") is None
 
 
+def test_request_and_response_logs_redact_credentials(caplog):
+    executor = RequestExecutor("https://target.test", planner=MagicMock())
+    executor._session.request = MagicMock(return_value=_response(400, {
+        "access_token": "response-secret-token",
+        "message": "invalid password",
+    }))
+
+    with caplog.at_level("DEBUG", logger="executor"):
+        executor.execute_request(
+            {"id": "login", "method": "POST", "path": "/login", "inputs": {}},
+            StateStore(),
+            payload_override={"password": "request-secret-password"},
+            payload_source_override="TEST",
+            allow_repair=False,
+        )
+
+    assert "request-secret-password" not in caplog.text
+    assert "response-secret-token" not in caplog.text
+    assert "***REDACTED***" in caplog.text
+
+
 def test_uses_declared_openapi_2xx_statuses():
     planner = MagicMock()
     planner.generate_payload.return_value = ({"email": "new@example.test"}, "HEURISTIC")
@@ -343,6 +506,35 @@ def test_transport_rebinds_repair_path_to_authenticated_principal():
     assert result["sent_payload"]["username"] == "owner-a"
 
 
+def test_cookie_authenticated_repair_path_stays_bound_to_principal():
+    executor = RequestExecutor("https://target.test", planner=MagicMock())
+    executor._session.request = MagicMock(return_value=_response(204))
+    state = StateStore({
+        "auth_cookies": {"session": "owner-session"},
+        "username": "owner-a",
+    })
+    state.update("username", "observed-user-b")
+
+    result = executor.execute_request(
+        {
+            "id": "updateEmail", "method": "PUT",
+            "path": "/users/{username}/email",
+            "inputs": {
+                "username": {"original": "username", "in": "path"},
+                "email": {"original": "email", "in": "body"},
+            },
+            "expected_success_statuses": ["204"],
+        },
+        state,
+        payload_override={"username": "user-b", "email": "new@example.test"},
+        payload_source_override="LLM_REPAIR",
+        allow_repair=False,
+    )
+
+    assert result["url"] == "https://target.test/users/owner-a/email"
+    assert result["sent_cookies"] == {"session": "owner-session"}
+
+
 def test_auth_state_mismatch_recovers_identity_before_retry():
     planner = MagicMock()
     planner.generate_payload.return_value = ({}, "NONE")
@@ -380,6 +572,37 @@ def test_auth_state_mismatch_recovers_identity_before_retry():
     assert result["auth_recovery"]["recovered"] is True
     assert state.get("auth_token") == "fresh-token"
     assert state.get_auth_context()["exists"] is True
+
+
+def test_missing_user_in_cookie_session_triggers_relogin_and_retry():
+    planner = MagicMock()
+    planner.generate_payload.return_value = ({}, "NONE")
+    executor = RequestExecutor("https://target.test", planner=planner)
+    executor._session.request = MagicMock(side_effect=[
+        _response(401, {"error": "Missing user in session"}),
+        _response(200, {"data": {}}),
+    ])
+    state = StateStore({
+        "actor_id": "owner-a",
+        "auth_cookies": {"memos_session": "stale-session"},
+    })
+
+    def recover(auth_state, _api_node, _failed_result):
+        auth_state.update("auth_cookies", {"memos_session": "fresh-session"})
+        return True, "session refreshed"
+
+    executor.auth_recovery_handler = recover
+    result = executor.execute_request({
+        "id": "POST__system_vacuum", "method": "POST",
+        "path": "/system/vacuum", "inputs": {},
+        "expected_success_statuses": ["200"],
+    }, state)
+
+    assert executor._session.request.call_count == 2
+    assert executor._session.request.call_args_list[0].kwargs.get("json") is None
+    assert executor._session.request.call_args_list[1].kwargs.get("json") is None
+    assert result["successful"] is True
+    assert result["auth_recovery"]["recovered"] is True
 
 
 def test_generic_server_error_does_not_trigger_auth_recovery():

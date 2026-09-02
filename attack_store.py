@@ -24,7 +24,16 @@ Cấu trúc dữ liệu:
 import time
 import threading
 import logging
-from typing import Any, Dict, List, Optional
+import re
+from typing import Any, Dict, List, Optional, Tuple
+
+from reference_engine import (
+    ObservedValue,
+    ObservedValuePool,
+    ProvenanceChain,
+    ProvenanceLevel,
+    iter_scalar_observations,
+)
 
 log = logging.getLogger("attack_store")
 
@@ -38,10 +47,13 @@ class AttackStore:
     Dùng cho Reference Forge: lấy ID của user A để thử truy cập bằng token user B.
     """
 
-    def __init__(self):
-        self._store: Dict[str, List[Dict[str, Any]]] = {}
+    def __init__(self, value_pool: Optional[ObservedValuePool] = None):
+        # Deterministic authorization evidence is indexed by the identity of
+        # the resource, not by the operation which happened to observe it.
+        self._store: Dict[Tuple[str, str, str], List[Dict[str, Any]]] = {}
         self._lock  = threading.Lock()
         self._total = 0
+        self.value_pool = value_pool or ObservedValuePool()
 
     # ── Ghi dữ liệu ──────────────────────────────────────────────────────────
 
@@ -54,6 +66,13 @@ class AttackStore:
         user_context: Optional[Dict] = None,
         owner_actor_id: str = "",
         confidence: float = 0.5,
+        resource_type: str = "",
+        owner_role: str = "",
+        provenance: str = "OBSERVED_RESPONSE",
+        marker: str = "",
+        producer_method: str = "",
+        schema: Optional[Dict[str, Any]] = None,
+        provenance_chain: Optional[ProvenanceChain] = None,
     ) -> None:
         """
         Lưu một resource ID vào store.
@@ -71,22 +90,60 @@ class AttackStore:
 
         context = user_context or {}
         inferred_actor = owner_actor_id or str(context.get("actor_id", ""))
+        normalized_type = self.normalize_resource_type(resource_type or api_id)
+        selector = self.normalize_selector(field_name, normalized_type)
+        key = (normalized_type, selector, inferred_actor)
+        chain = provenance_chain or ProvenanceChain.single(
+            "resource_store", provenance, confidence,
+            relation=normalized_type, actor_id=inferred_actor,
+            operation_id=api_id,
+        )
         entry = {
             "resource_id":  str(resource_id),
+            "resource_value": resource_id,
             "field_name":   field_name,
             "endpoint":     endpoint,
             "producer_api": api_id,
             "owner_actor_id": inferred_actor,
             "ownership_confidence": max(0.0, min(float(confidence), 1.0)),
+            "resource_type": normalized_type,
+                "selector_field": selector,
+                "observed_field": str(field_name),
+            "owner_role": str(owner_role or context.get("actor_role", "")),
+            # Keep the source label for report/backward compatibility; all
+            # eligibility decisions use the normalized effective level below.
+            "provenance": str(provenance or "OBSERVED_RESPONSE").upper(),
+            "provenance_level": chain.level.name.lower(),
+            "provenance_chain": chain.as_dict(),
+            "marker": str(marker or ""),
+            "producer_method": str(producer_method or "").upper(),
             "user_context": context,
             "timestamp":    time.time(),
         }
 
-        with self._lock:
-            if api_id not in self._store:
-                self._store[api_id] = []
+        inferred_schema = dict(schema or {})
+        if not inferred_schema.get("type"):
+            inferred_schema["type"] = (
+                "integer" if isinstance(resource_id, int) and not isinstance(resource_id, bool)
+                else "number" if isinstance(resource_id, float)
+                else "string"
+            )
+        self.value_pool.observe(ObservedValue(
+            value=resource_id,
+            schema=inferred_schema,
+            location="response",
+            field_path=str(field_name),
+            provenance=chain,
+            operation_id=api_id,
+            actor_id=inferred_actor,
+            relationship=normalized_type,
+        ))
 
-            bucket = self._store[api_id]
+        with self._lock:
+            if key not in self._store:
+                self._store[key] = []
+
+            bucket = self._store[key]
 
             # Preserve provenance when the same value appears under different
             # selectors or actors. Authorization evidence is actor-relative.
@@ -117,6 +174,11 @@ class AttackStore:
         id_fields:    Optional[List[str]] = None,
         owner_actor_id: str = "",
         confidence: float = 0.5,
+        resource_type: str = "",
+        owner_role: str = "",
+        provenance: str = "OBSERVED_RESPONSE",
+        marker: str = "",
+        producer_method: str = "",
     ) -> int:
         """
         Tự động harvest các field ID từ response JSON và lưu vào store.
@@ -148,6 +210,11 @@ class AttackStore:
                                 api_id, k, v, endpoint, user_context,
                                 owner_actor_id=owner_actor_id,
                                 confidence=confidence,
+                                resource_type=resource_type,
+                                owner_role=owner_role,
+                                provenance=provenance,
+                                marker=marker,
+                                producer_method=producer_method,
                             )
                             count += 1
                     elif isinstance(v, dict):
@@ -186,8 +253,14 @@ class AttackStore:
         Returns:
             List[dict]: Danh sách entry phù hợp
         """
+        requested_type = self.normalize_resource_type(api_id)
         with self._lock:
-            bucket = self._store.get(api_id, [])
+            canonical_field = self.normalize_selector(field_name, requested_type) if field_name else ""
+            bucket = [
+                entry for (rtype, selector, _owner), entries in self._store.items()
+                if rtype == requested_type and (not canonical_field or selector == canonical_field)
+                for entry in entries
+            ]
 
         results = []
         own_user_id  = str(own_context.get("user_id", "")) if own_context else ""
@@ -223,10 +296,82 @@ class AttackStore:
 
         return results
 
+    def get_foreign_resources(
+        self,
+        resource_type: str,
+        selector_field: str,
+        attacker_actor_id: str,
+        attacker_role: str = "",
+        limit: int = 5,
+        require_created: bool = True,
+    ) -> List[Dict[str, Any]]:
+        """Return confirmation-eligible resources owned by another same-role actor."""
+        normalized_attacker_role = str(attacker_role or "").strip().casefold()
+        unknown_roles = {"", "unknown", "anonymous", "none", "null"}
+        if require_created and normalized_attacker_role in unknown_roles:
+            return []
+        key_type = self.normalize_resource_type(resource_type)
+        canonical_selector = self.normalize_selector(selector_field, key_type)
+        with self._lock:
+            candidates = [
+                entry for (rtype, selector, owner), entries in self._store.items()
+                if rtype == key_type and selector == canonical_selector
+                and owner and owner != str(attacker_actor_id)
+                for entry in entries
+            ]
+        results = []
+        for entry in sorted(candidates, key=lambda item: item["timestamp"], reverse=True):
+            if require_created and ProvenanceLevel.parse(
+                entry.get("provenance_chain", {}).get("level", entry.get("provenance_level", entry.get("provenance")))
+            ) < ProvenanceLevel.AUTHORITATIVE:
+                continue
+            owner_role = str(entry.get("owner_role", "")).strip().casefold()
+            if require_created and owner_role in unknown_roles:
+                continue
+            if normalized_attacker_role and owner_role != normalized_attacker_role:
+                continue
+            results.append(dict(entry))
+            if len(results) >= limit:
+                break
+        return results
+
+    def invalidate(
+        self,
+        resource_type: str,
+        selector_field: str,
+        resource_id: Any,
+        owner_actor_id: str = "",
+    ) -> int:
+        """Remove a resource proven deleted by a successful owner workflow."""
+        key_type = self.normalize_resource_type(resource_type)
+        selector = self.normalize_selector(selector_field, key_type)
+        removed = 0
+        with self._lock:
+            for key in list(self._store):
+                rtype, stored_selector, owner = key
+                if rtype != key_type or stored_selector != selector:
+                    continue
+                if owner_actor_id and owner != str(owner_actor_id):
+                    continue
+                before = len(self._store[key])
+                self._store[key] = [
+                    entry for entry in self._store[key]
+                    if str(entry.get("resource_id")) != str(resource_id)
+                ]
+                removed += before - len(self._store[key])
+                if not self._store[key]:
+                    self._store.pop(key, None)
+            self._total = max(0, self._total - removed)
+        return removed
+
     def get_all_ids_for_api(self, api_id: str) -> List[Dict[str, Any]]:
         """Trả về TẤT CẢ entries cho một api_id (kể cả của chính mình)."""
         with self._lock:
-            return list(self._store.get(api_id, []))
+            requested_type = self.normalize_resource_type(api_id)
+            return [
+                entry for (rtype, _selector, _owner), entries in self._store.items()
+                if rtype == requested_type for entry in entries
+            ]
 
     def get_candidate_ids(
         self,
@@ -273,6 +418,78 @@ class AttackStore:
         log.debug(f"[AttackStore] candidate IDs for field={field_name}: {result}")
         return result
 
+    def observe_operation(
+        self,
+        operation: Dict[str, Any],
+        request_values: Optional[Dict[str, Any]] = None,
+        response_value: Any = None,
+        actor_id: str = "",
+        successful: bool = True,
+    ) -> None:
+        """Harvest schema-linked request and response values from this run."""
+        operation_id = str(operation.get("id", ""))
+        relationship = self.normalize_resource_type(
+            operation.get("resource_type") or operation.get("path") or operation_id
+        )
+        request_values = request_values or {}
+        for normalized, raw_schema in (operation.get("inputs", {}) or {}).items():
+            schema = dict(raw_schema) if isinstance(raw_schema, dict) else {}
+            name = str(schema.get("original", normalized))
+            path = str(schema.get("json_path") or name)
+            value = self._value_from_request(request_values, schema.get("in", "body"), name, path)
+            if value in (None, "") or isinstance(value, (dict, list)):
+                continue
+            self.value_pool.observe(ObservedValue(
+                value=value, schema=schema, location=str(schema.get("in", "body")),
+                field_path=path,
+                provenance=ProvenanceChain.single(
+                    "successful_request" if successful else "attempted_request",
+                    ProvenanceLevel.OBSERVED if successful else ProvenanceLevel.DERIVED,
+                    0.75 if successful else 0.35, relation=relationship,
+                    actor_id=actor_id, operation_id=operation_id,
+                ),
+                operation_id=operation_id, actor_id=actor_id,
+                relationship=relationship,
+            ))
+
+        output_by_path = {
+            str(meta.get("json_path")): dict(meta)
+            for meta in (operation.get("outputs", {}) or {}).values()
+            if isinstance(meta, dict) and meta.get("json_path")
+        }
+        for path, value in iter_scalar_observations(response_value):
+            schema = output_by_path.get(path, {})
+            if not schema:
+                schema = {
+                    "type": "boolean" if isinstance(value, bool)
+                    else "integer" if isinstance(value, int)
+                    else "number" if isinstance(value, float)
+                    else "string"
+                }
+            self.value_pool.observe(ObservedValue(
+                value=value, schema=schema, location="response", field_path=path,
+                provenance=ProvenanceChain.single(
+                    "successful_response", ProvenanceLevel.OBSERVED, 0.8,
+                    relation=relationship, actor_id=actor_id,
+                    operation_id=operation_id,
+                ),
+                operation_id=operation_id, actor_id=actor_id,
+                relationship=relationship,
+            ))
+
+    @staticmethod
+    def _value_from_request(values: Dict[str, Any], location: str, name: str, path: str) -> Any:
+        if str(location).lower() != "body":
+            return values.get(name, values.get(path))
+        current: Any = values
+        for part in [part for part in re.split(r"\.|\[\]", path) if part]:
+            if isinstance(current, list):
+                current = current[0] if current else None
+            if not isinstance(current, dict):
+                return values.get(name)
+            current = current.get(part)
+        return current
+
     # ── Stats & Debug ─────────────────────────────────────────────────────────
 
     @property
@@ -280,20 +497,43 @@ class AttackStore:
         return self._total
 
     def stats(self) -> Dict[str, int]:
-        """Trả về số lượng entry per api_id."""
+        """Return counts by stable resource/selector/owner key."""
         with self._lock:
-            return {k: len(v) for k, v in self._store.items()}
+            return {"|".join(k): len(v) for k, v in self._store.items()}
 
     def export_snapshot(self) -> Dict[str, Any]:
         """Export toàn bộ store để ghi vào báo cáo."""
         with self._lock:
             return {
                 "total_entries": self._total,
-                "by_api": {k: list(v) for k, v in self._store.items()},
+                "by_resource": {"|".join(k): list(v) for k, v in self._store.items()},
             }
 
     def __repr__(self) -> str:
-        return f"AttackStore(total={self._total}, apis={list(self._store.keys())})"
+        return f"AttackStore(total={self._total}, resources={list(self._store.keys())})"
+
+    @staticmethod
+    def normalize_resource_type(value: str) -> str:
+        """Normalize operation ids and paths into a reusable resource family."""
+        text = re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", str(value or "")).lower()
+        text = re.sub(r"\{[^}]+\}", "", text)
+        tokens = [t for t in re.split(r"[^a-z0-9]+", text) if t]
+        actions = {
+            "create", "add", "new", "post", "get", "fetch", "read", "list",
+            "find", "update", "edit", "modify", "patch", "delete", "remove",
+            "api", "v1", "v2", "v3",
+        }
+        meaningful = [token for token in tokens if token not in actions]
+        resource = meaningful[-1] if meaningful else (tokens[-1] if tokens else "resource")
+        return resource[:-1] if len(resource) > 3 and resource.endswith("s") else resource
+
+    @staticmethod
+    def normalize_selector(value: str, resource_type: str = "") -> str:
+        selector = re.sub(r"[^a-z0-9]", "", str(value or "").casefold())
+        prefix = re.sub(r"[^a-z0-9]", "", str(resource_type or "").casefold())
+        if prefix and selector.startswith(prefix):
+            selector = selector[len(prefix):]
+        return selector or "id"
 
 
 # ── Singleton dùng chung toàn project ─────────────────────────────────────────

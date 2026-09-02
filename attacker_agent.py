@@ -21,6 +21,11 @@ from typing import Any, Dict, List, Optional
 from ollama_client import OllamaClient, get_ollama_client, OLLAMA_ENABLED
 from attack_store import AttackStore, get_attack_store
 from state_store import StateStore
+from reference_engine import (
+    ProvenanceLevel,
+    ReferenceDiscovery,
+    RequestTransformer,
+)
 
 log = logging.getLogger("attacker_agent")
 
@@ -72,6 +77,8 @@ class AttackerAgent:
         self.client       = client or get_ollama_client()
         self.attack_store = attack_store or get_attack_store()
         self.max_variants = max_variants
+        self.reference_discovery = ReferenceDiscovery(self.attack_store.value_pool)
+        self.generation_errors: List[Dict[str, str]] = []
 
     # ── Entry point chính ─────────────────────────────────────────────────────
 
@@ -99,6 +106,7 @@ class AttackerAgent:
         log.info(f"\033[95m[AttackerAgent]\033[0m Generating attacks for {api_id}")
 
         variants: List[AttackVariant] = []
+        self.generation_errors = []
 
         # ── Chiến lược 11: ID Substitution ────────────────────────────────────
         try:
@@ -106,7 +114,9 @@ class AttackerAgent:
             variants.extend(id_subs)
             log.info(f"[AttackerAgent] ID Substitution → {len(id_subs)} variants")
         except Exception as e:
-            log.error(f"[AttackerAgent] ID Substitution error: {e}")
+            error = {"stage": "generation_failed", "strategy": "reference_transform", "reason": f"{type(e).__name__}: {e}"}
+            self.generation_errors.append(error)
+            log.exception(f"[AttackerAgent] ID Substitution error: {e}")
 
         # ── Chiến lược 12: Parameter Pollution ────────────────────────────────
         try:
@@ -114,7 +124,9 @@ class AttackerAgent:
             variants.extend(param_polls)
             log.info(f"[AttackerAgent] Parameter Pollution → {len(param_polls)} variants")
         except Exception as e:
-            log.error(f"[AttackerAgent] Parameter Pollution error: {e}")
+            error = {"stage": "generation_failed", "strategy": "parameter_pollution", "reason": f"{type(e).__name__}: {e}"}
+            self.generation_errors.append(error)
+            log.exception(f"[AttackerAgent] Parameter Pollution error: {e}")
 
         # ── Chiến lược 13: Reference Forge ────────────────────────────────────
         try:
@@ -122,7 +134,9 @@ class AttackerAgent:
             variants.extend(ref_forges)
             log.info(f"[AttackerAgent] Reference Forge → {len(ref_forges)} variants")
         except Exception as e:
-            log.error(f"[AttackerAgent] Reference Forge error: {e}")
+            error = {"stage": "generation_failed", "strategy": "foreign_reference", "reason": f"{type(e).__name__}: {e}"}
+            self.generation_errors.append(error)
+            log.exception(f"[AttackerAgent] Reference Forge error: {e}")
 
         log.info(f"[AttackerAgent] Total variants: {len(variants)}")
         return variants
@@ -142,76 +156,38 @@ class AttackerAgent:
           /api/v1/users/42/profile  →  /api/v1/users/43/profile
           {"user_id": 42}           →  {"user_id": 43}
         """
-        path    = api_node.get("path", "")
-        api_id  = api_node.get("id", "")
-        method  = api_node.get("method", "GET").upper()
         variants = []
-
-        # Every OpenAPI path selector can identify an object, including natural
-        # keys such as username/title/slug (not only fields ending in "id").
-        path_params = list(api_node.get("resource_selectors", []) or [])
-        path_params.extend(re.findall(r"\{([^}]+)\}", path))
-
-        # Tập hợp tất cả các ID field cần thay
-        id_fields = set()
-        _ID_RE = re.compile(r"(_id|Id|_uuid|uuid|_ref|vin)$", re.I)
-
-        for param in path_params:
-            id_fields.add(param)
-        for k in (list(payload.keys()) + list(api_node.get("inputs", {}).keys())):
-            if _ID_RE.search(k):
-                id_fields.add(k)
-
-        if not id_fields:
-            return []
-
-        # Lấy own_id từ StateStore
-        own_context = {
-            "actor_id": state.get("actor_id", "default"),
-            "user_id": state.get("user_id") or state.get("id"),
-            "email":   state.get("email"),
-        }
-
-        # Dùng LLM để nhận diện thêm field ID ẩn
-        llm_fields = self._llm_identify_id_fields(api_node, list(id_fields))
-        id_fields.update(llm_fields)
-
-        for field in list(id_fields)[:3]:  # Giới hạn 3 fields
-            own_id = state.get(field) or state.get("user_id") or state.get("id")
-            if own_id is None:
-                continue
-
-            # Lấy candidate IDs từ AttackStore + adjacent + boundary
-            candidate_ids = self.attack_store.get_candidate_ids(
-                field_name=field,
-                own_id=own_id,
-                limit=self.max_variants,
-            )
-
-            for cid in candidate_ids[:self.max_variants]:
-                # Tạo variant với path thay ID
-                new_path = re.sub(
-                    r"\{" + re.escape(field) + r"\}",
-                    str(cid),
-                    path,
+        actor_id = str(state.get("actor_id", "default"))
+        discovered = self.reference_discovery.discover(api_node, payload, actor_id)
+        for reference in discovered:
+            for observed in reference.candidate_values[:self.max_variants]:
+                new_node, new_payload = RequestTransformer.transform(
+                    api_node, payload, reference, observed.value
                 )
-                # Nếu field không phải path param thì thay trong payload
-                new_payload = copy.deepcopy(payload)
-                if field in new_payload:
-                    new_payload[field] = cid
-
-                new_node = dict(api_node)
-                new_node["path"] = new_path
-
                 variants.append(AttackVariant(
                     strategy="id_substitution",
                     api_node=new_node,
                     payload=new_payload,
-                    path=new_path,
-                    description=f"ID Substitution: {field}={own_id} → {cid}",
-                    extra={"field": field, "original_id": own_id, "substitute_id": cid},
+                    path=new_node.get("path", api_node.get("path", "")),
+                    description=(
+                        f"Reference substitution at {reference.location}:"
+                        f"{reference.field_path}"
+                    ),
+                    extra={
+                        "field": reference.parameter_name,
+                        "field_path": reference.field_path,
+                        "location": reference.location,
+                        "original_id": reference.original_value,
+                        "substitute_id": observed.value,
+                        "provenance": observed.provenance.level.name,
+                        "provenance_chain": observed.provenance.as_dict(),
+                        "reference_confidence": reference.confidence,
+                        "confirmation_eligible": observed.provenance.level >= ProvenanceLevel.AUTHORITATIVE,
+                        "owner_actor_id": observed.actor_id,
+                    },
                 ))
-
+                if len(variants) >= self.max_variants:
+                    return variants
         return variants
 
     def _llm_identify_id_fields(self, api_node: Dict, known_fields: List[str]) -> List[str]:
@@ -384,10 +360,21 @@ Respond with JSON: {{"privilege_fields": {{"field_name": "value"}}}}"""
             "email":   state.get("email"),
         }
 
-        # Lấy foreign IDs từ AttackStore
-        foreign_entries = self.attack_store.get_foreign_ids(
-            api_id=api_id,
-            own_context=own_context,
+        selectors = list(api_node.get("resource_selectors", []) or [])
+        selectors.extend(re.findall(r"\{([^}]+)\}", path))
+        # Nested resources are authorized by the leaf selector. For example,
+        # /memo/{memoId}/resource/{resourceId} must forge resourceId, which is
+        # also the selector chosen by AuthorizationExperimentPlanner.
+        selector = selectors[-1] if selectors else ""
+        resource_type = api_node.get("resource_type") or path or api_id
+
+        # Only a created resource with an identified foreign same-role owner is
+        # eligible for deterministic BOLA confirmation.
+        foreign_entries = self.attack_store.get_foreign_resources(
+            resource_type=resource_type,
+            selector_field=selector,
+            attacker_actor_id=own_context["actor_id"],
+            attacker_role=state.get("actor_role", ""),
             limit=self.max_variants,
         )
 
@@ -403,12 +390,15 @@ Respond with JSON: {{"privilege_fields": {{"field_name": "value"}}}}"""
                     payload=copy.deepcopy(payload),
                     path=new_path,
                     description=f"Reference Forge (LLM-forged): id={fid}",
-                    extra={"technique": "llm_forge", "forged_id": fid},
+                    extra={
+                        "technique": "llm_forge", "forged_id": fid,
+                        "provenance": "GUESSED", "confirmation_eligible": False,
+                    },
                 ))
         else:
             for entry in foreign_entries:
                 field_name  = entry["field_name"]
-                resource_id = entry["resource_id"]
+                resource_id = entry.get("resource_value", entry["resource_id"])
 
                 # Thay path param
                 new_path = re.sub(
@@ -438,6 +428,14 @@ Respond with JSON: {{"privilege_fields": {{"field_name": "value"}}}}"""
                         "field":       field_name,
                         "resource_id": resource_id,
                         "owner_ctx":   entry.get("user_context", {}),
+                        "owner_actor_id": entry.get("owner_actor_id", ""),
+                        "owner_role": entry.get("owner_role", ""),
+                        "resource_type": entry.get("resource_type", ""),
+                        "producer_api": entry.get("producer_api", ""),
+                        "selector_field": entry.get("selector_field", field_name),
+                        "provenance": entry.get("provenance", ""),
+                        "marker": entry.get("marker", ""),
+                        "confirmation_eligible": entry.get("provenance") == "CREATED_RESPONSE",
                     },
                 ))
 

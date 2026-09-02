@@ -1,6 +1,7 @@
 # Environments
 .env
 .venv
+.test-deps/
 env/
 venv/
 ENV/
@@ -29,6 +30,9 @@ wheels/
 # Logs and databases
 *.log
 *.sqlite3
+.coverage
+htmlcov/
+tests/coverage/
 
 # IDEs
 .vscode/
@@ -39,4 +43,5 @@ wheels/
 # *.dot
 # *.png
 # *.svg
-# beam_strategies.json
+beam_strategies.json
+fuzzing_report/

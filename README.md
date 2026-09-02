@@ -102,21 +102,20 @@ Hệ thống được thiết kế theo dạng mô-đun (Modular), bao gồm 4 m
 - **Thuật toán:** Tìm phép giao (Intersection) giữa tập hợp `Outputs` của API $A$ và tập hợp `Inputs` của API $B$. Nếu giao nhau $\rightarrow$ Tạo một cạnh (Edge) từ $A \rightarrow B$.
 - **Kết quả:** Xây dựng thành công `Operation Dependency Graph (ODG)` và xuất ra file `.dot` để trực quan hóa sơ đồ luồng dữ liệu.
 
-### Module 3: `hybrid_fuzzer.py` (Lõi Thuật toán Tìm kiếm Kịch bản - Fuzzer Engine)
-Đây là "trái tim" thuật toán của hệ thống, được nâng cấp lên chuẩn học thuật cao cấp để tự động vạch ra các đường đi kiểm thử dài mà không làm sập RAM.
-- **Adaptive BFS Threshold:** Thuật toán tự động đo đạc độ phức tạp của đồ thị (Branching Factor). Đồ thị dày đặc thì áp dụng Beam Search sớm, đồ thị thưa thì mở rộng BFS sâu hơn để tối ưu độ phủ (Coverage).
+### Module 3: `test_strategy_engine.py` (Lõi Tìm kiếm Kịch bản)
+Module này duy trì số lượng nhánh hữu hạn bằng Beam Search và các coverage bucket. Ngưỡng BFS hiện được cố định ở `0`, vì vậy cắt tỉa theo bucket được áp dụng ngay từ độ sâu đầu tiên.
 - **Heuristic Scorer:** Hệ thống tự động chấm điểm đường đi dựa trên:
   - Lỗi máy chủ (Status 500) $\rightarrow$ Điểm rất cao.
   - Bất thường phân quyền (Auth Anomaly) $\rightarrow$ Điểm cao.
   - Sinh ra Object mới (State Transition) $\rightarrow$ Điểm cao.
   - Dữ liệu bị dư thừa/thay đổi đột ngột (Response Mutation/Excessive Data).
-- **Exploration Bonus (MCTS/UCT):** Thuật toán tự động cộng điểm thưởng cho các API ít được thăm viếng ($50 / \sqrt{visit\_count}$), ép Fuzzer phải phân nhánh khám phá những vùng tối của hệ thống.
+- **Visit-count Exploration Heuristic:** Cộng điểm $50 / \sqrt{visit\_count}$ cho API ít được thăm. Đây là heuristic lấy cảm hứng từ exploration, không phải triển khai đầy đủ MCTS/UCT.
 - **Diversity Penalty (Jaccard Similarity):** Phân tích và phạt nặng các chuỗi API có hành vi trùng lặp (dựa trên phép tính giao/hợp tập hợp), đảm bảo bộ nhớ luôn dành chỗ cho các chuỗi có tính đa dạng cao, tránh rơi vào bẫy tối ưu cục bộ (Local Optimum).
 
 #### *Cách hệ thống giải quyết Bài toán "Bỏ lỡ lỗi ở độ sâu" (Depth Pruning Flaw)*
 Một nhược điểm chí mạng của Beam Search là nó có thể vô tình cắt bỏ một nhánh đang hoàn toàn bình thường ở độ sâu 3, nhưng lại bỏ lỡ một lỗi nghiêm trọng ở độ sâu 4 (Delayed Reward). Hệ thống đã giải quyết triệt để vấn đề này qua 3 "lớp khiên" thuật toán:
 1. **Lớp khiên 1 (Điểm thưởng State Transition):** Ngay cả khi chưa tìm thấy Bug ở độ sâu 3, nhưng nếu API sinh ra được một giá trị ngữ cảnh mới (như lấy được Token, tạo được Object ID thành công), nó vẫn được buff điểm để sống sót.
-2. **Lớp khiên 2 (Exploration Bonus):** Nếu một nhánh vô hại (không có lỗi, không có Token) nhưng nó rẽ vào một tính năng hiếm người sử dụng, thuật toán MCTS/UCT sẽ ngay lập tức buff một lượng điểm lớn (ảo) để đánh lừa bộ đếm, giúp nhánh này không bị trảm và an toàn đi tiếp.
+2. **Lớp khiên 2 (Exploration Bonus):** Nhánh đi qua API ít được thăm nhận thêm điểm theo visit count, tăng cơ hội được giữ lại ở vòng cắt tỉa tiếp theo.
 3. **Lớp khiên 3 (Coverage Buckets):** Beam Search không lấy Top-K chung chung, mà lấy Top-K riêng biệt cho từng mảng (Auth, Admin, CRUD). Dù nhánh của bạn có điểm thấp lẹt đẹt vì chưa sinh ra lỗi, nó vẫn được giữ lại để đảm bảo rổ (Bucket) của nó không bị trống.
 
 ### Module 4: `runtime_executor.py` (Lưu giữ Ngữ cảnh & Thực thi)
@@ -130,18 +129,17 @@ Giải quyết bài toán "Stateful Fuzzing" (lưu lại trạng thái của h�
 ## 3. Quy trình Hoạt động hiện tại (`main.py`)
 1. Đọc file `openapi.json`, trích xuất toàn bộ endpoints.
 2. Xây dựng đồ thị phụ thuộc ODG.
-3. Chạy thuật toán `HybridBeamFuzzer`:
-   - Bắt đầu duyệt đồ thị bằng BFS ở các độ sâu đầu tiên.
-   - Áp dụng Beam Search ở các độ sâu sâu hơn.
-   - Ở mỗi node (mỗi API), gọi `RequestExecutor` để giả lập quá trình lấy Response và bóc tách State.
+3. Chạy `TestStrategyEngine`:
+   - Áp dụng Beam Search và coverage bucket từ độ sâu đầu tiên.
+   - Ở mỗi node (mỗi API), gọi `RequestExecutor` để gửi HTTP thật và bóc tách State.
    - Lưu trữ các State quan trọng (như `comment_id`, `auth_token`) vào `StateStore` để dùng cho API kế tiếp.
 4. Trích xuất **Top N** chiến lược tốt nhất (có điểm Heuristic cao nhất) và xuất ra file `beam_strategies.json`.
 
 ---
 
 ## 4. Hướng phát triển tiếp theo (Next Steps)
-Cấu trúc thuật toán và lưu trữ ngữ cảnh đã hoàn chỉnh 100%. Bước cuối cùng để trở thành một hệ thống Pentest tự động hoàn thiện là:
-- Thay thế hàm Mock bằng thư viện `requests` để bắn thẳng Payload lên một hệ thống mục tiêu thật sự (như crAPI ở localhost) và ghi nhận kết quả bảo mật thực tế.
+- Đo coverage và hiệu quả phát hiện trên bộ benchmark có ground truth.
+- Bổ sung sandbox/allowlist ở tầng triển khai để kiểm soát chặt mục tiêu được phép kiểm thử.
 
 ---
 
@@ -160,19 +158,17 @@ Khác với các công cụ dò quét truyền thống chỉ tập trung vào l�
 
 ## 6. So sánh với Microsoft RESTler (Stateful REST API Fuzzer)
 
-RESTler là công cụ Stateful Fuzzer nổi tiếng nhất thế giới hiện nay do Microsoft Research phát triển. So sánh hệ thống hiện tại với RESTler giúp làm bật lên giá trị nghiên cứu của đồ án:
+RESTler là một công cụ stateful REST API fuzzing của Microsoft Research. Phần này chỉ mô tả hướng thiết kế của dự án; chưa có benchmark đối chứng để kết luận hiệu năng tương đối.
 
 ### Điểm giống nhau
 - Cả hai đều không vội vàng bắn payload mù quáng mà đều đọc OpenAPI Spec để tự động suy luận sự phụ thuộc (Dependency Inference) giữa các API.
 - Cả hai đều theo đuổi kiến trúc **Stateful Fuzzing**: Tự động lấy các giá trị động (ID, Token) từ Response của API trước nhét vào Request của API sau.
 
-### Sự vượt trội của Hệ thống hiện tại so với RESTler
-| Tiêu chí | Microsoft RESTler | Hệ thống AI-Driven Hybrid Fuzzer (Của chúng ta) |
-| :--- | :--- | :--- |
-| **Thuật toán Tìm kiếm** | Chủ yếu dùng BFS truyền thống kết hợp Random Walk. | Khởi đầu bằng BFS, sau đó thu hẹp bằng **Beam Search** kết hợp **MCTS Exploration Bonus**. |
-| **Quản lý Tài nguyên (RAM)** | Rất dễ bị bùng nổ tổ hợp (State Explosion) với các API lớn, tốn hàng chục giờ để chạy. | Luôn duy trì số lượng bộ nhớ cố định nhờ cơ chế cắt tỉa của Beam Search và rổ phân loại (Coverage Buckets). |
-| **Tiêu chí Đánh giá Lỗi (Heuristics)** | Rất cơ bản. Chủ yếu dò tìm lỗi Server Crash (HTTP 500). Gần như "mù" trước các lỗi logic. | Đa mục tiêu (Multi-objective): Không chỉ tìm lỗi 500, mà còn chấm điểm cả **Auth Anomaly** (Phân quyền) và **Excessive Data** (Lộ dữ liệu). |
-| **Xử lý Đa dạng (Diversity)** | Dễ rơi vào bẫy thử đi thử lại một cụm API nếu cụm đó sinh ra nhiều ID. | Có thuật toán phạt **Jaccard Similarity Penalty**, tự động trừng phạt và loại bỏ các chuỗi Fuzzing trùng lặp hành vi. |
-| **Khả năng sinh Payload** | Phụ thuộc vào từ điển tĩnh (Dictionary) và việc đột biến chuỗi (String Mutation) truyền thống. | Được thiết kế sẵn cấu trúc Adapter để cắm API của **LLM (GenAI)**, giúp sinh payload sát với ngữ cảnh thực tế (Context-aware). |
+### Khác biệt về thiết kế (chưa phải kết luận benchmark)
+| Thành phần | Thiết kế hiện tại của dự án |
+| :--- | :--- |
+| **Chiến lược tìm kiếm của dự án** | Stateful Beam Search, coverage bucket và visit-count exploration heuristic. |
+| **Oracle phân quyền của dự án** | Thử nghiệm hai principal cùng role, provenance từ response tạo tài nguyên và xác minh lặp lại. |
+| **Sinh payload của dự án** | Heuristic cục bộ, mutator và Ollama tùy chọn. |
 
-**Kết luận:** Hệ thống của chúng ta chính là phiên bản nâng cấp giải quyết trực tiếp những nhược điểm về "bùng nổ tổ hợp" và "thiếu độ sâu logic" mà các công cụ Fuzzer đời cũ như RESTler đang gặp phải.
+Các khác biệt trên cần được đánh giá bằng cùng OpenAPI, ngân sách request, thời gian chạy và ground truth trước khi đưa ra kết luận hơn/kém RESTler.

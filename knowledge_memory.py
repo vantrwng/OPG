@@ -1,7 +1,78 @@
 import json
+import re
 import time
 from collections import deque
 from response_outcome import evaluate_response
+
+
+REDACTED_VALUE = "***REDACTED***"
+
+_SENSITIVE_KEY_PARTS = {
+    "authorization", "cookie", "cookies", "credential", "credentials",
+    "password", "passwd", "passphrase",
+    "secret", "session", "token", "apikey", "privatekey", "clientsecret",
+    "accesstoken", "refreshtoken", "setcookie", "csrf", "xsrf",
+}
+_SENSITIVE_ASSIGNMENT_RE = re.compile(
+    r"(?i)(\b(?:authorization|proxy[-_ ]?authorization|access[-_ ]?token|"
+    r"refresh[-_ ]?token|api[-_ ]?key|client[-_ ]?secret|private[-_ ]?key|"
+    r"password|passwd|passphrase|cookie|session|credential|csrf|xsrf)\b\s*[:=]\s*)"
+    r"([^\s,;&}]+)"
+)
+_AUTH_SCHEME_RE = re.compile(
+    r"(?i)\b(Bearer|Basic)\s+[A-Za-z0-9._~+/=-]+"
+)
+
+
+def _is_sensitive_key(key) -> bool:
+    parts = re.findall(r"[a-z0-9]+", str(key or "").casefold())
+    compact = "".join(parts)
+    return bool(
+        set(parts) & _SENSITIVE_KEY_PARTS
+        or compact in _SENSITIVE_KEY_PARTS
+        or any(
+            compact.startswith(marker) or compact.endswith(marker)
+            for marker in _SENSITIVE_KEY_PARTS
+        )
+    )
+
+
+def _sanitize_text(value: str) -> str:
+    stripped = value.strip()
+    if stripped.startswith(("{", "[")):
+        try:
+            parsed = json.loads(value)
+        except (TypeError, ValueError, json.JSONDecodeError):
+            pass
+        else:
+            return json.dumps(
+                sanitize_sensitive(parsed), ensure_ascii=False, separators=(",", ":")
+            )
+
+    sanitized = _SENSITIVE_ASSIGNMENT_RE.sub(
+        lambda match: f"{match.group(1)}{REDACTED_VALUE}", value
+    )
+    return _AUTH_SCHEME_RE.sub(
+        lambda match: f"{match.group(1)} {REDACTED_VALUE}", sanitized
+    )
+
+
+def sanitize_sensitive(value, key: str = "", _force: bool = False):
+    """Return a JSON-safe copy with credential-bearing values removed."""
+    force = _force or _is_sensitive_key(key)
+    if isinstance(value, dict):
+        return {
+            child_key: sanitize_sensitive(child, str(child_key), force)
+            for child_key, child in value.items()
+        }
+    if isinstance(value, (list, tuple, set)):
+        return [sanitize_sensitive(child, key, force) for child in value]
+    if force:
+        return value if isinstance(value, bool) else REDACTED_VALUE
+    if isinstance(value, str):
+        return _sanitize_text(value)
+    return value
+
 
 class KnowledgeMemory:
     """
@@ -12,7 +83,17 @@ class KnowledgeMemory:
     _MAX_HISTORY       = 10_000  # Tổng request history giữ lại
     _MAX_PER_ENDPOINT  = 200     # Tối đa request/endpoint trong endpoint_stats
 
-    def __init__(self):
+    def __init__(self, started_at_monotonic=None, started_at_epoch=None):
+        self._run_started_at = (
+            float(started_at_monotonic)
+            if started_at_monotonic is not None else time.perf_counter()
+        )
+        self._run_started_epoch = (
+            float(started_at_epoch)
+            if started_at_epoch is not None else time.time()
+        )
+        self._run_finished_at = None
+        self._run_finished_epoch = None
         self.found_vulnerabilities = set() # Set cho fast lookup f"{api_id}:{status}"
         self.node_visit_count = {}
         self.top_strategies = []
@@ -25,11 +106,50 @@ class KnowledgeMemory:
         self.edge_feedback = {}
         self.pipeline_summary = {}
         self.auth_bootstrap = []
+        self.replay_recipes = []
+        self.experiment_coverage = {}
+
+    def mark_endpoint_discovered(self, api_id: str, reason: str = "OpenAPI operation"):
+        record = self.experiment_coverage.setdefault(api_id, {
+            "endpoint_discovered": True,
+            "experiments_generated": 0,
+            "experiments_executed": 0,
+            "experiments_verifiable": 0,
+            "findings_confirmed": 0,
+            "events": [],
+        })
+        record["endpoint_discovered"] = True
+        if reason and not record["events"]:
+            record["events"].append({"stage": "discovered", "reason": reason})
+
+    def record_experiment_stage(
+        self, api_id: str, stage: str, reason: str = "", count: int = 1,
+        status: str = "",
+    ):
+        self.mark_endpoint_discovered(api_id)
+        record = self.experiment_coverage[api_id]
+        counters = {
+            "generated": "experiments_generated",
+            "executed": "experiments_executed",
+            "verifiable": "experiments_verifiable",
+            "confirmed": "findings_confirmed",
+        }
+        if stage in counters:
+            record[counters[stage]] += max(0, int(count))
+        record["events"].append({
+            "stage": stage, "status": status or stage,
+            "reason": str(reason or ""), "count": max(0, int(count)),
+        })
 
     def record_visit(self, api_id: str):
         if api_id not in self.node_visit_count:
             self.node_visit_count[api_id] = 0
-            self.endpoint_stats[api_id] = {"visits": 0, "status_counts": {}}
+            self.endpoint_stats.setdefault(
+                api_id, {"visits": 0, "status_counts": {}, "all_requests": []}
+            )
+            self.endpoint_stats[api_id].setdefault("visits", 0)
+            self.endpoint_stats[api_id].setdefault("status_counts", {})
+            self.endpoint_stats[api_id].setdefault("all_requests", [])
         self.node_visit_count[api_id] += 1
         self.endpoint_stats[api_id]["visits"] += 1
 
@@ -58,6 +178,7 @@ class KnowledgeMemory:
         auth_recovery: dict = None,
         auth_context: dict = None,
         sent_files: dict = None,
+        elapsed_ms: float = None,
     ):
         if api_id not in self.endpoint_stats:
             self.endpoint_stats[api_id] = {"visits": 0, "status_counts": {}, "all_requests": []}
@@ -80,7 +201,7 @@ class KnowledgeMemory:
         except (TypeError, ValueError):
             is_http_2xx = False
 
-        all_requests.append({
+        request_record = {
             "method": method,
             "path": path,
             "status": status_str,
@@ -100,24 +221,36 @@ class KnowledgeMemory:
             "auth_recovery": auth_recovery if auth_recovery is not None else {},
             "auth_context": auth_context if auth_context is not None else {},
             "sent_files": sent_files if sent_files is not None else {},
+            "elapsed_ms": elapsed_ms,
             "chain": chain if chain is not None else []
-        })
+        }
+        all_requests.append(sanitize_sensitive(request_record))
         
-        self.request_history.append({
+        self.request_history.append(sanitize_sensitive({
             "api_id": api_id,
             "method": method,
             "path": path,
             "status": status,
             "chain_length": len(chain) if chain else 0,
             "timestamp": time.time()
-        })
+        }))
 
     def record_finding(self, finding: dict):
-        self.findings.append(finding)
+        self.findings.append(sanitize_sensitive(finding))
 
     def record_security_observation(self, observation: dict):
         """Store suspected/inconclusive authorization evidence separately."""
-        self.security_observations.append(observation)
+        self.security_observations.append(sanitize_sensitive(observation))
+
+    def record_replay_recipe(self, recipe: dict):
+        """Persist only structural replay data; runtime credentials/IDs are forbidden."""
+        allowed = {
+            "endpoint_relationship", "resource_type", "selector_field",
+            "operation", "actor_relationship",
+        }
+        safe = sanitize_sensitive({key: recipe[key] for key in allowed if key in recipe})
+        if safe and safe not in self.replay_recipes:
+            self.replay_recipes.append(safe)
         
     def record_edge_feedback(self, from_api: str, to_api: str, success: bool):
         key = f"{from_api}->{to_api}"
@@ -135,23 +268,39 @@ class KnowledgeMemory:
         return f"{api_id}:{status}" in self.found_vulnerabilities
 
     def add_strategy(self, strategy: dict):
-        self.top_strategies.append(strategy)
+        self.top_strategies.append(sanitize_sensitive(strategy))
 
     def set_top_strategies(self, strategies: list):
-        self.top_strategies = strategies
+        self.top_strategies = sanitize_sensitive(strategies or [])
 
     def set_pipeline_summary(self, summary: dict):
-        self.pipeline_summary = dict(summary or {})
+        self.pipeline_summary = sanitize_sensitive(dict(summary or {}))
 
     def set_auth_bootstrap(self, events: list):
         """Store setup evidence separately from fuzzing requests/findings."""
-        self.auth_bootstrap = [dict(event) for event in (events or [])]
+        self.auth_bootstrap = sanitize_sensitive(
+            [dict(event) for event in (events or [])]
+        )
+
+    def finish_timer(self):
+        """Freeze pipeline timing immediately before report serialization."""
+        self._run_finished_at = time.perf_counter()
+        self._run_finished_epoch = time.time()
 
     def export(self, output_file: str):
         # Tổng hợp thống kê
         total_requests = len(self.request_history)
         server_errors = sum(1 for f in self.findings if f.get("type") == "Crash/500")
         auth_anomalies = sum(1 for f in self.findings if f.get("type") == "Auth Anomaly")
+        elapsed_values = [
+            req.get("elapsed_ms")
+            for stats in self.endpoint_stats.values()
+            for req in stats.get("all_requests", [])
+            if isinstance(req.get("elapsed_ms"), (int, float))
+        ]
+        finished_at = self._run_finished_at or time.perf_counter()
+        finished_epoch = self._run_finished_epoch or time.time()
+        run_elapsed_ms = round((finished_at - self._run_started_at) * 1000, 2)
         
         output_data = {
             "summary": {
@@ -162,6 +311,18 @@ class KnowledgeMemory:
                 "total_findings": len(self.findings),
                 "security_observations": len(self.security_observations),
                 "auth_bootstrap_requests": len(self.auth_bootstrap),
+                "run_elapsed_ms": run_elapsed_ms,
+                "run_started_at": time.strftime(
+                    "%Y-%m-%dT%H:%M:%S%z", time.localtime(self._run_started_epoch)
+                ),
+                "run_finished_at": time.strftime(
+                    "%Y-%m-%dT%H:%M:%S%z", time.localtime(finished_epoch)
+                ),
+                "total_http_elapsed_ms": round(sum(elapsed_values), 2),
+                "average_http_elapsed_ms": (
+                    round(sum(elapsed_values) / len(elapsed_values), 2)
+                    if elapsed_values else None
+                ),
             },
             "endpoint_stats": self.endpoint_stats,
             "edge_feedback": self.edge_feedback,
@@ -170,7 +331,9 @@ class KnowledgeMemory:
             "top_strategies": self.top_strategies,
             "pipeline_summary": self.pipeline_summary,
             "auth_bootstrap": self.auth_bootstrap,
+            "replay_recipes": self.replay_recipes,
+            "experiment_coverage": self.experiment_coverage,
         }
         with open(output_file, 'w', encoding='utf-8') as f:
-            json.dump(output_data, f, indent=4, ensure_ascii=False)
+            json.dump(sanitize_sensitive(output_data), f, indent=4, ensure_ascii=False)
         print(f"[*] Đã xuất {len(self.top_strategies)} chiến thuật tối ưu và {len(self.findings)} findings ra file {output_file}")

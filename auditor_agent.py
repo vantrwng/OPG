@@ -33,7 +33,7 @@ class AuditResult:
     def __init__(
         self,
         is_bola:         bool,
-        classification:  str  = "INCONCLUSIVE",  # "CONFIRMED" | "SUSPECTED" | "INCONCLUSIVE"
+        classification:  str  = "INCONCLUSIVE",
         confidence:      float = 0.0,            # 0.0 – 1.0
         bola_type:       str  = "",              # "data_exposure" | "auth_bypass" | "privilege_escalation"
         evidence:        List[str] = None,
@@ -75,6 +75,9 @@ class AuditorAgent:
     # Score delta khi phát hiện BOLA (step 18)
     BOLA_SCORE_BONUS = 150.0
     STRONG_BOLA_BONUS = 200.0
+    VALID_CLASSIFICATIONS = {
+        "CONFIRMED", "REJECTED", "INCONCLUSIVE", "NOT_TESTED", "INFRA_FAILURE",
+    }
 
     def __init__(self, client: Optional[OllamaClient] = None):
         self._llm_enabled = client is not None or OLLAMA_ENABLED
@@ -112,7 +115,28 @@ class AuditorAgent:
             f"status={attack_status} desc={description[:60]}"
         )
 
-        # Nếu attack trả về lỗi (4xx/5xx) → không phải BOLA (nhưng ghi nhận 500)
+        extra = attack_variant_info.get("extra", {}) or {}
+        if not extra.get("confirmation_eligible", False):
+            return AuditResult(
+                is_bola=False,
+                classification="NOT_TESTED",
+                evidence=["No created foreign resource with authoritative provenance"],
+                reasoning="Exploratory or guessed identifiers cannot confirm BOLA.",
+            )
+        if extra.get("preflight_ok") is False:
+            return AuditResult(
+                is_bola=False,
+                classification="INFRA_FAILURE",
+                evidence=[extra.get("preflight_reason", "Authentication preflight failed")],
+            )
+        if not self._valid_api_response(attack_response, api_node):
+            return AuditResult(
+                is_bola=False,
+                classification="INCONCLUSIVE",
+                evidence=["Response did not satisfy status/content-type/OpenAPI response checks"],
+            )
+
+        # A denial is authorization evidence only after a successful preflight.
         if attack_status == 0 or attack_status >= 400:
             # 500 từ attacker request là crash, không phải BOLA
             classification = "REJECTED" if attack_status in (401, 403, 404) else "INCONCLUSIVE"
@@ -171,8 +195,12 @@ class AuditorAgent:
             api_node=api_node,
             strategy=strategy,
         )
-        if (semantic_result.get("classification") == "INCONCLUSIVE"
-                and deterministic_result.get("classification") == "SUSPECTED"):
+        # LLM output is advisory only. Confirmation belongs exclusively to the
+        # deterministic provenance/fingerprint/state oracle above.
+        if semantic_result.get("classification") in ("CONFIRMED", "SUSPECTED"):
+            semantic_result["classification"] = "INCONCLUSIVE"
+            semantic_result["confidence"] = min(float(semantic_result.get("confidence", 0.0)), 0.49)
+        if deterministic_result.get("classification") == "INCONCLUSIVE":
             semantic_result = deterministic_result
 
         # ── Decision: vi phạm BOLA? ────────────────────────────────────────────
@@ -208,6 +236,22 @@ class AuditorAgent:
         baseline_success = bool(
             baseline_response and baseline_response.get("status") in (200, 201, 202, 204)
         )
+        provenance_ok = (
+            extra.get("provenance") == "CREATED_RESPONSE"
+            and extra.get("confirmation_eligible") is True
+        )
+        owner_role = str(extra.get("owner_role", "")).strip().casefold()
+        attacker_role = str(extra.get("attacker_role", "")).strip().casefold()
+        unknown_roles = {"", "unknown", "anonymous", "none", "null"}
+        same_role = bool(
+            owner_role not in unknown_roles
+            and attacker_role not in unknown_roles
+            and owner_role == attacker_role
+        )
+        repeated = int(extra.get("reproduction_count", 0) or 0) >= 2
+        fingerprint_ok = bool(extra.get("fingerprint_verified"))
+        method = str(extra.get("operation", "GET")).upper()
+        mutation_verified = bool(extra.get("mutation_verified"))
 
         ownership_key = re.compile(
             r"(^|\.)(owner|user|account|created_by|customer)(_?id|email)?$",
@@ -225,14 +269,16 @@ class AuditorAgent:
                     f"Response ownership field {key}={value!r} differs from current actor"
                 )
 
-        if (evidence and baseline_success and has_cross_actor_proof
+        deterministic_success = fingerprint_ok if method == "GET" else mutation_verified
+        if (baseline_success and has_cross_actor_proof and provenance_ok and same_role
+                and repeated and deterministic_success
                 and strategy in ("id_substitution", "reference_forge")):
             return {
                 "classification": "CONFIRMED",
                 "confidence": 0.95,
                 "vulnerability_type": "BOLA",
-                "evidence": evidence,
-                "reasoning": "A successful attack response explicitly identifies a different owner.",
+                "evidence": evidence or ["Foreign resource fingerprint verified in 2/2 attempts"],
+                "reasoning": "A same-role foreign resource test reproduced successfully in 2/2 attempts.",
             }
 
         owner_ctx = extra.get("owner_ctx", {}) or {}
@@ -243,7 +289,7 @@ class AuditorAgent:
         )
         if evidence:
             return {
-                "classification": "SUSPECTED",
+                "classification": "INCONCLUSIVE",
                 "confidence": 0.7,
                 "vulnerability_type": "BOLA",
                 "evidence": evidence,
@@ -251,7 +297,7 @@ class AuditorAgent:
             }
         if is_cross_actor and strategy in ("id_substitution", "reference_forge"):
             return {
-                "classification": "SUSPECTED",
+                "classification": "INCONCLUSIVE",
                 "confidence": 0.65,
                 "vulnerability_type": "BOLA",
                 "evidence": [
@@ -264,7 +310,7 @@ class AuditorAgent:
         if strategy == "param_pollution" and technique in (
                 "mass_assignment", "privilege_escalation"):
             return {
-                "classification": "SUSPECTED",
+                "classification": "INCONCLUSIVE",
                 "confidence": 0.45,
                 "vulnerability_type": "BOPLA",
                 "evidence": ["Server accepted a privilege-related mutation with a 2xx response"],
@@ -278,6 +324,21 @@ class AuditorAgent:
             "evidence": [],
             "reasoning": "No deterministic ownership or authorization evidence was found.",
         }
+
+    @staticmethod
+    def _valid_api_response(response: Dict[str, Any], api_node: Dict[str, Any]) -> bool:
+        if not 200 <= int(response.get("status", 0) or 0) < 300:
+            return True  # denial handling occurs after authentication preflight
+        if response.get("successful") is False or response.get("schema_valid") is False:
+            return False
+        content_type = str(response.get("response_content_type", "")).casefold()
+        text = str(response.get("response_text", "")).lstrip().casefold()
+        if "text/html" in content_type or text.startswith("<!doctype html") or text.startswith("<html"):
+            return False
+        expected_json = bool(api_node.get("outputs"))
+        if expected_json and response.get("raw_response") is None:
+            return False
+        return True
 
     # ── Step 16: So sánh với Baseline ─────────────────────────────────────────
 

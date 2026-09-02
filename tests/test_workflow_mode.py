@@ -119,6 +119,29 @@ def test_authenticated_workflow_does_not_execute_signup_again():
     assert executed_ids == ["GET__status"]
 
 
+def test_workflow_phase_defers_delete_to_isolated_security_phase():
+    executor = MagicMock()
+    executor.execute_request.return_value = {
+        "status": 200, "successful": True, "response_text": "{}",
+        "sent_payload": {}, "raw_response": {},
+    }
+    operations = [
+        {"id": "getMemo", "method": "GET", "path": "/memo/{memoId}"},
+        {"id": "deleteMemo", "method": "DELETE", "path": "/memo/{memoId}"},
+    ]
+    engine = TestStrategyEngine(
+        operations=operations, adjacency_list={"getMemo": [{
+            "to": "deleteMemo", "max_confidence": 0.9,
+        }]}, request_executor=executor, graph_builder=MagicMock(),
+        knowledge_memory=KnowledgeMemory(),
+    )
+
+    engine.run(max_depth=2, initial_state=StateStore({"memoId": 1}))
+
+    executed = [call.kwargs["api_node"]["id"] for call in executor.execute_request.call_args_list]
+    assert executed == ["getMemo"]
+
+
 def test_security_phase_skips_attack_when_baseline_replay_fails():
     executor = MagicMock()
     executor.execute_request.return_value = {

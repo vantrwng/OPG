@@ -231,11 +231,13 @@ def test_bootstrap_spreads_declared_roles_and_trusts_effective_server_role():
     result = ActorBootstrapper(operations, executor).bootstrap()
 
     assert result.success is True
-    assert executor.requested_roles == ["tier-one", "tier-three"]
+    assert executor.requested_roles == ["tier-one", "tier-three", "tier-three"]
     assert result.actors.require("owner_a").role == "effective-tier-one"
     assert result.actors.require("user_b").role == "effective-tier-three"
+    assert result.actors.require("user_c").role == "effective-tier-three"
+    assert result.owner_state.get("actor_id") == "user_b"
     assert [event["stage"] for event in result.events] == [
-        "signup", "signin", "signup", "signin",
+        "signup", "signin", "signup", "signin", "signup", "signin",
     ]
     assert result.events[0]["request_payload"]["password"] == "***"
     assert result.events[0]["requested_role"] == "tier-one"
@@ -341,15 +343,34 @@ def test_second_actor_falls_back_to_authenticated_schema_compatible_provisioning
     assert result.actors.require("owner_a").role == "level-a"
     assert result.actors.require("user_b").role == "level-c"
     assert result.actors.require("user_b").auth_token == "token-user_b"
+    assert result.actors.require("user_b").credentials["loginName"] == "login-user_b"
+    assert result.actors.require("user_b").credentials["passphrase"] == "StrongPassphrase123!"
+    assert result.actors.require("user_c").role == "level-c"
+    assert result.owner_state.get("actor_id") == "user_b"
     assert executor.calls == [
         ("registerSelf", "owner_a"),
         ("authenticatePrincipal", "owner_a"),
         ("registerSelf", "user_b"),
         ("provisionPrincipal", "owner_a"),
         ("authenticatePrincipal", "user_b"),
+        ("registerSelf", "user_c"),
+        ("provisionPrincipal", "owner_a"),
+        ("authenticatePrincipal", "user_c"),
     ]
     assert [event["stage"] for event in result.events] == [
         "signup", "signin", "signup", "provision", "signin",
+        "signup", "provision", "signin",
     ]
     assert result.events[3]["actor_id"] == "user_b"
     assert result.events[3]["performed_by"] == "owner_a"
+
+
+def test_unknown_roles_are_not_selected_as_a_same_role_pair():
+    executor = FakeExecutor()
+    result = ActorBootstrapper(OPERATIONS, executor).bootstrap()
+
+    assert result.success is True
+    assert result.owner_state.get("actor_id") == "owner_a"
+    assert [actor.actor_id for actor in result.actors.all()] == [
+        "owner_a", "user_b", "anonymous",
+    ]

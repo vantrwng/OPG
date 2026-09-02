@@ -37,7 +37,7 @@ test-unit:
 
 test-coverage:
 	@echo "▶ Running tests with coverage..."
-	pytest tests/ -v --cov=. --cov-report=html --cov-report=term-missing --cov-exclude=tests
+	pytest tests/ -v --cov=. --cov-config=.coveragerc --cov-report=html:tests/coverage --cov-report=term-missing
 	@echo "✓ Coverage report: tests/coverage/index.html"
 
 test-fast:

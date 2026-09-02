@@ -4,17 +4,20 @@ import uuid
 import logging
 import requests
 import hashlib
+import time
 from dataclasses import dataclass, field
 from typing import Any, Dict, Optional
-from urllib.parse import parse_qsl, urlsplit, urlunsplit
+from urllib.parse import parse_qsl, urljoin, urlsplit, urlunsplit
 
 from state_store import AuthTransport, StateStore
 from llm_planner import LLMPlanner
 from response_outcome import evaluate_response, is_auth_state_mismatch
 from file_artifacts import FileArtifactProvider
+from knowledge_memory import sanitize_sensitive
 
 log = logging.getLogger("executor")
 REQUEST_TIMEOUT = 10
+MAX_SAME_ORIGIN_REDIRECTS = 5
 
 
 @dataclass
@@ -77,7 +80,7 @@ class FeedbackAnalyzer:
         
         result = {
             "status": status,
-            "has_token": state.has("auth_token"),
+            "has_token": state.has_authentication(),
             "extracted_emails": [],
             "extracted_phones": [],
             "extracted_ids": [],
@@ -312,19 +315,25 @@ class RequestExecutor:
         url = prepared.url
         headers = prepared.headers
 
-        log.info(f"\033[96m[>>]\033[0m {method} {url}  payload={json.dumps(sent_payload, ensure_ascii=False)[:120]}")
+        safe_payload = sanitize_sensitive(sent_payload)
+        log.info(f"\033[96m[>>]\033[0m {method} {url}  payload={json.dumps(safe_payload, ensure_ascii=False)[:120]}")
 
+        request_started = time.perf_counter()
         response = self._fire_prepared_request(prepared)
+        elapsed_ms = round((time.perf_counter() - request_started) * 1000, 2)
 
         if response is None:
             log.error(f"\033[91m[!!] Request failed (timeout/connection)\033[0m for {api_id}")
-            return self._failure_result(api_id, edge_failure=False)
+            failure = self._failure_result(api_id, edge_failure=False)
+            failure["elapsed_ms"] = elapsed_ms
+            return failure
 
         status = response.status_code
+        safe_response_text = sanitize_sensitive(response.text)
         if status == 400:
-            log.warning(f"\033[93m[400 Debug]\033[0m Server message: {response.text}")
+            log.warning(f"\033[93m[400 Debug]\033[0m Server message: {safe_response_text}")
         log.info(f"{self._status_color(status)}[<<]\033[0m {status} {api_id} ({len(response.text)} bytes)")
-        log.debug(f"\033[90m[RAW RESPONSE]\033[0m {response.text[:500]}")
+        log.debug(f"\033[90m[RAW RESPONSE]\033[0m {str(safe_response_text)[:500]}")
 
         try:
             response_json = response.json()
@@ -337,6 +346,20 @@ class RequestExecutor:
             response.text,
             expected_statuses=api_node.get("expected_success_statuses"),
         )
+        response_headers = dict(getattr(response, "headers", {}) or {})
+        response_content_type = str(response_headers.get("Content-Type", ""))
+        schema_valid, schema_errors = self._validate_response_contract(
+            response_json, response.text if hasattr(response, "text") else "",
+            response_content_type, api_node.get("outputs", {}), status,
+            api_node.get("response_content_types", []),
+            api_node.get("response_body_statuses"),
+        )
+        if outcome.successful and not schema_valid:
+            outcome = type(outcome)(
+                successful=False,
+                semantic_failure=True,
+                reason="; ".join(schema_errors) or "OpenAPI response contract mismatch",
+            )
         if outcome.semantic_failure:
             log.warning(
                 f"\033[93m[APPLICATION FAIL]\033[0m HTTP {status} {api_id}: "
@@ -360,6 +383,7 @@ class RequestExecutor:
                     ))
 
         state_transition = False
+        deleted_references = []
         if response_json and outcome.successful:
             state_transition = current_state.extract_from_response(
                 response_json,
@@ -386,6 +410,11 @@ class RequestExecutor:
                     api_node.get("inputs", {}),
                 )
                 state_transition = state_transition or request_transition
+            elif method == "DELETE":
+                deleted_references = self._invalidate_successful_delete(
+                    api_node, current_state, sent_payload
+                )
+                state_transition = bool(deleted_references) or state_transition
 
         edge_failure = not outcome.successful
 
@@ -393,6 +422,7 @@ class RequestExecutor:
             log.warning(f"\033[93m[EDGE FAIL]\033[0m 400 on {api_id} — penalizing ODG edge (bad schema/FK)")
 
         return {
+            "elapsed_ms":     elapsed_ms,
             "status":          status,
             "successful":      outcome.successful,
             "semantic_failure": outcome.semantic_failure,
@@ -401,11 +431,16 @@ class RequestExecutor:
             "auth_anomaly":    False,  # Bỏ heuristic cứng, dời sang LLM Auditor
             "pii_leakage":     len(anomaly.get("extracted_emails", [])) > 0 or len(anomaly.get("extracted_phones", [])) > 0,
             "state_transition": state_transition,
+            "deleted_references": deleted_references,
             "response_diff":   anomaly.get("server_error", False),
             "edge_failure":    edge_failure,
             "anomaly_details": anomaly.get("anomaly_details", []),
             "raw_response":    response_json,
             "response_text":   response.text if hasattr(response, 'text') else "",
+            "response_headers": response_headers,
+            "response_content_type": response_content_type,
+            "schema_valid": schema_valid,
+            "schema_errors": schema_errors,
             "sent_payload":    sent_payload,
             "sent_headers":    headers,
             "sent_query":      prepared.query_params,
@@ -418,10 +453,101 @@ class RequestExecutor:
         }
 
     @staticmethod
+    def _invalidate_successful_delete(api_node: Dict, state: StateStore,
+                                      sent_payload: Dict[str, Any]) -> list:
+        """Invalidate only the terminal selector of a successful DELETE path."""
+        path_selectors = re.findall(r"\{([^}]+)\}", str(api_node.get("path", "")))
+        if not path_selectors:
+            return []
+        selector = path_selectors[-1]
+        value = sent_payload.get(selector)
+        if value is None:
+            for field_name, meta in (api_node.get("inputs", {}) or {}).items():
+                meta = meta if isinstance(meta, dict) else {}
+                original = meta.get("original", field_name)
+                if selector not in (field_name, original):
+                    continue
+                value = sent_payload.get(original, sent_payload.get(field_name))
+                break
+        if value in (None, ""):
+            return []
+        state.invalidate_deleted_reference(selector, value)
+        return [{
+            "resource_type": api_node.get("resource_type") or api_node.get("path", ""),
+            "selector_field": selector,
+            "resource_id": str(value),
+        }]
+
+    @staticmethod
+    def _validate_response_contract(response_json, response_text, content_type, outputs, status,
+                                    expected_content_types=None, response_body_statuses=None):
+        """Conservative response gate for authorization oracles.
+
+        The parser exposes a flattened output-field map rather than a raw JSON
+        Schema, so this validates media type plus declared fields/types when
+        they are present without inventing required fields.
+        """
+        if not 200 <= int(status or 0) < 300:
+            return True, []
+        errors = []
+        status_text = str(int(status))
+        if response_body_statuses is None:
+            body_declared = bool(expected_content_types or outputs)
+        else:
+            declared_body_statuses = {
+                str(item).upper() for item in response_body_statuses
+            }
+            body_declared = (
+                status_text in declared_body_statuses or '2XX' in declared_body_statuses
+            )
+        if status in (204, 205) or not body_declared:
+            return True, errors
+        media = str(content_type or "").split(";", 1)[0].strip().casefold()
+        expected_media = {str(item).casefold() for item in (expected_content_types or [])}
+        text = str(response_text or "").lstrip().casefold()
+        if media == "text/html" or text.startswith("<!doctype html") or text.startswith("<html"):
+            errors.append("2xx response is HTML, not an API representation")
+            return False, errors
+        expects_json = any(
+            item == "application/json" or item.endswith("+json")
+            for item in expected_media
+        )
+        if expected_media and not expects_json:
+            if media and "*/*" not in expected_media and media not in expected_media:
+                errors.append(f"Response Content-Type {media!r} is not declared by OpenAPI")
+                return False, errors
+            return True, errors
+        response_outputs = {
+            field: meta for field, meta in (outputs or {}).items()
+            if not (isinstance(meta, dict) and (
+                meta.get('_passthrough') or meta.get('_request_passthrough')
+            ))
+        }
+        if expects_json and response_json is None:
+            errors.append("OpenAPI declares a response body but JSON parsing failed")
+            return False, errors
+        if not isinstance(response_json, dict):
+            return True, errors
+        flat = StateStore._flatten(response_json)
+        python_types = {
+            "string": str, "integer": int, "number": (int, float),
+            "boolean": bool, "object": dict, "array": list,
+        }
+        for field, meta in response_outputs.items():
+            meta = meta if isinstance(meta, dict) else {}
+            original = meta.get("original", field)
+            if original not in flat:
+                continue
+            expected = python_types.get(str(meta.get("type", "")).casefold())
+            if expected and not isinstance(flat[original], expected):
+                errors.append(f"Response field {original} violates declared type {meta.get('type')}")
+        return not errors, errors
+
+    @staticmethod
     def _bind_principal_identity(api_node: Dict, state: StateStore,
                                  payload: Dict[str, Any], payload_source: str) -> Dict[str, Any]:
         """Keep valid/repair requests aligned with the authenticated principal."""
-        if str(payload_source).upper().startswith("ATTACKER_") or not state.has("auth_token"):
+        if str(payload_source).upper().startswith("ATTACKER_") or not state.has_authentication():
             return dict(payload)
 
         bound_payload = dict(payload)
@@ -601,7 +727,7 @@ class RequestExecutor:
         if token:
             header_name   = state.get("auth_header_name", "Authorization")
             header_prefix = state.get("auth_header_prefix") or "Token"  # Mặc định Token, không đoán mò
-            log.debug(f"[Header] prefix={repr(header_prefix)} token[:10]={repr(str(token)[:10])}")
+            log.debug("[Header] applying %s authentication header", header_name)
             # Luôn tôn trọng cấu hình prefix — không còn heuristic Bearer/Token dựa vào format token
             headers[header_name] = f"{header_prefix.rstrip()} {token}"
         return headers
@@ -666,9 +792,9 @@ class RequestExecutor:
             req_kwargs = {
                 "method": prepared.method,
                 "url": prepared.url,
-                "headers": prepared.headers,
+                "headers": dict(prepared.headers),
                 "timeout": REQUEST_TIMEOUT,
-                "allow_redirects": True
+                "allow_redirects": False,
             }
             if prepared.query_params:
                 req_kwargs["params"] = prepared.query_params
@@ -691,6 +817,33 @@ class RequestExecutor:
             # would leak owner_a's session into user_b requests.
             self._session.cookies.clear()
             resp = self._session.request(**req_kwargs)
+            original_origin = self._origin(prepared.url)
+            redirect_count = 0
+            while self._is_redirect(resp):
+                location = str((getattr(resp, "headers", {}) or {}).get("Location", ""))
+                if not location:
+                    break
+                redirect_url = urljoin(str(req_kwargs["url"]), location)
+                if self._origin(redirect_url) != original_origin:
+                    log.warning("[HTTP] Refusing cross-origin redirect from %s to %s", req_kwargs["url"], redirect_url)
+                    break
+                redirect_count += 1
+                if redirect_count > MAX_SAME_ORIGIN_REDIRECTS:
+                    log.warning("[HTTP] Redirect limit exceeded for %s", prepared.url)
+                    break
+
+                req_kwargs["url"] = redirect_url
+                req_kwargs.pop("params", None)
+                if int(resp.status_code) == 303 or (
+                    int(resp.status_code) in (301, 302)
+                    and str(req_kwargs["method"]).upper() == "POST"
+                ):
+                    req_kwargs["method"] = "GET"
+                    for body_key in ("json", "data", "files"):
+                        req_kwargs.pop(body_key, None)
+                    req_kwargs["headers"].pop("Content-Type", None)
+                self._session.cookies.clear()
+                resp = self._session.request(**req_kwargs)
             self._session.cookies.clear()
             return resp
         except requests.exceptions.Timeout:
@@ -700,6 +853,16 @@ class RequestExecutor:
         except requests.exceptions.RequestException as e:
             log.error(f"[HTTP] RequestException — {e}")
         return None
+
+    @staticmethod
+    def _origin(url: str):
+        parsed = urlsplit(str(url))
+        default_port = 443 if parsed.scheme.casefold() == "https" else 80
+        return parsed.scheme.casefold(), (parsed.hostname or "").casefold(), parsed.port or default_port
+
+    @staticmethod
+    def _is_redirect(response) -> bool:
+        return int(getattr(response, "status_code", 0) or 0) in (301, 302, 303, 307, 308)
 
     @staticmethod
     def _failure_result(api_id: str, edge_failure: bool) -> Dict:

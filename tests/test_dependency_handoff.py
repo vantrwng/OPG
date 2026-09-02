@@ -91,6 +91,53 @@ def test_parser_accepts_all_declared_2xx_success_codes(tmp_path):
     )
 
     assert operation["expected_success_statuses"] == ["201", "202", "204"]
+    assert operation["response_body_statuses"] == []
+
+
+def test_parser_merges_path_parameters_and_operation_override(tmp_path):
+    spec = {
+        "openapi": "3.0.0",
+        "paths": {
+            "/accounts/{accountId}": {
+                "parameters": [
+                    {
+                        "name": "accountId", "in": "path", "required": True,
+                        "schema": {"type": "string"},
+                    },
+                    {
+                        "name": "expand", "in": "query",
+                        "schema": {"type": "string", "default": "summary"},
+                    },
+                ],
+                "get": {
+                    "operationId": "getAccount",
+                    "parameters": [{
+                        "name": "expand", "in": "query",
+                        "schema": {"type": "string", "default": "full"},
+                    }],
+                    "responses": {
+                        "200": {
+                            "content": {"application/json": {"schema": {
+                                "type": "object",
+                                "properties": {"id": {"type": "string"}},
+                            }}},
+                        },
+                        "204": {"description": "empty"},
+                    },
+                },
+            },
+        },
+    }
+    spec_path = tmp_path / "path-parameters.json"
+    spec_path.write_text(json.dumps(spec), encoding="utf-8")
+
+    operations = SpecParser(str(spec_path)).extract_operations()
+
+    assert len(operations) == 1
+    operation = operations[0]
+    assert operation["inputs"]["accountid"]["in"] == "path"
+    assert operation["inputs"]["expand"]["default"] == "full"
+    assert operation["response_body_statuses"] == ["200"]
 
 
 def test_odg_connects_add_book_to_get_by_title(tmp_path):

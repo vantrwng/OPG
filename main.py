@@ -28,12 +28,17 @@ from generate_report import generate_html_report
 from actor_bootstrapper import ActorBootstrapper
 
 import argparse
+import time
 
-def build_system(operations, base_url, beam_width, enable_security_testing=False):
+def build_system(operations, base_url, beam_width, enable_security_testing=False,
+                 started_at_monotonic=None, started_at_epoch=None):
     # DI Containers
     planner = LLMPlanner()
     rule_layer = RuleInferenceLayer(planner, operations)
-    knowledge_memory = KnowledgeMemory()
+    knowledge_memory = KnowledgeMemory(
+        started_at_monotonic=started_at_monotonic,
+        started_at_epoch=started_at_epoch,
+    )
     
     # Graph Builder
     graph_builder = DependencyGraphBuilder(
@@ -94,6 +99,8 @@ def build_actor_contexts() -> MultiActorContextStore:
     return actors
 
 def main():
+    run_started_monotonic = time.perf_counter()
+    run_started_epoch = time.time()
     parser = argparse.ArgumentParser(description="Hybrid Stateful API Fuzzer")
     parser.add_argument("--spec", type=str, default="memo_openapi.json", help="Path to OpenAPI spec file")
     parser.add_argument("--base-url", type=str, default="http://localhost:5230/api", help="Target API Base URL")
@@ -131,6 +138,8 @@ def main():
         args.base_url,
         args.beam_width,
         enable_security_testing=args.mode == "security",
+        started_at_monotonic=run_started_monotonic,
+        started_at_epoch=run_started_epoch,
     )
 
     # ── Phase 0: Cấu hình State Store từ biến môi trường ─────────────────────
@@ -211,6 +220,10 @@ def main():
         actor_contexts.add(ActorContext(actor_id="anonymous", role="anonymous"))
 
     strategy_engine.actor_contexts = actor_contexts
+    strategy_engine.seed_actor_identity_resources(
+        bootstrap_result.signup_api_id
+        if args.bootstrap_actors == "auto" and bootstrap_result.success else ""
+    )
 
     if args.bootstrap_actors != "off":
         def _recover_auth_context(state, _api_node, _failed_result):
@@ -290,6 +303,7 @@ def main():
         },
     })
     knowledge_memory.set_top_strategies(best_chains)
+    knowledge_memory.finish_timer()
     knowledge_memory.export("beam_strategies.json")
     
     # ── Tạo báo cáo HTML Dashboard ───────────────────────────────────────────

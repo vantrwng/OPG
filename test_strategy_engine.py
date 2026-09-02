@@ -7,19 +7,24 @@ from state_store import StateStore
 from runtime_executor import RequestExecutor
 from knowledge_memory import KnowledgeMemory
 from local_mutator import AsyncFuzzEngine
-from attack_store import AttackStore, get_attack_store
+from attack_store import AttackStore
 from state_store import MultiActorContextStore
 from response_outcome import result_succeeded
 from field_semantics import is_reference_field, normalize_field_name
+from actor_bootstrapper import ActorBootstrapper
+from authorization_experiment import AuthorizationExperimentPlanner
+from reference_engine import ObservableMutator
+from resource_provisioner import GenericResourceProvisioner
 
 # ── Agent imports (optional — graceful fallback if Ollama not available) ─────────
 _AGENTS_AVAILABLE = False
+_AGENTS_IMPORT_ERROR = ""
 try:
     from attacker_agent import AttackerAgent, AttackVariant
     from auditor_agent import AuditorAgent, AuditResult
     _AGENTS_AVAILABLE = True
-except ImportError:
-    pass
+except ImportError as exc:
+    _AGENTS_IMPORT_ERROR = f"{type(exc).__name__}: {exc}"
 
 log = logging.getLogger("strategy_engine")
 
@@ -116,7 +121,8 @@ class TestStrategyEngine:
     __test__ = False
 
     def __init__(self, operations, adjacency_list, request_executor, graph_builder,
-                 knowledge_memory, beam_width=5, enable_security_testing=False):
+                 knowledge_memory, beam_width=5, enable_security_testing=False,
+                 attack_store=None):
         self.operations = operations
         self.adjacency_list = adjacency_list
         self.executor = request_executor
@@ -132,9 +138,18 @@ class TestStrategyEngine:
         self._valid_workflows = {}
         self.actor_contexts = MultiActorContextStore()
         self.operations_map = {op['id']: op for op in self.operations}
+        self.authorization_planner = AuthorizationExperimentPlanner(self.operations)
+        self.authorization_experiments = self.authorization_planner.plan()
+        for operation in self.operations:
+            self.memory.mark_endpoint_discovered(str(operation.get("id", "unknown")))
 
-        # ── Attack Store (shared cross-beam) ─────────────────────────────────
-        self.attack_store: AttackStore = get_attack_store()
+        # Shared by beams in this engine run, but never across independent runs.
+        self.attack_store: AttackStore = attack_store or AttackStore()
+        self.resource_provisioner = GenericResourceProvisioner(
+            self.operations, self.authorization_planner, self.executor,
+            self.attack_store,
+        )
+        self._last_provisioning_failure = ""
 
         # ── Agent instances ─────────────────────────────────────────────────
         if _AGENTS_AVAILABLE and self.enable_security_testing:
@@ -145,6 +160,12 @@ class TestStrategyEngine:
             self._attacker = None
             self._auditor  = None
             log.info("[Engine] Workflow mode: valid requests only; attacker disabled")
+            if self.enable_security_testing and _AGENTS_IMPORT_ERROR:
+                self.memory.record_security_observation({
+                    "classification": "NOT_TESTED", "type": "PIPELINE",
+                    "reason_code": "generation_failed",
+                    "reasoning": f"Security agents could not be imported: {_AGENTS_IMPORT_ERROR}",
+                })
         
         self.incoming_edges = {}
         for api_out, edges in self.adjacency_list.items():
@@ -339,6 +360,7 @@ class TestStrategyEngine:
                     auth_recovery=exec_result.get("auth_recovery", {}),
                     auth_context=exec_result.get("auth_context", {}),
                     sent_files=exec_result.get("sent_files", {}),
+                    elapsed_ms=exec_result.get("elapsed_ms"),
                 )
 
                 if result_succeeded(exec_result):
@@ -396,6 +418,11 @@ class TestStrategyEngine:
 
         beams = []
         for op in self.operations:
+            # DELETE changes shared external state and can invalidate every
+            # later workflow (especially DELETE /user/{id}). It is exercised
+            # in the isolated deterministic security phase instead.
+            if op.get("method", "GET").upper() == "DELETE":
+                continue
             if self._has_authenticated_actor(initial_state) and self._is_registration_api(op):
                 continue
             beams.append({
@@ -465,6 +492,7 @@ class TestStrategyEngine:
                     auth_recovery=exec_result.get("auth_recovery", {}),
                     auth_context=exec_result.get("auth_context", {}),
                     sent_files=exec_result.get("sent_files", {}),
+                    elapsed_ms=exec_result.get("elapsed_ms"),
                 )
                 
                 already_found = self.memory.is_vulnerability_found(current_api, status)
@@ -531,6 +559,7 @@ class TestStrategyEngine:
                         self._has_authenticated_actor(current_state)
                         and self._is_registration_api(self.operations_map.get(edge['to'], {}))
                     )
+                    and self.operations_map.get(edge['to'], {}).get("method", "GET").upper() != "DELETE"
                 ]
 
                 has_valid_branch = False
@@ -619,6 +648,10 @@ class TestStrategyEngine:
         api_id = api_node.get("id", "unknown")
         actor_id = state.get("actor_id", "default")
         key = (actor_id, api_id)
+        # Freeze the endpoint's own baseline before cloning the replay case.
+        # Cloning first leaves every stored case without its current endpoint
+        # response, so the authorization auditor has nothing to compare with.
+        state.set_baseline(api_id, exec_result)
         candidate = {
             "api_node": dict(api_node),
             "state": state.clone(),
@@ -629,22 +662,100 @@ class TestStrategyEngine:
         if existing is None or len(chain) < len(existing["chain"]):
             self._valid_workflows[key] = candidate
 
-        state.set_baseline(api_id, exec_result)
+        self.attack_store.observe_operation(
+            api_node,
+            request_values=exec_result.get("sent_payload", {}),
+            response_value=exec_result.get("raw_response"),
+            actor_id=str(actor_id),
+            successful=True,
+        )
+
+        if api_node.get("method", "GET").upper() == "DELETE":
+            for deleted in exec_result.get("deleted_references", []) or []:
+                self.attack_store.invalidate(
+                    resource_type=deleted.get("resource_type", ""),
+                    selector_field=deleted.get("selector_field", ""),
+                    resource_id=deleted.get("resource_id"),
+                    owner_actor_id=actor_id,
+                )
+            return
+        self._record_response_resources(api_node, state, exec_result)
+
+    @staticmethod
+    def _declared_selector_meta(operation, selector, resource_type):
+        canonical = AttackStore.normalize_selector(selector, resource_type)
+        for field, raw_meta in (operation.get("outputs", {}) or {}).items():
+            meta = raw_meta if isinstance(raw_meta, dict) else {}
+            if meta.get("_passthrough") or meta.get("_request_passthrough"):
+                continue
+            names = (field, meta.get("original", ""), meta.get("contextual_name", ""))
+            if any(
+                AttackStore.normalize_selector(name, resource_type) == canonical
+                for name in names if name
+            ):
+                return meta
+        return None
+
+    @staticmethod
+    def _value_at_json_path(value, json_path):
+        parts = [part for part in re.split(r"\.|\[\]", str(json_path or "")) if part]
+        if not parts:
+            return None
+
+        def _walk(current, remaining):
+            if not remaining:
+                return current
+            if isinstance(current, list):
+                values = [_walk(item, remaining) for item in current]
+                return next((item for item in values if item not in (None, "")), None)
+            if not isinstance(current, dict) or remaining[0] not in current:
+                return None
+            return _walk(current[remaining[0]], remaining[1:])
+
+        found = _walk(value, parts)
+        if found in (None, "") and len(parts) > 1:
+            # extract_props prefixes referenced schemas with their component
+            # name, while wire responses commonly omit that wrapper.
+            found = _walk(value, parts[1:])
+        return found
+
+    def _record_response_resources(self, api_node, state, exec_result):
+        """Record only producer selectors proven by the declared response schema."""
+        if str(api_node.get("method", "GET")).upper() != "POST":
+            return 0
         raw_response = exec_result.get("raw_response")
-        if raw_response:
+        if not raw_response or exec_result.get("schema_valid") is False:
+            return 0
+        experiments = [
+            item for item in self.authorization_experiments
+            if item.producer_api == api_node.get("id")
+        ]
+        recorded = 0
+        for experiment in experiments:
+            meta = self._declared_selector_meta(
+                api_node, experiment.selector_field, experiment.resource_type
+            )
+            if not meta or not meta.get("json_path"):
+                continue
+            resource_id = self._value_at_json_path(raw_response, meta["json_path"])
+            if resource_id in (None, "") or isinstance(resource_id, (dict, list)):
+                continue
             owner_context = {
-                "actor_id": actor_id,
+                "actor_id": state.get("actor_id", "default"),
                 "user_id": state.get("user_id") or state.get("id"),
                 "email": state.get("email"),
             }
-            self.attack_store.record_from_response(
-                api_id=api_id,
-                response_json=raw_response,
+            self.attack_store.record(
+                api_node.get("id", "unknown"), experiment.selector_field, resource_id,
                 endpoint=exec_result.get("url", api_node.get("path", "")),
                 user_context={k: v for k, v in owner_context.items() if v},
-                owner_actor_id=actor_id,
-                confidence=0.9,
+                owner_actor_id=owner_context["actor_id"], confidence=0.9,
+                resource_type=experiment.resource_type,
+                owner_role=state.get("actor_role", ""),
+                provenance="CREATED_RESPONSE", producer_method="POST",
             )
+            recorded += 1
+        return recorded
 
     def run_security_phase(self) -> dict:
         """Phase 2: test only endpoints that Phase 1 proved replayable.
@@ -692,6 +803,31 @@ class TestStrategyEngine:
                     f"actor={state.get('actor_id', 'default')}"
                 )
                 try:
+                    if api_node.get("method", "GET").upper() == "DELETE":
+                        prepared = self._prepare_destructive_authorization_case(
+                            api_node, state
+                        )
+                        if prepared is None:
+                            reason = self._last_provisioning_failure or "Resource provisioning failed"
+                            self.memory.record_experiment_stage(
+                                api_id, "provisioning_failed", reason, count=0,
+                                status="provisioning_failed",
+                            )
+                            self.memory.record_security_observation({
+                                "classification": "NOT_TESTED", "type": "BOLA",
+                                "api": api_id,
+                                "reason_code": "provisioning_failed",
+                                "reasoning": reason,
+                            })
+                            continue
+                        self._run_3agent_pipeline(
+                            api_node=api_node, current_state=state,
+                            exec_result=prepared, beam_chain=chain,
+                            vulnerabilities=vulnerabilities,
+                        )
+                        summary["tested_endpoints"] += 1
+                        continue
+
                     # Revalidate the frozen case against current target state.
                     # This catches expired tokens/deleted resources before any
                     # mutation is generated.
@@ -723,6 +859,7 @@ class TestStrategyEngine:
                         auth_recovery=replay.get("auth_recovery", {}),
                         auth_context=replay.get("auth_context", {}),
                         sent_files=replay.get("sent_files", {}),
+                        elapsed_ms=replay.get("elapsed_ms"),
                     )
                     if not result_succeeded(replay):
                         summary["baseline_replay_failures"] += 1
@@ -747,6 +884,46 @@ class TestStrategyEngine:
                 except Exception as exc:
                     summary["errors"] += 1
                     log.exception(f"[Phase 2] Failed security case {api_id}: {exc}")
+
+            # Destructive endpoints are intentionally absent from Phase 1.
+            # Run them last with a freshly-created resource so they cannot
+            # poison unrelated baselines or invalidate actor sessions early.
+            for experiment in self.authorization_experiments:
+                if experiment.operation != "DELETE":
+                    continue
+                owner_state = self._authorization_owner_state()
+                if owner_state is None:
+                    self.memory.record_security_observation({
+                        "classification": "NOT_TESTED", "type": "BOLA",
+                        "api": experiment.target_api,
+                        "reasoning": "No authenticated same-role owner/attacker pair",
+                    })
+                    continue
+                target = self.operations_map[experiment.target_api]
+                prepared = self._prepare_destructive_authorization_case(
+                    target, owner_state
+                )
+                if prepared is None:
+                    reason = self._last_provisioning_failure or "Resource provisioning failed"
+                    self.memory.record_experiment_stage(
+                        experiment.target_api, "provisioning_failed", reason,
+                        count=0, status="provisioning_failed",
+                    )
+                    self.memory.record_security_observation({
+                        "classification": "NOT_TESTED", "type": "BOLA",
+                        "api": experiment.target_api,
+                        "reason_code": "provisioning_failed",
+                        "reasoning": reason,
+                    })
+                    continue
+                self._run_3agent_pipeline(
+                    api_node=target, current_state=owner_state,
+                    exec_result=prepared, beam_chain=[
+                        experiment.producer_api, experiment.target_api,
+                        experiment.verifier_api,
+                    ], vulnerabilities=[],
+                )
+                summary["tested_endpoints"] += 1
         finally:
             self._pipeline_phase = "complete"
 
@@ -759,8 +936,51 @@ class TestStrategyEngine:
         )
         return summary
 
+    def _authorization_owner_state(self):
+        for actor in self.actor_contexts.all():
+            if actor.role == "anonymous" or (not actor.auth_token and not actor.cookies):
+                continue
+            owner = actor.to_state_store()
+            if self._select_attack_state(owner) is not None:
+                return owner
+        return None
+
+    def _prepare_destructive_authorization_case(self, target_node, owner_state):
+        """Create R1 without consuming it through the owner's DELETE baseline."""
+        provisioned = self.resource_provisioner.provision(target_node, owner_state)
+        if not provisioned.succeeded:
+            self._last_provisioning_failure = provisioned.reason
+            return None
+        self._last_provisioning_failure = ""
+        prepared = dict(provisioned.create_result)
+        prepared["sent_payload"] = {
+            **dict(provisioned.create_result.get("sent_payload", {})),
+            provisioned.selector_field: provisioned.resource_id,
+        }
+        return prepared
+
     def get_valid_workflow_count(self) -> int:
         return len(self._valid_workflows)
+
+    def seed_actor_identity_resources(self, producer_api: str = "") -> int:
+        """Treat successfully bootstrapped principals as created user resources."""
+        recorded = 0
+        for actor in self.actor_contexts.all():
+            if actor.role == "anonymous":
+                continue
+            user_id = actor.credentials.get("user_id") or actor.credentials.get("id")
+            if user_id in (None, ""):
+                continue
+            self.attack_store.record(
+                producer_api or "ACTOR_BOOTSTRAP", "id", user_id,
+                owner_actor_id=actor.actor_id, owner_role=actor.role,
+                resource_type="user", provenance="CREATED_RESPONSE",
+                producer_method="POST",
+                user_context={"actor_id": actor.actor_id, "user_id": user_id},
+            )
+            actor.remember_resource("user", user_id)
+            recorded += 1
+        return recorded
 
     def _run_local_mutator_security_case(self, api_node: dict, state: StateStore,
                                          baseline: dict, chain: list,
@@ -794,6 +1014,7 @@ class TestStrategyEngine:
                 sent_cookies=baseline.get("sent_cookies", {}),
                 actor_id=state.get("actor_id", "default"),
                 auth_context=baseline.get("auth_context", state.get_auth_context()),
+                elapsed_ms=result.get("elapsed_ms"),
             )
             if status >= 500 and not self.memory.is_vulnerability_found(api_id, status):
                 finding = {
@@ -839,44 +1060,89 @@ class TestStrategyEngine:
         current_state.set_baseline(api_id, exec_result)
 
         # ── Bước 2: Harvest IDs vào AttackStore ───────────────────────────────
-        raw_response = exec_result.get("raw_response")
-        if raw_response:
-            own_ctx = {
-                "actor_id": current_state.get("actor_id", "default"),
-                "user_id": current_state.get("user_id") or current_state.get("id"),
-                "email":   current_state.get("email"),
-            }
-            n_harvested = self.attack_store.record_from_response(
-                api_id=api_id,
-                response_json=raw_response,
-                endpoint=exec_result.get("url", api_node.get("path", "")),
-                user_context={k: v for k, v in own_ctx.items() if v},
-                owner_actor_id=own_ctx["actor_id"],
-                confidence=0.9,
-            )
-            if n_harvested:
-                log.info(f"[AttackStore] Harvested {n_harvested} IDs from {api_id}")
+        n_harvested = self._record_response_resources(api_node, current_state, exec_result)
+        if n_harvested:
+            log.info(f"[AttackStore] Harvested {n_harvested} schema-backed IDs from {api_id}")
 
         # Prefer a distinct principal for authorization tests. The owner state
         # remains the baseline; the selected state supplies the attack token.
         attack_state = self._select_attack_state(current_state)
+        if attack_state is None:
+            self.memory.record_security_observation({
+                "classification": "NOT_TESTED", "type": "BOLA", "api": api_id,
+                "owner_actor_id": current_state.get("actor_id", "default"),
+                "owner_role": current_state.get("actor_role", ""),
+                "reasoning": "No distinct authenticated actor with the same effective role",
+            })
+            return 0.0
+        preflight_ok, preflight_reason = self._preflight_actor(attack_state)
+        if not preflight_ok:
+            self.memory.record_security_observation({
+                "classification": "INFRA_FAILURE", "type": "BOLA", "api": api_id,
+                "attacker_actor_id": attack_state.get("actor_id", "default"),
+                "reasoning": preflight_reason,
+            })
+            return 0.0
 
         # ── Bước 3: Attacker Agent sinh variants ──────────────────────────────
         valid_payload = exec_result.get("sent_payload", {})
+        valid_response = exec_result.get("raw_response")
         try:
             attack_variants = self._attacker.generate_attacks(
                 api_node=api_node,
                 state=attack_state,
                 valid_payload=valid_payload,
-                valid_response=raw_response,
+                valid_response=valid_response,
             )
         except Exception as e:
-            log.error(f"[AttackerAgent] Error generating attacks for {api_id}: {e}")
+            log.exception(f"[AttackerAgent] Error generating attacks for {api_id}: {e}")
+            self.memory.record_experiment_stage(
+                api_id, "generation_failed", f"{type(e).__name__}: {e}", count=0,
+                status="generation_failed",
+            )
+            self.memory.record_security_observation({
+                "classification": "INFRA_FAILURE",
+                "type": "BOLA",
+                "api": api_id,
+                "owner_actor_id": current_state.get("actor_id", "default"),
+                "attacker_actor_id": attack_state.get("actor_id", "default"),
+                "reasoning": (
+                    f"Attack generation failed: {type(e).__name__}: {e}"
+                ),
+            })
             return 0.0
 
         if not attack_variants:
             log.info(f"[AttackerAgent] No attack variants generated for {api_id}")
+            errors = list(getattr(self._attacker, "generation_errors", []) or [])
+            reason = (
+                "; ".join(item.get("reason", "") for item in errors)
+                or "No schema-compatible alternative observed during this run"
+            )
+            self.memory.record_experiment_stage(
+                api_id,
+                "generation_failed" if errors else "not_tested",
+                reason,
+                count=0,
+                status="generation_failed" if errors else "NOT_TESTED",
+            )
+            if errors:
+                self.memory.record_security_observation({
+                    "classification": "NOT_TESTED", "type": "BOLA", "api": api_id,
+                    "reason_code": "generation_failed",
+                    "reasoning": reason,
+                })
             return 0.0
+
+        self.memory.record_experiment_stage(
+            api_id, "generated", "Reference/mutation variants generated",
+            count=len(attack_variants),
+        )
+
+        # Deterministic/replayable cases always run before random and LLM fuzzing.
+        attack_variants.sort(
+            key=lambda item: 0 if item.extra.get("confirmation_eligible") else 1
+        )
 
         log.info(f"\033[95m[3-Agent]\033[0m Running {len(attack_variants)} attack variants on {api_id}")
 
@@ -889,6 +1155,56 @@ class TestStrategyEngine:
             attack_node["path"] = variant.path
 
             try:
+                operation = attack_node.get("method", "GET").upper()
+                if operation in ("POST", "PUT", "PATCH"):
+                    baseline_payload = exec_result.get("sent_payload", {}) or {}
+                    if variant.payload == baseline_payload:
+                        try:
+                            variant.payload, mutation = ObservableMutator.mutate_request(
+                                attack_node,
+                                variant.payload,
+                                excluded_paths=(
+                                    variant.extra.get("field_path", ""),
+                                    variant.extra.get("field", ""),
+                                ),
+                            )
+                            variant.extra["observable_mutation"] = mutation
+                        except ValueError as exc:
+                            reason = f"No observable schema-valid mutation: {exc}"
+                            self.memory.record_experiment_stage(
+                                api_id, "generation_failed", reason, count=0,
+                                status="generation_failed",
+                            )
+                            self.memory.record_security_observation({
+                                "classification": "NOT_TESTED", "type": "BOLA",
+                                "api": api_id, "reason_code": "generation_failed",
+                                "reasoning": reason,
+                            })
+                            continue
+                    else:
+                        variant.extra.setdefault("observable_mutation", {
+                            "location": variant.extra.get("location", "body"),
+                            "field_path": variant.extra.get("field_path", variant.extra.get("field", "")),
+                            "before": variant.extra.get("original_id"),
+                            "after": variant.extra.get("substitute_id", variant.extra.get("resource_id")),
+                        })
+                pre_attack_owner_response = None
+                if (variant.extra.get("confirmation_eligible")
+                        and operation in ("PATCH", "PUT")):
+                    candidate = self._execute_owner_verifier(
+                        variant, current_state, "BOLA_OWNER_PRECHECK"
+                    )
+                    if (candidate is not None and result_succeeded(candidate)
+                            and candidate.get("schema_valid") is not False
+                            and self._response_has_fingerprint(
+                                candidate,
+                                variant.extra.get("resource_id"),
+                                variant.extra.get("marker"),
+                                variant.extra.get("selector_field"),
+                                variant.extra.get("resource_type", ""),
+                            )):
+                        pre_attack_owner_response = candidate
+
                 # Thực thi attack request
                 attack_exec = self.executor.execute_request(
                     api_node=attack_node,
@@ -900,6 +1216,45 @@ class TestStrategyEngine:
                     # an attack may also undo its security mutation.
                     allow_repair=False,
                 )
+                self.memory.record_experiment_stage(
+                    api_id, "executed", f"HTTP {attack_exec.get('status', 0)}",
+                    status="executed",
+                )
+
+                reproduction_count = 1
+                fingerprint_verified = self._response_has_fingerprint(
+                    attack_exec, variant.extra.get("resource_id"), variant.extra.get("marker"),
+                    variant.extra.get("selector_field"), variant.extra.get("resource_type", ""),
+                )
+                if (variant.extra.get("confirmation_eligible")
+                        and operation == "GET" and fingerprint_verified):
+                    replay_exec = self.executor.execute_request(
+                        api_node=attack_node,
+                        current_state=attack_state,
+                        edge_deps=None,
+                        payload_override=variant.payload,
+                        payload_source_override="DETERMINISTIC_BOLA_REPLAY",
+                        allow_repair=False,
+                    )
+                    if self._response_has_fingerprint(
+                            replay_exec, variant.extra.get("resource_id"), variant.extra.get("marker"),
+                            variant.extra.get("selector_field"), variant.extra.get("resource_type", "")) \
+                            :
+                        reproduction_count = 2
+                mutation_verified = False
+                if operation in ("PATCH", "PUT", "DELETE") and result_succeeded(attack_exec):
+                    mutation_verified = self._verify_owner_state_after_attack(
+                        variant, current_state, operation,
+                        pre_attack_response=pre_attack_owner_response,
+                    )
+                    # A destructive/mutating replay must use a newly-created
+                    # resource. Reusing the first ID makes DELETE inherently
+                    # non-reproducible and makes PATCH susceptible to idempotency.
+                    if mutation_verified:
+                        reproduced = self._reproduce_mutation_with_fresh_resource(
+                            api_node, variant, current_state, attack_state, operation)
+                        if reproduced:
+                            reproduction_count = 2
 
                 # Ghi lại attack request vào memory
                 self.memory.record_request(
@@ -937,6 +1292,7 @@ class TestStrategyEngine:
                         "mutation": dict(variant.extra),
                     },
                     auth_recovery=attack_exec.get("auth_recovery", {}),
+                    elapsed_ms=attack_exec.get("elapsed_ms"),
                     auth_context=attack_exec.get("auth_context", {}),
                 )
 
@@ -948,6 +1304,14 @@ class TestStrategyEngine:
                         **variant.extra,
                         "attacker_actor_id": attack_state.get("actor_id", "default"),
                         "owner_actor_id": current_state.get("actor_id", "default"),
+                        "attacker_role": attack_state.get("actor_role", ""),
+                        "owner_role": variant.extra.get("owner_role") or current_state.get("actor_role", ""),
+                        "preflight_ok": True,
+                        "preflight_reason": preflight_reason,
+                        "operation": attack_node.get("method", "GET").upper(),
+                        "reproduction_count": reproduction_count,
+                        "fingerprint_verified": fingerprint_verified and reproduction_count == 2,
+                        "mutation_verified": mutation_verified,
                     },
                 }
 
@@ -958,6 +1322,11 @@ class TestStrategyEngine:
                     state=attack_state,
                     api_node=api_node,
                 )
+                if audit_result.classification not in ("NOT_TESTED", "INFRA_FAILURE"):
+                    self.memory.record_experiment_stage(
+                        api_id, "verifiable", audit_result.reasoning,
+                        status=audit_result.classification,
+                    )
 
                 if audit_result.classification == "SUSPECTED":
                     self.memory.record_security_observation({
@@ -982,6 +1351,10 @@ class TestStrategyEngine:
 
                 # ── Step 18: Tăng điểm nếu BOLA ───────────────────────────────
                 if audit_result.is_bola:
+                    self.memory.record_experiment_stage(
+                        api_id, "confirmed", audit_result.reasoning,
+                        status="CONFIRMED",
+                    )
                     total_bonus += audit_result.score_delta
 
                     # Ghi Finding vào KnowledgeMemory (step 20)
@@ -1003,6 +1376,17 @@ class TestStrategyEngine:
                             "response": attack_exec.get("raw_response"),
                         }
                         self.memory.record_finding(finding)
+                        self.memory.record_replay_recipe({
+                            "endpoint_relationship": {
+                                "create": variant.extra.get("producer_api", ""),
+                                "target": api_id,
+                                "verify": api_id,
+                            },
+                            "resource_type": variant.extra.get("resource_type", ""),
+                            "selector_field": variant.extra.get("selector_field", ""),
+                            "operation": attack_node.get("method", "GET").upper(),
+                            "actor_relationship": "same_role_distinct_principals",
+                        })
                         self.memory.record_vulnerability(api_id, attack_exec["status"])
 
                         vulnerabilities.append({
@@ -1026,19 +1410,264 @@ class TestStrategyEngine:
                     self.memory.record_finding(finding)
 
             except Exception as e:
-                log.error(f"[3-Agent] Error running variant {variant.strategy} on {api_id}: {e}")
+                log.exception(f"[3-Agent] Error running variant {variant.strategy} on {api_id}: {e}")
+                self.memory.record_experiment_stage(
+                    api_id, "execution_error", f"{type(e).__name__}: {e}",
+                    count=0, status="execution_error",
+                )
+                self.memory.record_security_observation({
+                    "classification": "INCONCLUSIVE", "type": "BOLA",
+                    "api": api_id, "reason_code": "execution_error",
+                    "reasoning": f"{type(e).__name__}: {e}",
+                })
                 continue
 
         return total_bonus
 
     def _select_attack_state(self, owner_state):
         owner_actor_id = owner_state.get("actor_id", "default")
+        owner_role = str(owner_state.get("actor_role", "")).strip().casefold()
+        if owner_role in {"", "unknown", "anonymous", "none", "null"}:
+            return None
         for actor in self.actor_contexts.all():
             if actor.actor_id == owner_actor_id:
+                continue
+            if str(actor.role or "").strip().casefold() != owner_role:
                 continue
             base = {
                 "auth_header_name": owner_state.get("auth_header_name", "Authorization"),
                 "auth_header_prefix": owner_state.get("auth_header_prefix", "Bearer"),
             }
             return actor.to_state_store(base=base)
-        return owner_state
+        return None
+
+    def _preflight_actor(self, state):
+        bootstrapper = ActorBootstrapper(self.operations, self.executor)
+        verified, reason = bootstrapper.validate_actor(state)
+        if verified is True:
+            return True, reason
+        recovered, recovery_reason = bootstrapper.recover_actor(state)
+        if not recovered:
+            return False, f"{reason}; recovery failed: {recovery_reason}"
+        verified, reason = bootstrapper.validate_actor(state)
+        return (verified is True), reason
+
+    @staticmethod
+    def _iter_scalar_items(value):
+        if isinstance(value, dict):
+            for key, child in value.items():
+                if isinstance(child, (dict, list)):
+                    yield from TestStrategyEngine._iter_scalar_items(child)
+                else:
+                    yield key, child
+        elif isinstance(value, list):
+            for child in value:
+                yield from TestStrategyEngine._iter_scalar_items(child)
+
+    @staticmethod
+    def _exact_value(left, right):
+        return type(left) is type(right) and left == right
+
+    @staticmethod
+    def _response_has_fingerprint(result, resource_id, marker="",
+                                  selector_field="", resource_type=""):
+        if not result_succeeded(result):
+            return False
+        if result.get("schema_valid") is False:
+            return False
+        content_type = str(result.get("response_content_type", "")).casefold()
+        if "text/html" in content_type:
+            return False
+        items = list(TestStrategyEngine._iter_scalar_items(result.get("raw_response")))
+        if selector_field and resource_id not in (None, ""):
+            canonical = AttackStore.normalize_selector(selector_field, resource_type)
+            if any(
+                AttackStore.normalize_selector(key, resource_type) == canonical
+                and TestStrategyEngine._exact_value(value, resource_id)
+                for key, value in items
+            ):
+                return True
+        if marker not in (None, ""):
+            return any(TestStrategyEngine._exact_value(value, marker) for _key, value in items)
+        return False
+
+    def _execute_owner_verifier(self, variant, owner_state, payload_source):
+        """Read the variant's exact resource through its OpenAPI verifier."""
+        resource_id = variant.extra.get("resource_id")
+        experiment = self.authorization_planner.for_target(
+            variant.api_node.get("id", "")
+        )
+        if experiment is None or not self.authorization_planner.validate(experiment) \
+                or resource_id in (None, ""):
+            return None
+        verifier = dict(self.operations_map[experiment.verifier_api])
+        verifier["path"] = re.sub(
+            r"\{" + re.escape(experiment.selector_field) + r"\}",
+            str(resource_id), str(verifier.get("path", "")),
+        )
+        return self.executor.execute_request(
+            verifier, owner_state, payload_source_override=payload_source,
+            allow_repair=False,
+        )
+
+    def _verify_owner_state_after_attack(
+            self, variant, owner_state, operation, pre_attack_response=None):
+        """Read the exact resource as its owner after a cross-actor mutation."""
+        resource_type = variant.extra.get("resource_type", "")
+        selector = variant.extra.get("selector_field") or variant.extra.get("field", "")
+        result = self._execute_owner_verifier(
+            variant, owner_state, "BOLA_OWNER_VERIFY"
+        )
+        if result is None:
+            return False
+        if operation == "DELETE":
+            # Deleting an identity can invalidate the victim's own session.
+            # A distinct same-role authenticated observer may verify absence;
+            # its 404/410 is state evidence, while 401/403 remains inconclusive.
+            if int(result.get("status", 0) or 0) in (401, 403) or \
+                    result.get("auth_state_mismatch"):
+                observer = self._select_attack_state(owner_state)
+                if observer is not None:
+                    resource_id = variant.extra.get("resource_id")
+                    experiment = self.authorization_planner.for_target(
+                        variant.api_node.get("id", "")
+                    )
+                    verifier = dict(self.operations_map[experiment.verifier_api])
+                    verifier["path"] = re.sub(
+                        r"\{" + re.escape(experiment.selector_field) + r"\}",
+                        str(resource_id), str(verifier.get("path", "")),
+                    )
+                    result = self.executor.execute_request(
+                        verifier, observer,
+                        payload_source_override="BOLA_INDEPENDENT_VERIFY",
+                        allow_repair=False, allow_auth_recovery=True,
+                    )
+            return int(result.get("status", 0) or 0) in (404, 410)
+        if (not result_succeeded(result)
+                or not pre_attack_response
+                or not result_succeeded(pre_attack_response)):
+            return False
+        return self._mutation_matches(
+            result.get("raw_response"), variant.payload or {}, selector,
+            resource_type, pre_attack_response.get("raw_response"),
+        )
+
+    @staticmethod
+    def _mutation_matches(readback, payload, selector, resource_type, baseline):
+        readback_items = list(TestStrategyEngine._iter_scalar_items(readback))
+        baseline_items = list(TestStrategyEngine._iter_scalar_items(baseline))
+        selector_key = AttackStore.normalize_selector(selector, resource_type)
+        intended = [
+            (AttackStore.normalize_selector(key, resource_type), value)
+            for key, value in (payload or {}).items()
+            if AttackStore.normalize_selector(key, resource_type) != selector_key
+            and value not in (None, "") and not isinstance(value, (dict, list))
+        ]
+        for key, value in intended:
+            after_matches = [
+                child for child_key, child in readback_items
+                if AttackStore.normalize_selector(child_key, resource_type) == key
+            ]
+            before_matches = [
+                child for child_key, child in baseline_items
+                if AttackStore.normalize_selector(child_key, resource_type) == key
+            ]
+            if any(TestStrategyEngine._exact_value(child, value) for child in after_matches) \
+                    and not any(TestStrategyEngine._exact_value(child, value) for child in before_matches):
+                return True
+        return False
+
+    @staticmethod
+    def _find_selector_value(value, selector, resource_type):
+        canonical = AttackStore.normalize_selector(selector, resource_type)
+        if isinstance(value, dict):
+            for key, child in value.items():
+                if not isinstance(child, (dict, list)) and \
+                        AttackStore.normalize_selector(key, resource_type) == canonical:
+                    return child
+            for child in value.values():
+                found = TestStrategyEngine._find_selector_value(
+                    child, selector, resource_type
+                )
+                if found not in (None, ""):
+                    return found
+        elif isinstance(value, list):
+            for child in value:
+                found = TestStrategyEngine._find_selector_value(
+                    child, selector, resource_type
+                )
+                if found not in (None, ""):
+                    return found
+        return None
+
+    def _reproduce_mutation_with_fresh_resource(
+            self, target_node, original_variant, owner_state, attack_state, operation):
+        """Create R2, attack it as B, then read it back as A."""
+        experiment = self.authorization_planner.for_target(target_node.get("id", ""))
+        if experiment is None or not self.authorization_planner.validate(experiment):
+            return False
+        replay_owner = owner_state
+        replay_attacker = attack_state
+        provisioned = self.resource_provisioner.provision(target_node, replay_owner)
+        if not provisioned.succeeded:
+            self._last_provisioning_failure = provisioned.reason
+            return False
+        self._last_provisioning_failure = ""
+        created = provisioned.create_result
+        resource_id = provisioned.resource_id
+
+        replay_node = dict(target_node)
+        replay_node["path"] = re.sub(
+            r"\{" + re.escape(experiment.selector_field) + r"\}",
+            str(resource_id), str(target_node.get("path", "")),
+        )
+        replay_payload = dict(original_variant.payload or {})
+        for key in list(replay_payload):
+            if AttackStore.normalize_selector(key, experiment.resource_type) == \
+                    AttackStore.normalize_selector(experiment.selector_field, experiment.resource_type):
+                replay_payload[key] = resource_id
+        replay_attack = self.executor.execute_request(
+            replay_node, replay_attacker, payload_override=replay_payload,
+            payload_source_override="DETERMINISTIC_BOLA_REPLAY",
+            allow_repair=False, allow_auth_recovery=True,
+        )
+        if not result_succeeded(replay_attack) or replay_attack.get("schema_valid") is False:
+            return False
+
+        verifier_node = dict(self.operations_map[experiment.verifier_api])
+        verifier_node["path"] = re.sub(
+            r"\{" + re.escape(experiment.selector_field) + r"\}",
+            str(resource_id), str(verifier_node.get("path", "")),
+        )
+        verified = self.executor.execute_request(
+            verifier_node, replay_owner, payload_source_override="BOLA_OWNER_VERIFY",
+            allow_repair=False, allow_auth_recovery=True,
+        )
+        if operation == "DELETE":
+            if int(verified.get("status", 0) or 0) in (401, 403) or \
+                    verified.get("auth_state_mismatch"):
+                verified = self.executor.execute_request(
+                    verifier_node, replay_attacker,
+                    payload_source_override="BOLA_INDEPENDENT_VERIFY",
+                    allow_repair=False, allow_auth_recovery=True,
+                )
+            return int(verified.get("status", 0) or 0) in (404, 410)
+        if not result_succeeded(verified) or verified.get("schema_valid") is False:
+            return False
+        return self._mutation_matches(
+            verified.get("raw_response"), replay_payload,
+            experiment.selector_field, experiment.resource_type,
+            created.get("raw_response"),
+        )
+
+    @staticmethod
+    def _select_same_role_actor(actor_contexts, owner_actor_id, owner_role):
+        normalized_owner_role = str(owner_role or "").strip().casefold()
+        if normalized_owner_role in {"", "unknown", "anonymous", "none", "null"}:
+            return None
+        for actor in actor_contexts.all():
+            if actor.actor_id == owner_actor_id or actor.role == "anonymous":
+                continue
+            if str(actor.role).strip().casefold() == normalized_owner_role:
+                return actor.to_state_store()
+        return None
