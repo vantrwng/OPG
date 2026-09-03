@@ -2,7 +2,7 @@ from unittest.mock import MagicMock
 
 from knowledge_memory import KnowledgeMemory
 from test_strategy_engine import TestStrategyEngine
-from state_store import StateStore
+from state_store import ActorContext, StateStore
 
 
 def test_workflow_mode_disables_attack_agents_by_default():
@@ -119,6 +119,44 @@ def test_authenticated_workflow_does_not_execute_signup_again():
     assert executed_ids == ["GET__status"]
 
 
+def test_login_beam_refreshes_stale_credentials_from_actor_registry():
+    executor = MagicMock()
+    observed = {}
+
+    def execute_request(*, api_node, current_state, edge_deps):
+        observed.update(current_state.get_actor_credentials())
+        return {
+            "status": 200, "successful": True, "response_text": "{}",
+            "sent_payload": dict(observed), "raw_response": {},
+        }
+
+    executor.execute_request.side_effect = execute_request
+    login = {
+        "id": "loginUser", "method": "POST", "path": "/auth/login",
+        "inputs": {
+            "username": {"original": "username", "in": "body"},
+            "password": {"original": "password", "in": "body"},
+        },
+    }
+    engine = TestStrategyEngine(
+        operations=[login], adjacency_list={}, request_executor=executor,
+        graph_builder=MagicMock(), knowledge_memory=KnowledgeMemory(),
+    )
+    engine.actor_contexts.add(ActorContext(
+        actor_id="owner-a", auth_token="fresh-token",
+        credentials={"username": "fresh-user", "password": "FreshPass!"},
+    ))
+
+    engine.run(max_depth=1, initial_state=StateStore({
+        "actor_id": "owner-a", "auth_token": "stale-token",
+        "username": "stale-user", "password": "StalePass!",
+    }))
+
+    assert observed == {
+        "username": "fresh-user", "password": "FreshPass!",
+    }
+
+
 def test_workflow_phase_defers_delete_to_isolated_security_phase():
     executor = MagicMock()
     executor.execute_request.return_value = {
@@ -140,6 +178,30 @@ def test_workflow_phase_defers_delete_to_isolated_security_phase():
 
     executed = [call.kwargs["api_node"]["id"] for call in executor.execute_request.call_args_list]
     assert executed == ["getMemo"]
+
+
+def test_workflow_excludes_state_changing_get_from_beams_and_edges():
+    executor = MagicMock()
+    executor.execute_request.return_value = {
+        "status": 200, "successful": True, "response_text": "{}",
+        "sent_payload": {}, "raw_response": {},
+    }
+    operations = [
+        {"id": "getBook", "method": "GET", "path": "/books/{title}"},
+        {"id": "createDb", "method": "GET", "path": "/createdb",
+         "potentially_destructive": True, "state_changing_get": True},
+    ]
+    engine = TestStrategyEngine(
+        operations=operations,
+        adjacency_list={"getBook": [{"to": "createDb", "max_confidence": 1.0}]},
+        request_executor=executor, graph_builder=MagicMock(),
+        knowledge_memory=KnowledgeMemory(),
+    )
+
+    engine.run(max_depth=2, initial_state=StateStore({"title": "stable"}))
+
+    executed = [call.kwargs["api_node"]["id"] for call in executor.execute_request.call_args_list]
+    assert executed == ["getBook"]
 
 
 def test_security_phase_skips_attack_when_baseline_replay_fails():

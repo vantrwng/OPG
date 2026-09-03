@@ -77,11 +77,29 @@ class SpecParser:
             r"phone|admin|permission|role|private|balance|credit",
             re.I,
         )
-        sensitive_fields = sorted({
-            str(meta.get("original", name) if isinstance(meta, dict) else name)
-            for name, meta in (outputs or {}).items()
-            if sensitive_re.search(str(meta.get("original", name) if isinstance(meta, dict) else name))
-        })
+        sensitive_fields = set()
+
+        def _collect_sensitive(name, schema):
+            schema = schema if isinstance(schema, dict) else {}
+            original = str(schema.get("original", name))
+            if sensitive_re.search(original):
+                sensitive_fields.add(original)
+            for child_name, child_schema in (schema.get("properties", {}) or {}).items():
+                _collect_sensitive(child_name, child_schema)
+            items = schema.get("items", {}) or {}
+            if isinstance(items, dict):
+                for child_name, child_schema in (items.get("properties", {}) or {}).items():
+                    _collect_sensitive(child_name, child_schema)
+                nested_items = items.get("items")
+                if isinstance(nested_items, dict):
+                    _collect_sensitive(name, nested_items)
+
+        for name, meta in (outputs or {}).items():
+            meta = meta if isinstance(meta, dict) else {}
+            # Request post-conditions are dependency evidence, not response data.
+            if meta.get("_request_passthrough") or meta.get("_passthrough"):
+                continue
+            _collect_sensitive(name, meta)
 
         text = " ".join((
             str(op_id), str(path), str(details.get("summary", "")),
@@ -100,7 +118,7 @@ class SpecParser:
         )
         return {
             "resource_selectors": selector_fields,
-            "sensitive_response_fields": sensitive_fields,
+            "sensitive_response_fields": sorted(sensitive_fields),
             "privileged_function_hint": bool(privileged_re.search(text)),
             "potentially_destructive": bool(destructive_re.search(text)),
             "state_changing_get": method.upper() == "GET" and bool(destructive_re.search(text)),
@@ -527,6 +545,8 @@ class SpecParser:
                 expanded = {}
                 for field_name, meta in list(outputs.items()):
                     if not isinstance(meta, dict):
+                        continue
+                    if meta.get('_request_passthrough') or meta.get('_passthrough'):
                         continue
                     norm_f = re.sub(r'[-_\s]', '', field_name).lower()
                     if norm_f in self._resource_nouns:

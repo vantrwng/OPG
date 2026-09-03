@@ -305,11 +305,13 @@ class AttackStore:
         limit: int = 5,
         require_created: bool = True,
     ) -> List[Dict[str, Any]]:
-        """Return confirmation-eligible resources owned by another same-role actor."""
+        """Return authoritative foreign resources for comparable principals.
+
+        Explicit roles must match. When neither side declares a role, distinct
+        authenticated principals remain eligible for role-less APIs.
+        """
         normalized_attacker_role = str(attacker_role or "").strip().casefold()
         unknown_roles = {"", "unknown", "anonymous", "none", "null"}
-        if require_created and normalized_attacker_role in unknown_roles:
-            return []
         key_type = self.normalize_resource_type(resource_type)
         canonical_selector = self.normalize_selector(selector_field, key_type)
         with self._lock:
@@ -326,9 +328,12 @@ class AttackStore:
             ) < ProvenanceLevel.AUTHORITATIVE:
                 continue
             owner_role = str(entry.get("owner_role", "")).strip().casefold()
-            if require_created and owner_role in unknown_roles:
+            attacker_role_known = normalized_attacker_role not in unknown_roles
+            owner_role_known = owner_role not in unknown_roles
+            if attacker_role_known != owner_role_known:
                 continue
-            if normalized_attacker_role and owner_role != normalized_attacker_role:
+            roles_known = attacker_role_known and owner_role_known
+            if roles_known and owner_role != normalized_attacker_role:
                 continue
             results.append(dict(entry))
             if len(results) >= limit:

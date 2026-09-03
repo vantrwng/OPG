@@ -198,7 +198,22 @@ class ActorBootstrapper:
             ("cookie", "sent_cookies"),
         ):
             for name in (exec_result.get(field_name, {}) or {}):
-                transports.append({"kind": kind, "name": str(name), "present": True})
+                transports.append({
+                    "kind": kind, "name": str(name), "present": True,
+                    "source": "request",
+                })
+        for transport in (
+                exec_result.get("auth_context", {}).get("transports", []) or []):
+            if not isinstance(transport, dict):
+                continue
+            descriptor = {
+                "kind": str(transport.get("kind", "")),
+                "name": str(transport.get("name", "")),
+                "present": True,
+                "source": str(transport.get("source", "response")),
+            }
+            if descriptor["kind"] and descriptor["name"] and descriptor not in transports:
+                transports.append(descriptor)
         self.audit_events.append({
             "stage": stage,
             "actor_id": actor_id,

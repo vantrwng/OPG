@@ -32,10 +32,48 @@ class AuthorizationExperimentPlanner:
         return list(dict.fromkeys(str(item) for item in declared + path_fields if item))
 
     @staticmethod
+    def _families(operation: Dict) -> List[str]:
+        """Return plausible resource families without treating actions as nouns."""
+        explicit = operation.get("resource_type")
+        path = str(operation.get("path", ""))
+        segments = [
+            part for part in path.split("/")
+            if part and not re.fullmatch(r"v\d+", part, re.I)
+            and not re.fullmatch(r"\{[^}]+\}", part)
+        ]
+        action_segments = {
+            "login", "signin", "signup", "register", "registration", "logout",
+            "refresh", "password", "email", "verify", "reset", "activate",
+        }
+        path_candidates = list(segments)
+        if path_candidates and path_candidates[-1].casefold() in action_segments:
+            path_candidates.pop()
+
+        selectors = AuthorizationExperimentPlanner._selectors(operation)
+        selector_candidates = []
+        for selector in selectors:
+            expanded = re.sub(r"(?<=[a-z0-9])(?=[A-Z])", "_", selector)
+            tokens = [part for part in re.split(r"[^a-z0-9]+", expanded.casefold()) if part]
+            if not tokens:
+                continue
+            if tokens[-1] in {"id", "key", "uuid", "title", "name"} and len(tokens) > 1:
+                selector_candidates.append(tokens[0])
+            elif tokens[-1] in {"username", "userid"}:
+                selector_candidates.append("user")
+
+        raw_candidates = [explicit, *selector_candidates, *reversed(path_candidates), path]
+        families = []
+        for candidate in raw_candidates:
+            if not candidate:
+                continue
+            normalized = AttackStore.normalize_resource_type(candidate)
+            if normalized not in families:
+                families.append(normalized)
+        return families or [AttackStore.normalize_resource_type(operation.get("id", ""))]
+
+    @staticmethod
     def _family(operation: Dict) -> str:
-        return AttackStore.normalize_resource_type(
-            operation.get("resource_type") or operation.get("path") or operation.get("id", "")
-        )
+        return AuthorizationExperimentPlanner._families(operation)[0]
 
     @staticmethod
     def _producer_rank(operation: Dict):
@@ -44,6 +82,19 @@ class AuthorizationExperimentPlanner:
         path_parameters = len(re.findall(r"\{[^}]+\}", path))
         path_segments = len([part for part in path.split("/") if part])
         return path_parameters, path_segments, str(operation.get("id", ""))
+
+    @staticmethod
+    def _is_creation_producer(operation: Dict) -> bool:
+        if str(operation.get("method", "")).upper() != "POST":
+            return False
+        text = " ".join((
+            str(operation.get("id", "")), str(operation.get("path", "")),
+            str(operation.get("summary", "")), str(operation.get("description", "")),
+        ))
+        return not re.search(
+            r"login|log[_-]?in|signin|sign[_-]?in|logout|refresh|authenticate|token",
+            text, re.I,
+        )
 
     def plan(self) -> List[AuthorizationExperiment]:
         experiments = []
@@ -58,13 +109,13 @@ class AuthorizationExperimentPlanner:
 
             producers = sorted([
                 op for op in self.operations
-                if str(op.get("method", "")).upper() == "POST"
-                and self._family(op) == resource_type
+                if self._is_creation_producer(op)
+                and resource_type in self._families(op)
             ], key=self._producer_rank)
             verifiers = [
                 op for op in self.operations
                 if str(op.get("method", "")).upper() == "GET"
-                and self._family(op) == resource_type
+                and resource_type in self._families(op)
                 and any(
                     AttackStore.normalize_selector(item, resource_type) == canonical_selector
                     for item in self._selectors(op)
@@ -97,7 +148,7 @@ class AuthorizationExperimentPlanner:
         canonical = AttackStore.normalize_selector(
             experiment.selector_field, experiment.resource_type
         )
-        return all(self._family(op) == experiment.resource_type for op in (producer, target, verifier)) \
+        return all(experiment.resource_type in self._families(op) for op in (producer, target, verifier)) \
             and any(
                 AttackStore.normalize_selector(item, experiment.resource_type) == canonical
                 for item in self._selectors(target)

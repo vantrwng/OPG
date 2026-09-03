@@ -65,9 +65,18 @@ class AsyncFuzzEngine:
             responses = await asyncio.gather(*tasks, return_exceptions=True)
             for i, res in enumerate(responses):
                 if isinstance(res, Exception):
-                    results.append({"status": 0, "error": str(res), "payload": payloads[i]})
+                    results.append({
+                        "status": 0,
+                        "error": str(res),
+                        "payload": payloads[i],
+                        "transport_attempted": True,
+                    })
                 else:
-                    results.append({"status": res["status"], "text": res["text"], "payload": payloads[i]})
+                    results.append({
+                        "status": res["status"],
+                        "text": res["text"],
+                        "payload": payloads[i],
+                    })
         return results
 
     @staticmethod
@@ -81,7 +90,11 @@ class AsyncFuzzEngine:
 
             method_name = method.upper()
             if method_name not in {"POST", "PUT", "PATCH", "DELETE"}:
-                return {"status": 0, "text": "Unsupported method for body mutation"}
+                return {
+                    "status": 0,
+                    "text": "Unsupported method for body mutation",
+                    "transport_attempted": False,
+                }
             # Credentials are copied from one confirmed baseline. Passing them
             # per request avoids sharing a cookie jar between different actors.
             async with session.request(
@@ -94,6 +107,10 @@ class AsyncFuzzEngine:
                 timeout=5,
             ) as response:
                 text = await response.text()
-                return {"status": response.status, "text": text}
+                return {
+                    "status": response.status,
+                    "text": text,
+                    "transport_attempted": True,
+                }
         except Exception as e:
             raise e

@@ -25,6 +25,7 @@ class ProvenanceLevel(IntEnum):
         normalized = str(value or "").strip().upper()
         legacy = {
             "CREATED_RESPONSE": cls.AUTHORITATIVE,
+            "CREATED_REQUEST": cls.AUTHORITATIVE,
             "ACTOR_BOOTSTRAP": cls.AUTHORITATIVE,
             "OBSERVED_RESPONSE": cls.OBSERVED,
             "OBSERVED_REQUEST": cls.OBSERVED,

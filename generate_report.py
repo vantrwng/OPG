@@ -276,9 +276,9 @@ def _bola_type_vi(bola_type: str) -> str:
 
 def _finding_type_vi(ftype: str) -> str:
     t = (ftype or "").upper()
-    if "DATA_EXPOSURE"        in t: return "BOLA — Lộ dữ liệu"
-    if "AUTH_BYPASS"          in t: return "BOLA — Vượt xác thực"
-    if "PRIVILEGE_ESCALATION" in t: return "BOLA — Leo thang đặc quyền"
+    if "DATA_EXPOSURE"        in t: return "Lộ dữ liệu nhạy cảm"
+    if "AUTH_BYPASS"          in t: return "Vượt xác thực"
+    if "PRIVILEGE_ESCALATION" in t: return "Leo thang đặc quyền"
     if "BOLA"                 in t or "IDOR" in t: return "BOLA/IDOR"
     if "CRASH"                in t or "500"  in t: return "Crash / Lỗi 500"
     if "AUTH"                 in t: return "Bất thường xác thực"
@@ -340,6 +340,43 @@ def _aggregate_findings(findings: list) -> list:
     return list(grouped.values())
 
 
+def _aggregate_security_observations(observations: list) -> list:
+    """Collapse identical probe outcomes while retaining their run frequency."""
+    grouped = {}
+    for raw in observations or []:
+        observation = dict(raw)
+        observation_type = str(observation.get("type", "")).upper()
+        method = str(observation.get("method", "")).upper()
+        if "MASS_ASSIGNMENT" in observation_type and method not in {
+            "POST", "PUT", "PATCH",
+        }:
+            # Older exports could label a successful GET query mutation as
+            # mass assignment. Such requests cannot bind writable body fields.
+            continue
+        occurrences = max(1, int(observation.pop("occurrences", 1) or 1))
+        observation.pop("variants", None)
+        key = json.dumps(observation, sort_keys=True, ensure_ascii=False)
+        aggregate = grouped.get(key)
+        if aggregate is None:
+            aggregate = observation
+            aggregate["occurrences"] = 0
+            grouped[key] = aggregate
+        aggregate["occurrences"] += occurrences
+    return list(grouped.values())
+
+
+def _request_was_sent(request: dict) -> bool:
+    """Read new transport metadata, with a conservative legacy fallback."""
+    if "transport_attempted" in request:
+        return request.get("transport_attempted") is True
+    try:
+        if int(request.get("status", 0)) > 0:
+            return True
+    except (TypeError, ValueError):
+        pass
+    return isinstance(request.get("elapsed_ms"), (int, float))
+
+
 def _build_auth_bootstrap_section(events: list) -> str:
     """Render authentication setup evidence without treating it as a finding."""
     if not events:
@@ -374,6 +411,7 @@ def _build_auth_bootstrap_section(events: list) -> str:
         transports = event.get("auth_transports", []) or []
         transport_text = ", ".join(
             f"{item.get('kind')}:{item.get('name')}"
+            + (f" ({item.get('source')})" if item.get("source") else "")
             for item in transports if isinstance(item, dict)
         ) or "không ghi nhận"
         request_json = _esc(json.dumps(
@@ -694,6 +732,55 @@ function switchFindingTab(tid) {{
 </script>"""
 
 
+def _build_security_observations_section(observations: list) -> str:
+    """Render evidence tiers that intentionally do not count as findings."""
+    observations = _aggregate_security_observations(observations)
+    if not observations:
+        return "<p style='color:#64748b'>Không có tín hiệu chưa xác nhận.</p>"
+    order = {"SUSPECTED": 0, "UNVERIFIED": 1, "NOT_TESTED": 2, "INCONCLUSIVE": 3}
+    rows = []
+    for observation in sorted(
+            observations,
+            key=lambda item: (
+                order.get(str(item.get("classification", "")).upper(), 9),
+                str(item.get("api", "")),
+            )):
+        classification = str(observation.get("classification", "INCONCLUSIVE")).upper()
+        color = {
+            "SUSPECTED": "#f59e0b", "UNVERIFIED": "#60a5fa",
+            "NOT_TESTED": "#94a3b8", "INCONCLUSIVE": "#a78bfa",
+            "INFRA_FAILURE": "#ef4444",
+        }.get(classification, "#94a3b8")
+        evidence = observation.get("evidence", []) or []
+        evidence_text = (
+            "; ".join(map(str, evidence[:3]))
+            or observation.get("reasoning", "")
+        )
+        occurrence_count = int(observation.get("occurrences", 1) or 1)
+        occurrence_badge = (
+            f" <span title='Số lần probe cho cùng kết quả' "
+            f"style='color:#64748b;font-weight:400'>×{occurrence_count}</span>"
+            if occurrence_count > 1 else ""
+        )
+        rows.append(
+            "<tr style='border-bottom:1px solid rgba(255,255,255,.08)'>"
+            f"<td style='padding:.65rem;color:{color};font-weight:700'>{_esc(classification)}</td>"
+            f"<td style='padding:.65rem;font-family:monospace;color:#93c5fd'>{_esc(observation.get('api', ''))}</td>"
+            f"<td style='padding:.65rem;color:#cbd5e1'>{_esc(observation.get('type', ''))}{occurrence_badge}</td>"
+            f"<td style='padding:.65rem;color:#94a3b8'>{_esc(evidence_text)}</td>"
+            "</tr>"
+        )
+    return (
+        "<div style='overflow-x:auto'><table style='width:100%;border-collapse:collapse'>"
+        "<thead><tr style='text-align:left;color:#64748b'>"
+        "<th style='padding:.65rem'>Mức bằng chứng</th>"
+        "<th style='padding:.65rem'>API</th>"
+        "<th style='padding:.65rem'>Loại</th>"
+        "<th style='padding:.65rem'>Bằng chứng / lý do</th>"
+        f"</tr></thead><tbody>{''.join(rows)}</tbody></table></div>"
+    )
+
+
 # ── Chi tiết từng API ─────────────────────────────────────────────────────────
 
 def _build_api_detail(api: str, stats: dict) -> str:
@@ -995,7 +1082,20 @@ def generate_html_report(json_file="beam_strategies.json", output_dir="fuzzing_r
         data = json.load(f)
 
     summary          = data.get("summary", {})
-    total_requests   = summary.get("total_requests", 0)
+    request_records = [
+        request
+        for stats in data.get("endpoint_stats", {}).values()
+        for request in stats.get("all_requests", [])
+    ]
+    if "total_request_events" in summary:
+        # New exports maintain unbounded counters even when detailed history is
+        # capped to protect memory.
+        total_requests = summary.get("total_requests", 0)
+    else:
+        total_requests = (
+            sum(_request_was_sent(request) for request in request_records)
+            if request_records else summary.get("total_requests", 0)
+        )
     run_elapsed_label = _format_duration(summary.get("run_elapsed_ms"))
     average_http_elapsed_label = _format_duration(summary.get("average_http_elapsed_ms"))
     run_started_at = summary.get("run_started_at", "Không có dữ liệu")
@@ -1007,6 +1107,14 @@ def generate_html_report(json_file="beam_strategies.json", output_dir="fuzzing_r
     endpoint_stats   = data.get("endpoint_stats", {})
     pipeline_summary = data.get("pipeline_summary", {})
     auth_bootstrap   = data.get("auth_bootstrap", [])
+    raw_security_observations = data.get("security_observations", [])
+    security_observations = _aggregate_security_observations(
+        raw_security_observations
+    )
+    security_observation_occurrences = sum(
+        int(item.get("occurrences", 1) or 1)
+        for item in security_observations
+    )
 
     bola_count     = sum(
         1 for f in findings
@@ -1164,7 +1272,16 @@ def generate_html_report(json_file="beam_strategies.json", output_dir="fuzzing_r
         strategies_html = "<p style='color:#64748b;text-align:center'>Chưa có chiến lược nào.</p>"
 
     findings_section = _build_findings_section(findings)
+    security_observations_section = _build_security_observations_section(
+        security_observations
+    )
     auth_bootstrap_section = _build_auth_bootstrap_section(auth_bootstrap)
+    security_observations_label = str(len(security_observations))
+    if security_observation_occurrences != len(security_observations):
+        security_observations_label = (
+            f"{len(security_observations)} nhóm / "
+            f"{security_observation_occurrences} lần kiểm thử"
+        )
 
     # ── Lắp ráp HTML ─────────────────────────────────────────────────────────
     html_content = f"""<!DOCTYPE html>
@@ -1281,7 +1398,7 @@ def generate_html_report(json_file="beam_strategies.json", output_dir="fuzzing_r
     <div class="stats-row">
       <div class="stat-card">
         <div class="stat-num" style="color:var(--blue)">{total_requests}</div>
-        <div class="stat-label">Tổng số request</div>
+        <div class="stat-label">Request kiểm thử đã gửi</div>
       </div>
       <div class="stat-card">
         <div class="stat-num" style="color:var(--red)">{bola_count}</div>
@@ -1337,6 +1454,10 @@ def generate_html_report(json_file="beam_strategies.json", output_dir="fuzzing_r
         Chi tiết theo loại
       </h3>
       {findings_section}
+      <h3 style="font-size:1.1rem;color:#94a3b8;margin:2rem 0 1rem">
+        Tín hiệu cần xác minh ({security_observations_label})
+      </h3>
+      {security_observations_section}
     </div>
 
     <!-- Tab: Phạm vi API -->

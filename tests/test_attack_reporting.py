@@ -1,7 +1,12 @@
 import json
 
-from generate_report import _aggregate_findings, _group_apis_by_outcome, generate_html_report
-from knowledge_memory import KnowledgeMemory
+from generate_report import (
+    _aggregate_findings,
+    _aggregate_security_observations,
+    _group_apis_by_outcome,
+    generate_html_report,
+)
+from knowledge_memory import KnowledgeMemory, sanitize_sensitive
 
 
 def _attack_metadata():
@@ -302,6 +307,121 @@ def test_export_redacts_response_repair_history_and_captured_state(tmp_path):
         "repair-session", "captured-token",
     ):
         assert secret not in serialized
+
+
+def test_operation_id_containing_password_does_not_redact_diagnostic_subtree():
+    sanitized = sanitize_sensitive({
+        "api_views.users.update_password": {
+            "status": 204, "count": 2, "path": "/users/alice/password",
+            "password": "must-hide",
+        }
+    })
+
+    record = sanitized["api_views.users.update_password"]
+    assert record["status"] == 204
+    assert record["count"] == 2
+    assert record["path"] == "/users/alice/password"
+    assert record["password"] == "***REDACTED***"
+
+
+def test_export_counts_only_attempted_http_requests_and_deduplicates_observations(tmp_path):
+    memory = KnowledgeMemory()
+    memory.record_request(
+        api_id="getUser", method="GET", path="/users/alice", status=0,
+        response_text="Unsupported method for body mutation",
+        payload_source="LOCAL_MUTATOR", transport_attempted=False,
+    )
+    memory.record_request(
+        api_id="getUser", method="GET", path="/users/alice", status=200,
+        response_text='{"username":"alice"}', elapsed_ms=12.5,
+    )
+    observation = {
+        "classification": "UNVERIFIED", "api": "getUser", "type": "BOLA",
+        "reasoning": "identifier ownership is unknown",
+    }
+    memory.record_security_observation(observation)
+    memory.record_security_observation(observation)
+
+    output_file = tmp_path / "beam.json"
+    memory.export(str(output_file))
+    exported = json.loads(output_file.read_text(encoding="utf-8"))
+
+    assert exported["summary"]["total_requests"] == 1
+    assert exported["summary"]["total_request_events"] == 2
+    assert exported["summary"]["security_observations"] == 1
+    assert exported["summary"]["security_observation_occurrences"] == 2
+    assert exported["security_observations"][0]["occurrences"] == 2
+
+
+def test_observation_aggregation_preserves_distinct_evidence_and_counts_repeats():
+    observations = [
+        {"classification": "SUSPECTED", "api": "getUser", "type": "BOLA",
+         "evidence": ["foreign owner"]},
+        {"classification": "SUSPECTED", "api": "getUser", "type": "BOLA",
+         "evidence": ["foreign owner"]},
+        {"classification": "SUSPECTED", "api": "getUser", "type": "BOLA",
+         "evidence": ["different fingerprint"]},
+    ]
+
+    aggregated = _aggregate_security_observations(observations)
+
+    assert len(aggregated) == 2
+    assert sorted(item["occurrences"] for item in aggregated) == [1, 2]
+
+
+def test_report_renders_suspected_and_unverified_observations(tmp_path):
+    input_file = tmp_path / "beam.json"
+    output_dir = tmp_path / "report"
+    input_file.write_text(json.dumps({
+        "summary": {"total_requests": 0}, "endpoint_stats": {},
+        "findings": [], "top_strategies": [],
+        "security_observations": [
+            {"classification": "SUSPECTED", "api": "patchShortcut", "type": "BOLA",
+             "evidence": ["foreign object returned"]},
+            {"classification": "UNVERIFIED", "api": "getUser", "type": "BOLA",
+             "reasoning": "identifier was guessed"},
+        ],
+    }), encoding="utf-8")
+
+    generate_html_report(str(input_file), str(output_dir))
+    report = (output_dir / "index.html").read_text(encoding="utf-8")
+
+    assert "Tín hiệu cần xác minh (2)" in report
+    assert "SUSPECTED" in report and "UNVERIFIED" in report
+    assert "patchShortcut" in report and "getUser" in report
+
+
+def test_report_recomputes_legacy_http_count_and_uses_consistent_finding_labels(tmp_path):
+    input_file = tmp_path / "beam.json"
+    output_dir = tmp_path / "report"
+    input_file.write_text(json.dumps({
+        "summary": {"total_requests": 3},
+        "endpoint_stats": {"debugUsers": {"all_requests": [
+            {"status": "0", "response_text": "Unsupported method for body mutation"},
+            {"status": "200", "elapsed_ms": 10},
+            {"status": "500", "elapsed_ms": 11},
+        ]}},
+        "findings": [{
+            "api": "debugUsers", "method": "GET", "status": 200,
+            "type": "EXCESSIVE_DATA_EXPOSURE",
+        }],
+        "security_observations": [
+            {"classification": "UNVERIFIED", "api": "getUser", "type": "BOLA"},
+            {"classification": "UNVERIFIED", "api": "getUser", "type": "BOLA"},
+            {"classification": "SUSPECTED", "api": "getUser",
+             "method": "GET", "type": "MASS_ASSIGNMENT"},
+        ],
+        "top_strategies": [],
+    }), encoding="utf-8")
+
+    generate_html_report(str(input_file), str(output_dir))
+    report = (output_dir / "index.html").read_text(encoding="utf-8")
+
+    assert '>2</div>\n        <div class="stat-label">Request kiểm thử đã gửi</div>' in report
+    assert "Tín hiệu cần xác minh (1 nhóm / 2 lần kiểm thử)" in report
+    assert "MASS_ASSIGNMENT" not in report
+    assert "Lộ dữ liệu nhạy cảm" in report
+    assert "BOLA — Lộ dữ liệu" not in report
 
 
 def test_report_does_not_embed_operation_id_in_inline_javascript(tmp_path):

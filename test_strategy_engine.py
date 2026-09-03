@@ -3,6 +3,7 @@ import re
 import math
 import asyncio
 import logging
+import uuid
 from state_store import StateStore
 from runtime_executor import RequestExecutor
 from knowledge_memory import KnowledgeMemory
@@ -13,7 +14,7 @@ from response_outcome import result_succeeded
 from field_semantics import is_reference_field, normalize_field_name
 from actor_bootstrapper import ActorBootstrapper
 from authorization_experiment import AuthorizationExperimentPlanner
-from reference_engine import ObservableMutator
+from reference_engine import ObservableMutator, ProvenanceChain, ProvenanceLevel
 from resource_provisioner import GenericResourceProvisioner
 
 # ── Agent imports (optional — graceful fallback if Ollama not available) ─────────
@@ -276,6 +277,8 @@ class TestStrategyEngine:
                         combined += 0.35
 
                     provider_node = self.operations_map.get(provider_id, {})
+                    if provider_node.get("potentially_destructive"):
+                        continue
                     output_meta = None
                     for output_name, candidate_meta in (provider_node.get("outputs", {}) or {}).items():
                         candidate_meta = candidate_meta if isinstance(candidate_meta, dict) else {}
@@ -423,6 +426,13 @@ class TestStrategyEngine:
             # in the isolated deterministic security phase instead.
             if op.get("method", "GET").upper() == "DELETE":
                 continue
+            if op.get("potentially_destructive"):
+                self.memory.record_experiment_stage(
+                    op.get("id", "unknown"), "not_tested",
+                    "Potentially destructive operation excluded from shared workflow state",
+                    count=0, status="NOT_TESTED",
+                )
+                continue
             if self._has_authenticated_actor(initial_state) and self._is_registration_api(op):
                 continue
             beams.append({
@@ -449,6 +459,11 @@ class TestStrategyEngine:
 
                 print(f"[{current_api}] ── Sinh payload và gửi HTTP Request thật...")
                 api_node = self.operations_map[current_api]
+
+                # Sibling beams may hold credentials captured before another
+                # beam recovered/recreated this actor. Login must bind against
+                # the actor registry's latest lifecycle state.
+                self._refresh_login_actor_state(api_node, current_state)
                 
                 edge_deps = []
                 if len(beam['chain']) >= 2:
@@ -467,6 +482,13 @@ class TestStrategyEngine:
                     current_state=current_state,
                     edge_deps=edge_deps
                 )
+
+                if result_succeeded(exec_result):
+                    if self._is_credential_rotation_api(api_node):
+                        current_state.freeze_actor_credentials()
+                    if (self._is_login_api(api_node)
+                            or self._is_credential_rotation_api(api_node)):
+                        self._remember_actor_state(current_state)
 
                 status = exec_result["status"]
                 
@@ -560,6 +582,7 @@ class TestStrategyEngine:
                         and self._is_registration_api(self.operations_map.get(edge['to'], {}))
                     )
                     and self.operations_map.get(edge['to'], {}).get("method", "GET").upper() != "DELETE"
+                    and not self.operations_map.get(edge['to'], {}).get("potentially_destructive")
                 ]
 
                 has_valid_branch = False
@@ -631,6 +654,61 @@ class TestStrategyEngine:
         return bool(re.search(r"signup|sign[_-]?up|register|registration", text, re.I))
 
     @staticmethod
+    def _is_login_api(api_node: dict) -> bool:
+        text = " ".join((str(api_node.get("id", "")), str(api_node.get("path", ""))))
+        return bool(re.search(
+            r"login|log[_-]?in|signin|sign[_-]?in|authenticate|issue[_-]?token",
+            text, re.I,
+        ))
+
+    @staticmethod
+    def _is_credential_rotation_api(api_node: dict) -> bool:
+        if str(api_node.get("method", "GET")).upper() not in {"PUT", "PATCH"}:
+            return False
+        return any(
+            str((meta if isinstance(meta, dict) else {}).get("in", "body")).lower()
+            == "body"
+            and re.search(
+                r"password|passwd|passphrase",
+                " ".join((
+                    str(field_name),
+                    str((meta if isinstance(meta, dict) else {}).get(
+                        "original", field_name
+                    )),
+                )),
+                re.I,
+            )
+            for field_name, meta in (api_node.get("inputs", {}) or {}).items()
+        )
+
+    def _refresh_login_actor_state(self, api_node: dict, state: StateStore) -> None:
+        if not self._is_login_api(api_node):
+            return
+        actor = self.actor_contexts.get(state.get("actor_id", "default"))
+        if actor is None or not (actor.credentials or actor.auth_token or actor.cookies):
+            return
+        latest = actor.to_state_store(base={
+            "auth_header_name": state.get("auth_header_name", "Authorization"),
+            "auth_header_prefix": state.get("auth_header_prefix", "Bearer"),
+        })
+        if (latest.get_actor_credentials() == state.get_actor_credentials()
+                and latest.get("auth_token") == state.get("auth_token")
+                and latest.get("auth_cookies") == state.get("auth_cookies")):
+            return
+        state.replace_auth_context_from(latest)
+
+    def _remember_actor_state(self, state: StateStore) -> None:
+        actor = self.actor_contexts.get(state.get("actor_id", "default"))
+        if actor is None:
+            return
+        actor.role = state.get("actor_role") or actor.role
+        actor.auth_token = state.get("auth_token", "")
+        actor.refresh_token = state.get("refresh_token", "")
+        actor.credentials = state.get_actor_credentials()
+        actor.cookies = dict(state.get("auth_cookies", {}) or {})
+        actor.auth_transports = state.get_auth_transports()
+
+    @staticmethod
     def _is_auth_lifecycle_api(api_node: dict) -> bool:
         text = " ".join((
             str(api_node.get("id", "")),
@@ -686,7 +764,7 @@ class TestStrategyEngine:
         canonical = AttackStore.normalize_selector(selector, resource_type)
         for field, raw_meta in (operation.get("outputs", {}) or {}).items():
             meta = raw_meta if isinstance(raw_meta, dict) else {}
-            if meta.get("_passthrough") or meta.get("_request_passthrough"):
+            if meta.get("_passthrough"):
                 continue
             names = (field, meta.get("original", ""), meta.get("contextual_name", ""))
             if any(
@@ -720,11 +798,11 @@ class TestStrategyEngine:
         return found
 
     def _record_response_resources(self, api_node, state, exec_result):
-        """Record only producer selectors proven by the declared response schema."""
+        """Record selectors proven by a successful create post-condition."""
         if str(api_node.get("method", "GET")).upper() != "POST":
             return 0
         raw_response = exec_result.get("raw_response")
-        if not raw_response or exec_result.get("schema_valid") is False:
+        if exec_result.get("schema_valid") is False or not result_succeeded(exec_result):
             return 0
         experiments = [
             item for item in self.authorization_experiments
@@ -737,7 +815,9 @@ class TestStrategyEngine:
             )
             if not meta or not meta.get("json_path"):
                 continue
-            resource_id = self._value_at_json_path(raw_response, meta["json_path"])
+            request_postcondition = bool(meta.get("_request_passthrough"))
+            source = exec_result.get("sent_payload", {}) if request_postcondition else raw_response
+            resource_id = self._value_at_json_path(source, meta["json_path"])
             if resource_id in (None, "") or isinstance(resource_id, (dict, list)):
                 continue
             owner_context = {
@@ -745,6 +825,14 @@ class TestStrategyEngine:
                 "user_id": state.get("user_id") or state.get("id"),
                 "email": state.get("email"),
             }
+            provenance = "CREATED_REQUEST" if request_postcondition else "CREATED_RESPONSE"
+            chain = ProvenanceChain.single(
+                "create_request_postcondition" if request_postcondition else "create_response",
+                ProvenanceLevel.AUTHORITATIVE, 0.95,
+                relation=experiment.resource_type,
+                actor_id=str(owner_context["actor_id"]),
+                operation_id=str(api_node.get("id", "unknown")),
+            )
             self.attack_store.record(
                 api_node.get("id", "unknown"), experiment.selector_field, resource_id,
                 endpoint=exec_result.get("url", api_node.get("path", "")),
@@ -752,7 +840,8 @@ class TestStrategyEngine:
                 owner_actor_id=owner_context["actor_id"], confidence=0.9,
                 resource_type=experiment.resource_type,
                 owner_role=state.get("actor_role", ""),
-                provenance="CREATED_RESPONSE", producer_method="POST",
+                provenance=provenance, provenance_chain=chain,
+                producer_method="POST", schema=meta,
             )
             recorded += 1
         return recorded
@@ -769,7 +858,10 @@ class TestStrategyEngine:
             "skipped_auth_lifecycle": 0,
             "baseline_replay_failures": 0,
             "errors": 0,
+            "suspected": 0,
+            "unverified": 0,
         }
+        observation_start = len(self.memory.security_observations)
         if not self.enable_security_testing:
             log.info("[Phase 2] Security testing disabled")
             return summary
@@ -790,13 +882,45 @@ class TestStrategyEngine:
             for case in ordered_cases:
                 api_node = case["api_node"]
                 api_id = api_node.get("id", "unknown")
+                state = case["state"].clone()
+                baseline = dict(case["exec_result"])
+                chain = list(case["chain"])
+
+                exposure = self._auditor.audit_baseline_exposure(
+                    baseline, state, api_node
+                )
+                if exposure.classification == "CONFIRMED" and exposure.finding:
+                    status = int(baseline.get("status", 0) or 0)
+                    already_recorded = any(
+                        finding.get("api") == api_id
+                        and finding.get("type") == "EXCESSIVE_DATA_EXPOSURE"
+                        for finding in self.memory.findings
+                    )
+                    if not already_recorded:
+                        finding = dict(exposure.finding)
+                        finding["chain"] = chain
+                        self.memory.record_finding(finding)
+                        self.memory.record_vulnerability(api_id, status)
+                        self.memory.record_experiment_stage(
+                            api_id, "confirmed", exposure.reasoning,
+                            status="CONFIRMED",
+                        )
+                elif exposure.classification == "SUSPECTED":
+                    self.memory.record_security_observation({
+                        "classification": "SUSPECTED",
+                        "type": exposure.bola_type,
+                        "api": api_id,
+                        "method": api_node.get("method", "GET").upper(),
+                        "path": api_node.get("path", ""),
+                        "confidence": exposure.confidence,
+                        "evidence": exposure.evidence,
+                        "reasoning": exposure.reasoning,
+                    })
+
                 if self._is_auth_lifecycle_api(api_node):
                     summary["skipped_auth_lifecycle"] += 1
                     continue
 
-                state = case["state"].clone()
-                baseline = dict(case["exec_result"])
-                chain = list(case["chain"])
                 vulnerabilities = []
                 print(
                     f"[Phase 2] Testing api={api_id} "
@@ -867,6 +991,16 @@ class TestStrategyEngine:
                             f"[Phase 2] Skip {api_id}: baseline replay failed "
                             f"HTTP {replay.get('status')} {replay.get('outcome_reason', '')}"
                         )
+                        self.memory.record_security_observation({
+                            "classification": "NOT_TESTED",
+                            "type": "BOLA",
+                            "api": api_id,
+                            "reason_code": "baseline_replay_failed",
+                            "reasoning": (
+                                f"Frozen baseline could not be replayed: HTTP "
+                                f"{replay.get('status', 0)} {replay.get('outcome_reason', '')}"
+                            ).strip(),
+                        })
                         continue
                     baseline = replay
 
@@ -884,6 +1018,8 @@ class TestStrategyEngine:
                 except Exception as exc:
                     summary["errors"] += 1
                     log.exception(f"[Phase 2] Failed security case {api_id}: {exc}")
+
+            self._run_registration_mass_assignment_cases(summary)
 
             # Destructive endpoints are intentionally absent from Phase 1.
             # Run them last with a freshly-created resource so they cannot
@@ -926,6 +1062,13 @@ class TestStrategyEngine:
                 summary["tested_endpoints"] += 1
         finally:
             self._pipeline_phase = "complete"
+            observations = self.memory.security_observations[observation_start:]
+            summary["suspected"] = sum(
+                item.get("classification") == "SUSPECTED" for item in observations
+            )
+            summary["unverified"] = sum(
+                item.get("classification") == "UNVERIFIED" for item in observations
+            )
 
         print(
             "[Phase 2] Complete: "
@@ -985,13 +1128,16 @@ class TestStrategyEngine:
     def _run_local_mutator_security_case(self, api_node: dict, state: StateStore,
                                          baseline: dict, chain: list,
                                          vulnerabilities: list) -> None:
+        method = str(api_node.get("method", "GET")).upper()
+        if method not in ("POST", "PUT", "PATCH", "DELETE"):
+            return
         valid_payload = baseline.get("sent_payload", {})
         if not valid_payload:
             return
         api_id = api_node.get("id", "unknown")
         blast_results = asyncio.run(AsyncFuzzEngine.blast_api(
             url=baseline.get("url"),
-            method=api_node.get("method", "GET").upper(),
+            method=method,
             headers=baseline.get("sent_headers", {}),
             query=baseline.get("sent_query", {}),
             cookies=baseline.get("sent_cookies", {}),
@@ -1002,7 +1148,7 @@ class TestStrategyEngine:
             status = result.get("status", 0)
             self.memory.record_request(
                 api_id=api_id,
-                method=api_node.get("method", "GET").upper(),
+                method=method,
                 path=baseline.get("url", api_node.get("path", "/")),
                 status=status,
                 chain=chain,
@@ -1015,11 +1161,12 @@ class TestStrategyEngine:
                 actor_id=state.get("actor_id", "default"),
                 auth_context=baseline.get("auth_context", state.get_auth_context()),
                 elapsed_ms=result.get("elapsed_ms"),
+                transport_attempted=result.get("transport_attempted"),
             )
             if status >= 500 and not self.memory.is_vulnerability_found(api_id, status):
                 finding = {
                     "api": api_id,
-                    "method": api_node.get("method", "GET").upper(),
+                    "method": method,
                     "path": baseline.get("url", api_node.get("path", "/")),
                     "status": status,
                     "details": ["Gây ra lỗi 500 bằng Local Mutator sau valid baseline"],
@@ -1072,7 +1219,10 @@ class TestStrategyEngine:
                 "classification": "NOT_TESTED", "type": "BOLA", "api": api_id,
                 "owner_actor_id": current_state.get("actor_id", "default"),
                 "owner_role": current_state.get("actor_role", ""),
-                "reasoning": "No distinct authenticated actor with the same effective role",
+                "reasoning": (
+                    "No compatible distinct authenticated principal; explicit roles "
+                    "must match when the dataset declares them"
+                ),
             })
             return 0.0
         preflight_ok, preflight_reason = self._preflight_actor(attack_state)
@@ -1150,6 +1300,33 @@ class TestStrategyEngine:
         baseline_response = current_state.get_baseline(api_id)
 
         for variant in attack_variants:
+            # Compatibility for variants created before the canonical identity
+            # fields were introduced, and for third-party attack generators.
+            variant.extra.setdefault(
+                "resource_id", variant.extra.get("substitute_id")
+            )
+            variant.extra.setdefault(
+                "selector_field",
+                variant.extra.get("field") or variant.extra.get("field_path", ""),
+            )
+            variant.extra.setdefault(
+                "resource_type",
+                api_node.get("resource_type")
+                or api_node.get("path")
+                or api_node.get("id", ""),
+            )
+            variant_owner_id = (
+                variant.extra.get("owner_actor_id")
+                or current_state.get("actor_id", "default")
+            )
+            baseline_owner_id = current_state.get("actor_id", "default")
+            owner_role = variant.extra.get("owner_role", "")
+            actor_relationship = variant.extra.get("actor_relationship", "")
+            if variant_owner_id == baseline_owner_id:
+                owner_role = owner_role or current_state.get("actor_role", "")
+                actor_relationship = actor_relationship or attack_state.get(
+                    "actor_relationship", ""
+                )
             # Tạo modified api_node với path đã bị biến đổi
             attack_node = dict(variant.api_node)
             attack_node["path"] = variant.path
@@ -1158,7 +1335,8 @@ class TestStrategyEngine:
                 operation = attack_node.get("method", "GET").upper()
                 if operation in ("POST", "PUT", "PATCH"):
                     baseline_payload = exec_result.get("sent_payload", {}) or {}
-                    if variant.payload == baseline_payload:
+                    if (variant.payload == baseline_payload
+                            and not variant.extra.get("confirmation_eligible")):
                         try:
                             variant.payload, mutation = ObservableMutator.mutate_request(
                                 attack_node,
@@ -1277,7 +1455,7 @@ class TestStrategyEngine:
                         "strategy": variant.strategy,
                         "technique": variant.extra.get("technique", variant.strategy),
                         "description": variant.description,
-                        "owner_actor_id": current_state.get("actor_id", "default"),
+                        "owner_actor_id": variant_owner_id,
                         "attacker_actor_id": attack_state.get("actor_id", "default"),
                         "baseline": {
                             "path": exec_result.get("url", api_node.get("path", "")),
@@ -1303,9 +1481,10 @@ class TestStrategyEngine:
                     "extra":       {
                         **variant.extra,
                         "attacker_actor_id": attack_state.get("actor_id", "default"),
-                        "owner_actor_id": current_state.get("actor_id", "default"),
+                        "owner_actor_id": variant_owner_id,
                         "attacker_role": attack_state.get("actor_role", ""),
-                        "owner_role": variant.extra.get("owner_role") or current_state.get("actor_role", ""),
+                        "owner_role": owner_role,
+                        "actor_relationship": actor_relationship,
                         "preflight_ok": True,
                         "preflight_reason": preflight_reason,
                         "operation": attack_node.get("method", "GET").upper(),
@@ -1328,15 +1507,16 @@ class TestStrategyEngine:
                         status=audit_result.classification,
                     )
 
-                if audit_result.classification == "SUSPECTED":
+                if audit_result.classification in ("SUSPECTED", "UNVERIFIED"):
+                    observation_class = audit_result.classification
                     self.memory.record_security_observation({
-                        "classification": "SUSPECTED",
+                        "classification": observation_class,
                         "type": audit_result.bola_type or "BROKEN_ACCESS_CONTROL",
                         "api": api_id,
                         "method": attack_node.get("method", "GET").upper(),
                         "path": attack_exec.get("url", variant.path),
                         "strategy": variant.strategy,
-                        "owner_actor_id": current_state.get("actor_id", "default"),
+                        "owner_actor_id": variant_owner_id,
                         "attacker_actor_id": attack_state.get("actor_id", "default"),
                         "confidence": audit_result.confidence,
                         "evidence": audit_result.evidence,
@@ -1385,7 +1565,9 @@ class TestStrategyEngine:
                             "resource_type": variant.extra.get("resource_type", ""),
                             "selector_field": variant.extra.get("selector_field", ""),
                             "operation": attack_node.get("method", "GET").upper(),
-                            "actor_relationship": "same_role_distinct_principals",
+                            "actor_relationship": variant_info["extra"].get(
+                                "actor_relationship", "distinct_authenticated_principals"
+                            ),
                         })
                         self.memory.record_vulnerability(api_id, attack_exec["status"])
 
@@ -1427,19 +1609,30 @@ class TestStrategyEngine:
     def _select_attack_state(self, owner_state):
         owner_actor_id = owner_state.get("actor_id", "default")
         owner_role = str(owner_state.get("actor_role", "")).strip().casefold()
-        if owner_role in {"", "unknown", "anonymous", "none", "null"}:
-            return None
+        unknown_roles = {"", "unknown", "anonymous", "none", "null"}
+        fallback = None
         for actor in self.actor_contexts.all():
             if actor.actor_id == owner_actor_id:
                 continue
-            if str(actor.role or "").strip().casefold() != owner_role:
+            if not (actor.auth_token or actor.cookies or actor.auth_transports):
                 continue
             base = {
                 "auth_header_name": owner_state.get("auth_header_name", "Authorization"),
                 "auth_header_prefix": owner_state.get("auth_header_prefix", "Bearer"),
             }
-            return actor.to_state_store(base=base)
-        return None
+            actor_role = str(actor.role or "").strip().casefold()
+            candidate = actor.to_state_store(base=base)
+            if owner_role not in unknown_roles and actor_role == owner_role:
+                candidate.update(
+                    "actor_relationship", "same_role_distinct_principals"
+                )
+                return candidate
+            if owner_role in unknown_roles and actor_role in unknown_roles and fallback is None:
+                candidate.update(
+                    "actor_relationship", "distinct_authenticated_principals"
+                )
+                fallback = candidate
+        return fallback
 
     def _preflight_actor(self, state):
         bootstrapper = ActorBootstrapper(self.operations, self.executor)
@@ -1515,6 +1708,11 @@ class TestStrategyEngine:
         """Read the exact resource as its owner after a cross-actor mutation."""
         resource_type = variant.extra.get("resource_type", "")
         selector = variant.extra.get("selector_field") or variant.extra.get("field", "")
+        if self._is_credential_rotation_api(variant.api_node):
+            return self._verify_password_login(
+                variant.extra.get("resource_id"), variant.payload,
+                owner_state.get("actor_id", "password_owner"),
+            )
         result = self._execute_owner_verifier(
             variant, owner_state, "BOLA_OWNER_VERIFY"
         )
@@ -1634,6 +1832,12 @@ class TestStrategyEngine:
         if not result_succeeded(replay_attack) or replay_attack.get("schema_valid") is False:
             return False
 
+        if self._is_credential_rotation_api(target_node):
+            return self._verify_password_login(
+                resource_id, replay_payload,
+                replay_owner.get("actor_id", "password_replay_owner"),
+            )
+
         verifier_node = dict(self.operations_map[experiment.verifier_api])
         verifier_node["path"] = re.sub(
             r"\{" + re.escape(experiment.selector_field) + r"\}",
@@ -1659,6 +1863,236 @@ class TestStrategyEngine:
             experiment.selector_field, experiment.resource_type,
             created.get("raw_response"),
         )
+
+    def _verify_password_login(self, principal, mutation_payload, actor_id):
+        """Verify a password mutation by authenticating the affected principal."""
+        _signup, login = ActorBootstrapper(
+            self.operations, self.executor
+        ).discover_auth_operations()
+        if login is None or principal in (None, ""):
+            return False
+        password = next((
+            value for key, value in (mutation_payload or {}).items()
+            if ActorBootstrapper._credential_group(key) == "password"
+            and value not in (None, "")
+        ), None)
+        if password is None:
+            return False
+        login_payload = {}
+        for field, raw_meta in (login.get("inputs", {}) or {}).items():
+            meta = raw_meta if isinstance(raw_meta, dict) else {}
+            original = str(meta.get("original", field))
+            group = ActorBootstrapper._credential_group(original)
+            if group in {"username", "email"}:
+                login_payload[original] = principal
+            elif group == "password":
+                login_payload[original] = password
+        if not login_payload or not any(
+                ActorBootstrapper._credential_group(key) == "password"
+                for key in login_payload):
+            return False
+        login_state = StateStore({
+            **login_payload,
+            "actor_id": str(actor_id),
+            "actor_role": "user",
+        })
+        result = self.executor.execute_request(
+            login, login_state, payload_override=login_payload,
+            payload_source_override="PASSWORD_CHANGE_VERIFY",
+            allow_repair=False, allow_auth_recovery=False,
+        )
+        return result_succeeded(result)
+
+    @staticmethod
+    def _registration_probe_patch(operation, suffix):
+        patch = {}
+        for field, raw_meta in (operation.get("inputs", {}) or {}).items():
+            meta = raw_meta if isinstance(raw_meta, dict) else {}
+            if str(meta.get("in", "body")).lower() != "body":
+                continue
+            original = str(meta.get("original", field))
+            group = ActorBootstrapper._credential_group(original)
+            if group == "username":
+                patch[original] = f"opg_{suffix}"
+            elif group == "email":
+                patch[original] = f"opg_{suffix}@example.invalid"
+            elif group == "password":
+                patch[original] = f"OPG!{suffix}Aa1"
+            elif group == "phone":
+                patch[original] = f"090{suffix[-7:]}"
+            elif meta.get("required"):
+                enum = list(meta.get("enum", []) or [])
+                patch[original] = (
+                    enum[0] if enum else meta.get("example", meta.get("default", "probe"))
+                )
+        return patch
+
+    def _login_registration_probe(self, login, registration_payload, actor_id):
+        if login is None:
+            return None, None
+        grouped = {}
+        for key, value in (registration_payload or {}).items():
+            group = ActorBootstrapper._credential_group(key)
+            if group:
+                grouped[group] = value
+        payload = {}
+        for field, raw_meta in (login.get("inputs", {}) or {}).items():
+            meta = raw_meta if isinstance(raw_meta, dict) else {}
+            original = str(meta.get("original", field))
+            group = ActorBootstrapper._credential_group(original)
+            if group in grouped:
+                payload[original] = grouped[group]
+        if not payload:
+            return None, None
+        state = StateStore({**payload, "actor_id": actor_id, "actor_role": "user"})
+        result = self.executor.execute_request(
+            login, state, payload_override=payload,
+            payload_source_override="MASS_ASSIGNMENT_LOGIN_VERIFY",
+            allow_repair=False, allow_auth_recovery=False,
+        )
+        return state, result
+
+    def _record_special_security_request(self, operation, state, result, source,
+                                         attack_metadata=None):
+        self.memory.record_request(
+            api_id=operation.get("id", "unknown"),
+            method=operation.get("method", "GET").upper(),
+            path=result.get("url", operation.get("path", "")),
+            status=result.get("status", 0),
+            chain=[operation.get("id", "unknown")],
+            response_text=result.get("response_text", ""),
+            request_payload=result.get("sent_payload", {}),
+            payload_source=source,
+            sent_headers=result.get("sent_headers", {}),
+            sent_query=result.get("sent_query", {}),
+            sent_cookies=result.get("sent_cookies", {}),
+            actor_id=result.get("actor_id", state.get("actor_id", "default")),
+            successful=result.get("successful"),
+            outcome_reason=result.get("outcome_reason", ""),
+            auth_context=result.get("auth_context", {}),
+            elapsed_ms=result.get("elapsed_ms"),
+            attack_metadata=attack_metadata or {},
+        )
+
+    def _run_registration_mass_assignment_cases(self, summary):
+        """Test signup mass assignment and use a privilege differential when available."""
+        bootstrapper = ActorBootstrapper(self.operations, self.executor)
+        signup, login = bootstrapper.discover_auth_operations()
+        if signup is None:
+            return
+        suffix = uuid.uuid4().hex[:10]
+        normal_patch = self._registration_probe_patch(signup, f"n{suffix}")
+        elevated_patch = self._registration_probe_patch(signup, f"a{suffix}")
+        injected = {
+            "admin": True, "isAdmin": True, "is_admin": True,
+            "role": "admin", "userRole": "ADMIN", "permissions": ["*"],
+        }
+        try:
+            normal = self.executor.execute_request(
+                signup, StateStore({"actor_id": f"mass_normal_{suffix}"}),
+                payload_patch=normal_patch,
+                payload_source_override="MASS_ASSIGNMENT_CONTROL",
+                allow_repair=False, allow_auth_recovery=False,
+            )
+            attacked = self.executor.execute_request(
+                signup, StateStore({"actor_id": f"mass_attack_{suffix}"}),
+                payload_patch={**elevated_patch, **injected},
+                payload_source_override="ATTACKER_MASS_ASSIGNMENT",
+                allow_repair=False, allow_auth_recovery=False,
+            )
+        except Exception as exc:
+            self.memory.record_security_observation({
+                "classification": "INFRA_FAILURE", "type": "MASS_ASSIGNMENT",
+                "api": signup.get("id", ""),
+                "reasoning": f"Registration experiment failed: {type(exc).__name__}: {exc}",
+            })
+            return
+
+
+        self._record_special_security_request(
+            signup, StateStore({"actor_id": f"mass_normal_{suffix}"}), normal,
+            "MASS_ASSIGNMENT_CONTROL",
+        )
+        self._record_special_security_request(
+            signup, StateStore({"actor_id": f"mass_attack_{suffix}"}), attacked,
+            "ATTACKER_MASS_ASSIGNMENT",
+            attack_metadata={
+                "strategy": "param_pollution",
+                "technique": "mass_assignment",
+                "description": "Inject privilege fields during account registration",
+                "mutation": {"injected_fields": sorted(injected)},
+            },
+        )
+
+        if not result_succeeded(attacked):
+            return
+
+        normal_state, normal_login = self._login_registration_probe(
+            login, normal.get("sent_payload", normal_patch), f"mass_normal_{suffix}"
+        )
+        elevated_state, elevated_login = self._login_registration_probe(
+            login, attacked.get("sent_payload", elevated_patch), f"mass_attack_{suffix}"
+        )
+        privilege_verified = False
+        privileged_api = ""
+        if (normal_state is not None and elevated_state is not None
+                and result_succeeded(normal_login or {})
+                and result_succeeded(elevated_login or {})):
+            candidates = [
+                op for op in self.operations
+                if op.get("privileged_function_hint")
+                and not op.get("potentially_destructive")
+                and str(op.get("method", "GET")).upper() == "GET"
+                and not self._is_auth_lifecycle_api(op)
+            ]
+            for privileged in candidates:
+                control = self.executor.execute_request(
+                    privileged, normal_state,
+                    payload_source_override="MASS_ASSIGNMENT_CONTROL_VERIFY",
+                    allow_repair=False, allow_auth_recovery=False,
+                )
+                elevated = self.executor.execute_request(
+                    privileged, elevated_state,
+                    payload_source_override="MASS_ASSIGNMENT_PRIVILEGE_VERIFY",
+                    allow_repair=False, allow_auth_recovery=False,
+                )
+                if int(control.get("status", 0) or 0) in (401, 403, 404) \
+                        and result_succeeded(elevated):
+                    privilege_verified = True
+                    privileged_api = privileged.get("id", "")
+                    break
+
+        api_id = signup.get("id", "unknown")
+        if privilege_verified:
+            finding = {
+                "type": "MASS_ASSIGNMENT", "severity": "HIGH", "confidence": 0.96,
+                "api": api_id, "method": signup.get("method", "POST"),
+                "path": signup.get("path", ""), "status": attacked.get("status", 0),
+                "strategy": "mass_assignment",
+                "evidence": [
+                    "Injected account authenticated and accessed a function denied to the control account",
+                    f"Privilege verifier: {privileged_api}",
+                ],
+                "reasoning": "Registration accepted privilege fields and the resulting privilege was verified.",
+                "injected_fields": sorted(injected),
+            }
+            self.memory.record_finding(finding)
+            self.memory.record_vulnerability(api_id, attacked.get("status", 0))
+            self.memory.record_experiment_stage(
+                api_id, "confirmed", finding["reasoning"], status="CONFIRMED"
+            )
+        else:
+            summary["suspected"] += 1
+            evidence = ["Registration accepted injected privilege fields with a 2xx response"]
+            if elevated_login and result_succeeded(elevated_login):
+                evidence.append("The injected account could authenticate successfully")
+            self.memory.record_security_observation({
+                "classification": "SUSPECTED", "type": "MASS_ASSIGNMENT",
+                "api": api_id, "method": signup.get("method", "POST"),
+                "path": signup.get("path", ""), "confidence": 0.7,
+                "evidence": evidence,
+                "reasoning": "Privilege input was accepted, but no differential admin verifier was available.",
+            })
 
     @staticmethod
     def _select_same_role_actor(actor_contexts, owner_actor_id, owner_role):

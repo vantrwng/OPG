@@ -11,7 +11,7 @@ from urllib.parse import parse_qsl, urljoin, urlsplit, urlunsplit
 
 from state_store import AuthTransport, StateStore
 from llm_planner import LLMPlanner
-from response_outcome import evaluate_response, is_auth_state_mismatch
+from response_outcome import evaluate_response, is_auth_state_mismatch, result_succeeded
 from file_artifacts import FileArtifactProvider
 from knowledge_memory import sanitize_sensitive
 
@@ -112,6 +112,16 @@ class FeedbackAnalyzer:
 
 
 class RequestExecutor:
+    _LOGIN_OPERATION_RE = re.compile(
+        r"login|log[_-]?in|signin|sign[_-]?in|authenticate|issue[_-]?token",
+        re.I,
+    )
+    _LOGIN_REJECTION_RE = re.compile(
+        r"username.{0,30}password.{0,30}(incorrect|invalid|wrong)"
+        r"|invalid credentials|bad credentials|authentication failed|login failed",
+        re.I | re.S,
+    )
+
     def __init__(self, base_url: str, planner: LLMPlanner, knowledge_memory=None,
                  artifact_provider=None):
         self.base_url        = base_url.rstrip("/")
@@ -153,6 +163,48 @@ class RequestExecutor:
         # 1. Thực thi lần đầu
         exec_result = self._do_execute(api_node, current_state, sent_payload, payload_source)
 
+        # A login rejection cannot be healed by asking an LLM to invent another
+        # password. Refresh/recreate the named actor, regenerate the payload from
+        # its new frozen credential snapshot, and only then retry the login.
+        if (allow_auth_recovery and payload_override is None
+                and self._is_login_credential_rejection(api_node, exec_result)
+                and callable(self.auth_recovery_handler)):
+            current_state.mark_auth_identity(False, "login credentials rejected by target")
+            recovery_event = {
+                "status": exec_result.get("status"),
+                "reason": exec_result.get("outcome_reason", "login credentials rejected"),
+                "response": exec_result.get("response_text", "")[:1000],
+            }
+            recovered, recovery_reason = self._invoke_auth_recovery(
+                current_state, api_node, exec_result
+            )
+            if recovered:
+                retry_payload, retry_source = self.planner.generate_payload(
+                    api_node, current_state, edge_deps=edge_deps
+                )
+                if payload_patch:
+                    retry_payload.update(payload_patch)
+                    retry_source = f"{retry_source}+CONSTRAINT"
+                retry_result = self._do_execute(
+                    api_node, current_state, retry_payload, retry_source
+                )
+                retry_result["auth_recovery"] = {
+                    "attempted": True,
+                    "recovered": retry_result.get("successful", False),
+                    "events": [recovery_event],
+                    "reason": recovery_reason,
+                    "auth_context": current_state.get_auth_context(),
+                }
+                return retry_result
+            exec_result["auth_recovery"] = {
+                "attempted": True,
+                "recovered": False,
+                "events": [recovery_event],
+                "reason": recovery_reason,
+                "auth_context": current_state.get_auth_context(),
+            }
+            return exec_result
+
         # Auth-state recovery is separate from payload self-healing. A token
         # whose subject no longer exists cannot be repaired by randomizing the
         # endpoint payload.
@@ -172,24 +224,9 @@ class RequestExecutor:
             recovered = False
             recovery_reason = "No auth recovery handler is configured"
             if callable(self.auth_recovery_handler):
-                try:
-                    handler_result = self.auth_recovery_handler(
-                        current_state, api_node, exec_result
-                    )
-                    if isinstance(handler_result, tuple):
-                        recovered = bool(handler_result[0])
-                        recovery_reason = (
-                            str(handler_result[1]) if len(handler_result) > 1 else ""
-                        )
-                    else:
-                        recovered = bool(handler_result)
-                        recovery_reason = (
-                            "Auth context recovered"
-                            if recovered else "Auth recovery handler returned false"
-                        )
-                except Exception as exc:
-                    recovery_reason = str(exc)
-                    log.error(f"[Auth Recovery] Handler failed for {api_id}: {exc}")
+                recovered, recovery_reason = self._invoke_auth_recovery(
+                    current_state, api_node, exec_result
+                )
 
             if recovered:
                 retry_result = self._do_execute(
@@ -293,6 +330,43 @@ class RequestExecutor:
             return current_exec
             
         return exec_result
+
+    @classmethod
+    def _is_login_credential_rejection(cls, api_node: Dict,
+                                       result: Dict[str, Any]) -> bool:
+        endpoint = " ".join((
+            str(api_node.get("id", "")), str(api_node.get("path", "")),
+        ))
+        if not cls._LOGIN_OPERATION_RE.search(endpoint) or result_succeeded(result):
+            return False
+        evidence = " ".join((
+            str(result.get("response_text", "")),
+            str(result.get("raw_response", "")),
+            str(result.get("outcome_reason", "")),
+        ))
+        return bool(cls._LOGIN_REJECTION_RE.search(evidence))
+
+    def _invoke_auth_recovery(self, state: StateStore, api_node: Dict,
+                              failed_result: Dict[str, Any]):
+        try:
+            handler_result = self.auth_recovery_handler(
+                state, api_node, failed_result
+            )
+            if isinstance(handler_result, tuple):
+                recovered = bool(handler_result[0])
+                reason = str(handler_result[1]) if len(handler_result) > 1 else ""
+                return recovered, reason
+            recovered = bool(handler_result)
+            return recovered, (
+                "Auth context recovered"
+                if recovered else "Auth recovery handler returned false"
+            )
+        except Exception as exc:
+            log.error(
+                "[Auth Recovery] Handler failed for %s: %s",
+                api_node.get("id", "unknown_api"), exc,
+            )
+            return False, str(exc)
 
     def _do_execute(self, api_node: Dict, current_state: StateStore, sent_payload: Dict, payload_source: str) -> Dict[str, Any]:
         api_id  = api_node.get("id", "unknown_api")

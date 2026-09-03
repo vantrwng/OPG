@@ -37,6 +37,11 @@ def _is_sensitive_key(key) -> bool:
     )
 
 
+def _is_sensitive_container_key(key) -> bool:
+    compact = "".join(re.findall(r"[a-z0-9]+", str(key or "").casefold()))
+    return compact in _SENSITIVE_KEY_PARTS
+
+
 def _sanitize_text(value: str) -> str:
     stripped = value.strip()
     if stripped.startswith(("{", "[")):
@@ -61,8 +66,9 @@ def sanitize_sensitive(value, key: str = "", _force: bool = False):
     """Return a JSON-safe copy with credential-bearing values removed."""
     force = _force or _is_sensitive_key(key)
     if isinstance(value, dict):
+        child_force = _force or _is_sensitive_container_key(key)
         return {
-            child_key: sanitize_sensitive(child, str(child_key), force)
+            child_key: sanitize_sensitive(child, str(child_key), child_force)
             for child_key, child in value.items()
         }
     if isinstance(value, (list, tuple, set)):
@@ -72,6 +78,18 @@ def sanitize_sensitive(value, key: str = "", _force: bool = False):
     if isinstance(value, str):
         return _sanitize_text(value)
     return value
+
+
+def _transport_was_attempted(status, elapsed_ms=None, explicit=None) -> bool:
+    """Distinguish an HTTP attempt from a local diagnostic event."""
+    if explicit is not None:
+        return bool(explicit)
+    try:
+        if int(status) > 0:
+            return True
+    except (TypeError, ValueError):
+        pass
+    return isinstance(elapsed_ms, (int, float))
 
 
 class KnowledgeMemory:
@@ -100,8 +118,11 @@ class KnowledgeMemory:
         
         # Thống kê mở rộng
         self.request_history: deque = deque(maxlen=self._MAX_HISTORY)  # bounded
+        self._request_event_count = 0
+        self._http_request_count = 0
         self.findings = []
         self.security_observations = []
+        self._security_observation_index = {}
         self.endpoint_stats = {}
         self.edge_feedback = {}
         self.pipeline_summary = {}
@@ -179,6 +200,7 @@ class KnowledgeMemory:
         auth_context: dict = None,
         sent_files: dict = None,
         elapsed_ms: float = None,
+        transport_attempted: bool = None,
     ):
         if api_id not in self.endpoint_stats:
             self.endpoint_stats[api_id] = {"visits": 0, "status_counts": {}, "all_requests": []}
@@ -195,6 +217,9 @@ class KnowledgeMemory:
         outcome = evaluate_response(status, response_text=response_text or "")
         effective_success = outcome.successful if successful is None else bool(successful)
         effective_reason = outcome_reason or outcome.reason
+        was_attempted = _transport_was_attempted(
+            status, elapsed_ms=elapsed_ms, explicit=transport_attempted
+        )
 
         try:
             is_http_2xx = 200 <= int(status) < 300
@@ -222,6 +247,7 @@ class KnowledgeMemory:
             "auth_context": auth_context if auth_context is not None else {},
             "sent_files": sent_files if sent_files is not None else {},
             "elapsed_ms": elapsed_ms,
+            "transport_attempted": was_attempted,
             "chain": chain if chain is not None else []
         }
         all_requests.append(sanitize_sensitive(request_record))
@@ -232,15 +258,32 @@ class KnowledgeMemory:
             "path": path,
             "status": status,
             "chain_length": len(chain) if chain else 0,
+            "transport_attempted": was_attempted,
             "timestamp": time.time()
         }))
+        self._request_event_count += 1
+        if was_attempted:
+            self._http_request_count += 1
 
     def record_finding(self, finding: dict):
         self.findings.append(sanitize_sensitive(finding))
 
     def record_security_observation(self, observation: dict):
         """Store suspected/inconclusive authorization evidence separately."""
-        self.security_observations.append(sanitize_sensitive(observation))
+        sanitized = sanitize_sensitive(observation)
+        identity = {
+            key: value for key, value in sanitized.items()
+            if key not in {"occurrences", "variants"}
+        }
+        identity_key = json.dumps(identity, sort_keys=True, ensure_ascii=False)
+        existing = self._security_observation_index.get(identity_key)
+        if existing is not None:
+            existing["occurrences"] = int(existing.get("occurrences", 1)) + int(
+                sanitized.get("occurrences", 1)
+            )
+            return
+        self.security_observations.append(sanitized)
+        self._security_observation_index[identity_key] = sanitized
 
     def record_replay_recipe(self, recipe: dict):
         """Persist only structural replay data; runtime credentials/IDs are forbidden."""
@@ -289,15 +332,21 @@ class KnowledgeMemory:
 
     def export(self, output_file: str):
         # Tổng hợp thống kê
-        total_requests = len(self.request_history)
+        total_requests = self._http_request_count
+        total_request_events = self._request_event_count
         server_errors = sum(1 for f in self.findings if f.get("type") == "Crash/500")
         auth_anomalies = sum(1 for f in self.findings if f.get("type") == "Auth Anomaly")
         elapsed_values = [
             req.get("elapsed_ms")
             for stats in self.endpoint_stats.values()
             for req in stats.get("all_requests", [])
+            if req.get("transport_attempted", True)
             if isinstance(req.get("elapsed_ms"), (int, float))
         ]
+        observation_occurrences = sum(
+            max(1, int(item.get("occurrences", 1) or 1))
+            for item in self.security_observations
+        )
         finished_at = self._run_finished_at or time.perf_counter()
         finished_epoch = self._run_finished_epoch or time.time()
         run_elapsed_ms = round((finished_at - self._run_started_at) * 1000, 2)
@@ -305,11 +354,13 @@ class KnowledgeMemory:
         output_data = {
             "summary": {
                 "total_requests": total_requests,
+                "total_request_events": total_request_events,
                 "server_errors_500": server_errors,
                 "auth_anomalies": auth_anomalies,
                 "total_strategies_found": len(self.top_strategies),
                 "total_findings": len(self.findings),
                 "security_observations": len(self.security_observations),
+                "security_observation_occurrences": observation_occurrences,
                 "auth_bootstrap_requests": len(self.auth_bootstrap),
                 "run_elapsed_ms": run_elapsed_ms,
                 "run_started_at": time.strftime(

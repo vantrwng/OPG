@@ -296,6 +296,15 @@ class StateStore:
             "token_present": bool(self.get("auth_token") or self.get("auth_cookies")),
             "transport_kinds": sorted({transport.kind for transport in transports}),
             "transport_sources": sorted({transport.source for transport in transports if transport.source}),
+            "transports": [
+                {
+                    "kind": transport.kind,
+                    "name": transport.name,
+                    "source": transport.source,
+                    "verified": transport.verified,
+                }
+                for transport in transports
+            ],
             **self._auth_identity_state,
         }
 

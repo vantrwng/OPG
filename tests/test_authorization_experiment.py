@@ -9,6 +9,7 @@ from knowledge_memory import KnowledgeMemory
 from spec_parser import SpecParser
 from state_store import ActorContext, MultiActorContextStore, StateStore
 from test_strategy_engine import TestStrategyEngine
+from reference_engine import ObservedValue, ProvenanceChain, ProvenanceLevel
 from unittest.mock import MagicMock
 
 
@@ -25,6 +26,53 @@ def _crud_operations():
         {"id": "patchMemo", "method": "PATCH", "path": "/memo/{memoId}"},
         {"id": "deleteMemo", "method": "DELETE", "path": "/memo/{memoId}"},
     ]
+
+
+def test_id_substitution_uses_canonical_identity_metadata_without_treating_own_id_as_foreign():
+    attacker = AttackerAgent(max_variants=3)
+    attacker.reference_discovery.pool.observe(ObservedValue(
+        value="user-b",
+        schema={"type": "string"},
+        location="path",
+        field_path="username",
+        provenance=ProvenanceChain.single(
+            "actor_bootstrap", ProvenanceLevel.AUTHORITATIVE,
+            actor_id="user-b", operation_id="registerUser",
+            relation="user",
+        ),
+        operation_id="registerUser",
+        actor_id="user-b",
+        relationship="user",
+    ))
+    operation = {
+        "id": "getUser", "method": "GET", "path": "/users/{username}",
+        "resource_type": "user",
+        "inputs": {"username": {
+            "original": "username", "in": "path", "type": "string",
+        }},
+    }
+
+    variants = attacker._id_substitution(
+        operation, StateStore({"actor_id": "user-b"}), {"username": "owner-a"}
+    )
+
+    assert len(variants) == 1
+    assert variants[0].extra["resource_id"] == "user-b"
+    assert variants[0].extra["selector_field"] == "username"
+    assert variants[0].extra["resource_type"] == "user"
+    assert variants[0].extra["confirmation_eligible"] is False
+
+
+def test_read_only_parameter_pollution_never_generates_body_mass_assignment():
+    attacker = AttackerAgent(max_variants=4)
+    variants = attacker._parameter_pollution(
+        {"id": "getUser", "method": "GET", "path": "/users/{username}"},
+        StateStore({"actor_id": "user-b"}),
+        {"username": "owner-a"},
+    )
+
+    assert variants
+    assert {item.extra["technique"] for item in variants} == {"query_pollution"}
 
 
 def test_planner_builds_schema_backed_patch_and_delete_experiments():
@@ -69,6 +117,60 @@ def test_planner_prefers_direct_collection_producer_over_relationship_post():
 
     assert experiment is not None
     assert experiment.producer_api == "createResource"
+
+
+def test_planner_treats_password_action_as_user_resource_family():
+    operations = [
+        {"id": "registerUser", "method": "POST", "path": "/users/v1/register"},
+        {"id": "loginUser", "method": "POST", "path": "/users/v1/login"},
+        {"id": "getUser", "method": "GET", "path": "/users/v1/{username}"},
+        {"id": "updatePassword", "method": "PUT",
+         "path": "/users/v1/{username}/password"},
+    ]
+
+    experiment = AuthorizationExperimentPlanner(operations).for_target("updatePassword")
+
+    assert experiment is not None
+    assert experiment.resource_type == "user"
+    assert experiment.producer_api == "registerUser"
+    assert experiment.verifier_api == "getUser"
+
+
+def test_nested_sensitive_response_fields_are_extracted_from_arrays():
+    spec_path = Path(__file__).resolve().parents[1] / "vmAPI.json"
+    operation = next(
+        op for op in SpecParser(str(spec_path)).extract_operations()
+        if op["path"] == "/users/v1/_debug"
+    )
+
+    assert set(operation["sensitive_response_fields"]) >= {"admin", "email", "password"}
+
+
+def test_successful_create_request_postcondition_is_authoritative_resource():
+    spec_path = Path(__file__).resolve().parents[1] / "vmAPI.json"
+    operations = SpecParser(str(spec_path)).extract_operations()
+    create_book = next(op for op in operations if op["path"] == "/books/v1" and op["method"] == "POST")
+    engine = TestStrategyEngine(
+        operations=operations, adjacency_list={}, request_executor=MagicMock(),
+        graph_builder=MagicMock(), knowledge_memory=KnowledgeMemory(),
+    )
+
+    recorded = engine._record_response_resources(
+        create_book,
+        StateStore({"actor_id": "owner-a", "actor_role": "USER"}),
+        {
+            "status": 200, "successful": True, "schema_valid": True,
+            "sent_payload": {"book_title": "Foreign Book", "secret": "x"},
+            "raw_response": {"status": "success", "message": "created"},
+        },
+    )
+    resources = engine.attack_store.get_foreign_resources(
+        "book", "book_title", "user-b", "USER"
+    )
+
+    assert recorded == 1
+    assert resources[0]["resource_id"] == "Foreign Book"
+    assert resources[0]["provenance"] == "CREATED_REQUEST"
 
 
 def test_ref_component_name_is_not_inserted_into_wire_json_path(tmp_path):
@@ -270,7 +372,7 @@ def test_pipeline_confirms_cross_actor_patch_from_pre_and_post_owner_reads():
         "BOLA_OWNER_PRECHECK",
         "ATTACKER_REFERENCE_FORGE",
         "BOLA_OWNER_VERIFY",
-        "BOLA_PRODUCER_REPLAY",
+        "RESOURCE_PROVISIONER",
         "DETERMINISTIC_BOLA_REPLAY",
         "BOLA_OWNER_VERIFY",
     ]

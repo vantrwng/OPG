@@ -76,7 +76,8 @@ class AuditorAgent:
     BOLA_SCORE_BONUS = 150.0
     STRONG_BOLA_BONUS = 200.0
     VALID_CLASSIFICATIONS = {
-        "CONFIRMED", "REJECTED", "INCONCLUSIVE", "NOT_TESTED", "INFRA_FAILURE",
+        "CONFIRMED", "SUSPECTED", "UNVERIFIED", "REJECTED", "INCONCLUSIVE",
+        "NOT_TESTED", "INFRA_FAILURE",
     }
 
     def __init__(self, client: Optional[OllamaClient] = None):
@@ -117,6 +118,51 @@ class AuditorAgent:
 
         extra = attack_variant_info.get("extra", {}) or {}
         if not extra.get("confirmation_eligible", False):
+            if not self._valid_api_response(attack_response, api_node):
+                return AuditResult(
+                    is_bola=False,
+                    classification="INCONCLUSIVE",
+                    evidence=["Response did not satisfy API response checks"],
+                )
+            if 200 <= int(attack_status or 0) < 300:
+                technique = str(extra.get("technique", ""))
+                operation = str(
+                    extra.get("operation") or api_node.get("method", "GET")
+                ).upper()
+                is_privilege_mutation = (
+                    strategy == "param_pollution"
+                    and technique in ("mass_assignment", "privilege_escalation")
+                    and operation in ("POST", "PUT", "PATCH")
+                )
+                is_reference_probe = strategy in ("id_substitution", "reference_forge")
+                if not is_privilege_mutation and not is_reference_probe:
+                    return AuditResult(
+                        is_bola=False,
+                        classification="INCONCLUSIVE",
+                        confidence=0.2,
+                        bola_type="NONE",
+                        evidence=["The mutated request returned 2xx"],
+                        reasoning=(
+                            "A successful generic mutation is not ownership or "
+                            "privilege evidence."
+                        ),
+                    )
+                return AuditResult(
+                    is_bola=False,
+                    classification="SUSPECTED" if is_privilege_mutation else "UNVERIFIED",
+                    confidence=0.6 if is_privilege_mutation else 0.35,
+                    bola_type="MASS_ASSIGNMENT" if is_privilege_mutation else "BOLA",
+                    evidence=[
+                        "Server accepted privilege-related fields with a 2xx response"
+                        if is_privilege_mutation else
+                        "Server returned 2xx for an identifier without authoritative ownership"
+                    ],
+                    reasoning=(
+                        "Privilege-related input was accepted, but effective privileges were not verified."
+                        if is_privilege_mutation else
+                        "The behavior is noteworthy, but the identifier or ownership is only guessed."
+                    ),
+                )
             return AuditResult(
                 is_bola=False,
                 classification="NOT_TESTED",
@@ -170,6 +216,15 @@ class AuditorAgent:
         )
 
         if deterministic_result["classification"] == "CONFIRMED":
+            return self._decide(
+                baseline_result=baseline_result,
+                semantic_result=deterministic_result,
+                attack_variant_info=attack_variant_info,
+                attack_status=attack_status,
+                api_node=api_node,
+            )
+
+        if deterministic_result["classification"] in ("SUSPECTED", "UNVERIFIED"):
             return self._decide(
                 baseline_result=baseline_result,
                 semantic_result=deterministic_result,
@@ -237,7 +292,8 @@ class AuditorAgent:
             baseline_response and baseline_response.get("status") in (200, 201, 202, 204)
         )
         provenance_ok = (
-            extra.get("provenance") == "CREATED_RESPONSE"
+            str(extra.get("provenance", "")).upper()
+            in {"CREATED_RESPONSE", "CREATED_REQUEST", "AUTHORITATIVE"}
             and extra.get("confirmation_eligible") is True
         )
         owner_role = str(extra.get("owner_role", "")).strip().casefold()
@@ -248,6 +304,13 @@ class AuditorAgent:
             and attacker_role not in unknown_roles
             and owner_role == attacker_role
         )
+        actor_relationship = str(extra.get("actor_relationship", "")).strip()
+        roleless_peer = bool(
+            owner_role in unknown_roles
+            and attacker_role in unknown_roles
+            and actor_relationship == "distinct_authenticated_principals"
+        )
+        comparable_principals = same_role or roleless_peer
         repeated = int(extra.get("reproduction_count", 0) or 0) >= 2
         fingerprint_ok = bool(extra.get("fingerprint_verified"))
         method = str(extra.get("operation", "GET")).upper()
@@ -270,15 +333,43 @@ class AuditorAgent:
                 )
 
         deterministic_success = fingerprint_ok if method == "GET" else mutation_verified
-        if (baseline_success and has_cross_actor_proof and provenance_ok and same_role
+        if (baseline_success and has_cross_actor_proof and provenance_ok
+                and comparable_principals
                 and repeated and deterministic_success
                 and strategy in ("id_substitution", "reference_forge")):
+            relationship_reason = (
+                "same-role" if same_role else "role-less authenticated"
+            )
             return {
                 "classification": "CONFIRMED",
                 "confidence": 0.95,
                 "vulnerability_type": "BOLA",
                 "evidence": evidence or ["Foreign resource fingerprint verified in 2/2 attempts"],
-                "reasoning": "A same-role foreign resource test reproduced successfully in 2/2 attempts.",
+                "reasoning": (
+                    f"A {relationship_reason} foreign resource test reproduced "
+                    "successfully in 2/2 attempts."
+                ),
+            }
+
+        if (baseline_success and has_cross_actor_proof and provenance_ok
+                and comparable_principals
+                and strategy in ("id_substitution", "reference_forge")):
+            missing = []
+            if not repeated:
+                missing.append("2/2 replay")
+            if not deterministic_success:
+                missing.append("owner readback" if method != "GET" else "response fingerprint")
+            return {
+                "classification": "SUSPECTED",
+                "confidence": 0.78,
+                "vulnerability_type": "BOLA",
+                "evidence": evidence or [
+                    "A distinct comparable principal received 2xx for an authoritative foreign resource"
+                ],
+                "reasoning": (
+                    "Foreign ownership and successful access are proven, but confirmation "
+                    f"is missing {', '.join(missing) or 'complete deterministic evidence'}."
+                ),
             }
 
         owner_ctx = extra.get("owner_ctx", {}) or {}
@@ -606,7 +697,96 @@ Respond ONLY with a JSON object in this exact format:
 
         # ── Not BOLA / Inconclusive ───────────────────────────────────────────
         log.info(f"\033[92m[FINAL CLASSIFICATION]\033[0m {classification} (conf={confidence:.2f})")
-        return AuditResult(is_bola=False, classification=classification, confidence=confidence)
+        return AuditResult(
+            is_bola=False,
+            classification=classification,
+            confidence=confidence,
+            bola_type=bola_type,
+            evidence=evidence,
+            reasoning=reasoning,
+        )
+
+    def audit_baseline_exposure(
+        self, response: Dict[str, Any], state: StateStore, api_node: Dict[str, Any]
+    ) -> AuditResult:
+        """Detect credential disclosure that is already present in a valid baseline."""
+        if not self._valid_api_response(response, api_node) or not (
+                200 <= int(response.get("status", 0) or 0) < 300):
+            return AuditResult(False, classification="NOT_TESTED")
+
+        declared = {
+            re.sub(r"[^a-z0-9]", "", str(field).casefold())
+            for field in (api_node.get("sensitive_response_fields", []) or [])
+        }
+        if not declared:
+            return AuditResult(False, classification="REJECTED")
+        # A password/token field on a privileged diagnostic operation is a
+        # self-contained disclosure. On ordinary business/auth operations the
+        # authorization context still needs a separate policy oracle.
+        if not api_node.get("privileged_function_hint"):
+            return AuditResult(False, classification="REJECTED")
+
+        exposed = set()
+        credential_fields = set()
+        credential_re = re.compile(
+            r"password|passwd|passphrase|secret|token|credential|api.?key|private.?key",
+            re.I,
+        )
+
+        def _walk(value):
+            if isinstance(value, dict):
+                for key, child in value.items():
+                    normalized = re.sub(r"[^a-z0-9]", "", str(key).casefold())
+                    if normalized in declared and child not in (None, "", [], {}):
+                        exposed.add(str(key))
+                        if credential_re.search(str(key)):
+                            credential_fields.add(str(key))
+                    _walk(child)
+            elif isinstance(value, list):
+                for child in value:
+                    _walk(child)
+
+        _walk(response.get("raw_response"))
+        if not exposed:
+            return AuditResult(False, classification="REJECTED")
+
+        confirmed = bool(credential_fields)
+        classification = "CONFIRMED" if confirmed else "SUSPECTED"
+        evidence = [
+            "Successful baseline response exposes declared sensitive fields: "
+            + ", ".join(sorted(exposed))
+        ]
+        reasoning = (
+            "Credential-bearing response fields are directly disclosed to the caller."
+            if confirmed else
+            "Sensitive response data is visible, but its authorization context needs review."
+        )
+        finding = None
+        if confirmed:
+            finding = {
+                "type": "EXCESSIVE_DATA_EXPOSURE",
+                "severity": "HIGH",
+                "confidence": 0.98,
+                "api": api_node.get("id", ""),
+                "method": api_node.get("method", "GET"),
+                "path": api_node.get("path", ""),
+                "status": response.get("status", 0),
+                "strategy": "baseline_sensitive_data",
+                "evidence": evidence,
+                "reasoning": reasoning,
+                "exposed_fields": sorted(exposed),
+                "actor_role": state.get("actor_role", ""),
+            }
+        return AuditResult(
+            is_bola=False,
+            classification=classification,
+            confidence=0.98 if confirmed else 0.65,
+            bola_type="EXCESSIVE_DATA_EXPOSURE",
+            evidence=evidence,
+            reasoning=reasoning,
+            score_delta=0.0,
+            finding=finding,
+        )
 
     @staticmethod
     def _build_finding(

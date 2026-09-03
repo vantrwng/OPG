@@ -453,6 +453,56 @@ def test_request_and_response_logs_redact_credentials(caplog):
     assert "***REDACTED***" in caplog.text
 
 
+def test_login_rejection_recovers_actor_and_regenerates_credentials():
+    planner = MagicMock()
+
+    def generate_payload(_api_node, state, edge_deps=None):
+        return ({
+            "username": state.get_actor_credential("username"),
+            "password": state.get_actor_credential("password"),
+        }, "STATE_BINDING")
+
+    planner.generate_payload.side_effect = generate_payload
+    executor = RequestExecutor("https://target.test", planner=planner)
+    executor._session.request = MagicMock(side_effect=[
+        _response(200, {
+            "status": "fail", "message": "Username or Password Incorrect!",
+        }),
+        _response(200, {
+            "status": "success", "auth_token": "fresh-token",
+        }),
+    ])
+    state = StateStore({
+        "actor_id": "owner-a", "username": "stale-user",
+        "password": "StalePass!", "auth_token": "stale-token",
+    })
+
+    def recover(auth_state, _api_node, _failed_result):
+        auth_state.replace_auth_context_from(StateStore({
+            "actor_id": "owner-a", "username": "fresh-user",
+            "password": "FreshPass!", "auth_token": "recovered-token",
+        }))
+        return True, "identity recreated"
+
+    executor.auth_recovery_handler = recover
+    result = executor.execute_request({
+        "id": "loginUser", "method": "POST", "path": "/auth/login",
+        "inputs": {
+            "username": {"original": "username", "in": "body"},
+            "password": {"original": "password", "in": "body"},
+        },
+    }, state)
+
+    assert result["successful"] is True
+    assert result["sent_payload"] == {
+        "username": "fresh-user", "password": "FreshPass!",
+    }
+    assert result["auth_recovery"]["attempted"] is True
+    assert result["auth_recovery"]["recovered"] is True
+    assert executor._session.request.call_count == 2
+    planner.repair_payload.assert_not_called()
+
+
 def test_uses_declared_openapi_2xx_statuses():
     planner = MagicMock()
     planner.generate_payload.return_value = ({"email": "new@example.test"}, "HEURISTIC")

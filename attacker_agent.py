@@ -176,14 +176,30 @@ class AttackerAgent:
                     extra={
                         "field": reference.parameter_name,
                         "field_path": reference.field_path,
+                        # All deterministic authorization probes expose the same
+                        # canonical identity contract, regardless of how the
+                        # replacement value was discovered.
+                        "selector_field": reference.parameter_name or reference.field_path,
+                        "resource_id": observed.value,
+                        "resource_type": (
+                            observed.relationship
+                            or api_node.get("resource_type")
+                            or api_node.get("path")
+                            or api_node.get("id", "")
+                        ),
                         "location": reference.location,
                         "original_id": reference.original_value,
                         "substitute_id": observed.value,
                         "provenance": observed.provenance.level.name,
                         "provenance_chain": observed.provenance.as_dict(),
                         "reference_confidence": reference.confidence,
-                        "confirmation_eligible": observed.provenance.level >= ProvenanceLevel.AUTHORITATIVE,
+                        "confirmation_eligible": bool(
+                            observed.actor_id
+                            and observed.actor_id != actor_id
+                            and observed.provenance.level >= ProvenanceLevel.AUTHORITATIVE
+                        ),
                         "owner_actor_id": observed.actor_id,
+                        "producer_api": observed.operation_id,
                     },
                 ))
                 if len(variants) >= self.max_variants:
@@ -235,8 +251,9 @@ Respond with JSON: {{"id_fields": ["field1", "field2"]}}"""
         method   = api_node.get("method", "GET").upper()
         variants = []
 
-        if not payload and method in ("GET", "DELETE"):
-            # Với GET/DELETE, thêm query param
+        if method not in ("POST", "PUT", "PATCH"):
+            # Read-only and DELETE operations cannot demonstrate a body-field
+            # mass assignment. Limit them to transport-level query pollution.
             variants.extend(self._pollution_query_params(api_node, state))
             return variants
 
@@ -399,6 +416,18 @@ Respond with JSON: {{"privilege_fields": {{"field_name": "value"}}}}"""
             for entry in foreign_entries:
                 field_name  = entry["field_name"]
                 resource_id = entry.get("resource_value", entry["resource_id"])
+                unknown_roles = {"", "unknown", "anonymous", "none", "null"}
+                owner_role = str(entry.get("owner_role", "")).strip().casefold()
+                attacker_role = str(state.get("actor_role", "")).strip().casefold()
+                actor_relationship = (
+                    "same_role_distinct_principals"
+                    if owner_role not in unknown_roles
+                    and attacker_role not in unknown_roles
+                    and owner_role == attacker_role
+                    else "distinct_authenticated_principals"
+                    if owner_role in unknown_roles and attacker_role in unknown_roles
+                    else "cross_role_distinct_principals"
+                )
 
                 # Thay path param
                 new_path = re.sub(
@@ -430,6 +459,7 @@ Respond with JSON: {{"privilege_fields": {{"field_name": "value"}}}}"""
                         "owner_ctx":   entry.get("user_context", {}),
                         "owner_actor_id": entry.get("owner_actor_id", ""),
                         "owner_role": entry.get("owner_role", ""),
+                        "actor_relationship": actor_relationship,
                         "resource_type": entry.get("resource_type", ""),
                         "producer_api": entry.get("producer_api", ""),
                         "selector_field": entry.get("selector_field", field_name),
