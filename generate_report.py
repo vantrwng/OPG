@@ -14,6 +14,9 @@ from response_outcome import evaluate_response
 from knowledge_memory import sanitize_sensitive
 
 
+SUSPECTED_BOLA_MAX_CONFIDENCE = 0.55
+
+
 # ── Hàm hỗ trợ ───────────────────────────────────────────────────────────────
 
 def _esc(s) -> str:
@@ -365,6 +368,66 @@ def _aggregate_security_observations(observations: list) -> list:
     return list(grouped.values())
 
 
+def _aggregate_suspected_bola_observations(observations: list) -> list:
+    """Group suspected BOLA probes into one card per API operation."""
+    grouped = {}
+    for raw in observations or []:
+        observation = dict(raw)
+        api = str(
+            observation.get("api")
+            or observation.get("api_id")
+            or observation.get("path")
+            or "/"
+        ).strip()
+        method = str(observation.get("method") or "GET").strip().upper()
+        observation_type = str(observation.get("type") or "BOLA").strip().upper()
+        key = (api, method, observation_type)
+        aggregate = grouped.get(key)
+        if aggregate is None:
+            aggregate = dict(observation)
+            aggregate["api"] = api
+            aggregate["method"] = method
+            aggregate["type"] = observation_type
+            aggregate["occurrences"] = 0
+            aggregate["variants"] = []
+            aggregate["evidence"] = []
+            grouped[key] = aggregate
+
+        try:
+            occurrences = max(1, int(observation.get("occurrences", 1) or 1))
+        except (TypeError, ValueError):
+            occurrences = 1
+        aggregate["occurrences"] += occurrences
+        aggregate["variants"].append(observation)
+
+        # Preserve the most useful evidence without repeating identical lines.
+        for evidence in observation.get("evidence", []) or []:
+            if evidence not in aggregate["evidence"]:
+                aggregate["evidence"].append(evidence)
+        if not aggregate.get("reasoning") and observation.get("reasoning"):
+            aggregate["reasoning"] = observation["reasoning"]
+        if not aggregate.get("path") and observation.get("path"):
+            aggregate["path"] = observation["path"]
+        if not aggregate.get("status") and observation.get("status"):
+            aggregate["status"] = observation["status"]
+        if not aggregate.get("chain") and observation.get("chain"):
+            aggregate["chain"] = observation["chain"]
+        if not aggregate.get("strategy") and observation.get("strategy"):
+            aggregate["strategy"] = observation["strategy"]
+        try:
+            aggregate["confidence"] = min(
+                SUSPECTED_BOLA_MAX_CONFIDENCE,
+                max(
+                    float(aggregate.get("confidence", 0.0) or 0.0),
+                    float(observation.get("confidence", 0.0) or 0.0),
+                ),
+            )
+        except (TypeError, ValueError):
+            aggregate["confidence"] = SUSPECTED_BOLA_MAX_CONFIDENCE
+
+    return list(grouped.values())
+
+
 def _request_was_sent(request: dict) -> bool:
     """Read new transport metadata, with a conservative legacy fallback."""
     if "transport_attempted" in request:
@@ -551,29 +614,59 @@ def _build_vuln_summary_table(findings: list) -> str:
 
 # ── Chi tiết từng lỗ hổng ─────────────────────────────────────────────────────
 
-def _build_findings_section(findings: list) -> str:
-    if not findings:
+def _build_findings_section(findings: list, suspected_bola: list | None = None) -> str:
+    """Render confirmed findings and suspected BOLA signals with the same cards."""
+    suspected_bola = list(suspected_bola or [])
+    suspected_cards = []
+    for observation in suspected_bola:
+        card = dict(observation)
+        card["_security_observation"] = True
+        card["classification"] = "SUSPECTED"
+        card["type"] = card.get("type") or "BOLA"
+        card["severity"] = card.get("severity") or "HIGH"
+        path = str(card.get("path") or "")
+        if path.startswith(("http://", "https://")):
+            card["path"] = urlsplit(path).path or path
+        try:
+            card["confidence"] = min(
+                max(0.0, float(card.get("confidence", 0.0))),
+                SUSPECTED_BOLA_MAX_CONFIDENCE,
+            )
+        except (TypeError, ValueError):
+            card["confidence"] = SUSPECTED_BOLA_MAX_CONFIDENCE
+        card["variants"] = card.get("variants") or [dict(observation)]
+        suspected_cards.append(card)
+
+    display_findings = list(findings or []) + suspected_cards
+    if not display_findings:
         return (
             "<div style='background:rgba(16,185,129,0.08);border:1px solid #10b981;"
             "border-radius:12px;padding:2rem;text-align:center;color:#10b981;font-size:1.1rem'>"
             "✅ Không phát hiện lỗ hổng nào</div>"
         )
 
-    bola_findings  = [f for f in findings if "BOLA" in str(f.get("type","")).upper()
+    bola_findings  = [f for f in display_findings if "BOLA" in str(f.get("type","")).upper()
                                           or "IDOR" in str(f.get("type","")).upper()]
-    crash_findings = [f for f in findings if "CRASH" in str(f.get("type","")).upper()
+    crash_findings = [f for f in display_findings if "CRASH" in str(f.get("type","")).upper()
                                           or "500"  in str(f.get("type","")).upper()]
-    other_findings = [f for f in findings if f not in bola_findings and f not in crash_findings]
+    other_findings = [f for f in display_findings if f not in bola_findings and f not in crash_findings]
 
     def _card(f: dict) -> str:
         ftype      = _finding_type_vi(f.get("type", ""))
+        is_suspected = str(f.get("classification", "")).upper() == "SUSPECTED"
         severity   = f.get("severity", "HIGH")
         sev_vi     = _severity_vi(severity)
         confidence = f.get("confidence", 1.0)
+        if is_suspected and "BOLA" in str(f.get("type", "")).upper():
+            try:
+                confidence = min(float(confidence), SUSPECTED_BOLA_MAX_CONFIDENCE)
+            except (TypeError, ValueError):
+                confidence = SUSPECTED_BOLA_MAX_CONFIDENCE
         api        = f.get("api", f.get("api_id", ""))
         method     = f.get("method", "")
         path       = f.get("path", "")
         status     = f.get("status", 0)
+        status_display = status if status not in (None, "", 0, "0") else "—"
         strategy   = _strategy_vi(f.get("strategy", ""))
         btype_vi   = _bola_type_vi(f.get("bola_type", f.get("type", "")))
         desc       = f.get("description", "")
@@ -584,8 +677,20 @@ def _build_findings_section(findings: list) -> str:
         variant_count = len(variants)
 
         sev_col  = _severity_color(severity)
+        card_col = "#f59e0b" if is_suspected else sev_col
         icon     = _finding_icon(f.get("type", ""))
-        conf_pct = int(float(confidence) * 100)
+        try:
+            conf_pct = max(0, min(100, int(float(confidence) * 100)))
+        except (TypeError, ValueError):
+            conf_pct = 0
+
+        classification_badge = ""
+        if is_suspected:
+            classification_badge = (
+                "<span style='background:rgba(245,158,11,.18);color:#fbbf24;"
+                "padding:2px 8px;border-radius:4px;font-size:.75rem;"
+                "margin-left:8px;font-weight:700'>SUSPECTED</span>"
+            )
 
         ev_items = "".join(
             f"<li style='margin-bottom:4px;color:#cbd5e1'>{_esc(e)}</li>"
@@ -645,25 +750,26 @@ def _build_findings_section(findings: list) -> str:
         conf_bar = (
             f"<div style='margin-top:0.5rem;background:rgba(255,255,255,0.1);"
             f"border-radius:4px;height:4px;width:100%'>"
-            f"<div style='background:{sev_col};height:4px;border-radius:4px;"
+            f"<div style='background:{card_col};height:4px;border-radius:4px;"
             f"width:{conf_pct}%'></div></div>"
             f"<div style='font-size:0.75rem;color:#94a3b8;margin-top:2px'>Độ tin cậy: {conf_pct}%</div>"
         )
 
         return f"""
 <div style="background:rgba(30,41,59,0.8);border:1px solid rgba(255,255,255,0.08);
-     border-left:4px solid {sev_col};border-radius:12px;padding:1.5rem;margin-bottom:1rem">
+     border-left:4px solid {card_col};border-radius:12px;padding:1.5rem;margin-bottom:1rem">
   <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.75rem">
     <div>
       <span style="font-size:1.2rem">{icon}</span>
-      <strong style="color:{sev_col};font-size:1rem;margin-left:6px">{_esc(ftype)}</strong>
-      <span style="background:rgba(255,255,255,0.1);color:{sev_col};padding:2px 8px;
+      <strong style="color:{card_col};font-size:1rem;margin-left:6px">{_esc(ftype)}</strong>
+      <span style="background:rgba(255,255,255,0.1);color:{card_col};padding:2px 8px;
             border-radius:4px;font-size:0.75rem;margin-left:8px;font-weight:700">Mức độ: {_esc(sev_vi)}</span>
+      {classification_badge}
       {strat_badge}
       {variant_badge}
     </div>
     <span style="color:{_status_color(int(status) if str(status).isdigit() else 0)};
-          font-family:monospace;font-size:0.9rem;font-weight:700">HTTP {status}</span>
+          font-family:monospace;font-size:0.9rem;font-weight:700">HTTP {status_display}</span>
   </div>
 
   <div style="font-family:'Fira Code',monospace;font-size:0.88rem;color:#e2e8f0;margin-bottom:0.5rem">
@@ -689,8 +795,17 @@ def _build_findings_section(findings: list) -> str:
 
     tabs_html = ""
     panels_html = ""
+    confirmed_bola_count = sum(
+        1 for finding in (findings or [])
+        if "BOLA" in str(finding.get("type", "")).upper()
+        or "IDOR" in str(finding.get("type", "")).upper()
+    )
+    bola_label = f"🔓 BOLA/IDOR ({confirmed_bola_count} phát hiện"
+    if suspected_cards:
+        bola_label += f", {len(suspected_cards)} nghi ngờ"
+    bola_label += ")"
     tab_groups = [
-        ("bola",  f"🔓 BOLA/IDOR ({len(bola_findings)})",      bola_findings,  "#ef4444"),
+        ("bola",  bola_label,                                    bola_findings,  "#ef4444"),
         ("crash", f"💥 Crash/Lỗi 500 ({len(crash_findings)})", crash_findings, "#f97316"),
         ("other", f"⚠️ Khác ({len(other_findings)})",            other_findings, "#f59e0b"),
     ]
@@ -756,6 +871,23 @@ def _build_security_observations_section(observations: list) -> str:
             "; ".join(map(str, evidence[:3]))
             or observation.get("reasoning", "")
         )
+        try:
+            confidence = max(0.0, min(1.0, float(observation.get("confidence", 0.0))))
+        except (TypeError, ValueError):
+            confidence = 0.0
+        # Keep legacy exports consistent with the current evidence policy:
+        # suspected BOLA is a triage signal, not a high-confidence finding.
+        if (
+            classification == "SUSPECTED"
+            and str(observation.get("type", "")).upper() == "BOLA"
+        ):
+            confidence = min(confidence, SUSPECTED_BOLA_MAX_CONFIDENCE)
+        confidence_color = {
+            "SUSPECTED": "#f59e0b",
+            "UNVERIFIED": "#60a5fa",
+            "CONFIRMED": "#10b981",
+        }.get(classification, "#94a3b8")
+        confidence_text = f"{confidence:.0%}" if confidence else "—"
         occurrence_count = int(observation.get("occurrences", 1) or 1)
         occurrence_badge = (
             f" <span title='Số lần probe cho cùng kết quả' "
@@ -767,6 +899,7 @@ def _build_security_observations_section(observations: list) -> str:
             f"<td style='padding:.65rem;color:{color};font-weight:700'>{_esc(classification)}</td>"
             f"<td style='padding:.65rem;font-family:monospace;color:#93c5fd'>{_esc(observation.get('api', ''))}</td>"
             f"<td style='padding:.65rem;color:#cbd5e1'>{_esc(observation.get('type', ''))}{occurrence_badge}</td>"
+            f"<td style='padding:.65rem;color:{confidence_color};font-weight:700'>{confidence_text}</td>"
             f"<td style='padding:.65rem;color:#94a3b8'>{_esc(evidence_text)}</td>"
             "</tr>"
         )
@@ -776,9 +909,66 @@ def _build_security_observations_section(observations: list) -> str:
         "<th style='padding:.65rem'>Mức bằng chứng</th>"
         "<th style='padding:.65rem'>API</th>"
         "<th style='padding:.65rem'>Loại</th>"
+        "<th style='padding:.65rem'>Tin cậy AI</th>"
         "<th style='padding:.65rem'>Bằng chứng / lý do</th>"
         f"</tr></thead><tbody>{''.join(rows)}</tbody></table></div>"
     )
+
+
+def _metric_label(value) -> str:
+    if value is None:
+        return "—"
+    try:
+        return f"{float(value) * 100:.1f}%"
+    except (TypeError, ValueError):
+        return "—"
+
+
+def _build_security_metrics_section(metrics: dict) -> str:
+    """Render endpoint coverage and optional BOLA benchmark metrics."""
+    metrics = metrics or {}
+    per_endpoint = metrics.get("per_endpoint", {}) or {}
+    if not per_endpoint:
+        return "<p style='color:#64748b'>Chưa có dữ liệu coverage BOLA.</p>"
+    overall = metrics.get("overall", {}) or {}
+    truth_note = (
+        "Ground truth đã nạp: hiển thị precision/recall/F1."
+        if metrics.get("ground_truth_available")
+        else "Chưa nạp ground truth: precision/recall/F1 chưa có giá trị."
+    )
+    rows = []
+    for api_id, item in sorted(per_endpoint.items()):
+        rows.append(
+            "<tr>"
+            f"<td style='font-family:monospace'>{_esc(api_id)}</td>"
+            f"<td>{_esc(item.get('experiments_generated', 0))}</td>"
+            f"<td>{_esc(item.get('experiments_executed', 0))}</td>"
+            f"<td>{_metric_label(item.get('coverage_rate'))}</td>"
+            f"<td>{_metric_label(item.get('verifiable_rate'))}</td>"
+            f"<td>{_metric_label(item.get('precision'))}</td>"
+            f"<td>{_metric_label(item.get('recall'))}</td>"
+            f"<td>{_metric_label(item.get('f1'))}</td>"
+            "</tr>"
+        )
+    return f"""
+<div style='margin:1.25rem 0 1.5rem'>
+  <h3 style='color:#c4b5fd;margin-bottom:0.45rem'>BOLA coverage và benchmark</h3>
+  <p style='color:#94a3b8;font-size:0.85rem;margin-bottom:0.75rem'>{_esc(truth_note)}</p>
+  <div style='overflow-x:auto'>
+    <table style='width:100%;border-collapse:collapse;font-size:0.8rem'>
+      <thead><tr style='color:#cbd5e1;text-align:left'>
+        <th>Endpoint</th><th>Sinh</th><th>Chạy</th><th>Coverage</th>
+        <th>Verifiable</th><th>Precision</th><th>Recall</th><th>F1</th>
+      </tr></thead>
+      <tbody>{''.join(rows)}</tbody>
+    </table>
+  </div>
+  <p style='color:#cbd5e1;font-size:0.85rem;margin-top:0.75rem'>
+    Overall: precision <b>{_metric_label(overall.get('precision'))}</b> ·
+    recall <b>{_metric_label(overall.get('recall'))}</b> ·
+    F1 <b>{_metric_label(overall.get('f1'))}</b>
+  </p>
+</div>"""
 
 
 # ── Chi tiết từng API ─────────────────────────────────────────────────────────
@@ -1106,15 +1296,27 @@ def generate_html_report(json_file="beam_strategies.json", output_dir="fuzzing_r
     findings         = _aggregate_findings(raw_findings)
     endpoint_stats   = data.get("endpoint_stats", {})
     pipeline_summary = data.get("pipeline_summary", {})
+    security_metrics = data.get("security_metrics", {})
     auth_bootstrap   = data.get("auth_bootstrap", [])
     raw_security_observations = data.get("security_observations", [])
     security_observations = _aggregate_security_observations(
         raw_security_observations
     )
-    security_observation_occurrences = sum(
-        int(item.get("occurrences", 1) or 1)
-        for item in security_observations
+    suspected_bola_observations = [
+        item for item in security_observations
+        if str(item.get("classification", "")).upper() == "SUSPECTED"
+        and "BOLA" in str(item.get("type", "")).upper()
+    ]
+    suspected_bola_observations = _aggregate_suspected_bola_observations(
+        suspected_bola_observations
     )
+    triage_observations = [
+        item for item in security_observations
+        if not (
+            str(item.get("classification", "")).upper() == "SUSPECTED"
+            and "BOLA" in str(item.get("type", "")).upper()
+        )
+    ]
 
     bola_count     = sum(
         1 for f in findings
@@ -1137,9 +1339,15 @@ def generate_html_report(json_file="beam_strategies.json", output_dir="fuzzing_r
     phase2 = pipeline_summary.get("phase_2", {})
     pipeline_html = ""
     if pipeline_summary:
+        phase1_state = (
+            "Hoàn tất" if phase1.get("completed")
+            else "Chưa chạy" if not phase1
+            else "Chưa hoàn tất"
+        )
         phase2_state = (
             f"Đã kiểm thử {phase2.get('tested_endpoints', 0)} endpoint"
             if phase2.get("enabled") and phase2.get("completed")
+            else "Chưa chạy" if not phase2
             else "Đã tắt" if not phase2.get("enabled") else "Chưa hoàn tất"
         )
         pipeline_html = f"""
@@ -1150,7 +1358,7 @@ def generate_html_report(json_file="beam_strategies.json", output_dir="fuzzing_r
       </div>
       <div style="background:rgba(16,185,129,.08);border:1px solid #10b981;border-radius:10px;padding:1rem">
         <div style="color:#6ee7b7;font-weight:700">PHASE 1 — Valid workflow</div>
-        <div style="color:#cbd5e1;margin-top:5px">Hoàn tất · {_esc(phase1.get('valid_actor_endpoint_baselines', 0))} baseline hợp lệ</div>
+        <div style="color:#cbd5e1;margin-top:5px">{_esc(phase1_state)} · {_esc(phase1.get('valid_actor_endpoint_baselines', 0))} baseline hợp lệ</div>
       </div>
       <div style="background:rgba(139,92,246,.08);border:1px solid #8b5cf6;border-radius:10px;padding:1rem">
         <div style="color:#c4b5fd;font-weight:700">PHASE 2 — Security validation</div>
@@ -1271,16 +1479,23 @@ def generate_html_report(json_file="beam_strategies.json", output_dir="fuzzing_r
     if not strategies_html:
         strategies_html = "<p style='color:#64748b;text-align:center'>Chưa có chiến lược nào.</p>"
 
-    findings_section = _build_findings_section(findings)
-    security_observations_section = _build_security_observations_section(
-        security_observations
+    findings_section = _build_findings_section(
+        findings, suspected_bola=suspected_bola_observations
     )
+    security_observations_section = _build_security_observations_section(
+        triage_observations
+    )
+    security_metrics_section = _build_security_metrics_section(security_metrics)
     auth_bootstrap_section = _build_auth_bootstrap_section(auth_bootstrap)
-    security_observations_label = str(len(security_observations))
-    if security_observation_occurrences != len(security_observations):
+    triage_observation_occurrences = sum(
+        int(item.get("occurrences", 1) or 1)
+        for item in triage_observations
+    )
+    security_observations_label = str(len(triage_observations))
+    if triage_observation_occurrences != len(triage_observations):
         security_observations_label = (
-            f"{len(security_observations)} nhóm / "
-            f"{security_observation_occurrences} lần kiểm thử"
+            f"{len(triage_observations)} nhóm / "
+            f"{triage_observation_occurrences} lần kiểm thử"
         )
 
     # ── Lắp ráp HTML ─────────────────────────────────────────────────────────
@@ -1463,6 +1678,7 @@ def generate_html_report(json_file="beam_strategies.json", output_dir="fuzzing_r
     <!-- Tab: Phạm vi API -->
     <div id="tab_api_status" class="tab-panel">
       <h2 class="section-title">Phạm vi kiểm thử API</h2>
+      {security_metrics_section}
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem">
         <div style="background:rgba(16,185,129,.08);border:1px solid var(--green);border-radius:12px;padding:1.25rem">
           <h3 style="color:var(--green);margin-bottom:0.75rem;display:flex;justify-content:space-between">

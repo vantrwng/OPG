@@ -38,6 +38,18 @@ def evaluate_response(
     if not 200 <= status < 300:
         return ResponseOutcome(False, reason=f"HTTP {status}")
 
+    # Collabtive's legacy api.php historically returned this authentication
+    # error as HTTP 200 with a plain-text body.  Treat it as an application
+    # failure before the response-contract validator can misclassify it as an
+    # HTML/API media-type mismatch.  Newer target code returns HTTP 401, but
+    # keeping this guard makes reports correct against older deployments too.
+    if str(response_text or "").strip().casefold() == "not authorized":
+        return ResponseOutcome(
+            False,
+            semantic_failure=True,
+            reason="Authentication rejected: not authorized",
+        )
+
     expected = {str(code).upper() for code in (expected_statuses or [])}
     if expected and str(status) not in expected and "2XX" not in expected:
         return ResponseOutcome(

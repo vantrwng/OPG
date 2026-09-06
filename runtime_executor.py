@@ -582,6 +582,14 @@ class RequestExecutor:
         if media == "text/html" or text.startswith("<!doctype html") or text.startswith("<html"):
             errors.append("2xx response is HTML, not an API representation")
             return False, errors
+
+        # Collabtive can return either XML or JSON based on the ``mode`` query
+        # parameter.  When both are declared by OpenAPI, an explicit XML
+        # Content-Type is already sufficient; do not force the XML body
+        # through the JSON parser merely because JSON is also supported.
+        if media and media in expected_media and not media.endswith("+json") and media != "application/json":
+            return True, errors
+
         expects_json = any(
             item == "application/json" or item.endswith("+json")
             for item in expected_media
@@ -890,7 +898,14 @@ class RequestExecutor:
             # StateStore is the only cookie source. A shared Session cookie jar
             # would leak owner_a's session into user_b requests.
             self._session.cookies.clear()
+            # Keep Set-Cookie values local to this request chain. The session
+            # jar is deliberately cleared between actors, but a form login
+            # commonly redirects to a page that still needs the new session.
+            redirect_cookies = dict(req_kwargs.get("cookies") or {})
             resp = self._session.request(**req_kwargs)
+            response_cookie_jar = getattr(resp, "cookies", None)
+            if response_cookie_jar is not None and hasattr(response_cookie_jar, "get_dict"):
+                redirect_cookies.update(response_cookie_jar.get_dict() or {})
             original_origin = self._origin(prepared.url)
             redirect_count = 0
             while self._is_redirect(resp):
@@ -916,8 +931,23 @@ class RequestExecutor:
                     for body_key in ("json", "data", "files"):
                         req_kwargs.pop(body_key, None)
                     req_kwargs["headers"].pop("Content-Type", None)
+                if redirect_cookies:
+                    req_kwargs["cookies"] = dict(redirect_cookies)
                 self._session.cookies.clear()
                 resp = self._session.request(**req_kwargs)
+                response_cookie_jar = getattr(resp, "cookies", None)
+                if response_cookie_jar is not None and hasattr(response_cookie_jar, "get_dict"):
+                    redirect_cookies.update(response_cookie_jar.get_dict() or {})
+            # The final response may not repeat the cookie set by the initial
+            # redirect. Attach the local chain cookies so the caller can store
+            # the authenticated session in StateStore.
+            if redirect_cookies:
+                response_cookie_jar = getattr(resp, "cookies", None)
+                if response_cookie_jar is not None and hasattr(response_cookie_jar, "set"):
+                    existing = response_cookie_jar.get_dict() if hasattr(response_cookie_jar, "get_dict") else {}
+                    for cookie_name, cookie_value in redirect_cookies.items():
+                        if cookie_name not in existing:
+                            response_cookie_jar.set(cookie_name, cookie_value)
             self._session.cookies.clear()
             return resp
         except requests.exceptions.Timeout:

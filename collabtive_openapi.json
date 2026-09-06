@@ -1,0 +1,791 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Collabtive API",
+    "description": "API documentation for Collabtive - an open-source project management platform. The API uses GET requests with action parameters and supports XML or JSON output.",
+    "version": "2.1"
+  },
+  "servers": [
+    {
+      "url": "/",
+      "description": "Base URL"
+    }
+  ],
+  "paths": {
+    "/api.php": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Authenticate (required for all API calls)",
+        "description": "Every API call must include username and pass parameters. Without valid credentials the API returns 'not authorized'.",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string" },
+            "example": "admin"
+          },
+          {
+            "name": "pass",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Password (URL-encoded)",
+            "example": "admin123"
+          },
+          {
+            "name": "mode",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "enum": ["xml", "json"], "default": "xml" },
+            "description": "Output format (default: xml)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authenticated successfully (no action performed)",
+            "content": {
+              "application/xml": {
+                "schema": { "type": "string" }
+              },
+              "application/json": {
+                "schema": { "type": "object" }
+              }
+            }
+          },
+          "401": {
+            "description": "Credentials are invalid",
+            "content": {
+              "text/plain": {
+                "schema": { "type": "string", "example": "not authorized" }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api.php?action=user.list.get": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get all users",
+        "description": "Returns a list of all registered users. BOLA risk: any authenticated user can access ALL users.",
+        "parameters": [
+          { "$ref": "#/components/parameters/Username" },
+          { "$ref": "#/components/parameters/Pass" },
+          { "$ref": "#/components/parameters/Mode" }
+        ],
+        "responses": {
+          "401": {
+            "description": "Credentials are invalid",
+            "content": {
+              "text/plain": {
+                "schema": { "type": "string", "example": "not authorized" }
+              }
+            }
+          },
+          "200": {
+            "description": "List of all users",
+            "content": {
+              "application/xml": {
+                "schema": { "type": "string" }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/User" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api.php?action=user.profile.get": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get user profile by ID",
+        "description": "Returns profile of any user by ID. BOLA risk: no authorization check — any user can read any other user's profile.",
+        "parameters": [
+          { "$ref": "#/components/parameters/Username" },
+          { "$ref": "#/components/parameters/Pass" },
+          { "$ref": "#/components/parameters/Mode" },
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "integer" },
+            "description": "ID of the user to fetch",
+            "example": 1
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Credentials are invalid",
+            "content": {
+              "text/plain": {
+                "schema": { "type": "string", "example": "not authorized" }
+              }
+            }
+          },
+          "200": {
+            "description": "User profile",
+            "content": {
+              "application/xml": {
+                "schema": { "type": "string" }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/User" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api.php?action=user.id.get": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get user ID by username",
+        "parameters": [
+          { "$ref": "#/components/parameters/Username" },
+          { "$ref": "#/components/parameters/Pass" },
+          { "$ref": "#/components/parameters/Mode" },
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Username to look up",
+            "example": "johndoe"
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Credentials are invalid",
+            "content": {
+              "text/plain": {
+                "schema": { "type": "string", "example": "not authorized" }
+              }
+            }
+          },
+          "200": {
+            "description": "User ID",
+            "content": {
+              "application/xml": {
+                "schema": { "type": "string" }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/User" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api.php?action=user.tasks.get": {
+      "get": {
+        "tags": ["User", "Task"],
+        "summary": "Get all tasks for a user",
+        "description": "Returns all tasks across all projects assigned to the given user. BOLA risk: any user can query tasks of any other user by changing the 'user' parameter.",
+        "parameters": [
+          { "$ref": "#/components/parameters/Username" },
+          { "$ref": "#/components/parameters/Pass" },
+          { "$ref": "#/components/parameters/Mode" },
+          {
+            "name": "user",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "integer" },
+            "description": "ID of the user whose tasks to retrieve",
+            "example": 1
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Credentials are invalid",
+            "content": {
+              "text/plain": {
+                "schema": { "type": "string", "example": "not authorized" }
+              }
+            }
+          },
+          "200": {
+            "description": "List of tasks",
+            "content": {
+              "application/xml": {
+                "schema": { "type": "string" }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Task" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api.php?action=project.get": {
+      "get": {
+        "tags": ["Project"],
+        "summary": "Get project by ID",
+        "description": "Returns details of any project by ID. BOLA risk: no ownership check — any authenticated user can access any project.",
+        "parameters": [
+          { "$ref": "#/components/parameters/Username" },
+          { "$ref": "#/components/parameters/Pass" },
+          { "$ref": "#/components/parameters/Mode" },
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "integer" },
+            "description": "ID of the project to fetch",
+            "example": 1
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Credentials are invalid",
+            "content": {
+              "text/plain": {
+                "schema": { "type": "string", "example": "not authorized" }
+              }
+            }
+          },
+          "200": {
+            "description": "Project details",
+            "content": {
+              "application/xml": {
+                "schema": { "type": "string" }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/Project" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api.php?action=myprojects.get": {
+      "get": {
+        "tags": ["Project"],
+        "summary": "Get projects of a user",
+        "description": "Returns all projects associated with the given user ID. BOLA risk: any user can query projects of any other user by changing the 'id' parameter.",
+        "parameters": [
+          { "$ref": "#/components/parameters/Username" },
+          { "$ref": "#/components/parameters/Pass" },
+          { "$ref": "#/components/parameters/Mode" },
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "integer" },
+            "description": "User ID whose projects to retrieve",
+            "example": 1
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Credentials are invalid",
+            "content": {
+              "text/plain": {
+                "schema": { "type": "string", "example": "not authorized" }
+              }
+            }
+          },
+          "200": {
+            "description": "List of projects",
+            "content": {
+              "application/xml": {
+                "schema": { "type": "string" }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Project" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api.php?action=project.members.get": {
+      "get": {
+        "tags": ["Project"],
+        "summary": "Get members of a project",
+        "description": "Returns all members assigned to a project. BOLA risk: any user can see members of any project.",
+        "parameters": [
+          { "$ref": "#/components/parameters/Username" },
+          { "$ref": "#/components/parameters/Pass" },
+          { "$ref": "#/components/parameters/Mode" },
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "integer" },
+            "description": "Project ID",
+            "example": 1
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Credentials are invalid",
+            "content": {
+              "text/plain": {
+                "schema": { "type": "string", "example": "not authorized" }
+              }
+            }
+          },
+          "200": {
+            "description": "List of project members",
+            "content": {
+              "application/xml": {
+                "schema": { "type": "string" }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/User" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/install.php?action=step3": {
+      "post": {
+        "tags": ["Auth", "User"],
+        "summary": "Sign up / Create Admin user",
+        "operationId": "signup",
+        "description": "Acts as the initial signup endpoint. Creates the first user in the system. This user is automatically assigned the Admin role.",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "pass", "email"],
+                "properties": {
+                  "name": { "type": "string", "example": "admin" },
+                  "pass": { "type": "string", "example": "admin123" },
+                  "email": { "type": "string", "format": "email", "example": "admin@example.com" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Returns success HTML if successful" }
+        },
+        "security": []
+      }
+    },
+    "/manageproject.php?action=add": {
+      "post": {
+        "tags": ["Project"],
+        "summary": "Create or update a project (form-based)",
+        "description": "Traditional form POST endpoint for creating/editing projects. Not a REST endpoint.",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": { "$ref": "#/components/schemas/ProjectCreate" }
+            }
+          }
+        },
+        "responses": {
+          "302": { "description": "Redirect after success" },
+          "403": { "description": "Not authorized" }
+        }
+      }
+    },
+    "/managetask.php?action=add": {
+      "post": {
+        "tags": ["Task"],
+        "summary": "Create or update a task (form-based)",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": { "$ref": "#/components/schemas/TaskCreate" }
+            }
+          }
+        },
+        "responses": {
+          "302": { "description": "Redirect after success" },
+          "403": { "description": "Not authorized" }
+        }
+      }
+    },
+    "/managemilestone.php?action=add": {
+      "post": {
+        "tags": ["Milestone"],
+        "summary": "Create or update a milestone (form-based)",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": { "$ref": "#/components/schemas/MilestoneCreate" }
+            }
+          }
+        },
+        "responses": {
+          "302": { "description": "Redirect after success" }
+        }
+      }
+    },
+    "/managemessage.php?action=add": {
+      "post": {
+        "tags": ["Message"],
+        "summary": "Create or update a message (form-based)",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": { "$ref": "#/components/schemas/MessageCreate" }
+            }
+          }
+        },
+        "responses": {
+          "302": { "description": "Redirect after success" }
+        }
+      }
+    },
+    "/managefile.php?action=add": {
+      "post": {
+        "tags": ["File"],
+        "summary": "Upload a file (form-based)",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": { "type": "string", "format": "binary" },
+                  "project": { "type": "integer" },
+                  "title": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "302": { "description": "Redirect after success" }
+        }
+      }
+    },
+    "/managetimetracker.php?action=add": {
+      "post": {
+        "tags": ["TimeTracker"],
+        "summary": "Log time entry (form-based)",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": { "$ref": "#/components/schemas/TimeEntry" }
+            }
+          }
+        },
+        "responses": {
+          "302": { "description": "Redirect after success" }
+        }
+      }
+    },
+    "/admin.php?action=adduser": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Create a user (form-based, admin only)",
+        "description": "Creates a user through the administrator route. Requires an authenticated administrator session.",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": { "$ref": "#/components/schemas/UserCreate" }
+            }
+          }
+        },
+        "responses": {
+          "302": { "description": "Redirect after success" },
+          "403": { "description": "Not authorized" }
+        },
+        "security": [{ "SessionCookie": [] }]
+      }
+    },
+    "/manageuser.php?action=login": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Login (form-based)",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": ["username", "pass"],
+                "properties": {
+                  "username": { "type": "string", "example": "admin" },
+                  "pass": { "type": "string", "format": "password", "example": "admin123" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "302": { "description": "Redirect to dashboard on success" },
+          "401": { "description": "Login page with error message on failure" }
+        },
+        "security": []
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "Username": {
+        "name": "username",
+        "in": "query",
+        "required": true,
+        "schema": { "type": "string" },
+        "description": "Collabtive username",
+        "example": "admin"
+      },
+      "Pass": {
+        "name": "pass",
+        "in": "query",
+        "required": true,
+        "schema": { "type": "string" },
+        "description": "Collabtive password (URL-encoded)",
+        "example": "admin123"
+      },
+      "Mode": {
+        "name": "mode",
+        "in": "query",
+        "required": false,
+        "schema": { "type": "string", "enum": ["xml", "json"], "default": "xml" },
+        "description": "Response format"
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "message": { "type": "string" }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "ID": { "type": "integer", "example": 1 },
+          "name": { "type": "string", "example": "John Doe" },
+          "email": { "type": "string", "format": "email", "example": "john@example.com" },
+          "company": { "type": "string", "example": "Acme Corp" },
+          "tel1": { "type": "string", "example": "+84 123 456 789" },
+          "tel2": { "type": "string", "example": "" },
+          "gender": { "type": "string", "enum": ["male", "female", ""], "example": "male" },
+          "url": { "type": "string", "example": "https://johndoe.com" },
+          "adress": { "type": "string", "example": "123 Main St" },
+          "adress2": { "type": "string", "example": "" },
+          "zip": { "type": "string", "example": "10000" },
+          "state": { "type": "string", "example": "Hanoi" },
+          "country": { "type": "string", "example": "Vietnam" },
+          "locale": { "type": "string", "example": "en" },
+          "tags": { "type": "string", "example": "developer,backend" },
+          "rate": { "type": "number", "format": "float", "example": 50.0, "description": "Hourly rate" },
+          "avatar": { "type": "string", "example": "avatar.jpg" },
+          "lastlogin": { "type": "integer", "description": "Unix timestamp of last login", "example": 1700000000 }
+        }
+      },
+      "UserCreate": {
+        "type": "object",
+        "required": ["name", "email", "pass"],
+        "properties": {
+          "name": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "pass": { "type": "string", "format": "password" },
+          "company": { "type": "string" },
+          "role": { "type": "integer", "default": 2 },
+          "locale": { "type": "string", "default": "en" },
+          "tags": { "type": "string" },
+          "rate": { "type": "number", "format": "float", "default": 0.0 }
+        }
+      },
+      "Project": {
+        "type": "object",
+        "properties": {
+          "ID": { "type": "integer", "example": 1 },
+          "name": { "type": "string", "example": "Website Redesign" },
+          "desc": { "type": "string", "example": "Redesign the company website" },
+          "start": { "type": "integer", "description": "Unix timestamp of start date", "example": 1700000000 },
+          "end": { "type": "integer", "description": "Unix timestamp of due date", "example": 1702000000 },
+          "status": { "type": "integer", "enum": [0, 1], "description": "0=inactive, 1=active", "example": 1 },
+          "budget": { "type": "number", "format": "float", "example": 5000.00 },
+          "members": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/User" }
+          }
+        }
+      },
+      "ProjectCreate": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": { "type": "string" },
+          "desc": { "type": "string" },
+          "end": { "type": "string", "format": "date", "example": "2025-12-31" },
+          "budget": { "type": "number", "format": "float" },
+          "assignme": { "type": "integer", "enum": [0, 1], "default": 0 }
+        }
+      },
+      "Task": {
+        "type": "object",
+        "properties": {
+          "ID": { "type": "integer", "example": 10 },
+          "title": { "type": "string", "example": "Implement login feature" },
+          "text": { "type": "string", "example": "Create login page with validation" },
+          "start": { "type": "integer", "description": "Unix timestamp", "example": 1700000000 },
+          "end": { "type": "integer", "description": "Unix timestamp of due date", "example": 1701000000 },
+          "status": { "type": "integer", "enum": [0, 1], "description": "0=open, 1=done", "example": 0 },
+          "project": { "type": "integer", "description": "Project ID", "example": 1 },
+          "liste": { "type": "integer", "description": "Tasklist ID", "example": 1 },
+          "assigned": { "type": "integer", "description": "Assigned user ID", "example": 1 }
+        }
+      },
+      "TaskCreate": {
+        "type": "object",
+        "required": ["title", "project", "liste"],
+        "properties": {
+          "title": { "type": "string" },
+          "text": { "type": "string" },
+          "start": { "type": "string", "format": "date" },
+          "end": { "type": "string", "format": "date" },
+          "project": { "type": "integer" },
+          "liste": { "type": "integer", "description": "Tasklist ID" },
+          "assigned": { "type": "integer", "description": "User ID to assign task to" }
+        }
+      },
+      "Milestone": {
+        "type": "object",
+        "properties": {
+          "ID": { "type": "integer", "example": 5 },
+          "name": { "type": "string", "example": "Phase 1 Launch" },
+          "text": { "type": "string", "example": "Complete all phase 1 deliverables" },
+          "end": { "type": "integer", "description": "Unix timestamp of due date", "example": 1701000000 },
+          "status": { "type": "integer", "enum": [0, 1], "example": 0 },
+          "project": { "type": "integer", "example": 1 }
+        }
+      },
+      "MilestoneCreate": {
+        "type": "object",
+        "required": ["name", "project"],
+        "properties": {
+          "name": { "type": "string" },
+          "text": { "type": "string" },
+          "end": { "type": "string", "format": "date" },
+          "project": { "type": "integer" }
+        }
+      },
+      "Message": {
+        "type": "object",
+        "properties": {
+          "ID": { "type": "integer", "example": 20 },
+          "title": { "type": "string", "example": "Project kickoff" },
+          "text": { "type": "string", "example": "Let's start the project this Monday." },
+          "posted": { "type": "integer", "description": "Unix timestamp", "example": 1700000000 },
+          "project": { "type": "integer", "example": 1 },
+          "poster": { "type": "integer", "description": "User ID of poster", "example": 1 }
+        }
+      },
+      "MessageCreate": {
+        "type": "object",
+        "required": ["title", "text", "project"],
+        "properties": {
+          "title": { "type": "string" },
+          "text": { "type": "string" },
+          "project": { "type": "integer" }
+        }
+      },
+      "TimeEntry": {
+        "type": "object",
+        "properties": {
+          "ID": { "type": "integer", "example": 30 },
+          "user": { "type": "integer", "description": "User ID", "example": 1 },
+          "project": { "type": "integer", "example": 1 },
+          "task": { "type": "integer", "example": 10 },
+          "comment": { "type": "string", "example": "Worked on login page" },
+          "started": { "type": "string", "example": "09:00" },
+          "ended": { "type": "string", "example": "11:00" },
+          "startday": { "type": "string", "format": "date", "example": "2024-01-15" },
+          "endday": { "type": "string", "format": "date", "example": "2024-01-15" }
+        }
+      },
+      "File": {
+        "type": "object",
+        "properties": {
+          "ID": { "type": "integer", "example": 7 },
+          "name": { "type": "string", "example": "design_mockup.pdf" },
+          "title": { "type": "string", "example": "Design Mockup v1" },
+          "size": { "type": "integer", "description": "File size in bytes", "example": 204800 },
+          "project": { "type": "integer", "example": 1 },
+          "posted": { "type": "integer", "description": "Unix timestamp", "example": 1700001000 },
+          "poster": { "type": "integer", "description": "User ID of uploader", "example": 1 }
+        }
+      }
+    },
+    "securitySchemes": {
+      "QueryAuth": {
+        "type": "apiKey",
+        "in": "query",
+        "name": "username",
+        "description": "Username passed as query parameter along with 'pass'"
+      },
+      "SessionCookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "PHPSESSID",
+        "description": "PHP session cookie for form-based endpoints"
+      }
+    }
+  },
+  "security": [
+    { "QueryAuth": [] }
+  ],
+  "tags": [
+    { "name": "Auth", "description": "Authentication endpoints" },
+    { "name": "User", "description": "User management — BOLA risk: no ownership checks in api.php" },
+    { "name": "Project", "description": "Project management — BOLA risk: any user can access any project" },
+    { "name": "Task", "description": "Task management" },
+    { "name": "Milestone", "description": "Project milestones" },
+    { "name": "Message", "description": "Project messages/discussions" },
+    { "name": "File", "description": "File uploads and management" },
+    { "name": "TimeTracker", "description": "Time tracking entries" }
+  ]
+}

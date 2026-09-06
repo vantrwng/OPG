@@ -75,6 +75,10 @@ class AuditorAgent:
     # Score delta khi phát hiện BOLA (step 18)
     BOLA_SCORE_BONUS = 150.0
     STRONG_BOLA_BONUS = 200.0
+    # A suspected BOLA has foreign-resource evidence, but is still missing a
+    # deterministic replay or state oracle. Keep its confidence below the
+    # confirmed threshold so triage does not mistake a signal for a finding.
+    SUSPECTED_BOLA_CONFIDENCE = 0.55
     VALID_CLASSIFICATIONS = {
         "CONFIRMED", "SUSPECTED", "UNVERIFIED", "REJECTED", "INCONCLUSIVE",
         "NOT_TESTED", "INFRA_FAILURE",
@@ -361,7 +365,7 @@ class AuditorAgent:
                 missing.append("owner readback" if method != "GET" else "response fingerprint")
             return {
                 "classification": "SUSPECTED",
-                "confidence": 0.78,
+                "confidence": self.SUSPECTED_BOLA_CONFIDENCE,
                 "vulnerability_type": "BOLA",
                 "evidence": evidence or [
                     "A distinct comparable principal received 2xx for an authoritative foreign resource"

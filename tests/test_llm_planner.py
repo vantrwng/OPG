@@ -379,6 +379,32 @@ class TestRandomizeVolatileFields:
         assert result["email"]    == "user@example.com"
         assert result["password"] == "SecurePass!"
 
+    def test_query_api_credentials_reuse_actor_snapshot_for_pass_alias(self):
+        node = {
+            "id": "GET__api.php",
+            "path": "/api.php",
+            "method": "GET",
+            "inputs": {
+                "username": {"original": "username", "in": "query", "type": "string"},
+                "pass": {"original": "pass", "in": "query", "type": "string"},
+                "mode": {"original": "mode", "in": "query", "type": "string"},
+            },
+        }
+        state = StateStore({
+            "username": "actor-user",
+            "pas": "ActorPass123!",
+            "auth_token": "session-token",
+        })
+
+        result = LLMPlanner._randomize_volatile_fields(
+            {"username": "random-user", "pass": "random-pass", "mode": "xml"},
+            node,
+            state,
+        )
+
+        assert result["username"] == "actor-user"
+        assert result["pass"] == "ActorPass123!"
+
     def test_signin_uses_one_frozen_credential_snapshot(self):
         planner = make_planner_no_ollama()
         state = StateStore({

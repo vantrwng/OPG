@@ -13,6 +13,7 @@ logging.basicConfig(
 )
 
 import os
+import json
 from dotenv import load_dotenv
 load_dotenv(override=True)  # override=True: .env luôn ưu tiên hơn biến môi trường hệ thống
 
@@ -102,8 +103,14 @@ def main():
     run_started_monotonic = time.perf_counter()
     run_started_epoch = time.time()
     parser = argparse.ArgumentParser(description="Hybrid Stateful API Fuzzer")
-    parser.add_argument("--spec", type=str, default="memo_openapi.json", help="Path to OpenAPI spec file")
-    parser.add_argument("--base-url", type=str, default="http://localhost:5230/api", help="Target API Base URL")
+    parser.add_argument("--spec", type=str, default="collabtive_openapi.json", help="Path to OpenAPI spec file")
+    parser.add_argument(
+        "--openapi-overlay",
+        type=str,
+        default="",
+        help="Optional JSON overlay that adds hidden lifecycle endpoints or dataset hints",
+    )
+    parser.add_argument("--base-url", type=str, default="http://localhost:8081", help="Target API Base URL")
     parser.add_argument("--max-depth", type=int, default=5, help="Max depth for path execution")
     parser.add_argument("--beam-width", type=int, default=3, help="Beam search width")
     parser.add_argument(
@@ -118,18 +125,25 @@ def main():
         default="auto",
         help="Provision two test users automatically, use .env tokens, or disable provisioning",
     )
+    parser.add_argument(
+        "--bola-ground-truth",
+        type=str,
+        default="",
+        help="Optional JSON object/list mapping endpoint IDs to known BOLA labels",
+    )
     args = parser.parse_args()
 
     print("=== Hệ thống Phân tích và Xây dựng Chiến lược Kiểm thử API (Component-Based DI) ===")
 
     # ── Phase 1: Phân tích OpenAPI Spec ──────────────────────────────────────
     print(f"\n[Phase 1] Đang phân tích OpenAPI Specification từ {args.spec}...")
-    parser_obj = SpecParser(args.spec)
+    parser_obj = SpecParser(args.spec, overlay_path=args.openapi_overlay or None)
     operations = parser_obj.extract_operations()
     if not operations:
         print("[-] Không tìm thấy operations nào hoặc lỗi khi đọc spec.")
         return
     print(f"[*] Đã trích xuất {len(operations)} operations từ spec.")
+    bola_config = parser_obj.get_bola_config()
 
     # ── Phase 2: Khởi tạo Hệ Thống qua Dependency Injection ──────────────────
     print("\n[Phase 2] Khởi tạo các module hệ thống (DI)...")
@@ -141,6 +155,13 @@ def main():
         started_at_monotonic=run_started_monotonic,
         started_at_epoch=run_started_epoch,
     )
+    if args.bola_ground_truth:
+        try:
+            with open(args.bola_ground_truth, "r", encoding="utf-8") as ground_truth_file:
+                knowledge_memory.set_bola_ground_truth(json.load(ground_truth_file))
+        except Exception as exc:
+            print(f"[-] Không thể nạp BOLA ground truth: {type(exc).__name__}: {exc}")
+            return
 
     # ── Phase 0: Cấu hình State Store từ biến môi trường ─────────────────────
     print(f"\n[Phase 0] Khởi tạo StateStore với cấu hình người dùng...")
@@ -179,6 +200,7 @@ def main():
     actor_bootstrapper = ActorBootstrapper(
         operations=operations,
         executor=strategy_engine.executor,
+        identity_config=bola_config,
     )
 
     if args.bootstrap_actors == "auto":

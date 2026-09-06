@@ -218,7 +218,8 @@ class StateStore:
             "username": "username", "user_name": "username", "login": "username",
             "login_name": "username", "loginname": "username", "name": "name",
             "email": "email", "email_address": "email",
-            "password": "password", "pass": "password", "passwd": "password",
+            "password": "password", "pass": "password", "pas": "password",
+            "passwd": "password",
             "passphrase": "password",
             "phone": "phone", "mobile": "phone", "number": "phone",
         }

@@ -1,3 +1,4 @@
+import copy
 import json
 import re
 
@@ -6,8 +7,9 @@ class SpecParser:
         'get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'
     }
 
-    def __init__(self, file_path):
+    def __init__(self, file_path, overlay_path=None):
         self.file_path = file_path
+        self.overlay_path = overlay_path
         self.parse_errors = []
         self.spec = self._load_spec()
         self.operations = []
@@ -15,7 +17,25 @@ class SpecParser:
     def _load_spec(self):
         try:
             with open(self.file_path, 'r', encoding='utf-8') as f:
-                return json.load(f)
+                spec = json.load(f)
+            if self.overlay_path:
+                with open(self.overlay_path, 'r', encoding='utf-8') as f:
+                    overlay = json.load(f)
+                if not isinstance(overlay, dict):
+                    raise ValueError("OpenAPI overlay must be a JSON object")
+                # Overlays intentionally replace/add complete path items. This
+                # keeps generated vendor specs immutable while allowing hidden
+                # lifecycle endpoints to be described for the test harness.
+                for key, value in overlay.items():
+                    if key == "paths" and isinstance(value, dict):
+                        spec.setdefault("paths", {}).update(copy.deepcopy(value))
+                    elif key == "x-bola":
+                        spec[key] = copy.deepcopy(value)
+                    elif key == "components" and isinstance(value, dict):
+                        spec.setdefault("components", {}).update(copy.deepcopy(value))
+                    else:
+                        spec[key] = copy.deepcopy(value)
+            return spec
         except Exception as e:
             self.parse_errors.append({
                 "stage": "generation_failed", "scope": "spec",
@@ -138,6 +158,11 @@ class SpecParser:
             })
             print(f"[SpecParser] Warning: cannot resolve ref {ref_str}: {e}")
             return {}, ""
+
+    def get_bola_config(self):
+        """Return optional dataset-specific BOLA hints from top-level OpenAPI."""
+        config = self.spec.get("x-bola", {})
+        return dict(config) if isinstance(config, dict) else {}
 
     def normalize_word(self, word):
         """Mô phỏng Stemming & Case Insensitive theo tài liệu"""

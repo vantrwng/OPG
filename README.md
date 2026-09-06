@@ -41,6 +41,47 @@ The runtime supports separate principals for differential BOLA/Broken Access
 Control testing. Copy `.env.example` to `.env` and configure only systems you
 are authorized to test.
 
+### Langflow dataset
+
+Langflow omits its password-login route from generated OpenAPI
+(`include_in_schema=False`), although the route is available at runtime. Use
+the checked-in overlay to expose that route to the planner and add the
+dataset-specific identity resolver:
+
+```bash
+python main.py \
+  --spec D:\\DACN\\langflow\\docs\\openapi\\openapi.json \
+  --openapi-overlay langflow_bola_overlay.json \
+  --base-url http://localhost:7860 \
+  --mode security \
+  --bootstrap-actors auto
+```
+
+The base spec already contains `POST /api/v1/users/` for registration and
+`GET /api/v1/users/whoami` for identity verification. The overlay adds only
+the hidden `POST /api/v1/login` operation and does not modify the Langflow
+checkout. Use a test instance with registration enabled (`NEW_USER_IS_ACTIVE`)
+and keep the owner/attacker accounts isolated from production data.
+
+For action-style APIs, an OpenAPI document may provide an explicit identity
+resolver instead of relying on endpoint naming heuristics:
+
+```json
+{
+  "x-bola": {
+    "identity_operation": "user.profile.get"
+  }
+}
+```
+
+Benchmark labels can be supplied as an object or a list of vulnerable endpoint
+IDs. The exported report then includes per-endpoint coverage and
+precision/recall/F1:
+
+```bash
+python main.py --mode security --bola-ground-truth bola_ground_truth.json
+```
+
 By default, the fuzzer discovers signup and login operations from OpenAPI,
 creates `owner_a` and `user_b`, signs both users in, and stores their token or
 session cookie in isolated contexts:

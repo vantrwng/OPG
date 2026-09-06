@@ -912,6 +912,7 @@ class TestStrategyEngine:
                         "api": api_id,
                         "method": api_node.get("method", "GET").upper(),
                         "path": api_node.get("path", ""),
+                        "status": baseline.get("status", 0),
                         "confidence": exposure.confidence,
                         "evidence": exposure.evidence,
                         "reasoning": exposure.reasoning,
@@ -1367,20 +1368,23 @@ class TestStrategyEngine:
                             "after": variant.extra.get("substitute_id", variant.extra.get("resource_id")),
                         })
                 pre_attack_owner_response = None
+                owner_precheck_verified = False
                 if (variant.extra.get("confirmation_eligible")
-                        and operation in ("PATCH", "PUT")):
+                        and operation in ("GET", "PATCH", "PUT")):
                     candidate = self._execute_owner_verifier(
                         variant, current_state, "BOLA_OWNER_PRECHECK"
                     )
-                    if (candidate is not None and result_succeeded(candidate)
-                            and candidate.get("schema_valid") is not False
-                            and self._response_has_fingerprint(
-                                candidate,
-                                variant.extra.get("resource_id"),
-                                variant.extra.get("marker"),
-                                variant.extra.get("selector_field"),
-                                variant.extra.get("resource_type", ""),
-                            )):
+                    owner_precheck_verified = bool(
+                        candidate is not None
+                        and self._response_has_fingerprint(
+                            candidate,
+                            variant.extra.get("resource_id"),
+                            variant.extra.get("marker"),
+                            variant.extra.get("selector_field"),
+                            variant.extra.get("resource_type", ""),
+                        )
+                    )
+                    if owner_precheck_verified:
                         pre_attack_owner_response = candidate
 
                 # Thực thi attack request
@@ -1404,8 +1408,27 @@ class TestStrategyEngine:
                     attack_exec, variant.extra.get("resource_id"), variant.extra.get("marker"),
                     variant.extra.get("selector_field"), variant.extra.get("resource_type", ""),
                 )
+                owner_postcheck_verified = False
                 if (variant.extra.get("confirmation_eligible")
                         and operation == "GET" and fingerprint_verified):
+                    owner_post_attack = self._execute_owner_verifier(
+                        variant, current_state, "BOLA_OWNER_VERIFY"
+                    )
+                    owner_postcheck_verified = bool(
+                        owner_post_attack is not None
+                        and self._response_has_fingerprint(
+                            owner_post_attack,
+                            variant.extra.get("resource_id"),
+                            variant.extra.get("marker"),
+                            variant.extra.get("selector_field"),
+                            variant.extra.get("resource_type", ""),
+                        )
+                    )
+                if (variant.extra.get("confirmation_eligible")
+                        and operation == "GET"
+                        and fingerprint_verified
+                        and owner_precheck_verified
+                        and owner_postcheck_verified):
                     replay_exec = self.executor.execute_request(
                         api_node=attack_node,
                         current_state=attack_state,
@@ -1489,7 +1512,14 @@ class TestStrategyEngine:
                         "preflight_reason": preflight_reason,
                         "operation": attack_node.get("method", "GET").upper(),
                         "reproduction_count": reproduction_count,
-                        "fingerprint_verified": fingerprint_verified and reproduction_count == 2,
+                        "fingerprint_verified": (
+                            fingerprint_verified
+                            and owner_precheck_verified
+                            and owner_postcheck_verified
+                            and reproduction_count == 2
+                        ),
+                        "owner_precheck_verified": owner_precheck_verified,
+                        "owner_postcheck_verified": owner_postcheck_verified,
                         "mutation_verified": mutation_verified,
                     },
                 }
@@ -1515,6 +1545,7 @@ class TestStrategyEngine:
                         "api": api_id,
                         "method": attack_node.get("method", "GET").upper(),
                         "path": attack_exec.get("url", variant.path),
+                        "status": attack_exec.get("status", attack_status),
                         "strategy": variant.strategy,
                         "owner_actor_id": variant_owner_id,
                         "attacker_actor_id": attack_state.get("actor_id", "default"),

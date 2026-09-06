@@ -42,7 +42,7 @@ class LLMPlanner:
     _EMAIL_RE    = re.compile(r"email", re.I)
     _PHONE_RE    = re.compile(r"phone|mobile|contact|^number$", re.I)
     _NAME_RE     = re.compile(r"^(name|full_?name|display_?name|user_?name)$", re.I)
-    _PASSWORD_RE = re.compile(r"pass(word)?|passwd", re.I)
+    _PASSWORD_RE = re.compile(r"pass(word)?|passwd|(?<![A-Za-z])pas(?![A-Za-z])", re.I)
 
     def __init__(self):
         # ── Ollama Architect Agent (llama3.1:8b) ──────────────────────────────
@@ -736,13 +736,45 @@ RULES:
             input_meta = None
             for field_name, meta in (api_node.get("inputs", {}) or {}).items():
                 meta = meta if isinstance(meta, dict) else {}
-                if k in (field_name, meta.get("original", field_name)):
+                aliases = {
+                    LLMPlanner._norm(field_name),
+                    LLMPlanner._norm(meta.get("original", field_name)),
+                }
+                if LLMPlanner._norm(k) in aliases:
                     input_meta = meta
                     break
             if input_meta and input_meta.get("in") == "path" and state.has_authentication():
                 principal_value = state.get_actor_identity(k)
                 if principal_value is not None:
                     out[k] = principal_value
+                    continue
+
+            # Collabtive's api.php authenticates every request with query
+            # parameters named ``username`` and ``pass``.  These fields are
+            # part of an OTHER (read) operation, so the generic logic below
+            # used to miss the frozen actor credential and generate a fresh
+            # random password.  Bind query credentials to the actor snapshot
+            # before applying normal volatile-field randomization.
+            query_auth_field = (
+                input_meta
+                and str(input_meta.get("in", "")).lower() == "query"
+                and LLMPlanner._norm(k) in {"username", "login", "loginname", "pass", "password", "passwd", "pas"}
+            )
+            if query_auth_field:
+                if is_pass:
+                    matched = state.get_actor_credential(k)
+                    if matched is None:
+                        matched = state.get_actor_credential("password")
+                    if matched is None:
+                        matched = state.get("password") or state.get("pass") or state.get("pas")
+                else:
+                    matched = state.get_actor_identity(k)
+                    if matched is None:
+                        matched = state.get_actor_credential(k)
+                    if matched is None:
+                        matched = state.get("username") or state.get("name")
+                if matched is not None:
+                    out[k] = matched
                     continue
 
             # CREATE must establish a fresh identity. AUTH and OTHER requests

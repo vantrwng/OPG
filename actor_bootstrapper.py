@@ -30,7 +30,7 @@ class ActorBootstrapper:
     LOGIN_RE = re.compile(r"login|log[_-]?in|signin|sign[_-]?in|authenticate|issue[_-]?token", re.I)
     EXCLUDED_AUTH_RE = re.compile(r"logout|refresh|forgot|reset|verify|otp|captcha", re.I)
     IDENTITY_RE = re.compile(
-        r"(^|/)(me|whoami|profile)(/|$)|current[_-]?(user|account)|get[_-]?me",
+        r"(^|[/._-])(me|whoami|profile|current[_-]?(user|account)|get[_-]?me)([/._-]|$)",
         re.I,
     )
     ROLE_FIELD_RE = re.compile(
@@ -42,9 +42,11 @@ class ActorBootstrapper:
         re.I,
     )
 
-    def __init__(self, operations: List[Dict], executor: RequestExecutor):
+    def __init__(self, operations: List[Dict], executor: RequestExecutor,
+                 identity_config: Optional[Dict[str, Any]] = None):
         self.operations = operations
         self.executor = executor
+        self.identity_config = dict(identity_config or {})
         self.audit_events: List[Dict[str, Any]] = []
         self._signup_attempts: Dict[str, Dict[str, Any]] = {}
 
@@ -54,6 +56,20 @@ class ActorBootstrapper:
         return signup, login
 
     def discover_identity_operation(self) -> Optional[Dict]:
+        # Dataset-specific configuration is authoritative. This avoids relying
+        # on naming conventions for action-style APIs such as user.profile.get.
+        configured_id = self.identity_config.get("identity_operation") \
+            or self.identity_config.get("identity_operation_id")
+        configured_path = self.identity_config.get("identity_path")
+        if configured_id or configured_path:
+            for operation in self.operations:
+                if operation.get("method", "GET").upper() != "GET":
+                    continue
+                if configured_id and str(operation.get("id", "")) == str(configured_id):
+                    return operation
+                if configured_path and str(operation.get("path", "")) == str(configured_path):
+                    return operation
+
         candidates = []
         for operation in self.operations:
             if operation.get("method", "GET").upper() != "GET":
@@ -98,6 +114,8 @@ class ActorBootstrapper:
                 str(operation.get("id", "")),
                 str(operation.get("path", "")),
                 tags,
+                str(operation.get("summary", "")),
+                str(operation.get("description", "")),
             ))
             if not pattern.search(text) or (exclude and exclude.search(text)):
                 continue
@@ -236,7 +254,7 @@ class ActorBootstrapper:
         """Normalize conventional credential aliases without dataset knowledge."""
         normalized = re.sub(r"[-_.\s]", "", str(field_name)).casefold()
         aliases = {
-            "username": {"username", "user", "login", "loginname", "userid"},
+            "username": {"username", "user", "login", "loginname", "userid", "name"},
             "email": {"email", "emailaddress"},
             "password": {"password", "passwd", "pass", "passphrase"},
             "phone": {"phone", "mobile", "phonenumber", "mobilenumber"},

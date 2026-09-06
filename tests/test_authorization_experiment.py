@@ -378,6 +378,70 @@ def test_pipeline_confirms_cross_actor_patch_from_pre_and_post_owner_reads():
     ]
 
 
+def test_pipeline_requires_owner_reads_around_get_replay():
+    operations = _crud_operations()
+    executor = MagicMock()
+    memory = KnowledgeMemory()
+    engine = TestStrategyEngine(
+        operations=operations, adjacency_list={}, request_executor=executor,
+        graph_builder=MagicMock(), knowledge_memory=memory,
+    )
+    actors = MultiActorContextStore()
+    actors.add(ActorContext("owner-a", role="USER", auth_token="token-a"))
+    actors.add(ActorContext("user-b", role="USER", auth_token="token-b"))
+    engine.actor_contexts = actors
+    engine._preflight_actor = MagicMock(return_value=(True, "verified"))
+    engine._attacker = MagicMock()
+    engine._attacker.generate_attacks.return_value = [AttackVariant(
+        strategy="reference_forge", api_node=operations[1], payload={},
+        path="/memo/41", description="foreign memo", extra={
+            "resource_id": 41, "resource_type": "memo", "selector_field": "memoId",
+            "confirmation_eligible": True, "provenance": "CREATED_RESPONSE",
+            "owner_actor_id": "owner-a", "owner_role": "USER",
+            "actor_relationship": "same_role_distinct_principals",
+        },
+    )]
+    engine._auditor = AuditorAgent(client=MagicMock())
+    engine.attack_store.record(
+        "createMemo", "memoId", 41, owner_actor_id="owner-a",
+        owner_role="USER", resource_type="memo", provenance="CREATED_RESPONSE",
+    )
+    executor.execute_request.side_effect = [
+        {"status": 200, "successful": True, "schema_valid": True,
+         "raw_response": {"memoId": 41}},
+        {"status": 200, "successful": True, "schema_valid": True,
+         "raw_response": {"memoId": 41}},
+        {"status": 200, "successful": True, "schema_valid": True,
+         "raw_response": {"memoId": 41}},
+        {"status": 200, "successful": True, "schema_valid": True,
+         "raw_response": {"memoId": 41}},
+    ]
+
+    engine._run_3agent_pipeline(
+        api_node=operations[1],
+        current_state=StateStore({
+            "actor_id": "owner-a", "actor_role": "USER", "auth_token": "token-a",
+        }),
+        exec_result={
+            "status": 200, "successful": True, "schema_valid": True,
+            "raw_response": {"memoId": 41},
+        },
+        beam_chain=["getMemo"], vulnerabilities=[],
+    )
+
+    assert any(finding.get("type") == "BOLA" for finding in memory.findings)
+    sources = [
+        call.kwargs.get("payload_source_override")
+        for call in executor.execute_request.call_args_list
+    ]
+    assert sources == [
+        "BOLA_OWNER_PRECHECK",
+        "ATTACKER_REFERENCE_FORGE",
+        "BOLA_OWNER_VERIFY",
+        "DETERMINISTIC_BOLA_REPLAY",
+    ]
+
+
 def _delete_engine(responses):
     executor = MagicMock()
     executor.execute_request.side_effect = responses

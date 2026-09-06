@@ -3,10 +3,32 @@ import json
 from generate_report import (
     _aggregate_findings,
     _aggregate_security_observations,
+    _aggregate_suspected_bola_observations,
     _group_apis_by_outcome,
     generate_html_report,
 )
 from knowledge_memory import KnowledgeMemory, sanitize_sensitive
+
+
+def test_bola_metrics_include_endpoint_coverage_and_ground_truth_scores():
+    memory = KnowledgeMemory()
+    memory.mark_endpoint_discovered("getVulnerable")
+    memory.record_experiment_stage("getVulnerable", "generated", count=2)
+    memory.record_experiment_stage("getVulnerable", "executed", count=2)
+    memory.record_experiment_stage("getVulnerable", "verifiable", count=2)
+    memory.record_experiment_stage("getVulnerable", "confirmed", count=1)
+    memory.mark_endpoint_discovered("getSecure")
+    memory.record_experiment_stage("getSecure", "generated", count=1)
+    memory.record_experiment_stage("getSecure", "executed", count=1)
+    memory.set_bola_ground_truth({"getVulnerable": True, "getSecure": False})
+    memory.record_finding({"api": "getVulnerable", "type": "BOLA"})
+
+    metrics = memory.compute_bola_metrics()
+
+    assert metrics["overall"]["precision"] == 1.0
+    assert metrics["overall"]["recall"] == 1.0
+    assert metrics["per_endpoint"]["getVulnerable"]["coverage_rate"] == 1.0
+    assert metrics["per_endpoint"]["getSecure"]["predicted_bola"] is False
 
 
 def _attack_metadata():
@@ -279,6 +301,28 @@ def test_report_renders_bootstrap_separately_and_keeps_secrets_redacted(tmp_path
     assert "never-display-this" not in report
 
 
+def test_report_marks_unreached_phases_as_not_run(tmp_path):
+    input_file = tmp_path / "beam.json"
+    output_dir = tmp_path / "report"
+    input_file.write_text(json.dumps({
+        "summary": {"total_requests": 0, "total_findings": 0},
+        "endpoint_stats": {},
+        "findings": [],
+        "pipeline_summary": {
+            "mode": "security",
+            "phase_0": {"completed": False, "events": 2},
+        },
+    }), encoding="utf-8")
+
+    generate_html_report(str(input_file), str(output_dir))
+    report = (output_dir / "index.html").read_text(encoding="utf-8")
+
+    assert "PHASE 1 — Valid workflow</div>" in report
+    assert "Chưa chạy · 0 baseline hợp lệ" in report
+    assert "PHASE 2 — Security validation</div>" in report
+    assert "Chưa chạy</div>" in report
+
+
 def test_export_redacts_response_repair_history_and_captured_state(tmp_path):
     memory = KnowledgeMemory()
     memory.record_request(
@@ -369,6 +413,26 @@ def test_observation_aggregation_preserves_distinct_evidence_and_counts_repeats(
     assert sorted(item["occurrences"] for item in aggregated) == [1, 2]
 
 
+def test_suspected_bola_cards_group_by_api_method_and_type():
+    aggregated = _aggregate_suspected_bola_observations([
+        {"classification": "SUSPECTED", "api": "getMemo", "method": "GET",
+         "type": "BOLA", "confidence": 0.55, "occurrences": 2,
+         "evidence": ["foreign id"], "strategy": "id_substitution"},
+        {"classification": "SUSPECTED", "api": "getMemo", "method": "GET",
+         "type": "BOLA", "confidence": 0.45, "evidence": ["response differs"],
+         "strategy": "reference_forge"},
+        {"classification": "SUSPECTED", "api": "patchMemo", "method": "PATCH",
+         "type": "BOLA", "confidence": 0.55, "evidence": ["foreign owner"]},
+    ])
+
+    assert len(aggregated) == 2
+    get_memo = next(item for item in aggregated if item["api"] == "getMemo")
+    assert get_memo["occurrences"] == 3
+    assert len(get_memo["variants"]) == 2
+    assert get_memo["evidence"] == ["foreign id", "response differs"]
+    assert get_memo["confidence"] == 0.55
+
+
 def test_report_renders_suspected_and_unverified_observations(tmp_path):
     input_file = tmp_path / "beam.json"
     output_dir = tmp_path / "report"
@@ -377,6 +441,7 @@ def test_report_renders_suspected_and_unverified_observations(tmp_path):
         "findings": [], "top_strategies": [],
         "security_observations": [
             {"classification": "SUSPECTED", "api": "patchShortcut", "type": "BOLA",
+             "confidence": 0.78, "status": 200,
              "evidence": ["foreign object returned"]},
             {"classification": "UNVERIFIED", "api": "getUser", "type": "BOLA",
              "reasoning": "identifier was guessed"},
@@ -386,9 +451,42 @@ def test_report_renders_suspected_and_unverified_observations(tmp_path):
     generate_html_report(str(input_file), str(output_dir))
     report = (output_dir / "index.html").read_text(encoding="utf-8")
 
-    assert "Tín hiệu cần xác minh (2)" in report
+    assert "Tín hiệu cần xác minh (1)" in report
     assert "SUSPECTED" in report and "UNVERIFIED" in report
-    assert "patchShortcut" in report and "getUser" in report
+    assert "BOLA/IDOR" in report and "patchShortcut" in report and "getUser" in report
+    assert "Độ tin cậy: 55%" in report
+    assert "HTTP 200" in report
+
+
+def test_report_renders_bola_coverage_and_benchmark_metrics(tmp_path):
+    input_file = tmp_path / "beam.json"
+    output_dir = tmp_path / "report"
+    input_file.write_text(json.dumps({
+        "summary": {"total_requests": 0}, "endpoint_stats": {},
+        "findings": [], "top_strategies": [], "security_observations": [],
+        "security_metrics": {
+            "ground_truth_available": True,
+            "overall": {"precision": 1.0, "recall": 0.5, "f1": 0.6667},
+            "per_endpoint": {
+                "getOrder": {
+                    "experiments_generated": 2,
+                    "experiments_executed": 2,
+                    "coverage_rate": 1.0,
+                    "verifiable_rate": 0.5,
+                    "precision": 1.0,
+                    "recall": 0.5,
+                    "f1": 0.6667,
+                },
+            },
+        },
+    }), encoding="utf-8")
+
+    generate_html_report(str(input_file), str(output_dir))
+    report = (output_dir / "index.html").read_text(encoding="utf-8")
+
+    assert "BOLA coverage và benchmark" in report
+    assert "getOrder" in report
+    assert "100.0%" in report
 
 
 def test_report_recomputes_legacy_http_count_and_uses_consistent_finding_labels(tmp_path):

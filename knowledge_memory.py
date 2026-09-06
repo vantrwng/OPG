@@ -129,6 +129,8 @@ class KnowledgeMemory:
         self.auth_bootstrap = []
         self.replay_recipes = []
         self.experiment_coverage = {}
+        self.bola_ground_truth = {}
+        self.security_metrics = {}
 
     def mark_endpoint_discovered(self, api_id: str, reason: str = "OpenAPI operation"):
         record = self.experiment_coverage.setdefault(api_id, {
@@ -161,6 +163,79 @@ class KnowledgeMemory:
             "stage": stage, "status": status or stage,
             "reason": str(reason or ""), "count": max(0, int(count)),
         })
+
+    def set_bola_ground_truth(self, ground_truth):
+        """Set endpoint-level BOLA labels for reproducible evaluation.
+
+        Accepted forms are ``{"getOrder": true}`` or a list of vulnerable
+        endpoint IDs. Labels are intentionally endpoint-level so a benchmark
+        can be compared with the confirmed findings without guessing from
+        HTTP status codes.
+        """
+        if isinstance(ground_truth, list):
+            ground_truth = {str(api_id): True for api_id in ground_truth}
+        if not isinstance(ground_truth, dict):
+            raise ValueError("BOLA ground truth must be an object or list")
+        normalized = {}
+        for api_id, label in ground_truth.items():
+            if isinstance(label, dict):
+                label = label.get("bola", label.get("vulnerable", False))
+            normalized[str(api_id)] = bool(label)
+        self.bola_ground_truth = normalized
+
+    @staticmethod
+    def _metric_ratio(numerator, denominator):
+        return round(numerator / denominator, 4) if denominator else None
+
+    def compute_bola_metrics(self):
+        """Compute coverage and endpoint-level precision/recall/F1."""
+        confirmed = {
+            str(item.get("api", ""))
+            for item in self.findings
+            if str(item.get("type", "")).upper() == "BOLA"
+        }
+        endpoint_ids = set(self.experiment_coverage) | set(self.bola_ground_truth)
+        per_endpoint = {}
+        totals = {"tp": 0, "fp": 0, "fn": 0, "tn": 0}
+        for api_id in sorted(endpoint_ids):
+            expected = bool(self.bola_ground_truth.get(api_id, False))
+            predicted = api_id in confirmed
+            tp = int(expected and predicted)
+            fp = int(not expected and predicted)
+            fn = int(expected and not predicted)
+            tn = int(not expected and not predicted)
+            for key, value in (("tp", tp), ("fp", fp), ("fn", fn), ("tn", tn)):
+                totals[key] += value
+            coverage = dict(self.experiment_coverage.get(api_id, {}))
+            generated = int(coverage.get("experiments_generated", 0) or 0)
+            executed = int(coverage.get("experiments_executed", 0) or 0)
+            verifiable = int(coverage.get("experiments_verifiable", 0) or 0)
+            coverage.update({
+                "ground_truth_bola": expected if api_id in self.bola_ground_truth else None,
+                "predicted_bola": predicted,
+                "coverage_rate": self._metric_ratio(executed, generated),
+                "verifiable_rate": self._metric_ratio(verifiable, executed),
+                "tp": tp, "fp": fp, "fn": fn, "tn": tn,
+                "precision": self._metric_ratio(tp, tp + fp),
+                "recall": self._metric_ratio(tp, tp + fn),
+                "f1": self._metric_ratio(2 * tp, 2 * tp + fp + fn),
+            })
+            per_endpoint[api_id] = coverage
+
+        self.security_metrics = {
+            "ground_truth_available": bool(self.bola_ground_truth),
+            "per_endpoint": per_endpoint,
+            "overall": {
+                **totals,
+                "precision": self._metric_ratio(totals["tp"], totals["tp"] + totals["fp"]),
+                "recall": self._metric_ratio(totals["tp"], totals["tp"] + totals["fn"]),
+                "f1": self._metric_ratio(
+                    2 * totals["tp"],
+                    2 * totals["tp"] + totals["fp"] + totals["fn"],
+                ),
+            },
+        }
+        return self.security_metrics
 
     def record_visit(self, api_id: str):
         if api_id not in self.node_visit_count:
@@ -332,6 +407,7 @@ class KnowledgeMemory:
 
     def export(self, output_file: str):
         # Tổng hợp thống kê
+        self.compute_bola_metrics()
         total_requests = self._http_request_count
         total_request_events = self._request_event_count
         server_errors = sum(1 for f in self.findings if f.get("type") == "Crash/500")
@@ -384,6 +460,7 @@ class KnowledgeMemory:
             "auth_bootstrap": self.auth_bootstrap,
             "replay_recipes": self.replay_recipes,
             "experiment_coverage": self.experiment_coverage,
+            "security_metrics": self.security_metrics,
         }
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(sanitize_sensitive(output_data), f, indent=4, ensure_ascii=False)

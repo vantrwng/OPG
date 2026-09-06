@@ -165,6 +165,19 @@ def test_preflight_verifies_token_with_current_user_endpoint():
     assert state.get_auth_context()["exists"] is True
 
 
+def test_identity_operation_can_be_configured_for_action_style_dataset():
+    operations = [{
+        "id": "user.profile.get", "method": "GET",
+        "path": "/api.php?action=user.profile.get", "inputs": {},
+    }]
+    bootstrapper = ActorBootstrapper(
+        operations, FakeExecutor(),
+        identity_config={"identity_operation": "user.profile.get"},
+    )
+
+    assert bootstrapper.discover_identity_operation()["id"] == "user.profile.get"
+
+
 def test_bootstrap_spreads_declared_roles_and_trusts_effective_server_role():
     operations = [
         {

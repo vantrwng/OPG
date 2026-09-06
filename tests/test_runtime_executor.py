@@ -3,6 +3,7 @@ from requests.cookies import RequestsCookieJar
 
 from runtime_executor import RequestExecutor
 from state_store import StateStore
+from response_outcome import evaluate_response
 
 
 def _response(status=200, body=None):
@@ -17,6 +18,29 @@ def _response(status=200, body=None):
         response.text = __import__("json").dumps(body)
         response.json.return_value = body
     return response
+
+
+def test_legacy_collabtive_not_authorized_body_is_auth_failure():
+    outcome = evaluate_response(200, response_text="not authorized")
+
+    assert outcome.successful is False
+    assert outcome.semantic_failure is True
+    assert outcome.reason == "Authentication rejected: not authorized"
+
+
+def test_xml_response_is_accepted_when_declared_by_openapi():
+    valid, errors = RequestExecutor._validate_response_contract(
+        response_json=None,
+        response_text="<user><ID>1</ID></user>",
+        content_type="application/xml; charset=UTF-8",
+        outputs={},
+        status=200,
+        expected_content_types=["application/xml", "application/json"],
+        response_body_statuses=["200"],
+    )
+
+    assert valid is True
+    assert errors == []
 
 
 def test_prepare_request_preserves_openapi_parameter_locations():
@@ -165,6 +189,7 @@ def test_transport_follows_same_origin_redirect_and_preserves_auth():
     executor = RequestExecutor("https://target.test", planner=MagicMock())
     redirect = _response(307)
     redirect.headers = {"Location": "/v2/resources"}
+    redirect.cookies.set("session", "redirect-session")
     executor._session.request = MagicMock(side_effect=[redirect, _response(200, {})])
     prepared = executor.prepare_request(
         {"id": "resource", "method": "GET", "path": "/v1/resources"},
@@ -179,7 +204,9 @@ def test_transport_follows_same_origin_redirect_and_preserves_auth():
     followup = executor._session.request.call_args.kwargs
     assert followup["url"] == "https://target.test/v2/resources"
     assert followup["headers"]["Authorization"] == "Bearer secret"
+    assert followup["cookies"] == {"session": "redirect-session"}
     assert followup["allow_redirects"] is False
+    assert response.cookies.get_dict()["session"] == "redirect-session"
 
 
 def test_transport_refuses_cross_origin_redirect_with_auth():

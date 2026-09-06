@@ -202,6 +202,8 @@ def test_only_one_successful_reproduction_is_suspected():
         {"method": "GET", "path": "/memo/{memoId}"},
     )
     assert result.classification == "SUSPECTED"
+    assert result.bola_type == "BOLA"
+    assert result.confidence == 0.55
     assert result.is_bola is False
 
 
